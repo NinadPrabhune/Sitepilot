@@ -541,7 +541,7 @@ Route::prefix('machinery/payment-requests')->name('machinery-payment.')->group(f
     Route::get('/', [MachineryPaymentRequestController::class, 'index'])->name('index');
     Route::get('/create', [MachineryPaymentRequestController::class, 'create'])->name('create');
     Route::get('/api-index', [MachineryPaymentRequestController::class, 'apiIndex'])->name('api-index');
-    Route::post('/store-ajax', [MachineryPaymentRequestController::class, 'store'])->name('store-ajax');
+    Route::post('/store-ajax', [MachineryPaymentRequestController::class, 'calculate'])->name('store-ajax');
     Route::get('/debug-ledger-query', [MachineryPaymentRequestController::class, 'debugLedgerQuery'])->name('debug-ledger-query');
     Route::get('/{id}', [MachineryPaymentRequestController::class, 'show'])->name('show');
 

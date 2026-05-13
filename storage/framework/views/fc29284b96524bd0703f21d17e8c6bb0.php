@@ -136,25 +136,25 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="text-center p-3 border rounded">
-                                        <h5 class="mb-1">Rs. 0.00</h5>
+                                        <h5 id="creditsValue" class="mb-1">Rs. 0.00</h5>
                                         <small class="text-muted"><?php echo e(__('Credits')); ?></small>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="text-center p-3 border rounded">
-                                        <h5 class="mb-1">Rs. 0.00</h5>
+                                        <h5 id="debitsValue" class="mb-1">Rs. 0.00</h5>
                                         <small class="text-muted"><?php echo e(__('Debits')); ?></small>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="text-center p-3 border rounded bg-light">
-                                        <h5 class="mb-1 text-primary">Rs. 0.00</h5>
+                                        <h5 id="netPayableValue" class="mb-1 text-primary">Rs. 0.00</h5>
                                         <small class="text-muted"><?php echo e(__('Net Payable')); ?></small>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="text-center p-3 border rounded">
-                                        <h5 class="mb-1">0</h5>
+                                        <h5 id="entryCountValue" class="mb-1">0</h5>
                                         <small class="text-muted"><?php echo e(__('Entry Count')); ?></small>
                                     </div>
                                 </div>
@@ -351,17 +351,17 @@ calculateBtn.addEventListener('click', function() {
         if (data.success) {
             // Update results display
             const resultsContainer = document.getElementById('calculationResults');
-            const resultCards = resultsContainer.querySelectorAll('.card-body h5');
             
             // Format currency values (assuming currency symbol is Rs.)
             const credits = parseFloat(data.data.credits) || 0;
             const debits = parseFloat(data.data.debits) || 0;
             const netPayable = parseFloat(data.data.net_payable) || 0;
+            const entryCount = data.data.audit_snapshot?.entry_count || 0;
             
-            resultCards[0].textContent = 'Rs. ' + credits.toFixed(2);
-            resultCards[1].textContent = 'Rs. ' + debits.toFixed(2);
-            resultCards[2].textContent = 'Rs. ' + netPayable.toFixed(2);
-            resultCards[3].textContent = data.data.audit_snapshot?.entry_count || 0;
+            document.getElementById('creditsValue').textContent = 'Rs. ' + credits.toFixed(2);
+            document.getElementById('debitsValue').textContent = 'Rs. ' + debits.toFixed(2);
+            document.getElementById('netPayableValue').textContent = 'Rs. ' + netPayable.toFixed(2);
+            document.getElementById('entryCountValue').textContent = entryCount;
             
             resultsContainer.style.display = 'block';
             

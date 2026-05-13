@@ -70,7 +70,7 @@ class MachineryPaymentRequestController extends Controller
     }
     
     /**
-     * Create payment request from ledger
+     * Create payment request from ledger (API endpoint - actually creates the payment request)
      */
     public function store(Request $request): JsonResponse
     {
@@ -82,7 +82,7 @@ class MachineryPaymentRequestController extends Controller
                 'period_end' => 'required|date|after_or_equal:period_start',
                 'idempotency_key' => 'nullable|string|max:64',
             ]);
-            
+
             $paymentRequest = $this->service->createFromLedger(
                 $validated['machinery_id'],
                 $validated['supplier_id'],
@@ -91,11 +91,43 @@ class MachineryPaymentRequestController extends Controller
                 auth()->id(),
                 $validated['idempotency_key'] ?? uniqid('payment_', true)
             );
-            
+
             return response()->json([
                 'success' => true,
                 'data' => $paymentRequest->load('machinery', 'supplier')->toArray(),
             ], 201);
+        } catch (\RuntimeException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    /**
+     * Calculate payment request from ledger (web endpoint - preview only, does not create payment request)
+     */
+    public function calculate(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'machinery_id' => 'required|exists:machineries,id',
+                'supplier_id' => 'required|exists:suppliers,id',
+                'period_start' => 'required|date',
+                'period_end' => 'required|date|after_or_equal:period_start',
+            ]);
+
+            $calculation = $this->service->calculateOnly(
+                $validated['machinery_id'],
+                $validated['supplier_id'],
+                $validated['period_start'],
+                $validated['period_end']
+            );
+
+            return response()->json([
+                'success' => true,
+                'data' => $calculation,
+            ], 200);
         } catch (\RuntimeException $e) {
             return response()->json([
                 'success' => false,

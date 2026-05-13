@@ -122,6 +122,14 @@ class DailyConsumptionMaster extends Model
     }
 
     /**
+     * Alias for report() - for consistency with other models
+     */
+    public function dailyProgressReport()
+    {
+        return $this->report();
+    }
+
+    /**
      * Get the activity completed that owns this consumption record.
      */
     public function activityCompleted()

@@ -11,6 +11,7 @@ use App\Support\Finance\HandlesDeadlocks;
 use App\Support\Finance\HasIdempotency;
 use App\Support\Finance\PaymentAuditLogger;
 use App\Support\Finance\SafeTransaction;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -141,6 +142,72 @@ class MachineryPaymentRequestService
         });
     }
     
+    /**
+     * Calculate payment request without creating it
+     * Used for preview/calculation only - does not persist to database
+     */
+    public function calculateOnly(
+        int $machineryId,
+        int $supplierId,
+        string $periodStart,
+        string $periodEnd
+    ): array
+    {
+        // Get machinery
+        $machinery = Machinery::find($machineryId);
+        if (!$machinery) {
+            throw new \RuntimeException('Machinery not found');
+        }
+
+        // Validate period overlap (read-only check)
+        $this->validatePeriodOverlap($machineryId, $periodStart, $periodEnd);
+        $this->validateActiveRequestOverlap($machineryId, $periodStart, $periodEnd);
+
+        // Validate billing protection
+        $billingCheck = \App\Services\MachineryBillingProtectionService::canCreatePaymentRequest($machineryId, $periodStart, $periodEnd);
+        if (!$billingCheck['can_create']) {
+            throw new \RuntimeException($billingCheck['reason']);
+        }
+
+        // Get ledger entries WITHOUT locking (for calculation only)
+        $entries = MachineryLedger::where('machinery_id', $machineryId)
+            ->whereBetween('date', [$periodStart, $periodEnd])
+            ->where('is_reversal', false)
+            ->whereNull('payment_request_id')
+            ->where('amount', '>', 0)
+            ->orderBy('date')
+            ->orderBy('id')
+            ->get();
+
+        if ($entries->isEmpty()) {
+            throw new \RuntimeException('No eligible ledger entries found for the specified period');
+        }
+
+        // Calculate payable
+        $calculation = $this->calculatePayable($entries, $machinery, Carbon::parse($periodStart), Carbon::parse($periodEnd));
+
+        // Build audit snapshot for preview
+        $auditSnapshot = $this->buildAuditSnapshot($entries, $calculation);
+
+        return [
+            'machinery_id' => $machineryId,
+            'supplier_id' => $supplierId,
+            'workspace_id' => $entries->first()->workspace_id,
+            'period_start' => $periodStart,
+            'period_end' => $periodEnd,
+            'credits' => $calculation['credits'],
+            'debits' => $calculation['debits'],
+            'net_payable' => $calculation['net_payable'],
+            'audit_snapshot' => $auditSnapshot,
+            // Enhanced breakdown fields
+            'gross_amount' => $calculation['gross_amount'] ?? $calculation['net_payable'],
+            'diesel_deduction' => $calculation['diesel_deduction'] ?? 0,
+            'calculation_method' => $calculation['calculation_method'] ?? 'legacy',
+            'billing_breakdown' => $calculation['billing_breakdown'] ?? null,
+            'diesel_breakdown' => $calculation['diesel_breakdown'] ?? null,
+        ];
+    }
+
     /**
      * INVARIANT 1: Period overlap validation
      * CRITICAL: Only locked periods should block, not drafts or rejected

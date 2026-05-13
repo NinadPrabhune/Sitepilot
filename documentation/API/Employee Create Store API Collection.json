@@ -1,0 +1,93 @@
+{
+  "info": {
+    "name": "Employee Store API",
+    "_postman_id": "7c8e0c7b-employee-store-api",
+    "description": "Employee Store API with all request fields",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://your-domain.com",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_BEARER_TOKEN",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Store Employee (JSON – No Files)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"9876543210\",\n  \"dob\": \"1995-01-01\",\n  \"gender\": \"male\",\n  \"address\": \"New York\",\n  \"branch_id\": 1,\n  \"department_id\": 2,\n  \"designation_id\": 3,\n  \"role\": 2,\n\n  \"passport_country\": \"USA\",\n  \"passport\": \"A1234567\",\n  \"location_type\": \"office\",\n  \"country\": \"USA\",\n  \"state\": \"NY\",\n  \"city\": \"New York\",\n  \"zipcode\": \"10001\",\n\n  \"company_doj\": \"2024-01-01\",\n\n  \"account_holder_name\": \"John Doe\",\n  \"account_number\": \"123456789\",\n  \"bank_name\": \"Bank of America\",\n  \"bank_identifier_code\": \"BOFAUS3N\",\n  \"branch_location\": \"New York\",\n  \"tax_payer_id\": \"TX123456\",\n\n  \"hours_per_day\": 8,\n  \"days_per_week\": 5,\n  \"hours_per_month\": 160,\n  \"days_per_month\": 22,\n\n  \"fixed_salary\": 5000,\n  \"annual_salary\": 60000,\n  \"rate_per_day\": 250,\n  \"rate_per_hour\": 30,\n\n  \"payment_requires_work_advice\": \"on\",\n\n  \"organisation_switch\": \"ORG-A\",\n  \"provident_fund_no\": \"PF123456\",\n\n  \"emergency_contact_no\": \"9999999999\",\n  \"emergency_address\": \"Emergency Address\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/employees",
+          "host": ["{{base_url}}"],
+          "path": ["api", "employees"]
+        }
+      }
+    },
+    {
+      "name": "Store Employee (multipart/form-data – With Files)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "name", "value": "John Doe", "type": "text" },
+            { "key": "email", "value": "john@example.com", "type": "text" },
+            { "key": "password", "value": "password123", "type": "text" },
+            { "key": "phone", "value": "9876543210", "type": "text" },
+            { "key": "dob", "value": "1995-01-01", "type": "text" },
+            { "key": "gender", "value": "male", "type": "text" },
+            { "key": "address", "value": "New York", "type": "text" },
+            { "key": "branch_id", "value": "1", "type": "text" },
+            { "key": "department_id", "value": "2", "type": "text" },
+            { "key": "designation_id", "value": "3", "type": "text" },
+            { "key": "role", "value": "2", "type": "text" },
+
+            { "key": "company_doj", "value": "2024-01-01", "type": "text" },
+            { "key": "location_type", "value": "office", "type": "text" },
+
+            { "key": "account_holder_name", "value": "John Doe", "type": "text" },
+            { "key": "account_number", "value": "123456789", "type": "text" },
+            { "key": "bank_name", "value": "Bank of America", "type": "text" },
+
+            { "key": "fixed_salary", "value": "5000", "type": "text" },
+            { "key": "annual_salary", "value": "60000", "type": "text" },
+
+            { "key": "organisation_switch", "value": "ORG-A", "type": "text" },
+            { "key": "provident_fund_no", "value": "PF123456", "type": "text" },
+
+            { "key": "emergency_contact_no", "value": "9999999999", "type": "text" },
+            { "key": "emergency_address", "value": "Emergency Address", "type": "text" },
+
+            { "key": "avatar", "type": "file" },
+            { "key": "document[1]", "type": "file" },
+            { "key": "document[2]", "type": "file" }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/employees",
+          "host": ["{{base_url}}"],
+          "path": ["api", "employees"]
+        }
+      }
+    }
+  ]
+}

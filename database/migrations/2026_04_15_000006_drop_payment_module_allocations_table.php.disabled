@@ -1,0 +1,168 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     * 
+     * This migration drops the payment_module_allocations table
+     * Should ONLY be run AFTER the PO-based payment migration is complete
+     * and all allocations have been migrated to direct invoice links
+     */
+    public function up(): void
+    {
+        // CRITICAL: Check system migration guard
+        $migrationState = DB::table('system_migration_state')
+            ->where('migration_phase', 'phase3_allocations_cleanup')
+            ->first();
+
+        if (!$migrationState) {
+            throw new \Exception('Migration guard not initialized. Run system_migration_state migration first.');
+        }
+
+        if ($migrationState->locked) {
+            throw new \Exception('Migration is locked. Cannot re-execute phase3_allocations_cleanup.');
+        }
+
+        if (!$migrationState->staging_approved) {
+            throw new \Exception('Migration not approved for staging execution.');
+        }
+
+        // Lock the migration
+        DB::table('system_migration_state')
+            ->where('migration_phase', 'phase3_allocations_cleanup')
+            ->update([
+                'status' => 'in_progress',
+                'locked' => true,
+                'started_at' => now(),
+                'executed_by' => auth()->id() ?? 1,
+            ]);
+
+        // CRITICAL: ORPHAN VALIDATION GATE
+        // Check if all allocations have been mapped in payment_migration_map
+        if (Schema::hasTable('payment_migration_map')) {
+            $orphanAllocations = DB::table('payment_module_allocations as pma')
+                ->leftJoin('payment_migration_map as pmm', 'pma.payment_module_id', '=', 'pmm.payment_id')
+                ->whereNull('pmm.payment_id')
+                ->count();
+
+            if ($orphanAllocations > 0) {
+                throw new \Exception(
+                    "CRITICAL: Found {$orphanAllocations} orphan allocations not mapped in payment_migration_map. " .
+                    "Migration is unsafe. Resolve orphans before proceeding."
+                );
+            }
+        } else {
+            Log::channel('payment_audit')->warning('payment_migration_map table does not exist, skipping orphan validation');
+        }
+
+        // Step 1: Verify that all allocations have been migrated
+        // Check if there are any allocations that weren't migrated
+        $unmigratedAllocations = DB::table('payment_module_allocations')
+            ->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('payments_module')
+                    ->whereColumn('payments_module.id', 'payment_module_allocations.payment_module_id')
+                    ->where('payment_type', '!=', 'against_invoice');
+            })
+            ->count();
+
+        if ($unmigratedAllocations > 0) {
+            Log::channel('payment_audit')->warning('Phase 3: Found unmigrated allocations', [
+                'count' => $unmigratedAllocations,
+            ]);
+
+            // We'll still proceed but log a warning
+            // These allocations should be reviewed manually
+        }
+
+        // Step 2: Create backup of allocations table before dropping
+        // This is for safety and audit purposes
+        DB::statement("
+            CREATE TABLE payment_module_allocations_backup AS
+            SELECT * FROM payment_module_allocations
+        ");
+
+        Log::channel('payment_audit')->info('Phase 3: Created backup of payment_module_allocations');
+
+        // Step 3: Drop the original table
+        Schema::dropIfExists('payment_module_allocations');
+
+        // Update migration state to completed
+        DB::table('system_migration_state')
+            ->where('migration_phase', 'phase3_allocations_cleanup')
+            ->update([
+                'status' => 'completed',
+                'completed_at' => now(),
+                'validation_passed' => true,
+                'validated_at' => now(),
+                'validation_results' => json_encode([
+                    'orphan_allocations' => $orphanAllocations,
+                    'unmigrated_allocations' => $unmigratedAllocations,
+                ]),
+            ]);
+
+        Log::channel('payment_audit')->info('Phase 3: Dropped payment_module_allocations table');
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        // Only restore if payments_module table exists
+        if (Schema::hasTable('payments_module')) {
+            // Restore the table from backup
+            DB::statement("
+                CREATE TABLE payment_module_allocations (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    payment_module_id INT NOT NULL,
+                    purchase_invoice_id INT NULL,
+                    purchase_order_id INT NULL,
+                    allocated_amount DECIMAL(15,2) NOT NULL,
+                    created_at TIMESTAMP NULL,
+                    updated_at TIMESTAMP NULL,
+                    deleted_at TIMESTAMP NULL,
+                    FOREIGN KEY (payment_module_id) REFERENCES payments_module(id) ON DELETE CASCADE,
+                    FOREIGN KEY (purchase_invoice_id) REFERENCES purchase_invoices(id) ON DELETE SET NULL,
+                    FOREIGN KEY (purchase_order_id) REFERENCES purchase_orders(id) ON DELETE SET NULL,
+                    INDEX idx_payment_module_id (payment_module_id),
+                    INDEX idx_purchase_invoice_id (purchase_invoice_id),
+                    INDEX idx_purchase_order_id (purchase_order_id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            ");
+
+            // Restore data from backup if backup table exists
+            if (Schema::hasTable('payment_module_allocations_backup')) {
+                DB::statement("
+                    INSERT INTO payment_module_allocations
+                    SELECT * FROM payment_module_allocations_backup
+                ");
+
+                // Drop the backup table
+                Schema::dropIfExists('payment_module_allocations_backup');
+            }
+        }
+
+        // Reset migration state only if table exists
+        if (Schema::hasTable('system_migration_state')) {
+            DB::table('system_migration_state')
+                ->where('migration_phase', 'phase3_allocations_cleanup')
+                ->update([
+                    'status' => 'pending',
+                    'locked' => false,
+                    'started_at' => null,
+                    'completed_at' => null,
+                    'validation_passed' => false,
+                ]);
+        }
+
+        Log::channel('payment_audit')->info('Phase 3: Attempted to restore payment_module_allocations table from backup');
+    }
+};

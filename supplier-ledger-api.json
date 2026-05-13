@@ -1,0 +1,209 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Supplier Ledger API",
+    "description": "API documentation for Supplier Ledger - returns combined ledger statement (PO, GRN, Invoices, Payments) for a Purchase Order.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Base URL for API requests"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Supplier Ledger",
+      "description": "Supplier ledger statement endpoints"
+    }
+  ],
+  "paths": {
+    "/api/supplier-ledger": {
+      "get": {
+        "tags": ["Supplier Ledger"],
+        "summary": "Get supplier ledger statement",
+        "description": "Returns a complete ledger timeline for a Purchase Order including PO Created, GRN, Invoices, and Payments. Sorted by date with running balance calculation.",
+        "operationId": "getSupplierLedger",
+        "parameters": [
+          {
+            "name": "po_id",
+            "in": "query",
+            "description": "Purchase Order ID (required if invoice_id not provided)",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "invoice_id",
+            "in": "query",
+            "description": "Purchase Invoice ID (required if po_id not provided)",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Filter entries from this date (YYYY-MM-DD)",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2026-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Filter entries up to this date (YYYY-MM-DD)",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2026-12-31"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter by entry type (po_created, grn_info, invoice_info, advance, payment)",
+            "schema": {
+              "type": "string",
+              "example": "payment"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of items per page (max 100)",
+            "schema": {
+              "type": "integer",
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Supplier ledger retrieved successfully",
+                  "data": [
+                    {
+                      "date": "2026-04-04 14:15:00",
+                      "details": "PO00002 / ACE Equipment / PO Created / Total Qty 1000",
+                      "debit": 200480,
+                      "credit": null,
+                      "balance": 200480,
+                      "type": "po_created"
+                    },
+                    {
+                      "date": "2026-04-05 10:30:00",
+                      "details": "GRN-0001 / GRN Received / Total Qty 500",
+                      "debit": null,
+                      "credit": null,
+                      "balance": 200480,
+                      "type": "grn_info"
+                    },
+                    {
+                      "date": "2026-04-06 09:00:00",
+                      "details": "Invoice Generated",
+                      "invoice_number": "INV-001",
+                      "amount": 100000,
+                      "debit": null,
+                      "credit": null,
+                      "balance": 200480,
+                      "type": "invoice_info"
+                    },
+                    {
+                      "date": "2026-04-07 11:00:00",
+                      "details": "PAY-0001 / Cash / Advance Against PO",
+                      "debit": null,
+                      "credit": 50000,
+                      "balance": 150480,
+                      "type": "advance"
+                    },
+                    {
+                      "date": "2026-04-08 14:00:00",
+                      "details": "PAY-0002 / Bank Transfer / Payment Against Invoice",
+                      "debit": null,
+                      "credit": 75000,
+                      "balance": 75480,
+                      "type": "payment"
+                    }
+                  ],
+                  "total": 5
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Unauthenticated",
+                  "data": null
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Either po_id or invoice_id is required",
+                  "data": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Failed to fetch supplier ledger",
+                  "data": null
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT Bearer Token authentication. Include in all requests: Authorization: Bearer {your_token_here}"
+      }
+    }
+  }
+}

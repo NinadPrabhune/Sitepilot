@@ -1,0 +1,318 @@
+{
+    "info": {
+        "_postman_id": "a5279924-4919-44af-9671-57faabbf9940",
+        "name": "SitePilotLiveAPI",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "48909686",
+        "_collection_link": "https://ninad-easy2it-8213449.postman.co/workspace/Ninad-Prabhune's-Workspace~12cbeddc-9f29-46d3-8e09-be7629bb8d32/collection/48909686-a5279924-4919-44af-9671-57faabbf9940?action=share&source=collection_link&creator=48909686"
+    },
+    "item": [
+        {
+            "name": "Masters",
+            "item": [
+                {
+                    "name": "Supplier Categories",
+                    "item": [
+                        {
+                            "name": "Get All Supplier Categories",
+                            "request": {
+                                "method": "GET",
+                                "header": [{
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    }],
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [{
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/supplier-categories",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "supplier-categories"]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Create Supplier Category",
+                            "request": {
+                                "method": "POST",
+                                "header": [{
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }],
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [{
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"Electrical\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/supplier-categories",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "supplier-categories"]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Supplier Category by ID",
+                            "request": {
+                                "method": "GET",
+                                "header": [{
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    }],
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [{
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/supplier-categories/1",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "supplier-categories", "1"]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Update Supplier Category",
+                            "request": {
+                                "method": "PUT",
+                                "header": [{
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }],
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [{
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"Updated Electrical\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/supplier-categories/1",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "supplier-categories", "1"]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Delete Supplier Category",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [{
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    }],
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [{
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/supplier-categories/1",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "supplier-categories", "1"]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Suppliers",
+                    "item": [
+                        {
+                            "name": "Get All Suppliers",
+                            "request": {
+                                "method": "GET",
+                                "header": [{
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    }],
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [{
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/suppliers",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "suppliers"]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Create Supplier",
+                            "request": {
+                                "method": "POST",
+                                "header": [{
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }],
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [{
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"ABC Supplies\",\n  \"category_id\": 1\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/suppliers",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "suppliers"]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get Supplier by ID",
+                            "request": {
+                                "method": "GET",
+                                "header": [{
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    }],
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [{
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/suppliers/1",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "suppliers", "1"]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Update Supplier",
+                            "request": {
+                                "method": "PUT",
+                                "header": [{
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }],
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [{
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"name\": \"Updated ABC Supplies\",\n  \"category_id\": 2\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/suppliers/1",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "suppliers", "1"]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Delete Supplier",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [{
+                                        "key": "Accept",
+                                        "value": "application/json"
+                                    }],
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [{
+                                            "key": "token",
+                                            "value": "{{token}}",
+                                            "type": "string"
+                                        }]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/suppliers/1",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "suppliers", "1"]
+                                }
+                            }
+                        }
+                    ]
+                }  
+            ]
+        },
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n  \"email\": \"superadmin@example.com\",\r\n  \"password\": \"1234\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://sitepilot.easy2it.in/api/login",
+                            "protocol": "http",
+                            "host": [
+                                "sitepilot",
+                                "easy2it",
+                                "in"
+                            ],
+                            "path": [
+                                "api",
+                                "login"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "test",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": ""
+                }
+            },
+            "response": []
+        }
+    ]
+}

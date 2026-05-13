@@ -1,0 +1,1911 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Material Issue & Return API",
+    "description": "API documentation for Material Issue and Material Return modules. This API allows mobile developers to manage material issues and returns with full CRUD operations, stock validation, and return quantity tracking.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "email": "support@sitepilot.com"
+    },
+    "license": {
+      "name": "Proprietary"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost/api",
+      "description": "Local Development Server"
+    },
+    {
+      "url": "https://your-domain.com/api",
+      "description": "Production Server"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Material Issues",
+      "description": "Operations for managing material issues"
+    },
+    {
+      "name": "Material Returns",
+      "description": "Operations for managing material returns"
+    }
+  ],
+  "paths": {
+    "/api/material-issues": {
+      "get": {
+        "tags": ["Material Issues"],
+        "summary": "List all material issues",
+        "description": "Retrieve a list of all material issues with optional filtering by workspace, site, and issue type.",
+        "operationId": "getMaterialIssues",
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "query",
+            "description": "Filter by workspace ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "site_id",
+            "in": "query",
+            "description": "Filter by site/project ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "issue_to_type",
+            "in": "query",
+            "description": "Filter by issue type (user or supplier)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["user", "supplier"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Material issues fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Material Issues fetched successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/MaterialIssue"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 0,
+                  "message": "Permission denied"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Material Issues"],
+        "summary": "Create a new material issue",
+        "description": "Create a new material issue with items. Validates that sufficient stock is available for each material before creating.",
+        "operationId": "createMaterialIssue",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMaterialIssueRequest"
+              },
+              "example": {
+                "issue_to_type": "user",
+                "issue_to_id": 1,
+                "issue_date": "2026-04-02",
+                "remarks": "Issued for site work",
+                "items": [
+                  {
+                    "material_id": 1,
+                    "quantity": 10,
+                    "rate": 100,
+                    "remarks": "For foundation work"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Material issue created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Material Issue created successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MaterialIssue"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                },
+                "example": {
+                  "status": false,
+                  "message": "Validation error",
+                  "errors": {
+                    "issue_to_type": ["The issue to type field is required."],
+                    "items.0.quantity": ["The quantity must be at least 0.01."]
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error or insufficient stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": false,
+                  "message": "Material Issue creation failed: Insufficient stock for material ID: 1. Available: 5, Requested: 10"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/material-issues/{id}": {
+      "get": {
+        "tags": ["Material Issues"],
+        "summary": "Get material issue details",
+        "description": "Retrieve detailed information about a specific material issue including all items and related data.",
+        "operationId": "getMaterialIssue",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Material issue ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Material issue fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Material Issue fetched successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MaterialIssue"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Material issue not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": false,
+                  "message": "Material Issue not found"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Material Issues"],
+        "summary": "Update a material issue",
+        "description": "Update an existing material issue. Reverses previous stock impact and applies new stock deductions. Validates stock availability for new quantities.",
+        "operationId": "updateMaterialIssue",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Material issue ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMaterialIssueRequest"
+              },
+              "example": {
+                "issue_to_type": "supplier",
+                "issue_to_id": 2,
+                "issue_date": "2026-04-02",
+                "remarks": "Updated remarks",
+                "items": [
+                  {
+                    "material_id": 1,
+                    "quantity": 15,
+                    "rate": 100,
+                    "remarks": "Updated quantity"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Material issue updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Material Issue updated successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MaterialIssue"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Material issue not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error or insufficient stock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Material Issues"],
+        "summary": "Delete a material issue",
+        "description": "Delete a material issue and reverse all stock impacts. This will restore the issued quantities back to stock.",
+        "operationId": "deleteMaterialIssue",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Material issue ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Material issue deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Material Issue deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Material issue not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/material-issues/create-data": {
+      "post": {
+        "tags": ["Material Issues"],
+        "summary": "Get data for creating material issue",
+        "description": "Retrieve materials, users, and suppliers needed for the material issue creation form.",
+        "operationId": "getMaterialIssueCreateData",
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "query",
+            "description": "Workspace ID (optional, uses active workspace if not provided)",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Create data fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Material Issue create data fetched successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "materials": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Material"
+                          }
+                        },
+                        "users": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/User"
+                          }
+                        },
+                        "suppliers": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Supplier"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/material-issues/get-available-stock": {
+      "post": {
+        "tags": ["Material Issues"],
+        "summary": "Get available stock for a material",
+        "description": "Retrieve the current available stock quantity for a specific material at the current site.",
+        "operationId": "getAvailableStock",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["material_id"],
+                "properties": {
+                  "material_id": {
+                    "type": "integer",
+                    "description": "Material ID to check stock for"
+                  },
+                  "site_id": {
+                    "type": "integer",
+                    "description": "Site ID (optional, uses active site if not provided)"
+                  }
+                }
+              },
+              "example": {
+                "material_id": 1,
+                "site_id": 5
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Available stock fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Available stock fetched successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "available_stock": {
+                          "type": "number",
+                          "format": "double",
+                          "example": 150.50
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/material-returns": {
+      "get": {
+        "tags": ["Material Returns"],
+        "summary": "List all material returns",
+        "description": "Retrieve a list of all material returns with optional filtering by workspace and site.",
+        "operationId": "getMaterialReturns",
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "query",
+            "description": "Filter by workspace ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "site_id",
+            "in": "query",
+            "description": "Filter by site/project ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Material returns fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Material Returns fetched successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/MaterialReturn"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Material Returns"],
+        "summary": "Create a new material return",
+        "description": "Create a new material return linked to an existing material issue. Validates that return quantity does not exceed remaining issued quantity for each item.",
+        "operationId": "createMaterialReturn",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMaterialReturnRequest"
+              },
+              "example": {
+                "issue_id": 1,
+                "return_date": "2026-04-02",
+                "remarks": "Returned unused materials",
+                "items": [
+                  {
+                    "issue_item_id": 1,
+                    "material_id": 1,
+                    "quantity": 5,
+                    "remarks": "Unused portion"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Material return created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Material Return created successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MaterialReturn"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                },
+                "example": {
+                  "status": false,
+                  "message": "Validation error",
+                  "errors": {
+                    "issue_id": ["The issue id field is required."],
+                    "items.1.quantity": ["Return quantity cannot exceed remaining issued quantity. Issued: 10, Already Returned: 3, Remaining: 7"]
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Material issue not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": false,
+                  "message": "Material Issue not found"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/material-returns/{id}": {
+      "get": {
+        "tags": ["Material Returns"],
+        "summary": "Get material return details",
+        "description": "Retrieve detailed information about a specific material return including all items and related data.",
+        "operationId": "getMaterialReturn",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Material return ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Material return fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Material Return fetched successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MaterialReturn"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Material return not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": false,
+                  "message": "Material Return not found"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Material Returns"],
+        "summary": "Update a material return",
+        "description": "Update an existing material return. Reverses previous stock impact and applies new stock additions. Validates return quantity limits.",
+        "operationId": "updateMaterialReturn",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Material return ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMaterialReturnRequest"
+              },
+              "example": {
+                "issue_id": 1,
+                "return_date": "2026-04-02",
+                "remarks": "Updated return",
+                "items": [
+                  {
+                    "issue_item_id": 1,
+                    "material_id": 1,
+                    "quantity": 8,
+                    "remarks": "Updated quantity"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Material return updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Material Return updated successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MaterialReturn"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Material return not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Material Returns"],
+        "summary": "Delete a material return",
+        "description": "Delete a material return and reverse all stock impacts. This will deduct the returned quantities from stock.",
+        "operationId": "deleteMaterialReturn",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Material return ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Material return deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Material Return deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Material return not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/material-returns/create-data": {
+      "post": {
+        "tags": ["Material Returns"],
+        "summary": "Get data for creating material return",
+        "description": "Retrieve materials and issues needed for the material return creation form.",
+        "operationId": "getMaterialReturnCreateData",
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "query",
+            "description": "Workspace ID (optional, uses active workspace if not provided)",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "site_id",
+            "in": "query",
+            "description": "Site ID (optional, uses active site if not provided)",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Create data fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Material Return create data fetched successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "materials": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Material"
+                          }
+                        },
+                        "issues": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/MaterialIssue"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/material-returns/get-issue-details": {
+      "post": {
+        "tags": ["Material Returns"],
+        "summary": "Get issue details for return",
+        "description": "Retrieve detailed information about a material issue including already returned quantities for each item. Used to calculate remaining returnable quantities.",
+        "operationId": "getIssueDetailsForReturn",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["issue_id"],
+                "properties": {
+                  "issue_id": {
+                    "type": "integer",
+                    "description": "Material issue ID to get details for"
+                  }
+                }
+              },
+              "example": {
+                "issue_id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Issue details fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Issue details fetched successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MaterialIssueWithReturns"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Issue not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": false,
+                  "message": "Issue not found"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter your Bearer token (e.g., Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)"
+      }
+    },
+    "schemas": {
+      "MaterialIssue": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier",
+            "example": 1
+          },
+          "issue_number": {
+            "type": "string",
+            "description": "Auto-generated issue number (format: MI-XXXX)",
+            "example": "MI-0001"
+          },
+          "site_id": {
+            "type": "integer",
+            "description": "Site/project ID",
+            "example": 5
+          },
+          "issue_to_type": {
+            "type": "string",
+            "description": "Type of entity the issue is to",
+            "enum": ["user", "supplier"],
+            "example": "user"
+          },
+          "issue_to_id": {
+            "type": "integer",
+            "description": "ID of the user or supplier",
+            "example": 1
+          },
+          "issue_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of issue (YYYY-MM-DD)",
+            "example": "2026-04-02"
+          },
+          "status": {
+            "type": "string",
+            "description": "Issue status",
+            "enum": ["Completed"],
+            "example": "Completed"
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true,
+            "description": "Additional remarks",
+            "example": "Issued for site work"
+          },
+          "created_by": {
+            "type": "integer",
+            "description": "User ID who created the issue",
+            "example": 1
+          },
+          "workspace_id": {
+            "type": "integer",
+            "description": "Workspace ID",
+            "example": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp",
+            "example": "2026-04-02T10:30:00.000000Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp",
+            "example": "2026-04-02T10:30:00.000000Z"
+          },
+          "site": {
+            "$ref": "#/components/schemas/Site"
+          },
+          "creator": {
+            "$ref": "#/components/schemas/User"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MaterialIssueItem"
+            }
+          }
+        }
+      },
+      "MaterialIssueItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier",
+            "example": 1
+          },
+          "issue_id": {
+            "type": "integer",
+            "description": "Parent issue ID",
+            "example": 1
+          },
+          "material_id": {
+            "type": "integer",
+            "description": "Material ID",
+            "example": 1
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double",
+            "description": "Issued quantity",
+            "example": 10.00
+          },
+          "rate": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Rate per unit",
+            "example": 100.00
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Total amount (quantity × rate)",
+            "example": 1000.00
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true,
+            "description": "Item-specific remarks",
+            "example": "For foundation work"
+          },
+          "material": {
+            "$ref": "#/components/schemas/Material"
+          }
+        }
+      },
+      "MaterialReturn": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier",
+            "example": 1
+          },
+          "return_number": {
+            "type": "string",
+            "description": "Auto-generated return number (format: MR-XXXX)",
+            "example": "MR-0001"
+          },
+          "issue_id": {
+            "type": "integer",
+            "description": "Linked material issue ID",
+            "example": 1
+          },
+          "site_id": {
+            "type": "integer",
+            "description": "Site/project ID",
+            "example": 5
+          },
+          "return_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of return (YYYY-MM-DD)",
+            "example": "2026-04-02"
+          },
+          "status": {
+            "type": "string",
+            "description": "Return status",
+            "enum": ["Completed"],
+            "example": "Completed"
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true,
+            "description": "Additional remarks",
+            "example": "Returned unused materials"
+          },
+          "created_by": {
+            "type": "integer",
+            "description": "User ID who created the return",
+            "example": 1
+          },
+          "workspace_id": {
+            "type": "integer",
+            "description": "Workspace ID",
+            "example": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp",
+            "example": "2026-04-02T14:30:00.000000Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp",
+            "example": "2026-04-02T14:30:00.000000Z"
+          },
+          "site": {
+            "$ref": "#/components/schemas/Site"
+          },
+          "creator": {
+            "$ref": "#/components/schemas/User"
+          },
+          "issue": {
+            "$ref": "#/components/schemas/MaterialIssue"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MaterialReturnItem"
+            }
+          }
+        }
+      },
+      "MaterialReturnItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier",
+            "example": 1
+          },
+          "return_id": {
+            "type": "integer",
+            "description": "Parent return ID",
+            "example": 1
+          },
+          "issue_item_id": {
+            "type": "integer",
+            "description": "Linked issue item ID",
+            "example": 1
+          },
+          "material_id": {
+            "type": "integer",
+            "description": "Material ID",
+            "example": 1
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double",
+            "description": "Returned quantity",
+            "example": 5.00
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true,
+            "description": "Item-specific remarks",
+            "example": "Unused portion"
+          },
+          "material": {
+            "$ref": "#/components/schemas/Material"
+          }
+        }
+      },
+      "MaterialIssueWithReturns": {
+        "type": "object",
+        "description": "Material issue with return tracking information for each item",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "issue_number": {
+            "type": "string",
+            "example": "MI-0001"
+          },
+          "site_id": {
+            "type": "integer",
+            "example": 5
+          },
+          "issue_to_type": {
+            "type": "string",
+            "enum": ["user", "supplier"],
+            "example": "user"
+          },
+          "issue_to_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "issue_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-04-02"
+          },
+          "status": {
+            "type": "string",
+            "example": "Completed"
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true,
+            "example": "Issued for site work"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MaterialIssueItemWithReturns"
+            }
+          }
+        }
+      },
+      "MaterialIssueItemWithReturns": {
+        "type": "object",
+        "description": "Issue item with return tracking information",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "issue_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "material_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double",
+            "description": "Originally issued quantity",
+            "example": 10.00
+          },
+          "rate": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "example": 100.00
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "example": 1000.00
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true,
+            "example": "For foundation work"
+          },
+          "already_returned_qty": {
+            "type": "number",
+            "format": "double",
+            "description": "Quantity already returned for this item",
+            "example": 3.00
+          },
+          "remaining_qty": {
+            "type": "number",
+            "format": "double",
+            "description": "Remaining quantity that can be returned",
+            "example": 7.00
+          },
+          "material": {
+            "$ref": "#/components/schemas/Material"
+          }
+        }
+      },
+      "CreateMaterialIssueRequest": {
+        "type": "object",
+        "required": ["issue_to_type", "issue_to_id", "issue_date", "items"],
+        "properties": {
+          "issue_to_type": {
+            "type": "string",
+            "description": "Type of entity to issue to",
+            "enum": ["user", "supplier"],
+            "example": "user"
+          },
+          "issue_to_id": {
+            "type": "integer",
+            "description": "ID of the user or supplier",
+            "example": 1
+          },
+          "issue_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of issue (YYYY-MM-DD)",
+            "example": "2026-04-02"
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true,
+            "description": "Additional remarks",
+            "example": "Issued for site work"
+          },
+          "items": {
+            "type": "array",
+            "description": "Array of material items to issue",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/CreateMaterialIssueItemRequest"
+            }
+          }
+        }
+      },
+      "CreateMaterialIssueItemRequest": {
+        "type": "object",
+        "required": ["material_id", "quantity"],
+        "properties": {
+          "material_id": {
+            "type": "integer",
+            "description": "Material ID to issue",
+            "example": 1
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double",
+            "description": "Quantity to issue (must be > 0 and <= available stock)",
+            "minimum": 0.01,
+            "example": 10
+          },
+          "rate": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Rate per unit",
+            "minimum": 0,
+            "example": 100
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true,
+            "description": "Item-specific remarks",
+            "example": "For foundation work"
+          }
+        }
+      },
+      "CreateMaterialReturnRequest": {
+        "type": "object",
+        "required": ["issue_id", "return_date", "items"],
+        "properties": {
+          "issue_id": {
+            "type": "integer",
+            "description": "Material issue ID to return from",
+            "example": 1
+          },
+          "return_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of return (YYYY-MM-DD)",
+            "example": "2026-04-02"
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true,
+            "description": "Additional remarks",
+            "example": "Returned unused materials"
+          },
+          "items": {
+            "type": "array",
+            "description": "Array of material items to return",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/CreateMaterialReturnItemRequest"
+            }
+          }
+        }
+      },
+      "CreateMaterialReturnItemRequest": {
+        "type": "object",
+        "required": ["issue_item_id", "material_id", "quantity"],
+        "properties": {
+          "issue_item_id": {
+            "type": "integer",
+            "description": "Issue item ID to return from",
+            "example": 1
+          },
+          "material_id": {
+            "type": "integer",
+            "description": "Material ID to return",
+            "example": 1
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double",
+            "description": "Quantity to return (must be > 0 and <= remaining issued quantity)",
+            "minimum": 0.01,
+            "example": 5
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true,
+            "description": "Item-specific remarks",
+            "example": "Unused portion"
+          }
+        }
+      },
+      "Material": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Material name",
+            "example": "Cement"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/Unit"
+          }
+        }
+      },
+      "Unit": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Bags"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "User name",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User email",
+            "example": "john@example.com"
+          }
+        }
+      },
+      "Supplier": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Supplier name",
+            "example": "ABC Suppliers"
+          }
+        }
+      },
+      "Site": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier",
+            "example": 5
+          },
+          "name": {
+            "type": "string",
+            "description": "Site/project name",
+            "example": "Construction Site A"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "description": "Always false for errors",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Permission denied"
+          }
+        }
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "description": "Always false for validation errors",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "description": "Always 'Validation error'",
+            "example": "Validation error"
+          },
+          "errors": {
+            "type": "object",
+            "description": "Field-specific error messages",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "example": {
+              "issue_to_type": ["The issue to type field is required."],
+              "items.0.quantity": ["The quantity must be at least 0.01."]
+            }
+          }
+        }
+      }
+    }
+  }
+}

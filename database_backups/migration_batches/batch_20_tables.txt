@@ -1,0 +1,6 @@
+debit_notes
+deduction_options
+departments
+designations
+destructive_command_attempts
+device_tokens

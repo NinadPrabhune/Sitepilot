@@ -1,0 +1,38 @@
+stages:
+  - test
+  - drift-detection
+
+variables:
+  MYSQL_DATABASE: test_db
+  MYSQL_USER: root
+  MYSQL_PASSWORD: password
+  MYSQL_ROOT_PASSWORD: password
+
+services:
+  - mysql:8.0
+
+drift-detection:
+  stage: drift-detection
+  image: php:8.1-cli
+  services:
+    - mysql:8.0
+  before_script:
+    - apt-get update -yqq
+    - apt-get install -yqq git unzip libzip-dev zip
+    - docker-php-ext-install pdo_mysql zip bcmath
+    - composer install --no-dev --optimize-autoloader
+    - cp .env.example .env
+    - php artisan key:generate
+    - php artisan config:cache
+  script:
+    - chmod +x ci_scripts/detect-drift.sh
+    - ./ci_scripts/detect-drift.sh
+  artifacts:
+    when: on_failure
+    paths:
+      - storage/logs/laravel.log
+    expire_in: 1 week
+  only:
+    - main
+    - develop
+    - merge_requests

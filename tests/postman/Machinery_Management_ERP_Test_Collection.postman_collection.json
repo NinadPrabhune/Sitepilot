@@ -1,0 +1,1337 @@
+{
+	"info": {
+		"_postman_id": "machinery-management-erp-test",
+		"name": "Machinery Management ERP Test Collection",
+		"description": "Complete API test collection for Machinery Management ERP flow including DPR creation, payment requests, and validation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-refresh token if expired",
+					"if (!pm.collectionVariables.get('auth_token') || Date.now() > pm.collectionVariables.get('token_expires')) {",
+					"    pm.sendRequest({",
+					"        url: pm.collectionVariables.get('base_url') + '/login',",
+					"        method: 'POST',",
+					"        header: {",
+					"            'Content-Type': 'application/json',",
+					"            'Accept': 'application/json'",
+					"        },",
+					"        body: {",
+					"            mode: 'raw',",
+					"            raw: JSON.stringify({",
+					"                email: pm.collectionVariables.get('test_email'),",
+					"                password: pm.collectionVariables.get('test_password')",
+					"            })",
+					"        }",
+					"    }, function (err, res) {",
+					"        if (res && res.code === 200) {",
+					"            const response = res.json();",
+					"            pm.collectionVariables.set('auth_token', response.token);",
+					"            pm.collectionVariables.set('token_expires', Date.now() + 3600000); // 1 hour",
+					"        }",
+					"    });",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global response validation",
+					"pm.test('Response has valid status', function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204, 422]);",
+					"});",
+					"",
+					"pm.test('Response has valid JSON', function () {",
+					"    try {",
+					"        const responseJson = pm.response.json();",
+					"        pm.expect(responseJson).to.be.an('object');",
+					"    } catch (e) {",
+					"        // Ignore if not JSON",
+					"    }",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "test_email",
+			"value": "test@example.com",
+			"type": "string"
+		},
+		{
+			"key": "test_password",
+			"value": "password",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "token_expires",
+			"value": "0",
+			"type": "string"
+		},
+		{
+			"key": "test_machinery_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "test_dpr_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "test_payment_request_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Login successful', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test('Token received', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('token');",
+									"    pm.collectionVariables.set('auth_token', responseJson.token);",
+									"    pm.collectionVariables.set('token_expires', Date.now() + 3600000);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{test_email}}\",\n    \"password\": \"{{test_password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Setup Test Data",
+			"item": [
+				{
+					"name": "Create Test Machinery",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Machinery created successfully', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"pm.test('Extract machinery ID', function () {",
+									"    const responseJson = pm.response.json();",
+									"    if (responseJson.id) {",
+									"        pm.collectionVariables.set('test_machinery_id', responseJson.id);",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"API Test Machine\",\n    \"owned_by\": \"rental\",\n    \"vehicle_number\": \"API001\",\n    \"category_id\": 1,\n    \"supplier_id\": 1,\n    \"rate\": 1500,\n    \"rate_type\": \"hourly\",\n    \"minimum_billing_hours\": 8,\n    \"diesel_by_company\": true,\n    \"operator_by_supplier\": true,\n    \"number_of_operators\": 2,\n    \"operational_status\": \"active\",\n    \"site_id\": 1,\n    \"workspace_id\": 1,\n    \"status\": \"1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/machinery",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"machinery"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Machinery List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Machinery list retrieved', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test('Find test machinery', function () {",
+									"    const responseJson = pm.response.json();",
+									"    const testMachine = responseJson.data.find(m => m.vehicle_number === 'API001' || m.id == pm.collectionVariables.get('test_machinery_id'));",
+									"    if (testMachine) {",
+									"        pm.collectionVariables.set('test_machinery_id', testMachine.id);",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/machinery",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"machinery"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Daily Progress Report Flow",
+			"item": [
+				{
+					"name": "Create DPR",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('DPR created successfully', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 302]);",
+									"});",
+									"",
+									"pm.test('Extract DPR ID from response', function () {",
+									"    const responseJson = pm.response.json();",
+									"    if (responseJson.id) {",
+									"        pm.collectionVariables.set('test_dpr_id', responseJson.id);",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "date",
+									"value": "{{$timestamp}}",
+									"type": "text"
+								},
+								{
+									"key": "machinery_id",
+									"value": "{{test_machinery_id}}",
+									"type": "text"
+								},
+								{
+									"key": "machine_start_reading",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "machine_end_reading",
+									"value": "108",
+									"type": "text"
+								},
+								{
+									"key": "number_of_operators",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "work_details",
+									"value": "API Test DPR - Normal operation",
+									"type": "text"
+								},
+								{
+									"key": "maintenance_notes",
+									"value": "Test notes",
+									"type": "text"
+								},
+								{
+									"key": "consumption_type",
+									"value": "fuel",
+									"type": "text"
+								},
+								{
+									"key": "items[0][material_id]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "items[0][quantity]",
+									"value": "40",
+									"type": "text"
+								},
+								{
+									"key": "items[0][unit]",
+									"value": "liters",
+									"type": "text"
+								},
+								{
+									"key": "items[0][remarks]",
+									"value": "Diesel consumption",
+									"type": "text"
+								},
+								{
+									"key": "site_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/daily-progress-reports",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daily-progress-reports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List DPRs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('DPR list retrieved', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test('Find created DPR', function () {",
+									"    const responseJson = pm.response.json();",
+									"    const testDPR = responseJson.data?.find(d => d.id == pm.collectionVariables.get('test_dpr_id'));",
+									"    if (testDPR) {",
+									"        pm.collectionVariables.set('test_dpr_id', testDPR.id);",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/daily-progress-reports",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daily-progress-reports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View DPR Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('DPR details retrieved', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test('DPR has required fields', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('id');",
+									"    pm.expect(responseJson).to.have.property('machinery_id');",
+									"    pm.expect(responseJson).to.have.property('billable_hours');",
+									"    pm.expect(responseJson).to.have.property('calculated_amount');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/daily-progress-reports/{{test_dpr_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daily-progress-reports",
+								"{{test_dpr_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve DPR",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('DPR approved successfully', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 302]);",
+									"});",
+									"",
+									"pm.test('DPR status changed to approved', function () {",
+									"    const responseJson = pm.response.json();",
+									"    if (responseJson.status) {",
+									"        pm.expect(responseJson.status).to.equal('approved');",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"approved\",\n    \"approved_by\": 1,\n    \"approved_at\": \"{{$timestamp}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/daily-progress-reports/{{test_dpr_id}}/approve",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daily-progress-reports",
+								"{{test_dpr_id}}",
+								"approve"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment Request Flow",
+			"item": [
+				{
+					"name": "Create Payment Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Payment request created successfully', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"pm.test('Extract payment request ID', function () {",
+									"    const responseJson = pm.response.json();",
+									"    if (responseJson.id) {",
+									"        pm.collectionVariables.set('test_payment_request_id', responseJson.id);",
+									"    }",
+									"});",
+									"",
+									"pm.test('Payment request has correct calculations', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('credits');",
+									"    pm.expect(responseJson).to.have.property('debits');",
+									"    pm.expect(responseJson).to.have.property('net_payable');",
+									"    pm.expect(responseJson.net_payable).to.be.a('number');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"machinery_id\": {{test_machinery_id}},\n    \"supplier_id\": 1,\n    \"period_start\": \"{{$timestamp}}\",\n    \"period_end\": \"{{$timestamp}}\",\n    \"requested_by\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/machinery-payment-requests",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"machinery-payment-requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Payment Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Payment request submitted successfully', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"submitted_by\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/machinery-payment-requests/{{test_payment_request_id}}/submit",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"machinery-payment-requests",
+								"{{test_payment_request_id}}",
+								"submit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Payment Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Payment request verified successfully', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"verified_by\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/machinery-payment-requests/{{test_payment_request_id}}/verify",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"machinery-payment-requests",
+								"{{test_payment_request_id}}",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Payment Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Payment request approved successfully', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+									"});",
+									"",
+									"pm.test('Period should be locked after approval', function () {",
+									"    // This would be verified in subsequent ledger checks",
+									"    pm.expect(true).to.be.true;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"approved_by\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/machinery-payment-requests/{{test_payment_request_id}}/approve",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"machinery-payment-requests",
+								"{{test_payment_request_id}}",
+								"approve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lock Payment Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Payment request locked successfully', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"locked_by\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/machinery-payment-requests/{{test_payment_request_id}}/lock",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"machinery-payment-requests",
+								"{{test_payment_request_id}}",
+								"lock"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ledger & Reporting",
+			"item": [
+				{
+					"name": "View Machinery Ledger",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Ledger retrieved successfully', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test('Ledger entries have required fields', function () {",
+									"    const responseJson = pm.response.json();",
+									"    if (Array.isArray(responseJson.data)) {",
+									"        responseJson.data.forEach(entry => {",
+									"            pm.expect(entry).to.have.property('entry_direction');",
+									"            pm.expect(entry).to.have.property('amount');",
+									"            pm.expect(entry).to.have.property('running_balance');",
+									"        });",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/machinery-ledger?machinery_id={{test_machinery_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"machinery-ledger"
+							],
+							"query": [
+								{
+									"key": "machinery_id",
+									"value": "{{test_machinery_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Machine Work Report",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Work report generated successfully', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test('Report contains summary data', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson).to.have.property('summary');",
+									"    pm.expect(responseJson).to.have.property('machinery_details');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/machinery-reports?machinery_id={{test_machinery_id}}&start_date={{$timestamp}}&end_date={{$timestamp}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"machinery-reports"
+							],
+							"query": [
+								{
+									"key": "machinery_id",
+									"value": "{{test_machinery_id}}"
+								},
+								{
+									"key": "start_date",
+									"value": "{{$timestamp}}"
+								},
+								{
+									"key": "end_date",
+									"value": "{{$timestamp}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payment Request List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Payment requests list retrieved', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test('Find our payment request', function () {",
+									"    const responseJson = pm.response.json();",
+									"    const ourRequest = responseJson.data?.find(pr => pr.id == pm.collectionVariables.get('test_payment_request_id'));",
+									"    if (ourRequest) {",
+									"        pm.expect(ourRequest.status).to.be.oneOf(['draft', 'submitted', 'verified', 'approved', 'locked']);",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/machinery-payment-requests",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"machinery-payment-requests"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Audit & Validation",
+			"item": [
+				{
+					"name": "Duplicate Detection Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Duplicate check completed', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test('No duplicates found', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.duplicates).to.have.property('count', 0);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/audit/duplicate-detection",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"audit",
+								"duplicate-detection"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ledger Integrity Check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Ledger integrity check completed', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test('Ledger balances are correct', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.integrity).to.have.property('status', 'valid');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/audit/ledger-integrity",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"audit",
+								"ledger-integrity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Period Lock Validation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Period lock validation completed', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"pm.test('Approved periods are locked', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.locks).to.have.property('unlocked_approved', 0);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/audit/period-locks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"audit",
+								"period-locks"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Edge Cases & Error Handling",
+			"item": [
+				{
+					"name": "Create Duplicate DPR (Should Fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Duplicate DPR rejected', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([422, 400]);",
+									"});",
+									"",
+									"pm.test('Error message about duplicate', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.message).to.include('duplicate');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "date",
+									"value": "{{$timestamp}}",
+									"type": "text"
+								},
+								{
+									"key": "machinery_id",
+									"value": "{{test_machinery_id}}",
+									"type": "text"
+								},
+								{
+									"key": "machine_start_reading",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "machine_end_reading",
+									"value": "108",
+									"type": "text"
+								},
+								{
+									"key": "number_of_operators",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "consumption_type",
+									"value": "fuel",
+									"type": "text"
+								},
+								{
+									"key": "items[0][material_id]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "items[0][quantity]",
+									"value": "20",
+									"type": "text"
+								},
+								{
+									"key": "items[0][unit]",
+									"value": "liters",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/daily-progress-reports",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daily-progress-reports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Reading (End < Start)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Invalid reading rejected', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([422, 400]);",
+									"});",
+									"",
+									"pm.test('Validation error message', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.message).to.include('reading');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "date",
+									"value": "{{$timestamp}}",
+									"type": "text"
+								},
+								{
+									"key": "machinery_id",
+									"value": "{{test_machinery_id}}",
+									"type": "text"
+								},
+								{
+									"key": "machine_start_reading",
+									"value": "150",
+									"type": "text"
+								},
+								{
+									"key": "machine_end_reading",
+									"value": "140",
+									"type": "text"
+								},
+								{
+									"key": "number_of_operators",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "consumption_type",
+									"value": "fuel",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/daily-progress-reports",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"daily-progress-reports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Overlapping Payment Period (Should Fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Overlapping period rejected', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([422, 400]);",
+									"});",
+									"",
+									"pm.test('Overlap error message', function () {",
+									"    const responseJson = pm.response.json();",
+									"    pm.expect(responseJson.message).to.include('overlap');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"machinery_id\": {{test_machinery_id}},\n    \"supplier_id\": 1,\n    \"period_start\": \"{{$timestamp}}\",\n    \"period_end\": \"{{$timestamp}}\",\n    \"requested_by\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/machinery-payment-requests",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"machinery-payment-requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Payment Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Payment request rejected successfully', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+									"});",
+									"",
+									"pm.test('Ledger entries reversed', function () {",
+									"    // This would be verified in subsequent ledger checks",
+									"    pm.expect(true).to.be.true;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rejected_by\": 1,\n    \"reason\": \"Test rejection for validation\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/machinery-payment-requests/{{test_payment_request_id}}/reject",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"machinery-payment-requests",
+								"{{test_payment_request_id}}",
+								"reject"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

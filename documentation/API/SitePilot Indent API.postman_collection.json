@@ -1,0 +1,555 @@
+{
+  "info": {
+    "_postman_id": "3944d3db-997a-4621-85cf-989d7d3c9e5a",
+    "name": "SitePilot Indent API",
+    "description": "Indent API Collection for SitePilot",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "48909686",
+    "_collection_link": "https://go.postman.co/collection/48909686-3944d3db-997a-4621-85cf-989d7d3c9e5a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get Indents",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/indents?site_id=14&workspace_id=1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "indents"
+          ],
+          "query": [
+            {
+              "key": "site_id",
+              "value": "14"
+            },
+            {
+              "key": "workspace_id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Indent",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "workspace_id",
+              "value": " 1",
+              "type": "text"
+            },
+            {
+              "key": "indent_date",
+              "value": " 2026-02-28",
+              "type": "text"
+            },
+            {
+              "key": "supplier_id",
+              "value": " 1",
+              "type": "text"
+            },
+            {
+              "key": "site_id",
+              "value": "6",
+              "type": "text"
+            },
+            {
+              "key": "description",
+              "value": " Test indent from Postman",
+              "type": "text"
+            },
+            {
+              "key": "assign_to[]",
+              "value": "4",
+              "type": "text"
+            },
+            {
+              "key": "assign_to[]",
+              "value": "28",
+              "type": "text"
+            },
+            {
+              "key": "delivery_date",
+              "value": " 2026-03-05",
+              "type": "text"
+            },
+            {
+              "key": "remark",
+              "value": " Urgent delivery",
+              "type": "text"
+            },
+            {
+              "key": "items[0][material_id]",
+              "value": " 1",
+              "type": "text"
+            },
+            {
+              "key": "items[0][quantity]",
+              "value": " 10",
+              "type": "text"
+            },
+            {
+              "key": "items[0][unit]",
+              "value": " Nos",
+              "type": "text"
+            },
+            {
+              "key": "items[0][price]",
+              "value": " 100",
+              "type": "text"
+            },
+            {
+              "key": "items[0][remarks]",
+              "value": " Test item",
+              "type": "text"
+            },
+            {
+              "key": "reference_file",
+              "type": "file",
+              "src": "postman-cloud:///1f0df2ea-73df-42f0-b272-ffae6435987d"
+            },
+            {
+              "key": "created_by",
+              "value": "10",
+              "type": "text",
+              "uuid": "fc09fda9-ba4c-4f9b-8966-4fe3fb5b126d"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/indents",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "indents"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Show Indent",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/indents/11",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "indents",
+            "11"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Indent",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "workspace_id",
+              "value": " 1",
+              "type": "text"
+            },
+            {
+              "key": "indent_date",
+              "value": " 2026-02-28",
+              "type": "text"
+            },
+            {
+              "key": "supplier_id",
+              "value": " 1",
+              "type": "text"
+            },
+            {
+              "key": "site_id",
+              "value": " 6",
+              "type": "text"
+            },
+            {
+              "key": "description",
+              "value": " Test indent from Postman",
+              "type": "text"
+            },
+            {
+              "key": "assign_to[]",
+              "value": " 1",
+              "type": "text"
+            },
+            {
+              "key": "assign_to[]",
+              "value": " 2",
+              "type": "text"
+            },
+            {
+              "key": "delivery_date",
+              "value": " 2026-03-05",
+              "type": "text"
+            },
+            {
+              "key": "remark",
+              "value": " Urgent delivery",
+              "type": "text"
+            },
+            {
+              "key": "items[0][material_id]",
+              "value": " 1",
+              "type": "text"
+            },
+            {
+              "key": "items[0][quantity]",
+              "value": " 10",
+              "type": "text"
+            },
+            {
+              "key": "items[0][unit]",
+              "value": " Nos",
+              "type": "text"
+            },
+            {
+              "key": "items[0][price]",
+              "value": " 100",
+              "type": "text"
+            },
+            {
+              "key": "items[0][remarks]",
+              "value": " Test item",
+              "type": "text"
+            },
+            {
+              "key": "created_by",
+              "value": "10",
+              "type": "text"
+            },
+            {
+              "key": "_method",
+              "value": "PUT",
+              "type": "text",
+              "uuid": "1156d04a-58e6-4686-b876-b32ff21cd62b"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/indents/7",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "indents",
+            "7"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Indent",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/indents/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "indents",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Indent Status",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "_method",
+              "value": "PUT",
+              "type": "text",
+              "uuid": "2a2effac-1d12-4ecc-a341-82824bc057fb"
+            },
+            {
+              "key": "status",
+              "value": "Closed",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/indents/5/status",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "indents",
+            "5",
+            "status"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Data Indent",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"site_id\":6,\r\n\"workspace_id\":1,\r\n\"created_by\":9\r\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/indents/create-data",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "indents",
+            "create-data"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "{{base_url}}/api/indents/7",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "type": "text",
+              "key": "workspace_id",
+              "value": "1"
+            },
+            {
+              "type": "text",
+              "key": "indent_date",
+              "value": "2026-02-28"
+            },
+            {
+              "type": "text",
+              "key": "supplier_id",
+              "value": "1"
+            },
+            {
+              "type": "text",
+              "key": "site_id",
+              "value": "6"
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "value": "Test indent from Postman"
+            },
+            {
+              "type": "text",
+              "key": "assign_to[]",
+              "value": "1"
+            },
+            {
+              "type": "text",
+              "key": "assign_to[]",
+              "value": "2"
+            },
+            {
+              "type": "text",
+              "key": "delivery_date",
+              "value": "2026-03-05"
+            },
+            {
+              "type": "text",
+              "key": "remark",
+              "value": "Urgent delivery"
+            },
+            {
+              "type": "text",
+              "key": "items[0][material_id]",
+              "value": "1"
+            },
+            {
+              "type": "text",
+              "key": "items[0][quantity]",
+              "value": "10"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/indents/7",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "indents",
+            "7"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "token",
+      "value": "your_sanctum_token_here"
+    }
+  ]
+}

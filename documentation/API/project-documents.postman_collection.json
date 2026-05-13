@@ -1,0 +1,145 @@
+{
+  "info": {
+    "name": "Project Documents API",
+    "_postman_id": "abcd1234-5678-efgh-ijkl-9876543210",
+    "description": "JWT authenticated Project Documents API routes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "List Documents",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/projects/{{projectId}}/documents",
+          "host": ["{{base_url}}"],
+          "path": ["api","projects","{{projectId}}","documents"]
+        }
+      }
+    },
+    {
+      "name": "Get Folder Structure",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/projects/{{projectId}}/documents/structure",
+          "host": ["{{base_url}}"],
+          "path": ["api","projects","{{projectId}}","documents","structure"]
+        }
+      }
+    },
+    {
+      "name": "Get Stats",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/projects/{{projectId}}/documents/stats",
+          "host": ["{{base_url}}"],
+          "path": ["api","projects","{{projectId}}","documents","stats"]
+        }
+      }
+    },
+    {
+      "name": "Upload Document",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/projects/{{projectId}}/documents/upload",
+          "host": ["{{base_url}}"],
+          "path": ["api","projects","{{projectId}}","documents","upload"]
+        }
+      }
+    },
+    {
+      "name": "Create Folder",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/projects/{{projectId}}/documents/folders",
+          "host": ["{{base_url}}"],
+          "path": ["api","projects","{{projectId}}","documents","folders"]
+        }
+      }
+    },
+    {
+      "name": "Show Document",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/projects/{{projectId}}/documents/{{documentId}}",
+          "host": ["{{base_url}}"],
+          "path": ["api","projects","{{projectId}}","documents","{{documentId}}"]
+        }
+      }
+    },
+    {
+      "name": "Update Document",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/projects/{{projectId}}/documents/{{documentId}}",
+          "host": ["{{base_url}}"],
+          "path": ["api","projects","{{projectId}}","documents","{{documentId}}"]
+        }
+      }
+    },
+    {
+      "name": "Delete Document",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/projects/{{projectId}}/documents/{{documentId}}",
+          "host": ["{{base_url}}"],
+          "path": ["api","projects","{{projectId}}","documents","{{documentId}}"]
+        }
+      }
+    },
+    {
+      "name": "Download Document",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/projects/{{projectId}}/documents/{{documentId}}/download",
+          "host": ["{{base_url}}"],
+          "path": ["api","projects","{{projectId}}","documents","{{documentId}}","download"]
+        }
+      }
+    }
+  ]
+}

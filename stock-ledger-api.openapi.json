@@ -1,0 +1,587 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Stock Ledger API",
+    "description": "API for managing stock ledger transactions in the Stock Management module.\n\n## Authentication\nAll endpoints require Bearer Token (JWT) authentication.\n\n## Response Format\nAll responses follow this structure:\n```json\n{\n  \"success\": true,\n  \"message\": \"string\",\n  \"data\": {},\n  \"error\": null\n}\n```\n\n- **success**: true for success, false for error\n- **message**: Error or success message\n- **data**: Response data (optional)\n- **error**: Error details (optional)\n\n## Error Codes\n- 400: Validation error\n- 401: Unauthorized\n- 403: Permission denied\n- 422: Validation error\n- 500: Server error\n",
+    "version": "1.0.0",
+    "contact": {
+      "name": "SitePilot API Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "API Base URL"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Stock Ledger",
+      "description": "Stock ledger management endpoints"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "StockTransaction": {
+        "type": "object",
+        "description": "Stock transaction record schema",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the transaction",
+            "example": 1
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "Project ID associated with the transaction",
+            "example": 5
+          },
+          "material_id": {
+            "type": "integer",
+            "description": "Material ID associated with the transaction",
+            "example": 10
+          },
+          "type": {
+            "type": "string",
+            "description": "Transaction type",
+            "example": "opening",
+            "enum": [
+              "opening",
+              "grn",
+              "issue",
+              "transfer_in",
+              "transfer_out",
+              "adjustment"
+            ]
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double",
+            "description": "Quantity of the material",
+            "example": 100.5000
+          },
+          "rate": {
+            "type": "number",
+            "format": "double",
+            "description": "Rate per unit",
+            "example": 250.0000
+          },
+          "reference_type": {
+            "type": "string",
+            "description": "Reference type (e.g., grn, transfer)",
+            "example": "grn",
+            "nullable": true
+          },
+          "reference_id": {
+            "type": "integer",
+            "description": "Reference ID",
+            "example": 1,
+            "nullable": true
+          },
+          "remarks": {
+            "type": "string",
+            "description": "Additional remarks",
+            "example": "Initial stock entry",
+            "nullable": true
+          },
+          "created_by": {
+            "type": "integer",
+            "description": "User who created the transaction",
+            "example": 2
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Transaction creation timestamp",
+            "example": "2026-03-24T10:00:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Transaction last update timestamp",
+            "example": "2026-03-24T10:00:00Z"
+          },
+          "project": {
+            "type": "object",
+            "description": "Project details",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 5
+              },
+              "name": {
+                "type": "string",
+                "example": "Project Site A"
+              }
+            }
+          },
+          "material": {
+            "type": "object",
+            "description": "Material details",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 10
+              },
+              "name": {
+                "type": "string",
+                "example": "Cement"
+              }
+            }
+          },
+          "creator": {
+            "type": "object",
+            "description": "Creator details",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 2
+              },
+              "name": {
+                "type": "string",
+                "example": "John Doe"
+              }
+            }
+          }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "description": "Standard API response",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Response status (true=success, false=error)",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "description": "Response message",
+            "example": "Success"
+          },
+          "data": {
+            "type": "object",
+            "description": "Response data",
+            "nullable": true
+          },
+          "error": {
+            "type": "object",
+            "description": "Error details",
+            "nullable": true
+          }
+        }
+      },
+      "ApiError": {
+        "type": "object",
+        "description": "Error response",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Response status (true=success, false=error)",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Something went wrong"
+          },
+          "error": {
+            "type": "object",
+            "description": "Error details",
+            "nullable": true
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/stock-ledger": {
+      "get": {
+        "summary": "Get stock ledger list",
+        "description": "Retrieves stock ledger transactions with optional filtering.\n\n## Authorization\nRequires 'stock ledger manage' permission.\n\n## Query Parameters\nAll parameters are optional:\n- project_id: Filter by project ID (integer, must exist in projects table)\n- material_id: Filter by material ID (integer, must exist in materials table)\n- type: Filter by transaction type (string, allowed values: opening, grn, issue, transfer_in, transfer_out, adjustment)\n- start_date: Filter by start date (string, format: Y-m-d)\n- end_date: Filter by end date (string, format: Y-m-d, must be >= start_date)\n\n## Response\nReturns a JSON object with:\n- success: boolean\n- message: string\n- data: object containing transactions array and filters object",
+        "tags": ["Stock Ledger"],
+        "operationId": "getStockLedger",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "query",
+            "description": "Filter by project ID (must exist in projects table)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 5
+            }
+          },
+          {
+            "name": "material_id",
+            "in": "query",
+            "description": "Filter by material ID (must exist in materials table)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter by transaction type. Allowed values: opening, grn, issue, transfer_in, transfer_out, adjustment",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "opening",
+                "grn",
+                "issue",
+                "transfer_in",
+                "transfer_out",
+                "adjustment"
+              ],
+              "example": "opening"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Filter by start date (format: Y-m-d)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2026-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Filter by end date (format: Y-m-d, must be >= start_date)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2026-01-31"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stock ledger fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Stock ledger fetched successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "transactions": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/StockTransaction"
+                          }
+                        },
+                        "filters": {
+                          "type": "object",
+                          "properties": {
+                            "project_id": {
+                              "type": "integer",
+                              "nullable": true
+                            },
+                            "material_id": {
+                              "type": "integer",
+                              "nullable": true
+                            },
+                            "type": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "start_date": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "end_date": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Stock ledger fetched successfully",
+                  "data": {
+                    "transactions": [
+                      {
+                        "id": 1,
+                        "project_id": 5,
+                        "material_id": 10,
+                        "type": "opening",
+                        "quantity": 100.5000,
+                        "rate": 250.0000,
+                        "reference_type": null,
+                        "reference_id": null,
+                        "remarks": "Initial stock entry",
+                        "created_by": 2,
+                        "created_at": "2026-03-24T10:00:00Z",
+                        "updated_at": "2026-03-24T10:00:00Z",
+                        "project": {
+                          "id": 5,
+                          "name": "Project Site A"
+                        },
+                        "material": {
+                          "id": 10,
+                          "name": "Cement"
+                        },
+                        "creator": {
+                          "id": 2,
+                          "name": "John Doe"
+                        }
+                      }
+                    ],
+                    "filters": {
+                      "project_id": null,
+                      "material_id": null,
+                      "type": null,
+                      "start_date": null,
+                      "end_date": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Unauthenticated.",
+                  "error": null
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Permission denied.",
+                  "error": null
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Validation error",
+                  "error": {
+                    "type": ["Type must be one of: opening, grn, issue, transfer_in, transfer_out, adjustment."]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Something went wrong",
+                  "error": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stock-ledger/export": {
+      "get": {
+        "summary": "Export stock ledger to Excel",
+        "description": "Exports stock ledger transactions to an Excel file with optional filtering.\n\n## Authorization\nRequires 'stock ledger manage' permission.\n\n## Query Parameters\nAll parameters are optional:\n- project_id: Filter by project ID (integer, must exist in projects table)\n- material_id: Filter by material ID (integer, must exist in materials table)\n- type: Filter by transaction type (string, allowed values: opening, grn, issue, transfer_in, transfer_out, adjustment)\n- start_date: Filter by start date (string, format: Y-m-d)\n- end_date: Filter by end date (string, format: Y-m-d, must be >= start_date)\n\n## Response\nReturns a downloadable Excel file (.xlsx) with the following columns:\n- Date\n- Project\n- Material\n- Type\n- Quantity\n- Rate\n- Reference\n- Remarks\n- Created By\n\n## File Details\n- Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\n- File Name: stock_ledger_YYYYMMDD_HHMMSS.xlsx",
+        "tags": ["Stock Ledger"],
+        "operationId": "exportStockLedger",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "query",
+            "description": "Filter by project ID (must exist in projects table)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 5
+            }
+          },
+          {
+            "name": "material_id",
+            "in": "query",
+            "description": "Filter by material ID (must exist in materials table)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter by transaction type. Allowed values: opening, grn, issue, transfer_in, transfer_out, adjustment",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "opening",
+                "grn",
+                "issue",
+                "transfer_in",
+                "transfer_out",
+                "adjustment"
+              ],
+              "example": "opening"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Filter by start date (format: Y-m-d)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2026-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Filter by end date (format: Y-m-d, must be >= start_date)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2026-01-31"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Excel file download",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Unauthenticated.",
+                  "error": null
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Permission denied.",
+                  "error": null
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Validation error",
+                  "error": {
+                    "type": ["Type must be one of: opening, grn, issue, transfer_in, transfer_out, adjustment."]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Export failed",
+                  "error": null
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

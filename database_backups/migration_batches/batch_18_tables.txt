@@ -1,0 +1,4 @@
+daily_health_check_logs
+daily_system_snapshots
+deal_activity_logs
+deal_calls

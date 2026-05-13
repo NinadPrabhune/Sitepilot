@@ -1,0 +1,825 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Site Stock API",
+    "description": "API endpoints for managing site-wise stock reports. This API allows you to fetch and export stock reports with optional filtering by project and material.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "email": "support@sitepilot.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "{{base_url}}",
+      "description": "API Server"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/site-stock": {
+      "get": {
+        "tags": ["Site Stock"],
+        "summary": "Get Site Stock Report",
+        "description": "Fetches a site-wise stock report with optional filtering by project and material. Returns stock data aggregated by site.",
+        "operationId": "getSiteStockReport",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "project_id": {
+                    "type": "integer",
+                    "description": "Project ID (must exist in projects table)",
+                    "example": 1,
+                    "nullable": true
+                  },
+                  "material_id": {
+                    "type": "integer",
+                    "description": "Material ID (must exist in materials table)",
+                    "example": 5,
+                    "nullable": true
+                  }
+                }
+              },
+              "example": {
+                "project_id": 1,
+                "material_id": 5
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Bearer token for authentication",
+            "schema": {
+              "type": "string",
+              "example": "Bearer {{token}}"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "description": "Response format",
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with stock report data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Site stock report fetched successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "stock_report": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "site_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "site_name": {
+                                "type": "string",
+                                "example": "Main Warehouse"
+                              },
+                              "material_id": {
+                                "type": "integer",
+                                "example": 5
+                              },
+                              "material_name": {
+                                "type": "string",
+                                "example": "Cement"
+                              },
+                              "quantity": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 150.50
+                              },
+                              "unit": {
+                                "type": "string",
+                                "example": "Bags"
+                              }
+                            }
+                          }
+                        },
+                        "filters": {
+                          "type": "object",
+                          "properties": {
+                            "project_id": {
+                              "type": "integer",
+                              "nullable": true,
+                              "example": 1
+                            },
+                            "material_id": {
+                              "type": "integer",
+                              "nullable": true,
+                              "example": 5
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Site stock report fetched successfully",
+                  "data": {
+                    "stock_report": [
+                      {
+                        "site_id": 1,
+                        "site_name": "Main Warehouse",
+                        "material_id": 5,
+                        "material_name": "Cement",
+                        "quantity": 150.50,
+                        "unit": "Bags"
+                      },
+                      {
+                        "site_id": 2,
+                        "site_name": "Site A Storage",
+                        "material_id": 5,
+                        "material_name": "Cement",
+                        "quantity": 75.25,
+                        "unit": "Bags"
+                      }
+                    ],
+                    "filters": {
+                      "project_id": 1,
+                      "material_id": 5
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Validation error"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "Validation error",
+                  "errors": {
+                    "project_id": ["The selected project id is invalid."],
+                    "material_id": ["The selected material id is invalid."]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthenticated."
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "Unauthenticated."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Permission denied."
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "Permission denied."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Something went wrong"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "Something went wrong"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/site-stock/export": {
+      "get": {
+        "tags": ["Site Stock"],
+        "summary": "Export Site Stock Report",
+        "description": "Downloads the site stock report in Excel format (.xlsx). Supports optional filtering by project and material.",
+        "operationId": "exportSiteStockReport",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "project_id": {
+                    "type": "integer",
+                    "description": "Project ID (must exist in projects table)",
+                    "example": 1,
+                    "nullable": true
+                  },
+                  "material_id": {
+                    "type": "integer",
+                    "description": "Material ID (must exist in materials table)",
+                    "example": 5,
+                    "nullable": true
+                  }
+                }
+              },
+              "example": {
+                "project_id": 1,
+                "material_id": 5
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Bearer token for authentication",
+            "schema": {
+              "type": "string",
+              "example": "Bearer {{token}}"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "description": "Response format",
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with Excel file download",
+            "headers": {
+              "Content-Disposition": {
+                "description": "Filename for the downloaded file",
+                "schema": {
+                  "type": "string",
+                  "example": "attachment; filename=site_stock_report_20260328_123456.xlsx"
+                }
+              }
+            },
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Validation error"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "Validation error",
+                  "errors": {
+                    "project_id": ["The selected project id is invalid."],
+                    "material_id": ["The selected material id is invalid."]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthenticated."
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "Unauthenticated."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Permission denied."
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "Permission denied."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Something went wrong"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "Something went wrong"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/site-stock/create-data": {
+      "post": {
+        "tags": ["Site Stock"],
+        "summary": "Get Form Data for Site Stock Filters",
+        "description": "Returns projects and materials lists for dropdown filters. Used to populate filter form on mobile/web applications.",
+        "operationId": "getSiteStockCreateData",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Bearer token for authentication",
+            "schema": {
+              "type": "string",
+              "example": "Bearer {{token}}"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "description": "Response format",
+            "schema": {
+              "type": "string",
+              "example": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with form data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Form data fetched successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "projects": {
+                          "type": "object",
+                          "description": "Key-value pairs of project ID and project name",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "example": {
+                            "1": "Project Alpha",
+                            "2": "Project Beta",
+                            "3": "Project Gamma"
+                          }
+                        },
+                        "materials": {
+                          "type": "object",
+                          "description": "Key-value pairs of material ID and material name",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "example": {
+                            "1": "Cement",
+                            "2": "Steel",
+                            "3": "Sand",
+                            "4": "Gravel"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Form data fetched successfully",
+                  "data": {
+                    "projects": {
+                      "1": "Project Alpha",
+                      "2": "Project Beta",
+                      "3": "Project Gamma"
+                    },
+                    "materials": {
+                      "1": "Cement",
+                      "2": "Steel",
+                      "3": "Sand",
+                      "4": "Gravel"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Unauthenticated."
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "Unauthenticated."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Permission denied."
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "Permission denied."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Something went wrong"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "Something went wrong"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Laravel Sanctum token authentication. Use the token obtained from login endpoint."
+      }
+    },
+    "schemas": {
+      "SiteStockReport": {
+        "type": "object",
+        "properties": {
+          "site_id": {
+            "type": "integer",
+            "description": "Unique identifier for the site/warehouse",
+            "example": 1
+          },
+          "site_name": {
+            "type": "string",
+            "description": "Name of the site/warehouse",
+            "example": "Main Warehouse"
+          },
+          "material_id": {
+            "type": "integer",
+            "description": "Unique identifier for the material",
+            "example": 5
+          },
+          "material_name": {
+            "type": "string",
+            "description": "Name of the material",
+            "example": "Cement"
+          },
+          "quantity": {
+            "type": "number",
+            "format": "float",
+            "description": "Stock quantity available",
+            "example": 150.50
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit of measurement",
+            "example": "Bags"
+          }
+        }
+      },
+      "Filters": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Project ID filter applied",
+            "example": 1
+          },
+          "material_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Material ID filter applied",
+            "example": 5
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Site stock report fetched successfully"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "stock_report": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SiteStockReport"
+                }
+              },
+              "filters": {
+                "$ref": "#/components/schemas/Filters"
+              }
+            }
+          }
+        }
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "example": "Validation error"
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ServerErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "example": "Something went wrong"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "ProjectId": {
+        "name": "project_id",
+        "in": "query",
+        "required": false,
+        "description": "Project ID (must exist in projects table)",
+        "schema": {
+          "type": "integer",
+          "example": 1
+        }
+      },
+      "MaterialId": {
+        "name": "material_id",
+        "in": "query",
+        "required": false,
+        "description": "Material ID (must exist in materials table)",
+        "schema": {
+          "type": "integer",
+          "example": 5
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Site Stock",
+      "description": "Operations related to site-wise stock management and reporting"
+    }
+  ]
+}

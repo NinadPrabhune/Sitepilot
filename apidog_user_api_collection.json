@@ -1,0 +1,456 @@
+{
+  "id": "user-api-controller-collection",
+  "name": "UserApiController",
+  "description": "User Management API Collection",
+  "items": [
+    {
+      "id": "users-list",
+      "name": "List Users",
+      "description": "GET /api/users - List all users with optional filters",
+      "method": "GET",
+      "url": "{{base_url}}/api/users",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {
+        "name": {"type": "text", "required": false, "description": "Filter by name"},
+        "email": {"type": "text", "required": false, "description": "Filter by email"},
+        "role": {"type": "text", "required": false, "description": "Filter by role ID"},
+        "workspace_id": {"type": "text", "required": false, "description": "Filter by workspace"},
+        "page": {"type": "text", "required": false, "description": "Page number"},
+        "per_page": {"type": "text", "required": false, "description": "Items per page"}
+      },
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "Users retrieved successfully", "data": {"users": [], "pagination": {}}},
+        "error": {"status": false, "message": "Permission denied", "data": {}}
+      }
+    },
+    {
+      "id": "users-create-data",
+      "name": "Get Create Data",
+      "description": "GET /api/users/create-data - Get data needed for creating a user (roles list)",
+      "method": "GET",
+      "url": "{{base_url}}/api/users/create-data",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "Roles data retrieved successfully", "data": {"roles": {}}},
+        "error": {"status": false, "message": "Permission denied", "data": {}}
+      }
+    },
+    {
+      "id": "users-create",
+      "name": "Create User",
+      "description": "POST /api/users - Create a new user",
+      "method": "POST",
+      "url": "{{base_url}}/api/users",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "multipart/form-data"
+      },
+      "params": {},
+      "body": {
+        "name": {"type": "text", "required": true, "description": "User name"},
+        "email": {"type": "text", "required": true, "description": "User email"},
+        "mobile_no": {"type": "text", "required": false, "description": "Mobile number (e.g., +1234567890)"},
+        "password": {"type": "text", "required": false, "description": "Password (required if login enabled)"},
+        "password_switch": {"type": "text", "required": false, "description": "'on' to enable login"},
+        "roles": {"type": "text", "required": true, "description": "Role ID"},
+        "avatar": {"type": "file", "required": false, "description": "Profile image file"},
+        "workspace_id": {"type": "text", "required": false, "description": "Workspace ID"}
+      },
+      "response": {
+        "success": {"status": true, "message": "User created successfully", "data": {"user": {"id": 1, "name": "John Doe", "email": "john@example.com"}}},
+        "error": {"status": false, "message": "Validation error", "data": {"errors": {}}}
+      }
+    },
+    {
+      "id": "users-show",
+      "name": "Show User",
+      "description": "GET /api/users/{id} - Show a specific user",
+      "method": "GET",
+      "url": "{{base_url}}/api/users/{{user_id}}",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "User retrieved successfully", "data": {"user": {}, "role": {}}},
+        "error": {"status": false, "message": "User not found", "data": {}}
+      }
+    },
+    {
+      "id": "users-edit",
+      "name": "Edit User",
+      "description": "GET /api/users/{id}/edit - Get user data for editing",
+      "method": "GET",
+      "url": "{{base_url}}/api/users/{{user_id}}/edit",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "User data retrieved successfully", "data": {"user": {}, "roles": {}}},
+        "error": {"status": false, "message": "User not found", "data": {}}
+      }
+    },
+    {
+      "id": "users-update",
+      "name": "Update User",
+      "description": "PUT /api/users/{id} - Update a user",
+      "method": "PUT",
+      "url": "{{base_url}}/api/users/{{user_id}}",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "multipart/form-data"
+      },
+      "params": {},
+      "body": {
+        "name": {"type": "text", "required": true, "description": "User name"},
+        "email": {"type": "text", "required": true, "description": "User email"},
+        "mobile_no": {"type": "text", "required": false, "description": "Mobile number"},
+        "roles": {"type": "text", "required": false, "description": "Role ID"}
+      },
+      "response": {
+        "success": {"status": true, "message": "User updated successfully", "data": {"user": {}}},
+        "error": {"status": false, "message": "Validation error", "data": {"errors": {}}}
+      }
+    },
+    {
+      "id": "users-delete",
+      "name": "Delete User",
+      "description": "DELETE /api/users/{id} - Delete a user",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/users/{{user_id}}",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "User deleted successfully", "data": {}},
+        "error": {"status": false, "message": "Cannot delete user. Employee has attendance records.", "data": {}}
+      }
+    },
+    {
+      "id": "users-profile",
+      "name": "Get Profile",
+      "description": "GET /api/users/profile - Get current authenticated user's profile",
+      "method": "GET",
+      "url": "{{base_url}}/api/users/profile",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "Profile retrieved successfully", "data": {"user": {}}},
+        "error": {"status": false, "message": "Permission denied", "data": {}}
+      }
+    },
+    {
+      "id": "users-profile-update",
+      "name": "Update Profile",
+      "description": "PUT /api/users/profile - Update current authenticated user's profile",
+      "method": "PUT",
+      "url": "{{base_url}}/api/users/profile",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "multipart/form-data"
+      },
+      "params": {},
+      "body": {
+        "name": {"type": "text", "required": true, "description": "User name"},
+        "email": {"type": "text", "required": true, "description": "User email"},
+        "mobile_no": {"type": "text", "required": false, "description": "Mobile number"},
+        "avatar": {"type": "file", "required": false, "description": "Profile image file"}
+      },
+      "response": {
+        "success": {"status": true, "message": "Profile updated successfully", "data": {"user": {}}},
+        "error": {"status": false, "message": "Validation error", "data": {"errors": {}}}
+      }
+    },
+    {
+      "id": "users-profile-avatar",
+      "name": "Update Avatar",
+      "description": "PUT /api/users/profile/avatar - Update only user avatar",
+      "method": "PUT",
+      "url": "{{base_url}}/api/users/profile/avatar",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "multipart/form-data"
+      },
+      "params": {},
+      "body": {
+        "avatar": {"type": "file", "required": true, "description": "Profile image file (jpeg,png,jpg,gif)"}
+      },
+      "response": {
+        "success": {"status": true, "message": "Avatar updated successfully", "data": {"avatar": "storage/uploads/avatars/filename.jpg"}},
+        "error": {"status": false, "message": "The avatar must be an image.", "data": {"errors": {}}}
+      }
+    },
+    {
+      "id": "users-password",
+      "name": "Update Password",
+      "description": "PUT /api/users/password - Update current user's password",
+      "method": "PUT",
+      "url": "{{base_url}}/api/users/password",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "multipart/form-data"
+      },
+      "params": {},
+      "body": {
+        "current_password": {"type": "text", "required": true, "description": "Current password"},
+        "new_password": {"type": "text", "required": true, "description": "New password (min 6 chars)"},
+        "confirm_password": {"type": "text", "required": true, "description": "Confirm new password"}
+      },
+      "response": {
+        "success": {"status": true, "message": "Password updated successfully", "data": {}},
+        "error": {"status": false, "message": "Please enter correct current password", "data": {}}
+      }
+    },
+    {
+      "id": "users-password-reset",
+      "name": "Reset User Password",
+      "description": "PUT /api/users/{id}/password - Reset user's password (Admin)",
+      "method": "PUT",
+      "url": "{{base_url}}/api/users/{{user_id}}/password",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "multipart/form-data"
+      },
+      "params": {},
+      "body": {
+        "password": {"type": "text", "required": true, "description": "New password"},
+        "password_confirmation": {"type": "text", "required": true, "description": "Confirm password"},
+        "login_enable": {"type": "text", "required": false, "description": "Enable login after reset"}
+      },
+      "response": {
+        "success": {"status": true, "message": "Password reset successfully", "data": {}},
+        "error": {"status": false, "message": "User not found", "data": {}}
+      }
+    },
+    {
+      "id": "users-login-manage",
+      "name": "Login Manage",
+      "description": "POST /api/users/{id}/login-manage - Enable/disable user login",
+      "method": "POST",
+      "url": "{{base_url}}/api/users/{{user_id}}/login-manage",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "User login enabled successfully", "data": {}},
+        "error": {"status": false, "message": "User not found", "data": {}}
+      }
+    },
+    {
+      "id": "users-import-preview",
+      "name": "Import Preview",
+      "description": "POST /api/users/import-preview - Preview CSV import file",
+      "method": "POST",
+      "url": "{{base_url}}/api/users/import-preview",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "multipart/form-data"
+      },
+      "params": {},
+      "body": {
+        "file": {"type": "file", "required": true, "description": "CSV file"}
+      },
+      "response": {
+        "success": {"status": true, "message": "File preview data", "data": {"columns": [], "roles": {}}},
+        "error": {"status": false, "message": "Only .csv file allowed", "data": {}}
+      }
+    },
+    {
+      "id": "users-import",
+      "name": "Import Users",
+      "description": "POST /api/users/import - Import users from CSV",
+      "method": "POST",
+      "url": "{{base_url}}/api/users/import",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "multipart/form-data"
+      },
+      "params": {},
+      "body": {
+        "name": {"type": "text", "required": true, "description": "Name column index"},
+        "email": {"type": "text", "required": true, "description": "Email column index"},
+        "role": {"type": "text", "required": true, "description": "Role column index"},
+        "file_data": {"type": "text", "required": true, "description": "CSV data (JSON)"}
+      },
+      "response": {
+        "success": {"status": true, "message": "Import completed", "data": {"total_imported": 10, "imported": [], "failed": []}},
+        "error": {"status": false, "message": "No data provided", "data": {}}
+      }
+    },
+    {
+      "id": "users-logs",
+      "name": "User Logs",
+      "description": "GET /api/users/logs - Get user login history",
+      "method": "GET",
+      "url": "{{base_url}}/api/users/logs",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {
+        "month": {"type": "text", "required": false, "description": "Filter by month"},
+        "users": {"type": "text", "required": false, "description": "Filter by user ID"}
+      },
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "User logs retrieved successfully", "data": {"logs": [], "filter_users": {}}},
+        "error": {"status": false, "message": "Permission denied", "data": {}}
+      }
+    },
+    {
+      "id": "users-logs-view",
+      "name": "View Log",
+      "description": "GET /api/users/logs/{id} - View specific login log",
+      "method": "GET",
+      "url": "{{base_url}}/api/users/logs/{{log_id}}",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "Log retrieved successfully", "data": {"log": {}}},
+        "error": {"status": false, "message": "Log not found", "data": {}}
+      }
+    },
+    {
+      "id": "users-logs-delete",
+      "name": "Delete Log",
+      "description": "DELETE /api/users/logs/{id} - Delete login log",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/users/logs/{{log_id}}",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "Log deleted successfully", "data": {}},
+        "error": {"status": false, "message": "Permission denied", "data": {}}
+      }
+    },
+    {
+      "id": "users-impersonate",
+      "name": "Impersonate",
+      "description": "POST /api/users/{id}/impersonate - Impersonate as another user",
+      "method": "POST",
+      "url": "{{base_url}}/api/users/{{user_id}}/impersonate",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "Now impersonating user", "data": {"impersonated_user": 1}},
+        "error": {"status": false, "message": "Cannot impersonate", "data": {}}
+      }
+    },
+    {
+      "id": "users-impersonate-exit",
+      "name": "Exit Impersonation",
+      "description": "POST /api/users/impersonate-exit - Exit impersonation",
+      "method": "POST",
+      "url": "{{base_url}}/api/users/impersonate-exit",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "Exited impersonation", "data": {}},
+        "error": {"status": false, "message": "Error message", "data": {}}
+      }
+    },
+    {
+      "id": "users-company-info",
+      "name": "Company Info",
+      "description": "GET /api/users/{id}/company-info - Get company info with user/workspace counters",
+      "method": "GET",
+      "url": "{{base_url}}/api/users/{{user_id}}/company-info",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "Company info retrieved successfully", "data": {"users_data": {}, "workspce_data": {}}},
+        "error": {"status": false, "message": "Company not found", "data": {}}
+      }
+    },
+    {
+      "id": "users-enable-disable",
+      "name": "Enable/Disable",
+      "description": "POST /api/users/enable-disable - Enable/disable user or workspace",
+      "method": "POST",
+      "url": "{{base_url}}/api/users/enable-disable",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "multipart/form-data"
+      },
+      "params": {},
+      "body": {
+        "id": {"type": "text", "required": true, "description": "User or Workspace ID"},
+        "name": {"type": "text", "required": true, "description": "'user' or 'workspace'"},
+        "company_id": {"type": "text", "required": true, "description": "Company ID"},
+        "is_disable": {"type": "text", "required": true, "description": "0 or 1"}
+      },
+      "response": {
+        "success": {"status": true, "message": "User/Workspace enabled successfully", "data": {"users_data": {}, "workspce_data": {}}},
+        "error": {"status": false, "message": "Active Workspace cannot be disabled", "data": {}}
+      }
+    },
+    {
+      "id": "users-verify",
+      "name": "Verify User",
+      "description": "POST /api/users/{id}/verify - Verify user email",
+      "method": "POST",
+      "url": "{{base_url}}/api/users/{{user_id}}/verify",
+      "headers": {
+        "Authorization": "Bearer {{token}}",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": null,
+      "response": {
+        "success": {"status": true, "message": "User verified successfully", "data": {}},
+        "error": {"status": false, "message": "User not found", "data": {}}
+      }
+    }
+  ],
+  "variables": {
+    "base_url": {"type": "string", "value": "http://localhost:8000"},
+    "token": {"type": "string", "value": ""},
+    "user_id": {"type": "string", "value": "1"},
+    "log_id": {"type": "string", "value": "1"}
+  },
+  "environments": []
+}

@@ -1,0 +1,59 @@
+name: Database Drift Detection
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  drift-detection:
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: "8.1"
+        extensions: pdo, mysql, bcmath, json, mbstring, tokenizer, xml
+
+    - name: Copy environment file
+      run: cp .env.example .env
+
+    - name: Install dependencies
+      run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
+
+    - name: Generate application key
+      run: php artisan key:generate
+
+    - name: Setup database
+      run: |
+        php artisan config:cache
+        php artisan migrate --force
+
+    - name: Detect drift
+      run: |
+        chmod +x ci_scripts/detect-drift.sh
+        ./ci_scripts/detect-drift.sh
+
+    - name: Upload drift report
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: drift-report
+        path: |
+          storage/logs/laravel.log
+        retention-days: 7

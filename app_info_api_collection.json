@@ -1,0 +1,358 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "App Info API",
+    "description": "API for managing app information",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "{{base_url}}",
+      "description": "API Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/app-info": {
+      "get": {
+        "summary": "Get app info",
+        "description": "Retrieve all app info records",
+        "operationId": "getAppInfo",
+        "tags": ["App Info"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": true,
+                  "message": "App info retrieved successfully",
+                  "data": {
+                    "app_info": [
+                      {
+                        "id": 1,
+                        "call_us": "+1 234 567 8900",
+                        "email_us": "support@example.com",
+                        "whatsapp": "+1 234 567 8900",
+                        "version": "1.0.0",
+                        "last_updated": "2026-04-06T10:00:00Z",
+                        "privacy_policy": "Privacy policy text here",
+                        "created_at": "2026-04-01T10:00:00Z",
+                        "updated_at": "2026-04-06T10:00:00Z"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": false,
+                  "message": "Unauthenticated."
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create app info",
+        "description": "Create a new app info record",
+        "operationId": "createAppInfo",
+        "tags": ["App Info"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "call_us": {
+                    "type": "string",
+                    "description": "Contact phone number"
+                  },
+                  "email_us": {
+                    "type": "string",
+                    "description": "Contact email"
+                  },
+                  "whatsapp": {
+                    "type": "string",
+                    "description": "WhatsApp contact number"
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "App version"
+                  },
+                  "last_updated": {
+                    "type": "string",
+                    "description": "Last updated date (Y-m-d H:i:s)",
+                    "example": "2026-04-06 10:00:00"
+                  },
+                  "privacy_policy": {
+                    "type": "string",
+                    "description": "Privacy policy text"
+                  }
+                }
+              },
+              "example": {
+                "call_us": "+1 234 567 8900",
+                "email_us": "support@example.com",
+                "whatsapp": "+1 234 567 8900",
+                "version": "1.0.0",
+                "last_updated": "2026-04-06 10:00:00",
+                "privacy_policy": "Privacy policy text here"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": true,
+                  "message": "App info created successfully",
+                  "data": {
+                    "app_info": {
+                      "id": 1,
+                      "call_us": "+1 234 567 8900",
+                      "email_us": "support@example.com",
+                      "whatsapp": "+1 234 567 8900",
+                      "version": "1.0.0",
+                      "last_updated": "2026-04-06T10:00:00Z",
+                      "privacy_policy": "Privacy policy text here",
+                      "created_at": "2026-04-06T10:00:00Z",
+                      "updated_at": "2026-04-06T10:00:00Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": false,
+                  "message": "Validation error message",
+                  "data": {}
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": false,
+                  "message": "Unauthenticated."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/app-info/{id}": {
+      "put": {
+        "summary": "Update app info",
+        "description": "Update an existing app info record",
+        "operationId": "updateAppInfo",
+        "tags": ["App Info"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "App info ID",
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "call_us": {
+                    "type": "string",
+                    "description": "Contact phone number"
+                  },
+                  "email_us": {
+                    "type": "string",
+                    "description": "Contact email"
+                  },
+                  "whatsapp": {
+                    "type": "string",
+                    "description": "WhatsApp contact number"
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "App version"
+                  },
+                  "last_updated": {
+                    "type": "string",
+                    "description": "Last updated date (Y-m-d H:i:s)",
+                    "example": "2026-04-06 10:00:00"
+                  },
+                  "privacy_policy": {
+                    "type": "string",
+                    "description": "Privacy policy text"
+                  }
+                }
+              },
+              "example": {
+                "call_us": "+1 234 567 8900",
+                "email_us": "support@example.com",
+                "whatsapp": "+1 234 567 8900",
+                "version": "1.0.1",
+                "last_updated": "2026-04-06 12:00:00",
+                "privacy_policy": "Updated privacy policy text"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": true,
+                  "message": "App info updated successfully",
+                  "data": {
+                    "app_info": {
+                      "id": 1,
+                      "call_us": "+1 234 567 8900",
+                      "email_us": "support@example.com",
+                      "whatsapp": "+1 234 567 8900",
+                      "version": "1.0.1",
+                      "last_updated": "2026-04-06T12:00:00Z",
+                      "privacy_policy": "Updated privacy policy text",
+                      "created_at": "2026-04-06T10:00:00Z",
+                      "updated_at": "2026-04-06T12:00:00Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": false,
+                  "message": "Validation error message",
+                  "data": {}
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": false,
+                  "message": "Unauthenticated."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": false,
+                  "message": "App info not found",
+                  "data": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete app info",
+        "description": "Delete an existing app info record",
+        "operationId": "deleteAppInfo",
+        "tags": ["App Info"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "App info ID",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": true,
+                  "message": "App info deleted successfully",
+                  "data": {}
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": false,
+                  "message": "Unauthenticated."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": false,
+                  "message": "App info not found",
+                  "data": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

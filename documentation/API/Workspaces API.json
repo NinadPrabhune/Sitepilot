@@ -1,0 +1,150 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "SitePilotLiveAPI",
+    "description": "Workspaces API Collection for SitePilot",
+    "version": "1.0.1"
+  },
+  "paths": {
+    "/api/workspaces": {
+      "get": {
+        "summary": "List Workspaces",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "example": "application/json",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of workspaces",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          }
+        },
+        "security": [{ "bearer": [] }]
+      },
+      "post": {
+        "summary": "Create Workspace",
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "example": "application/json",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "status": { "type": "string" },
+                  "slug": { "type": "string" },
+                  "enable_domain": { "type": "boolean" },
+                  "domain_type": { "type": "string" },
+                  "domain": { "type": "string" },
+                  "subdomain": { "type": "string" },
+                  "is_disable": { "type": "boolean" },
+                  "contact_person": { "type": "string" },
+                  "phone": { "type": "string" },
+                  "email": { "type": "string" },
+                  "address": { "type": "string" },
+                  "city": { "type": "string" },
+                  "state": { "type": "string" },
+                  "pincode": { "type": "string" },
+                  "country": { "type": "string" },
+                  "gst_number": { "type": "string" },
+                  "pan_number": { "type": "string" },
+                  "bank_name": { "type": "string" },
+                  "account_number": { "type": "string" },
+                  "ifsc_code": { "type": "string" },
+                  "website": { "type": "string" },
+                  "cin_no": { "type": "string" },
+                  "logo": { "type": "string", "format": "binary" },
+                  "terms_and_conditions": { "type": "string" }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Workspace created successfully" }
+        },
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/api/workspaces/{id}": {
+      "put": {
+        "summary": "Update Workspace",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "status": { "type": "string" },
+                  "slug": { "type": "string" },
+                  "enable_domain": { "type": "boolean" },
+                  "domain_type": { "type": "string" },
+                  "domain": { "type": "string" },
+                  "subdomain": { "type": "string" },
+                  "is_disable": { "type": "boolean" },
+                  "contact_person": { "type": "string" },
+                  "phone": { "type": "string" },
+                  "email": { "type": "string" },
+                  "address": { "type": "string" },
+                  "city": { "type": "string" },
+                  "state": { "type": "string" },
+                  "pincode": { "type": "string" },
+                  "country": { "type": "string" },
+                  "gst_number": { "type": "string" },
+                  "pan_number": { "type": "string" },
+                  "bank_name": { "type": "string" },
+                  "account_number": { "type": "string" },
+                  "ifsc_code": { "type": "string" },
+                  "website": { "type": "string" },
+                  "cin_no": { "type": "string" },
+                  "logo": { "type": "string", "format": "binary" },
+                  "terms_and_conditions": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Workspace updated successfully" }
+        },
+        "security": [{ "bearer": [] }]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearer": { "type": "http", "scheme": "bearer" }
+    }
+  }
+}

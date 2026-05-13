@@ -1,0 +1,4 @@
+loans
+login_details
+machinery_categories
+machinery_ledger

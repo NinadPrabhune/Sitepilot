@@ -1,0 +1,2169 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "SitePilotLiveAPI",
+    "description": "Indent API Collection for SitePilot",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "GRN (Goods Receipt Note)"
+    },
+    {
+      "name": "GRN"
+    }
+  ],
+  "paths": {
+    "/api/grn": {
+      "get": {
+        "summary": "Get all GRNs",
+        "deprecated": false,
+        "description": "Retrieve all Goods Receipt Notes for the authenticated user",
+        "operationId": "getGrns",
+        "tags": [
+          "GRN (Goods Receipt Note)"
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "query",
+            "description": "Workspace ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "site_id",
+            "in": "query",
+            "description": "Site/Project ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "po_id",
+            "in": "query",
+            "description": "Purchase Order ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "GRN Status (Pending, Completed, Partial)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GRNs fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrnListResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a new GRN",
+        "deprecated": false,
+        "description": "Create a new Goods Receipt Note from mobile application.\n\nThis endpoint:\n- Creates a GRN header with delivery details\n- Creates GRN items for each received material\n- Updates PO item received quantities\n- Updates inventory (accepted quantity)\n- Automatically updates PO status (Completed/Partial Received)\n\n**Supports multipart/form-data for file uploads**\n- Use multipart/form-data when uploading files\n- Items array should be sent as JSON string when using form-data\n",
+        "operationId": "createGrn",
+        "tags": [
+          "GRN (Goods Receipt Note)"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrnCreateRequest"
+              },
+              "example": {
+                "po_id": 5,
+                "grn_date": "2026-03-11",
+                "delivery_challan_number": "DC-4587",
+                "vehicle_number": "MH12AB1234",
+                "gate_entry_number": "GE-2026-77",
+                "description": "Test GRN",
+                "received_by": "John Doe",
+                "remarks": "Test remarks",
+                "items": [
+                  {
+                    "po_item_id": 10,
+                    "received_qty": 42,
+                    "accepted_qty": 40,
+                    "rejected_qty": 2,
+                    "remarks": "2 items damaged"
+                  }
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "po_id",
+                  "grn_date"
+                ],
+                "properties": {
+                  "po_id": {
+                    "type": "integer",
+                    "description": "Purchase Order ID"
+                  },
+                  "grn_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "GRN Date"
+                  },
+                  "delivery_challan_number": {
+                    "type": "string",
+                    "description": "Delivery Challan Number"
+                  },
+                  "vehicle_number": {
+                    "type": "string",
+                    "description": "Vehicle Number"
+                  },
+                  "gate_entry_number": {
+                    "type": "string",
+                    "description": "Gate Entry Number"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description"
+                  },
+                  "received_by": {
+                    "type": "string",
+                    "description": "Received By"
+                  },
+                  "remarks": {
+                    "type": "string",
+                    "description": "Remarks"
+                  },
+                  "workspace_id": {
+                    "type": "integer",
+                    "description": "Workspace ID"
+                  },
+                  "created_by": {
+                    "type": "integer",
+                    "description": "Created By User ID"
+                  },
+                  "items": {
+                    "type": "string",
+                    "description": "JSON string of items array"
+                  },
+                  "delivery_challan_file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Delivery Challan File (pdf,doc,docx,jpg,jpeg,png) - max 10MB"
+                  },
+                  "reference_file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Reference File (pdf,doc,docx,jpg,jpeg,png) - max 10MB"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "GRN created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrnStoreResponse"
+                },
+                "example": {
+                  "status": true,
+                  "message": "GRN created successfully",
+                  "data": {
+                    "grn_id": 45,
+                    "grn_number": "GRN-0045"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/grn/direct": {
+      "post": {
+        "summary": "Create a Direct GRN",
+        "deprecated": false,
+        "description": "Create a Direct GRN (without Purchase Order) from mobile application.\n\nThis endpoint:\n- Creates a GRN with grn_type = direct (no PO required)\n- Automatically sets received_qty = quantity, accepted_qty = quantity, rejected_qty = 0\n- Creates GRN items for each material\n- Calculates totals automatically\n\n**Supports multipart/form-data for file uploads**\n- Use multipart/form-data when uploading files\n- Items array should be sent as JSON string when using form-data\n",
+        "operationId": "createDirectGrn",
+        "tags": [
+          "GRN (Goods Receipt Note)"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DirectGrnCreateRequest"
+              },
+              "example": {
+                "supplier_id": 1,
+                "site_id": 23,
+                "grn_date": "2026-03-11",
+                "supplier_invoice_number": "INV-2026-001",
+                "supplier_invoice_date": "2026-03-10",
+                "tax_type": "cgst",
+                "delivery_challan_number": "DC-4587",
+                "vehicle_number": "MH12AB1234",
+                "gate_entry_number": "GE-2026-77",
+                "description": "Direct GRN for bulk cement",
+                "received_by": "John Doe",
+                "remarks": "Received in good condition",
+                "items": [
+                  {
+                    "material_id": 1,
+                    "quantity": 50,
+                    "price": 450,
+                    "gst_master_id": 1,
+                    "remarks": "50 bags of cement"
+                  },
+                  {
+                    "material_id": 3,
+                    "quantity": 100,
+                    "price": 85,
+                    "gst_master_id": 2,
+                    "remarks": "100 pcs of steel rods"
+                  }
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "supplier_id",
+                  "site_id",
+                  "grn_date",
+                  "supplier_invoice_number",
+                  "tax_type",
+                  "items"
+                ],
+                "properties": {
+                  "supplier_id": {
+                    "type": "integer",
+                    "description": "Supplier ID"
+                  },
+                  "site_id": {
+                    "type": "integer",
+                    "description": "Site/Project ID"
+                  },
+                  "grn_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "GRN Date"
+                  },
+                  "supplier_invoice_number": {
+                    "type": "string",
+                    "description": "Supplier Invoice Number"
+                  },
+                  "supplier_invoice_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Supplier Invoice Date"
+                  },
+                  "tax_type": {
+                    "type": "string",
+                    "enum": [
+                      "cgst",
+                      "igst"
+                    ],
+                    "description": "Tax type: cgst (CGST+SGST) or igst"
+                  },
+                  "delivery_challan_number": {
+                    "type": "string",
+                    "description": "Delivery Challan Number"
+                  },
+                  "vehicle_number": {
+                    "type": "string",
+                    "description": "Vehicle Number"
+                  },
+                  "gate_entry_number": {
+                    "type": "string",
+                    "description": "Gate Entry Number"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description"
+                  },
+                  "received_by": {
+                    "type": "string",
+                    "description": "Received By"
+                  },
+                  "remarks": {
+                    "type": "string",
+                    "description": "Remarks"
+                  },
+                  "workspace_id": {
+                    "type": "integer",
+                    "description": "Workspace ID (optional - auto-detected if not provided)"
+                  },
+                  "created_by": {
+                    "type": "integer",
+                    "description": "Created By User ID (optional - auto-detected if not provided)"
+                  },
+                  "items": {
+                    "type": "string",
+                    "description": "JSON string of items array. Each item: {material_id, quantity, price, gst_master_id?, remarks?}"
+                  },
+                  "delivery_challan_file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Delivery Challan File (pdf,doc,docx,jpg,jpeg,png) - max 10MB"
+                  },
+                  "reference_file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Reference File (pdf,doc,docx,jpg,jpeg,png) - max 10MB"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Direct GRN created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrnStoreResponse"
+                },
+                "example": {
+                  "status": true,
+                  "message": "Direct GRN created successfully",
+                  "data": {
+                    "grn_id": 45,
+                    "grn_number": "GRN-0045"
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 0
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Permission denied"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/grn/create": {
+      "get": {
+        "summary": "Get data for creating a new GRN",
+        "deprecated": false,
+        "description": "Returns list of approved purchase orders that are not fully received",
+        "operationId": "getGrnCreateData",
+        "tags": [
+          "GRN (Goods Receipt Note)"
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "query",
+            "description": "Workspace ID",
+            "required": false,
+            "example": 20,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "site_id",
+            "in": "query",
+            "description": "Site/Project ID",
+            "required": false,
+            "example": 23,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GRN create data fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrnCreateDataResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/grn/po-details": {
+      "get": {
+        "summary": "Fetch PO details for GRN",
+        "deprecated": false,
+        "description": "Get purchase order details including items with remaining quantities",
+        "operationId": "getPoDetails",
+        "tags": [
+          "GRN (Goods Receipt Note)"
+        ],
+        "parameters": [
+          {
+            "name": "po_id",
+            "in": "query",
+            "description": "Purchase Order ID",
+            "required": true,
+            "example": 5,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PO details fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PoDetailsResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/grn/{id}": {
+      "get": {
+        "summary": "Get a specific GRN",
+        "deprecated": false,
+        "description": "Retrieve a specific Goods Receipt Note by ID",
+        "operationId": "getGrn",
+        "tags": [
+          "GRN (Goods Receipt Note)"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "GRN ID",
+            "required": true,
+            "example": 45,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GRN fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrnShowResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "GRN not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": false,
+                  "message": "GRN not found"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update a GRN",
+        "deprecated": false,
+        "description": "Update an existing Goods Receipt Note",
+        "operationId": "updateGrn",
+        "tags": [
+          "GRN (Goods Receipt Note)"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "GRN ID",
+            "required": true,
+            "example": 45,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrnUpdateRequest"
+              },
+              "example": {
+                "grn_date": "2026-03-12",
+                "delivery_challan_number": "DC-4588",
+                "vehicle_number": "MH12AB1235",
+                "gate_entry_number": "GE-2026-78",
+                "description": "Updated description",
+                "received_by": "Jane Doe",
+                "remarks": "Updated remarks"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "GRN updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Grn"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "GRN not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete a GRN",
+        "deprecated": false,
+        "description": "Delete a Goods Receipt Note and reverse inventory",
+        "operationId": "deleteGrn",
+        "tags": [
+          "GRN (Goods Receipt Note)"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "GRN ID",
+            "required": true,
+            "example": 45,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GRN deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": true,
+                  "message": "GRN deleted successfully"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "GRN not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/grn/{id}/edit": {
+      "get": {
+        "summary": "Get data for editing a GRN",
+        "deprecated": false,
+        "description": "Retrieve GRN data for editing",
+        "operationId": "editGrn",
+        "tags": [
+          "GRN (Goods Receipt Note)"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "GRN ID",
+            "required": true,
+            "example": 45,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GRN data fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Grn"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "GRN not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/grn/create-data": {
+      "post": {
+        "summary": "Create a new GRN (Legacy)",
+        "deprecated": false,
+        "description": "Legacy endpoint for creating GRN. Use POST /api/grn instead.\nThis endpoint creates a new Goods Receipt Note from mobile application.\n\n**Supports multipart/form-data for file uploads**\n",
+        "operationId": "createGrnLegacy",
+        "tags": [
+          "GRN (Goods Receipt Note)"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "encoding": {
+                "workspace_id": {
+                  "contentType": "Workspace ID"
+                },
+                "site_id": {
+                  "contentType": "Site/Project ID"
+                }
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "workspace_id": {
+                    "example": 20,
+                    "type": "integer"
+                  },
+                  "site_id": {
+                    "example": 23,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "workspace_id",
+                  "site_id"
+                ]
+              },
+              "examples": {}
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "GRN created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrnStoreResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/grn/{grn_id}/invoice-preview": {
+      "get": {
+        "summary": "Get GRN invoice preview",
+        "deprecated": false,
+        "description": "Retrieves GRN details for invoice creation preview.\nReturns supplier, site, and items with accepted quantities.\n\n**Note:** Returns 400 if invoice already exists for this GRN.\n\nRequires 'purchase-invoice create' permission.",
+        "operationId": "getGrnInvoicePreview",
+        "tags": [
+          "GRN"
+        ],
+        "parameters": [
+          {
+            "name": "grn_id",
+            "in": "path",
+            "description": "GRN ID",
+            "required": true,
+            "example": 2,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GRN details fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "grn_id": {
+                          "type": "integer"
+                        },
+                        "supplier": {
+                          "$ref": "#/components/schemas/Supplier"
+                        },
+                        "site": {
+                          "$ref": "#/components/schemas/Project"
+                        },
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/GrnItemPreview"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "GRN details fetched successfully",
+                  "data": {
+                    "grn_id": 1,
+                    "supplier": {
+                      "id": 1,
+                      "name": "ABC Supplies"
+                    },
+                    "site": {
+                      "id": 1,
+                      "name": "Project Alpha"
+                    },
+                    "items": [
+                      {
+                        "material": {
+                          "id": 1,
+                          "name": "Cement"
+                        },
+                        "accepted_qty": 50,
+                        "price": 450,
+                        "gst": {
+                          "id": 1,
+                          "name": "GST 18%",
+                          "rate": 18
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "Invoice already exists for this GRN",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Invoice already exists for this GRN"
+                }
+              }
+            },
+            "headers": {}
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError",
+            "description": "Permission denied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError",
+            "description": "Resource not found"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError",
+            "description": "Internal server error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "error_code"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message"
+          },
+          "error_code": {
+            "type": "string",
+            "description": "Machine-readable error code"
+          }
+        }
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "example": "Validation failed"
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "properties": {}
+          }
+        }
+      },
+      "Supplier": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "ABC Supplies"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "Material": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Cement"
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "example": 450
+          },
+          "unit": {
+            "$ref": "#/components/schemas/Unit"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "price"
+        ]
+      },
+      "GrnCreateRequest": {
+        "type": "object",
+        "required": [
+          "po_id",
+          "grn_date",
+          "items"
+        ],
+        "properties": {
+          "po_id": {
+            "type": "integer",
+            "description": "Purchase Order ID",
+            "example": 5
+          },
+          "grn_date": {
+            "type": "string",
+            "format": "date",
+            "description": "GRN Date",
+            "example": "2026-03-11"
+          },
+          "delivery_challan_number": {
+            "type": "string",
+            "description": "Delivery Challan Number",
+            "nullable": true,
+            "example": "DC-4587"
+          },
+          "vehicle_number": {
+            "type": "string",
+            "description": "Vehicle Number",
+            "nullable": true,
+            "example": "MH12AB1234"
+          },
+          "gate_entry_number": {
+            "type": "string",
+            "description": "Gate Entry Number",
+            "nullable": true,
+            "example": "GE-2026-77"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description",
+            "nullable": true
+          },
+          "received_by": {
+            "type": "string",
+            "description": "Received By",
+            "nullable": true
+          },
+          "remarks": {
+            "type": "string",
+            "description": "Remarks",
+            "nullable": true
+          },
+          "workspace_id": {
+            "type": "integer",
+            "description": "Workspace ID (optional - auto-detected if not provided)",
+            "nullable": true,
+            "example": 1
+          },
+          "created_by": {
+            "type": "integer",
+            "description": "User ID who created the GRN (optional - auto-detected if not provided)",
+            "nullable": true,
+            "example": 1
+          },
+          "delivery_challan_file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Delivery Challan File (pdf,doc,docx,jpg,jpeg,png) - max 10MB",
+            "nullable": true
+          },
+          "reference_file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Reference File (pdf,doc,docx,jpg,jpeg,png) - max 10MB",
+            "nullable": true
+          },
+          "items": {
+            "type": "array",
+            "description": "Array of GRN items (send as JSON string for form-data)",
+            "items": {
+              "$ref": "#/components/schemas/GrnItem"
+            }
+          }
+        }
+      },
+      "GrnItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "grn_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "material_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "accepted_qty": {
+            "type": "number",
+            "format": "double",
+            "example": 50
+          },
+          "rejected_qty": {
+            "type": "number",
+            "format": "double",
+            "example": 0
+          },
+          "material": {
+            "$ref": "#/components/schemas/Material"
+          }
+        },
+        "required": [
+          "id",
+          "accepted_qty",
+          "material_id"
+        ]
+      },
+      "GrnListResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "GRNs fetched successfully"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Grn"
+            }
+          }
+        }
+      },
+      "Grn": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "grn_number": {
+            "type": "string",
+            "example": "GRN-2026-0001"
+          },
+          "supplier": {
+            "$ref": "#/components/schemas/Supplier"
+          },
+          "site": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GrnItem"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "grn_number"
+        ]
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Project Alpha"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "GrnUpdateRequest": {
+        "type": "object",
+        "required": [
+          "grn_date"
+        ],
+        "properties": {
+          "grn_date": {
+            "type": "string",
+            "format": "date",
+            "description": "GRN Date",
+            "example": "2026-03-11"
+          },
+          "delivery_challan_number": {
+            "type": "string",
+            "description": "Delivery Challan Number",
+            "nullable": true
+          },
+          "vehicle_number": {
+            "type": "string",
+            "description": "Vehicle Number",
+            "nullable": true
+          },
+          "gate_entry_number": {
+            "type": "string",
+            "description": "Gate Entry Number",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "Description",
+            "nullable": true
+          },
+          "received_by": {
+            "type": "string",
+            "description": "Received By",
+            "nullable": true
+          },
+          "remarks": {
+            "type": "string",
+            "description": "Remarks",
+            "nullable": true
+          }
+        }
+      },
+      "GrnStoreResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "GRN created successfully"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "grn_id": {
+                "type": "integer",
+                "example": 45
+              },
+              "grn_number": {
+                "type": "string",
+                "example": "GRN-0045"
+              }
+            }
+          }
+        }
+      },
+      "GrnShowResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "GRN fetched successfully"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Grn"
+          }
+        }
+      },
+      "Unit": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Bags"
+          }
+        }
+      },
+      "PoDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "po": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "po_number": {
+                    "type": "string"
+                  },
+                  "po_date": {
+                    "type": "string"
+                  },
+                  "supplier_id": {
+                    "type": "integer"
+                  },
+                  "supplier_name": {
+                    "type": "string"
+                  },
+                  "site_id": {
+                    "type": "integer"
+                  },
+                  "site_name": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  }
+                }
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "material_id": {
+                      "type": "integer"
+                    },
+                    "material_name": {
+                      "type": "string"
+                    },
+                    "material_unit": {
+                      "type": "string"
+                    },
+                    "ordered_qty": {
+                      "type": "number"
+                    },
+                    "received_qty": {
+                      "type": "number"
+                    },
+                    "remaining_qty": {
+                      "type": "number"
+                    },
+                    "unit": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "GrnCreateDataResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "purchase_orders": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PurchaseOrderForGrn"
+                }
+              },
+              "selected_site_id": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "PurchaseOrderForGrn": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "po_number": {
+            "type": "string"
+          },
+          "po_date": {
+            "type": "string"
+          },
+          "supplier": {
+            "$ref": "#/components/schemas/Supplier"
+          },
+          "site": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "status": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "material_id": {
+                  "type": "integer"
+                },
+                "material": {
+                  "$ref": "#/components/schemas/Material"
+                },
+                "quantity": {
+                  "type": "number"
+                },
+                "received_qty": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Operation successful"
+          },
+          "data": {
+            "type": "object",
+            "properties": {},
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "message"
+        ]
+      },
+      "GrnItemPreview": {
+        "type": "object",
+        "properties": {
+          "material": {
+            "$ref": "#/components/schemas/Material"
+          },
+          "accepted_qty": {
+            "type": "number",
+            "format": "double",
+            "example": 50
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "example": 450
+          },
+          "gst": {
+            "$ref": "#/components/schemas/Gst"
+          }
+        }
+      },
+      "Gst": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "GST 18%"
+          },
+          "rate": {
+            "type": "number",
+            "format": "double",
+            "example": 18
+          }
+        }
+      },
+      "DirectGrnCreateRequest": {
+        "type": "object",
+        "required": [
+          "supplier_id",
+          "site_id",
+          "grn_date",
+          "supplier_invoice_number",
+          "tax_type",
+          "items"
+        ],
+        "properties": {
+          "supplier_id": {
+            "type": "integer",
+            "description": "Supplier ID",
+            "example": 1
+          },
+          "site_id": {
+            "type": "integer",
+            "description": "Site/Project ID",
+            "example": 23
+          },
+          "grn_date": {
+            "type": "string",
+            "format": "date",
+            "description": "GRN Date",
+            "example": "2026-03-11"
+          },
+          "supplier_invoice_number": {
+            "type": "string",
+            "description": "Supplier Invoice Number",
+            "example": "INV-2026-001"
+          },
+          "supplier_invoice_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Supplier Invoice Date",
+            "nullable": true,
+            "example": "2026-03-10"
+          },
+          "tax_type": {
+            "type": "string",
+            "description": "Tax type: cgst (CGST+SGST) or igst",
+            "enum": [
+              "cgst",
+              "igst"
+            ],
+            "example": "cgst"
+          },
+          "delivery_challan_number": {
+            "type": "string",
+            "description": "Delivery Challan Number",
+            "nullable": true,
+            "example": "DC-4587"
+          },
+          "vehicle_number": {
+            "type": "string",
+            "description": "Vehicle Number",
+            "nullable": true,
+            "example": "MH12AB1234"
+          },
+          "gate_entry_number": {
+            "type": "string",
+            "description": "Gate Entry Number",
+            "nullable": true,
+            "example": "GE-2026-77"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description",
+            "nullable": true
+          },
+          "received_by": {
+            "type": "string",
+            "description": "Received By",
+            "nullable": true,
+            "example": "John Doe"
+          },
+          "remarks": {
+            "type": "string",
+            "description": "Remarks",
+            "nullable": true
+          },
+          "workspace_id": {
+            "type": "integer",
+            "description": "Workspace ID (optional - auto-detected if not provided)",
+            "nullable": true,
+            "example": 1
+          },
+          "created_by": {
+            "type": "integer",
+            "description": "User ID who created the GRN (optional - auto-detected if not provided)",
+            "nullable": true,
+            "example": 1
+          },
+          "delivery_challan_file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Delivery Challan File (pdf,doc,docx,jpg,jpeg,png) - max 10MB",
+            "nullable": true
+          },
+          "reference_file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Reference File (pdf,doc,docx,jpg,jpeg,png) - max 10MB",
+            "nullable": true
+          },
+          "items": {
+            "type": "array",
+            "description": "Array of GRN items (send as JSON string for form-data). received_qty, accepted_qty, and rejected_qty are auto-calculated from quantity.",
+            "items": {
+              "$ref": "#/components/schemas/DirectGrnItem"
+            }
+          }
+        }
+      },
+      "DirectGrnItem": {
+        "type": "object",
+        "required": [
+          "material_id",
+          "quantity",
+          "price"
+        ],
+        "properties": {
+          "material_id": {
+            "type": "integer",
+            "description": "Material ID",
+            "example": 1
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double",
+            "description": "Quantity received (automatically mapped to received_qty, accepted_qty; rejected_qty = 0)",
+            "example": 50
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "description": "Price per unit",
+            "example": 450
+          },
+          "gst_master_id": {
+            "type": "integer",
+            "description": "GST Master ID (optional)",
+            "nullable": true,
+            "example": 1
+          },
+          "remarks": {
+            "type": "string",
+            "description": "Item remarks (optional)",
+            "nullable": true,
+            "example": "50 bags of cement"
+          }
+        }
+      }
+    },
+    "responses": {
+      "ApiResponse": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        }
+      },
+      "ForbiddenError": {
+        "description": "Permission denied",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Permission denied"
+                }
+              }
+            },
+            "examples": {
+              "Success": {
+                "summary": "Success",
+                "value": {
+                  "success": false,
+                  "message": "Permission denied"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Resource not found"
+                }
+              }
+            },
+            "examples": {
+              "Success": {
+                "summary": "Success",
+                "value": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "BusinessError": {
+        "description": "Business logic error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "examples": {
+              "Success": {
+                "summary": "Success",
+                "value": {
+                  "success": false,
+                  "message": "Business error message"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ValidationError": {
+        "description": "Validation error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "examples": {
+              "Success": {
+                "summary": "Success",
+                "value": {
+                  "success": false,
+                  "message": "The given data was invalid.",
+                  "data": {
+                    "errors": {
+                      "supplier_id": [
+                        "The supplier_id field is required."
+                      ],
+                      "invoice_date": [
+                        "The invoice_date field is required."
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "nullable": true
+                }
+              }
+            },
+            "examples": {
+              "Success": {
+                "summary": "Success",
+                "value": {
+                  "success": false,
+                  "message": "Failed to process request",
+                  "data": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT token authentication. Get token from `/api/login` endpoint.\n"
+      }
+    }
+  },
+  "servers": [],
+  "security": []
+}

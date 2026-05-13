@@ -1,0 +1,118 @@
+{
+  "info": {
+    "name": "GeneralTransfer API",
+    "_postman_id": "12345678-abcd-efgh-ijkl-987654321000",
+    "description": "API collection for GeneralTransfer with {{base_url}} and {{token}} variables",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Transfers",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/general-transfers",
+          "host": ["{{base_url}}"],
+          "path": ["general-transfers"]
+        }
+      }
+    },
+    {
+      "name": "Create Transfer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"transfer_type\": \"machinery\",\n  \"machinery_id\": 1,\n  \"transfer_date\": \"2025-12-10\",\n  \"from_site_id\": 1,\n  \"to_site_id\": 2\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/general-transfers",
+          "host": ["{{base_url}}"],
+          "path": ["general-transfers"]
+        }
+      }
+    },
+    {
+      "name": "Get Transfer by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/general-transfers/1",
+          "host": ["{{base_url}}"],
+          "path": ["general-transfers", "1"]
+        }
+      }
+    },
+    {
+      "name": "Update Transfer",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"transfer_type\": \"machinery\",\n  \"machinery_id\": 1,\n  \"transfer_date\": \"2025-12-15\",\n  \"from_site_id\": 1,\n  \"to_site_id\": 3\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/general-transfers/1",
+          "host": ["{{base_url}}"],
+          "path": ["general-transfers", "1"]
+        }
+      }
+    },
+    {
+      "name": "Delete Transfer",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/general-transfers/1",
+          "host": ["{{base_url}}"],
+          "path": ["general-transfers", "1"]
+        }
+      }
+    }
+  ]
+}

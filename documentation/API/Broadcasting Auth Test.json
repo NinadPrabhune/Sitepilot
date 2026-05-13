@@ -1,0 +1,57 @@
+{
+  "info": {
+    "name": "Broadcasting Auth Test",
+    "_postman_id": "12345678-abcd-efgh-ijkl-1234567890ab",
+    "description": "Test Laravel broadcasting auth endpoint with JWT",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Broadcasting Auth",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer <JWT_TOKEN>",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "socket_id",
+              "value": "123.456",
+              "type": "text"
+            },
+            {
+              "key": "channel_name",
+              "value": "private-notifications.5",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://sitepilot.easy2it.in/broadcasting/auth",
+          "protocol": "http",
+          "host": [
+            "sitepilot",
+            "easy2it",
+            "in"
+          ],
+          "path": [
+            "broadcasting",
+            "auth"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

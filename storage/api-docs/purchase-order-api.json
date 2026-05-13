@@ -1,0 +1,980 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Purchase Order API",
+    "description": "Mobile API for managing Purchase Orders. Supports both JSON body and multipart/form-data for mobile app compatibility.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "{base_url}/api",
+      "variables": {
+        "base_url": {
+          "default": "https://api.example.com"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/purchase-orders": {
+      "get": {
+        "tags": ["Purchase Orders"],
+        "summary": "Get all purchase orders",
+        "description": "Retrieve a list of all purchase orders for the workspace. Optional filters: workspace_id, site_id",
+        "operationId": "getPurchaseOrders",
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "query",
+            "description": "Workspace ID (required for mobile API)",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "site_id",
+            "in": "query",
+            "description": "Filter by site/project ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrderListResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Purchase Orders"],
+        "summary": "Create a new purchase order",
+        "description": "Create a new purchase order with items. Supports JSON body and multipart/form-data.",
+        "operationId": "createPurchaseOrder",
+        "requestBody": {
+          "description": "Purchase order data with items array",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurchaseOrderCreateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PurchaseOrderFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Purchase order created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrderResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase-orders/{id}": {
+      "get": {
+        "tags": ["Purchase Orders"],
+        "summary": "Get a purchase order by ID",
+        "description": "Retrieve a specific purchase order with all related data",
+        "operationId": "getPurchaseOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Purchase order ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrderResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Purchase order not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Purchase Orders"],
+        "summary": "Update a purchase order",
+        "description": "Update an existing purchase order. Only pending orders can be edited.",
+        "operationId": "updatePurchaseOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Purchase order ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Purchase order update data with items array",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurchaseOrderUpdateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PurchaseOrderFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Purchase order updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrderResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - only pending orders can be edited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Purchase order not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Purchase Orders"],
+        "summary": "Delete a purchase order",
+        "description": "Delete a purchase order. Only pending orders can be deleted.",
+        "operationId": "deletePurchaseOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Purchase order ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Purchase order deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - only pending orders can be deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Purchase order not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PurchaseOrder": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Purchase order ID"
+          },
+          "po_number": {
+            "type": "string",
+            "description": "Auto-generated PO number"
+          },
+          "po_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Purchase order date (required)"
+          },
+          "supplier_invoice_number": {
+            "type": "string",
+            "description": "Supplier invoice number"
+          },
+          "supplier_id": {
+            "type": "integer",
+            "description": "Supplier ID (required)"
+          },
+          "tax_type": {
+            "type": "string",
+            "enum": ["cgst", "igst"],
+            "description": "Tax type (required) - cgst or igst"
+          },
+          "total_taxable_value": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Total taxable value (calculated)"
+          },
+          "total_cgst": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Total CGST amount (calculated)"
+          },
+          "total_sgst": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Total SGST amount (calculated)"
+          },
+          "total_igst": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Total IGST amount (calculated)"
+          },
+          "total_tax": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Total tax amount (calculated)"
+          },
+          "total_discount": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Total discount amount (calculated)"
+          },
+          "additional_charge": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Additional charges"
+          },
+          "additional_deduction": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Additional deductions"
+          },
+          "additional_discount": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Additional discounts"
+          },
+          "grand_total": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Grand total (calculated)"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["Pending", "Approved", "Rejected", "Completed"],
+            "description": "Purchase order status"
+          },
+          "site_id": {
+            "type": "integer",
+            "description": "Site/Project ID"
+          },
+          "created_by": {
+            "type": "integer",
+            "description": "Creator user ID"
+          },
+          "workspace_id": {
+            "type": "integer",
+            "description": "Workspace ID"
+          },
+          "indent_id": {
+            "type": "integer",
+            "description": "Linked indent ID"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description"
+          },
+          "rejection_reason": {
+            "type": "string",
+            "description": "Rejection reason (if rejected)"
+          },
+          "delivery_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Expected delivery date"
+          },
+          "reference_file": {
+            "type": "string",
+            "description": "Reference file URL"
+          },
+          "delivery_terms_conditions": {
+            "type": "string",
+            "description": "Delivery terms and conditions"
+          },
+          "remark": {
+            "type": "string",
+            "description": "Remarks"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PurchaseOrderItem"
+            },
+            "description": "Purchase order items"
+          },
+          "supplier": {
+            "$ref": "#/components/schemas/Supplier"
+          },
+          "site": {
+            "$ref": "#/components/schemas/Site"
+          },
+          "indent": {
+            "$ref": "#/components/schemas/Indent"
+          },
+          "creator": {
+            "$ref": "#/components/schemas/User"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PurchaseOrderItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Item ID"
+          },
+          "purchase_order_id": {
+            "type": "integer",
+            "description": "Parent purchase order ID"
+          },
+          "material_id": {
+            "type": "integer",
+            "description": "Material/Product ID (required)"
+          },
+          "gst_master_id": {
+            "type": "integer",
+            "description": "GST master ID for tax calculation"
+          },
+          "quantity": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Quantity (required, min: 0.001)"
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit of measurement (required)"
+          },
+          "price": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Unit price (required, min: 0)"
+          },
+          "tax_amount": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Tax amount (calculated)"
+          },
+          "discount_amount": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Discount amount"
+          },
+          "subtotal": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Subtotal (calculated)"
+          },
+          "indent_quantity": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Linked indent quantity"
+          },
+          "remarks": {
+            "type": "string",
+            "description": "Item remarks"
+          },
+          "material": {
+            "$ref": "#/components/schemas/Material"
+          }
+        }
+      },
+      "PurchaseOrderFormData": {
+        "type": "object",
+        "required": ["po_date", "supplier_id", "tax_type", "items"],
+        "properties": {
+          "workspace_id": {
+            "type": "integer",
+            "description": "Workspace ID (required for mobile API)"
+          },
+          "created_by": {
+            "type": "integer",
+            "description": "User ID who creates the PO"
+          },
+          "po_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Purchase order date (required)"
+          },
+          "supplier_id": {
+            "type": "integer",
+            "description": "Supplier ID (required)"
+          },
+          "site_id": {
+            "type": "integer",
+            "description": "Site/Project ID"
+          },
+          "indent_id": {
+            "type": "integer",
+            "description": "Linked indent ID"
+          },
+          "tax_type": {
+            "type": "string",
+            "enum": ["cgst", "igst"],
+            "description": "Tax type (required)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description"
+          },
+          "additional_charge": {
+            "type": "number",
+            "description": "Additional charges"
+          },
+          "additional_deduction": {
+            "type": "number",
+            "description": "Additional deductions"
+          },
+          "additional_discount": {
+            "type": "number",
+            "description": "Additional discounts"
+          },
+          "delivery_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Expected delivery date"
+          },
+          "delivery_terms_conditions": {
+            "type": "string",
+            "description": "Delivery terms and conditions"
+          },
+          "remark": {
+            "type": "string",
+            "description": "Remarks"
+          },
+          "reference_file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Reference file (PDF, DOC, DOCX, JPG, JPEG, PNG - max 10MB)"
+          },
+          "items": {
+            "type": "string",
+            "description": "JSON array of items - e.g., items[0]={\"material_id\":1,\"quantity\":10,\"unit\":\"pcs\",\"price\":100} or serialize as items[0][material_id]=1"
+          }
+        }
+      },
+      "PurchaseOrderCreateRequest": {
+        "type": "object",
+        "required": ["po_date", "supplier_id", "tax_type", "items"],
+        "properties": {
+          "workspace_id": {
+            "type": "integer",
+            "description": "Workspace ID (required for mobile API)"
+          },
+          "created_by": {
+            "type": "integer",
+            "description": "User ID who creates the PO"
+          },
+          "po_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Purchase order date (required)"
+          },
+          "supplier_id": {
+            "type": "integer",
+            "description": "Supplier ID (required)"
+          },
+          "site_id": {
+            "type": "integer",
+            "description": "Site/Project ID"
+          },
+          "indent_id": {
+            "type": "integer",
+            "description": "Linked indent ID"
+          },
+          "tax_type": {
+            "type": "string",
+            "enum": ["cgst", "igst"],
+            "description": "Tax type (required)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description"
+          },
+          "additional_charge": {
+            "type": "number",
+            "description": "Additional charges"
+          },
+          "additional_deduction": {
+            "type": "number",
+            "description": "Additional deductions"
+          },
+          "additional_discount": {
+            "type": "number",
+            "description": "Additional discounts"
+          },
+          "delivery_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Expected delivery date"
+          },
+          "delivery_terms_conditions": {
+            "type": "string",
+            "description": "Delivery terms and conditions"
+          },
+          "remark": {
+            "type": "string",
+            "description": "Remarks"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PurchaseOrderItemRequest"
+            },
+            "description": "Array of purchase order items (required, min: 1)"
+          }
+        }
+      },
+      "PurchaseOrderUpdateRequest": {
+        "type": "object",
+        "required": ["po_date", "tax_type", "items"],
+        "properties": {
+          "workspace_id": {
+            "type": "integer",
+            "description": "Workspace ID"
+          },
+          "po_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Purchase order date (required)"
+          },
+          "supplier_id": {
+            "type": "integer",
+            "description": "Supplier ID"
+          },
+          "site_id": {
+            "type": "integer",
+            "description": "Site/Project ID"
+          },
+          "indent_id": {
+            "type": "integer",
+            "description": "Linked indent ID"
+          },
+          "tax_type": {
+            "type": "string",
+            "enum": ["cgst", "igst"],
+            "description": "Tax type (required)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description"
+          },
+          "additional_charge": {
+            "type": "number",
+            "description": "Additional charges"
+          },
+          "additional_deduction": {
+            "type": "number",
+            "description": "Additional deductions"
+          },
+          "additional_discount": {
+            "type": "number",
+            "description": "Additional discounts"
+          },
+          "delivery_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Expected delivery date"
+          },
+          "delivery_terms_conditions": {
+            "type": "string",
+            "description": "Delivery terms and conditions"
+          },
+          "remark": {
+            "type": "string",
+            "description": "Remarks"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PurchaseOrderItemRequest"
+            },
+            "description": "Array of purchase order items (required, min: 1)"
+          }
+        }
+      },
+      "PurchaseOrderItemRequest": {
+        "type": "object",
+        "required": ["material_id", "quantity", "unit", "price"],
+        "properties": {
+          "material_id": {
+            "type": "integer",
+            "description": "Material/Product ID (required, exists in materials table)"
+          },
+          "quantity": {
+            "type": "number",
+            "format": "decimal",
+            "minimum": 0.001,
+            "description": "Quantity (required, min: 0.001)"
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit of measurement (required)"
+          },
+          "price": {
+            "type": "number",
+            "format": "decimal",
+            "minimum": 0,
+            "description": "Unit price (required, min: 0)"
+          },
+          "gst_master_id": {
+            "type": "integer",
+            "description": "GST master ID for tax calculation (exists in gst_masters table)"
+          },
+          "discount_amount": {
+            "type": "number",
+            "format": "decimal",
+            "minimum": 0,
+            "description": "Discount amount (min: 0)"
+          },
+          "remarks": {
+            "type": "string",
+            "description": "Item remarks"
+          }
+        }
+      },
+      "PurchaseOrderListResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Purchase orders fetched successfully"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PurchaseOrder"
+            }
+          }
+        }
+      },
+      "PurchaseOrderResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Purchase order fetched successfully"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PurchaseOrder"
+          }
+        }
+      },
+      "DeleteResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Purchase Order deleted successfully"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error_code": {
+            "type": "string",
+            "example": "PO_ERROR_500"
+          },
+          "message": {
+            "type": "string",
+            "example": "Error message here"
+          }
+        }
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error_code": {
+            "type": "string",
+            "example": "PO_VALIDATION_ERROR"
+          },
+          "message": {
+            "type": "string",
+            "example": "Validation failed"
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "example": {
+              "po_date": ["The po date field is required."],
+              "supplier_id": ["The supplier id field is required."]
+            }
+          }
+        }
+      },
+      "Supplier": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        }
+      },
+      "Site": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Indent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "indent_number": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "Material": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "unit": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

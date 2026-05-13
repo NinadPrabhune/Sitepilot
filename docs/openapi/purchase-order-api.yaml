@@ -1,0 +1,456 @@
+openapi: 3.0.3
+info:
+  title: SitePilot Purchase Order API
+  description: |
+    Mobile API for Purchase Order in SitePilot ERP System.
+    
+    ## Authentication
+    This API uses Bearer Token authentication. Include the token in the Authorization header.
+    ```
+    Authorization: Bearer {{token}}
+    ```
+  version: 1.0.0
+  contact:
+    name: SitePilot Support
+    email: support@sitepilot.io
+
+servers:
+  - url: https://api.sitepilot.io
+    description: Production server
+  - url: http://localhost
+    description: Local development server
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    POItemSchema:
+      type: object
+      required:
+        - material_id
+        - quantity
+        - unit
+        - price
+      properties:
+        material_id:
+          type: integer
+        quantity:
+          type: number
+        unit:
+          type: string
+        price:
+          type: number
+        gst_master_id:
+          type: integer
+        discount_amount:
+          type: number
+        remarks:
+          type: string
+
+    POStoreSchema:
+      type: object
+      required:
+        - po_date
+        - supplier_id
+        - tax_type
+        - items
+      properties:
+        po_date:
+          type: string
+          format: date
+        supplier_id:
+          type: integer
+        site_id:
+          type: integer
+        indent_id:
+          type: integer
+        tax_type:
+          type: string
+          enum: [cgst, igst]
+        description:
+          type: string
+        delivery_date:
+          type: string
+          format: date
+        delivery_terms_conditions:
+          type: string
+        remark:
+          type: string
+        additional_charge:
+          type: number
+        additional_deduction:
+          type: number
+        additional_discount:
+          type: number
+        workspace_id:
+          type: integer
+        created_by:
+          type: integer
+        reference_file:
+          type: string
+          format: binary
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/POItemSchema'
+
+    POUpdateSchema:
+      type: object
+      required:
+        - po_date
+        - tax_type
+        - items
+      properties:
+        po_date:
+          type: string
+          format: date
+        supplier_id:
+          type: integer
+        site_id:
+          type: integer
+        indent_id:
+          type: integer
+        tax_type:
+          type: string
+          enum: [cgst, igst]
+        description:
+          type: string
+        delivery_date:
+          type: string
+          format: date
+        delivery_terms_conditions:
+          type: string
+        remark:
+          type: string
+        additional_charge:
+          type: number
+        additional_deduction:
+          type: number
+        additional_discount:
+          type: number
+        reference_file:
+          type: string
+          format: binary
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/POItemSchema'
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+
+    ErrorSchema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        error_code:
+          type: string
+        message:
+          type: string
+
+paths:
+  /api/purchase-orders:
+    get:
+      tags:
+        - Purchase Orders
+      summary: Get all Purchase Orders
+      operationId: getPurchaseOrders
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: workspace_id
+          in: query
+          schema:
+            type: integer
+        - name: site_id
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: array
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+
+    post:
+      tags:
+        - Purchase Orders
+      summary: Create Purchase Order
+      operationId: createPurchaseOrder
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/POStoreSchema'
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                po_date:
+                  type: string
+                  format: date
+                supplier_id:
+                  type: integer
+                site_id:
+                  type: integer
+                indent_id:
+                  type: integer
+                tax_type:
+                  type: string
+                description:
+                  type: string
+                delivery_date:
+                  type: string
+                  format: date
+                delivery_terms_conditions:
+                  type: string
+                remark:
+                  type: string
+                additional_charge:
+                  type: number
+                additional_deduction:
+                  type: number
+                additional_discount:
+                  type: number
+                workspace_id:
+                  type: integer
+                created_by:
+                  type: integer
+                reference_file:
+                  type: string
+                  format: binary
+                items:
+                  type: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+
+  /api/purchase-orders/create-data:
+    get:
+      tags:
+        - Purchase Orders
+      summary: Get PO create data
+      operationId: getPOCreateData
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: workspace_id
+          in: query
+          schema:
+            type: integer
+        - name: site_id
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /api/purchase-orders/{id}:
+    get:
+      tags:
+        - Purchase Orders
+      summary: Get Purchase Order
+      operationId: getPurchaseOrder
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+
+    put:
+      tags:
+        - Purchase Orders
+      summary: Update Purchase Order
+      operationId: updatePurchaseOrder
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/POUpdateSchema'
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                po_date:
+                  type: string
+                  format: date
+                supplier_id:
+                  type: integer
+                site_id:
+                  type: integer
+                indent_id:
+                  type: integer
+                tax_type:
+                  type: string
+                description:
+                  type: string
+                delivery_date:
+                  type: string
+                  format: date
+                delivery_terms_conditions:
+                  type: string
+                remark:
+                  type: string
+                additional_charge:
+                  type: number
+                additional_deduction:
+                  type: number
+                additional_discount:
+                  type: number
+                reference_file:
+                  type: string
+                  format: binary
+                items:
+                  type: string
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchema'
+
+    delete:
+      tags:
+        - Purchase Orders
+      summary: Delete Purchase Order
+      operationId: deletePurchaseOrder
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: Not Found
+
+  /api/purchase-orders/{id}/status:
+    put:
+      tags:
+        - Purchase Orders
+      summary: Update PO status
+      operationId: updatePOStatus
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+      responses:
+        '200':
+          description: Success
+
+  /api/purchase-orders/{id}/indent-materials:
+    get:
+      tags:
+        - Purchase Orders
+      summary: Get indent materials
+      operationId: getIndentMaterials
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+
+tags:
+  - name: Purchase Orders
+    description: Purchase Order endpoints

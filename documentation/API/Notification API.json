@@ -1,0 +1,181 @@
+{
+  "info": {
+    "name": "NotificationPageApiController",
+    "_postman_id": "b1a2c3d4-e5f6-7890-abcd-1234567890ab",
+    "description": "API collection for NotificationPageApiController with JWT Auth",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Notifications",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/notifications",
+          "host": ["{{baseUrl}}"],
+          "path": ["notifications"]
+        }
+      }
+    },
+    {
+      "name": "Get Unread Notifications",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/notifications/unread",
+          "host": ["{{baseUrl}}"],
+          "path": ["notifications", "unread"]
+        }
+      }
+    },
+    {
+      "name": "Mark Notification As Read",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/notifications/:id/read",
+          "host": ["{{baseUrl}}"],
+          "path": ["notifications", ":id", "read"]
+        }
+      }
+    },
+    {
+      "name": "Mark All Notifications As Read",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/notifications/read-all",
+          "host": ["{{baseUrl}}"],
+          "path": ["notifications", "read-all"]
+        }
+      }
+    },
+    {
+      "name": "Delete Notification",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/notifications/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["notifications", ":id"]
+        }
+      }
+    },
+    {
+      "name": "Delete All Notifications",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/notifications",
+          "host": ["{{baseUrl}}"],
+          "path": ["notifications"]
+        }
+      }
+    },
+    {
+      "name": "Get Unread Count",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/notifications/count",
+          "host": ["{{baseUrl}}"],
+          "path": ["notifications", "count"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}

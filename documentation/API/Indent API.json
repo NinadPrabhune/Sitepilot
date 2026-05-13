@@ -1,0 +1,170 @@
+{
+  "info": {
+    "name": "SitePilot Indent API",
+    "_postman_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "description": "Indent API Collection for SitePilot",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "token",
+      "value": "your_sanctum_token_here"
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Indents",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/indents",
+          "host": ["{{base_url}}"],
+          "path": ["api", "indents"]
+        }
+      }
+    },
+    {
+      "name": "Create Indent",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"workspace_id\": 1,\n  \"indent_date\": \"2026-02-28\",\n  \"supplier_id\": 1,\n  \"site_id\": 1,\n  \"description\": \"Test indent from Postman\",\n  \"assign_to\": [1,2],\n  \"delivery_date\": \"2026-03-05\",\n  \"remark\": \"Urgent delivery\",\n  \"items\": [\n    {\n      \"material_id\": 1,\n      \"quantity\": 10,\n      \"unit\": \"Nos\",\n      \"price\": 100,\n      \"remarks\": \"Test item\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/indents",
+          "host": ["{{base_url}}"],
+          "path": ["api", "indents"]
+        }
+      }
+    },
+    {
+      "name": "Show Indent",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/indents/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "indents", "1"]
+        }
+      }
+    },
+    {
+      "name": "Update Indent",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"workspace_id\": 1,\n  \"indent_date\": \"2026-02-28\",\n  \"supplier_id\": 1,\n  \"site_id\": 1,\n  \"description\": \"Updated indent\",\n  \"assign_to\": [1],\n  \"delivery_date\": \"2026-03-10\",\n  \"remark\": \"Updated remark\",\n  \"items\": [\n    {\n      \"material_id\": 1,\n      \"quantity\": 5,\n      \"unit\": \"Nos\",\n      \"price\": 120,\n      \"remarks\": \"Updated item\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/indents/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "indents", "1"]
+        }
+      }
+    },
+    {
+      "name": "Delete Indent",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/indents/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "indents", "1"]
+        }
+      }
+    },
+    {
+      "name": "Update Indent Status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Closed\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/indents/1/status",
+          "host": ["{{base_url}}"],
+          "path": ["api", "indents", "1", "status"]
+        }
+      }
+    }
+  ]
+}

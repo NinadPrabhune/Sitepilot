@@ -1,0 +1,1065 @@
+openapi: 3.0.3
+info:
+  title: SitePilot GRN API
+  description: |
+    Mobile API for Goods Receipt Note (GRN) in SitePilot ERP System.
+    
+    ## Authentication
+    This API uses Bearer Token authentication. Include the token in the Authorization header:
+    ```
+    Authorization: Bearer {{token}}
+    ```
+    
+    ## Features
+    - Create GRN from mobile application
+    - List all GRNs
+    - Get GRN details
+    - Edit GRN
+    - Update GRN
+    - Delete GRN
+    - Get PO details for GRN
+    - Update PO item received quantities
+    - Automatic PO status updates based on received quantities
+  version: 1.0.0
+  contact:
+    name: SitePilot Support
+    email: support@sitepilot.io
+
+servers:
+  - url: https://api.sitepilot.io
+    description: Production server
+  - url: http://localhost
+    description: Local development server
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT token obtained from login endpoint.
+        Include the token in the Authorization header.
+
+  schemas:
+    GrnCreateRequest:
+      type: object
+      required:
+        - po_id
+        - grn_date
+        - items
+      properties:
+        po_id:
+          type: integer
+          description: Purchase Order ID
+          example: 5
+        grn_date:
+          type: string
+          format: date
+          description: GRN Date
+          example: "2026-03-11"
+        delivery_challan_number:
+          type: string
+          description: Delivery Challan Number
+          example: "DC-4587"
+          nullable: true
+        vehicle_number:
+          type: string
+          description: Vehicle Number
+          example: "MH12AB1234"
+          nullable: true
+        gate_entry_number:
+          type: string
+          description: Gate Entry Number
+          example: "GE-2026-77"
+          nullable: true
+        description:
+          type: string
+          description: Description
+          nullable: true
+        received_by:
+          type: string
+          description: Received By
+          nullable: true
+        remarks:
+          type: string
+          description: Remarks
+          nullable: true
+        workspace_id:
+          type: integer
+          description: Workspace ID (optional - auto-detected if not provided)
+          example: 1
+          nullable: true
+        created_by:
+          type: integer
+          description: User ID who created the GRN (optional - auto-detected if not provided)
+          example: 1
+          nullable: true
+        delivery_challan_file:
+          type: string
+          format: binary
+          description: Delivery Challan File (pdf,doc,docx,jpg,jpeg,png) - max 10MB
+          nullable: true
+        reference_file:
+          type: string
+          format: binary
+          description: Reference File (pdf,doc,docx,jpg,jpeg,png) - max 10MB
+          nullable: true
+        items:
+          type: array
+          description: Array of GRN items (send as JSON string for form-data)
+          items:
+            $ref: '#/components/schemas/GrnItem'
+
+    GrnItem:
+      type: object
+      required:
+        - po_item_id
+        - received_qty
+        - accepted_qty
+        - rejected_qty
+      properties:
+        po_item_id:
+          type: integer
+          description: Purchase Order Item ID
+          example: 10
+        received_qty:
+          type: number
+          description: Received Quantity
+          minimum: 0
+          example: 42
+        accepted_qty:
+          type: number
+          description: Accepted Quantity
+          minimum: 0
+          example: 40
+        rejected_qty:
+          type: number
+          description: Rejected Quantity
+          minimum: 0
+          example: 2
+        remarks:
+          type: string
+          description: Remarks for the item
+          example: "2 items damaged"
+          nullable: true
+
+    GrnUpdateRequest:
+      type: object
+      required:
+        - grn_date
+      properties:
+        grn_date:
+          type: string
+          format: date
+          description: GRN Date
+          example: "2026-03-11"
+        delivery_challan_number:
+          type: string
+          description: Delivery Challan Number
+          nullable: true
+        vehicle_number:
+          type: string
+          description: Vehicle Number
+          nullable: true
+        gate_entry_number:
+          type: string
+          description: Gate Entry Number
+          nullable: true
+        description:
+          type: string
+          description: Description
+          nullable: true
+        received_by:
+          type: string
+          description: Received By
+          nullable: true
+        remarks:
+          type: string
+          description: Remarks
+          nullable: true
+
+    GrnStoreResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "GRN created successfully"
+        data:
+          type: object
+          properties:
+            grn_id:
+              type: integer
+              example: 45
+            grn_number:
+              type: string
+              example: "GRN-0045"
+
+    GrnListResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "GRNs fetched successfully"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Grn'
+
+    GrnShowResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "GRN fetched successfully"
+        data:
+          $ref: '#/components/schemas/Grn'
+
+    Grn:
+      type: object
+      properties:
+        id:
+          type: integer
+        grn_number:
+          type: string
+        po_id:
+          type: integer
+        supplier_id:
+          type: integer
+        site_id:
+          type: integer
+        grn_date:
+          type: string
+          format: date
+        delivery_challan_number:
+          type: string
+          nullable: true
+        vehicle_number:
+          type: string
+          nullable: true
+        gate_entry_number:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        received_by:
+          type: string
+          nullable: true
+        remarks:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [Pending, Completed, Partial]
+        created_by:
+          type: integer
+        workspace_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        supplier:
+          $ref: '#/components/schemas/Supplier'
+        site:
+          $ref: '#/components/schemas/Project'
+        purchase_order:
+          $ref: '#/components/schemas/PurchaseOrderSummary'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrnItemDetail'
+        creator:
+          $ref: '#/components/schemas/User'
+
+    GrnItemDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        grn_id:
+          type: integer
+        po_item_id:
+          type: integer
+        material_id:
+          type: integer
+        ordered_qty:
+          type: number
+        received_qty:
+          type: number
+        accepted_qty:
+          type: number
+        rejected_qty:
+          type: number
+        remarks:
+          type: string
+          nullable: true
+        material:
+          $ref: '#/components/schemas/Material'
+        po_item:
+          $ref: '#/components/schemas/PurchaseOrderItemSummary'
+
+    Supplier:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+
+    PurchaseOrderSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        po_number:
+          type: string
+
+    PurchaseOrderItemSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        material_id:
+          type: integer
+        quantity:
+          type: number
+
+    Material:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        unit:
+          $ref: '#/components/schemas/Unit'
+
+    Unit:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+
+    PoDetailsResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            po:
+              type: object
+              properties:
+                id:
+                  type: integer
+                po_number:
+                  type: string
+                po_date:
+                  type: string
+                supplier_id:
+                  type: integer
+                supplier_name:
+                  type: string
+                site_id:
+                  type: integer
+                site_name:
+                  type: string
+                status:
+                  type: string
+            items:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  material_id:
+                    type: integer
+                  material_name:
+                    type: string
+                  material_unit:
+                    type: string
+                  ordered_qty:
+                    type: number
+                  received_qty:
+                    type: number
+                  remaining_qty:
+                    type: number
+                  unit:
+                    type: string
+                  price:
+                    type: number
+
+    GrnCreateDataResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            purchase_orders:
+              type: array
+              items:
+                $ref: '#/components/schemas/PurchaseOrderForGrn'
+            selected_site_id:
+              type: integer
+
+    PurchaseOrderForGrn:
+      type: object
+      properties:
+        id:
+          type: integer
+        po_number:
+          type: string
+        po_date:
+          type: string
+        supplier:
+          $ref: '#/components/schemas/Supplier'
+        site:
+          $ref: '#/components/schemas/Project'
+        status:
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              material_id:
+                type: integer
+              material:
+                $ref: '#/components/schemas/Material'
+              quantity:
+                type: number
+              received_qty:
+                type: number
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Validation failed"
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Internal Server Error"
+
+paths:
+  /api/grn:
+    post:
+      tags:
+        - GRN (Goods Receipt Note)
+      summary: Create a new GRN
+      description: |
+        Create a new Goods Receipt Note from mobile application.
+        
+        This endpoint:
+        - Creates a GRN header with delivery details
+        - Creates GRN items for each received material
+        - Updates PO item received quantities
+        - Updates inventory (accepted quantity)
+        - Automatically updates PO status (Completed/Partial Received)
+        
+        **Supports multipart/form-data for file uploads**
+        - Use multipart/form-data when uploading files
+        - Items array should be sent as JSON string when using form-data
+      operationId: createGrn
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrnCreateRequest'
+            example:
+              po_id: 5
+              grn_date: "2026-03-11"
+              delivery_challan_number: "DC-4587"
+              vehicle_number: "MH12AB1234"
+              gate_entry_number: "GE-2026-77"
+              description: "Test GRN"
+              received_by: "John Doe"
+              remarks: "Test remarks"
+              items:
+                - po_item_id: 10
+                  received_qty: 42
+                  accepted_qty: 40
+                  rejected_qty: 2
+                  remarks: "2 items damaged"
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - po_id
+                - grn_date
+              properties:
+                po_id:
+                  type: integer
+                  description: Purchase Order ID
+                grn_date:
+                  type: string
+                  format: date
+                  description: GRN Date
+                delivery_challan_number:
+                  type: string
+                  description: Delivery Challan Number
+                vehicle_number:
+                  type: string
+                  description: Vehicle Number
+                gate_entry_number:
+                  type: string
+                  description: Gate Entry Number
+                description:
+                  type: string
+                  description: Description
+                received_by:
+                  type: string
+                  description: Received By
+                remarks:
+                  type: string
+                  description: Remarks
+                workspace_id:
+                  type: integer
+                  description: Workspace ID
+                created_by:
+                  type: integer
+                  description: Created By User ID
+                items:
+                  type: string
+                  description: JSON string of items array
+                delivery_challan_file:
+                  type: string
+                  format: binary
+                  description: Delivery Challan File (pdf,doc,docx,jpg,jpeg,png) - max 10MB
+                reference_file:
+                  type: string
+                  format: binary
+                  description: Reference File (pdf,doc,docx,jpg,jpeg,png) - max 10MB
+      responses:
+        '200':
+          description: GRN created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrnStoreResponse'
+              example:
+                status: true
+                message: "GRN created successfully"
+                data:
+                  grn_id: 45
+                  grn_number: "GRN-0045"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags:
+        - GRN (Goods Receipt Note)
+      summary: Get all GRNs
+      description: Retrieve all Goods Receipt Notes for the authenticated user
+      operationId: getGrns
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: workspace_id
+          in: query
+          description: Workspace ID
+          required: false
+          schema:
+            type: integer
+        - name: site_id
+          in: query
+          description: Site/Project ID
+          required: false
+          schema:
+            type: integer
+        - name: po_id
+          in: query
+          description: Purchase Order ID
+          required: false
+          schema:
+            type: integer
+        - name: status
+          in: query
+          description: GRN Status (Pending, Completed, Partial)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: GRNs fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrnListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/grn/create:
+    get:
+      tags:
+        - GRN (Goods Receipt Note)
+      summary: Get data for creating a new GRN
+      description: Returns list of approved purchase orders that are not fully received
+      operationId: getGrnCreateData
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: workspace_id
+          in: query
+          description: Workspace ID
+          required: false
+          schema:
+            type: integer
+        - name: site_id
+          in: query
+          description: Site/Project ID
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: GRN create data fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrnCreateDataResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/grn/po-details:
+    get:
+      tags:
+        - GRN (Goods Receipt Note)
+      summary: Fetch PO details for GRN
+      description: Get purchase order details including items with remaining quantities
+      operationId: getPoDetails
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: po_id
+          in: query
+          description: Purchase Order ID
+          required: true
+          schema:
+            type: integer
+          example: 5
+      responses:
+        '200':
+          description: PO details fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoDetailsResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/grn/{id}:
+    get:
+      tags:
+        - GRN (Goods Receipt Note)
+      summary: Get a specific GRN
+      description: Retrieve a specific Goods Receipt Note by ID
+      operationId: getGrn
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: GRN ID
+          required: true
+          schema:
+            type: integer
+          example: 45
+      responses:
+        '200':
+          description: GRN fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrnShowResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: GRN not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: false
+                message: "GRN not found"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      tags:
+        - GRN (Goods Receipt Note)
+      summary: Update a GRN
+      description: Update an existing Goods Receipt Note
+      operationId: updateGrn
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: GRN ID
+          required: true
+          schema:
+            type: integer
+          example: 45
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrnUpdateRequest'
+            example:
+              grn_date: "2026-03-12"
+              delivery_challan_number: "DC-4588"
+              vehicle_number: "MH12AB1235"
+              gate_entry_number: "GE-2026-78"
+              description: "Updated description"
+              received_by: "Jane Doe"
+              remarks: "Updated remarks"
+      responses:
+        '200':
+          description: GRN updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Grn'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: GRN not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - GRN (Goods Receipt Note)
+      summary: Delete a GRN
+      description: Delete a Goods Receipt Note and reverse inventory
+      operationId: deleteGrn
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: GRN ID
+          required: true
+          schema:
+            type: integer
+          example: 45
+      responses:
+        '200':
+          description: GRN deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                status: true
+                message: "GRN deleted successfully"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: GRN not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/grn/{id}/edit:
+    get:
+      tags:
+        - GRN (Goods Receipt Note)
+      summary: Get data for editing a GRN
+      description: Retrieve GRN data for editing
+      operationId: editGrn
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: GRN ID
+          required: true
+          schema:
+            type: integer
+          example: 45
+      responses:
+        '200':
+          description: GRN data fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Grn'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: GRN not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/grn/create-data:
+    post:
+      tags:
+        - GRN (Goods Receipt Note)
+      summary: Create a new GRN (Legacy)
+      description: |
+        Legacy endpoint for creating GRN. Use POST /api/grn instead.
+        This endpoint creates a new Goods Receipt Note from mobile application.
+        
+        **Supports multipart/form-data for file uploads**
+      operationId: createGrnLegacy
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrnCreateRequest'
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - po_id
+                - grn_date
+              properties:
+                po_id:
+                  type: integer
+                grn_date:
+                  type: string
+                  format: date
+                delivery_challan_number:
+                  type: string
+                vehicle_number:
+                  type: string
+                gate_entry_number:
+                  type: string
+                description:
+                  type: string
+                received_by:
+                  type: string
+                remarks:
+                  type: string
+                workspace_id:
+                  type: integer
+                created_by:
+                  type: integer
+                items:
+                  type: string
+                  description: JSON string of items array
+                delivery_challan_file:
+                  type: string
+                  format: binary
+                reference_file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: GRN created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrnStoreResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+tags:
+  - name: GRN (Goods Receipt Note)
+    description: Goods Receipt Note endpoints for mobile API

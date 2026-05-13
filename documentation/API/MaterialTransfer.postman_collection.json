@@ -1,0 +1,95 @@
+{
+  "info": {
+    "name": "Material Transfer API",
+    "_postman_id": "12345678-abcd-efgh-ijkl-987654321000",
+    "description": "Postman collection for MaterialTransfer API routes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Transfers",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": { "raw": "{{base_url}}/api/material-transfer", "host": ["{{base_url}}"], "path": ["api","material-transfer"] }
+      }
+    },
+    {
+      "name": "Create Transfer",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"record_date\": \"2025-11-15\",\n  \"from_site_id\": 1,\n  \"to_site_id\": 2,\n  \"items\": [\n    {\n      \"material_id\": 5,\n      \"quantity\": 10,\n      \"unit\": \"kg\",\n      \"price\": 100\n    }\n  ]\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/material-transfer", "host": ["{{base_url}}"], "path": ["api","material-transfer"] }
+      }
+    },
+    {
+      "name": "Show Transfer",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": { "raw": "{{base_url}}/api/material-transfer/1", "host": ["{{base_url}}"], "path": ["api","material-transfer","1"] }
+      }
+    },
+    {
+      "name": "Update Transfer",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"record_date\": \"2025-11-16\",\n  \"from_site_id\": 1,\n  \"to_site_id\": 3,\n  \"items\": [\n    {\n      \"material_id\": 5,\n      \"quantity\": 20,\n      \"unit\": \"kg\",\n      \"price\": 95\n    }\n  ]\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/material-transfer/1", "host": ["{{base_url}}"], "path": ["api","material-transfer","1"] }
+      }
+    },
+    {
+      "name": "Delete Transfer",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": { "raw": "{{base_url}}/api/material-transfer/1", "host": ["{{base_url}}"], "path": ["api","material-transfer","1"] }
+      }
+    },
+    {
+      "name": "Create Data",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"site_id\": 1,\n  \"workspace_id\": 2\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/material-transfer/create-data", "host": ["{{base_url}}"], "path": ["api","material-transfer","create-data"] }
+      }
+    },
+    {
+      "name": "Get Stock By Site",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+        ],
+        "url": { "raw": "{{base_url}}/api/ajax/get-stock-by-site?site_id=1", "host": ["{{base_url}}"], "path": ["api","ajax","get-stock-by-site"], "query": [{ "key": "site_id", "value": "1" }] }
+      }
+    }
+  ]
+}

@@ -1,0 +1,854 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Payments Module API",
+    "description": "API documentation for Payments Module with endpoints for managing payments, allocations, and related operations.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Base URL for API requests. Full endpoint example: /api/payments"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Payments",
+      "description": "Payment management endpoints"
+    }
+  ],
+  "paths": {
+    "/api/payments": {
+      "get": {
+        "tags": ["Payments"],
+        "summary": "List all payments",
+        "description": "Returns a list of all payments with optional filtering by supplier_id, site_id, and workspace_id.",
+        "operationId": "listPayments",
+        "parameters": [
+          {"name": "supplier_id", "in": "query", "description": "Filter by supplier ID", "schema": {"type": "integer"}},
+          {"name": "site_id", "in": "query", "description": "Filter by site ID", "schema": {"type": "integer"}},
+          {"name": "workspace_id", "in": "query", "description": "Filter by workspace ID", "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Payments retrieved successfully",
+                  "data": [
+                    {
+                      "id": 1,
+                      "payment_number": "PAY-0001",
+                      "created_by": 1,
+                      "workspace_id": 1,
+                      "supplier_id": 1,
+                      "site_id": 1,
+                      "payment_date": "2026-03-24",
+                      "amount": 5000.00,
+                      "payment_type": "against_invoice",
+                      "mode": "bank_transfer",
+                      "reference_number": "REF-001",
+                      "notes": "Payment for invoice",
+                      "purchase_invoice_id": 1,
+                      "purchase_order_id": null,
+                      "ac_payment_status": "approved",
+                      "rejection_reason": null,
+                      "payment_proff_file": null,
+                      "created_at": "2026-03-24T10:00:00Z",
+                      "updated_at": "2026-03-24T10:00:00Z",
+                      "supplier": {"id": 1, "name": "ABC Suppliers"},
+                      "site": {"id": 1, "name": "Project Site A"}
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Unauthenticated", "data": null}
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Failed to fetch payments", "data": null}
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Payments"],
+        "summary": "Create a new payment",
+        "description": "Creates a new payment record. Supports payment types: against_invoice, advance, and mixed.\n\n--- MOBILE DEVELOPER FORM-DATA GUIDE ---\n\nALWAYS REQUIRED (include in every request):\n- created_by (integer): User ID who created the payment\n- workspace_id (integer): Workspace ID\n- supplier_id (integer): Supplier ID - must exist in suppliers table\n- site_id (integer): Site/Project ID - must exist in projects table\n- payment_date (string): Payment date in YYYY-MM-DD format\n- amount (number): Payment amount - must be greater than 0\n- payment_type (string): Type - enum: against_invoice, advance, mixed\n\nOPTIONAL FIELDS:\n- mode (string): Payment mode - bank_transfer, cash, check, online\n- reference_number (string): Reference number\n- notes (string): Additional notes\n- purchase_invoice_id (integer): Purchase Invoice ID\n- purchase_order_id (integer): REQUIRED if payment_type=advance\n- ac_payment_status (string): pending, approved, rejected\n- rejection_reason (string): REQUIRED if ac_payment_status=rejected\n- payment_proff_file (file): Payment proof file upload\n- allocations (string): JSON array - REQUIRED if payment_type=against_invoice or mixed\n  Format: [{\"invoice_id\":1,\"order_id\":1,\"amount\":2500.00}]\n  Each item: invoice_id (required), order_id (optional), amount (required > 0)",
+        "operationId": "createPayment",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "created_by": {
+                    "type": "integer",
+                    "description": "User ID who created the payment (ALWAYS REQUIRED)",
+                    "example": 1
+                  },
+                  "workspace_id": {
+                    "type": "integer",
+                    "description": "Workspace ID (ALWAYS REQUIRED)",
+                    "example": 1
+                  },
+                  "supplier_id": {
+                    "type": "integer",
+                    "description": "Supplier ID - must exist in suppliers table (ALWAYS REQUIRED)",
+                    "example": 1
+                  },
+                  "site_id": {
+                    "type": "integer",
+                    "description": "Site/Project ID - must exist in projects table (ALWAYS REQUIRED)",
+                    "example": 1
+                  },
+                  "payment_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Payment date in YYYY-MM-DD format (ALWAYS REQUIRED)",
+                    "example": "2026-03-24"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "description": "Payment amount - must be greater than 0 (ALWAYS REQUIRED)",
+                    "example": 5000.00
+                  },
+                  "payment_type": {
+                    "type": "string",
+                    "enum": ["against_invoice", "advance", "mixed"],
+                    "description": "Type of payment - against_invoice: payment for specific invoices, advance: payment before invoice, mixed: combination (ALWAYS REQUIRED)",
+                    "example": "against_invoice"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "description": "Payment mode: bank_transfer, cash, check, online (OPTIONAL)",
+                    "example": "bank_transfer"
+                  },
+                  "reference_number": {
+                    "type": "string",
+                    "description": "Reference number for the payment (OPTIONAL)",
+                    "example": "REF-001"
+                  },
+                  "notes": {
+                    "type": "string",
+                    "description": "Additional notes or description (OPTIONAL)",
+                    "example": "Payment for invoice"
+                  },
+                  "purchase_invoice_id": {
+                    "type": "integer",
+                    "description": "Purchase Invoice ID - links payment to a specific invoice (OPTIONAL)",
+                    "example": 1
+                  },
+                  "purchase_order_id": {
+                    "type": "integer",
+                    "description": "Purchase Order ID - REQUIRED if payment_type=advance, otherwise optional",
+                    "example": 1
+                  },
+                  "ac_payment_status": {
+                    "type": "string",
+                    "enum": ["pending", "approved", "rejected"],
+                    "description": "Account payment status: pending (default), approved, rejected (OPTIONAL)",
+                    "example": "approved"
+                  },
+                  "rejection_reason": {
+                    "type": "string",
+                    "description": "Reason for rejection - REQUIRED if ac_payment_status=rejected",
+                    "example": "Incorrect details"
+                  },
+                  "payment_proff_file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Payment proof file upload - image or document file (OPTIONAL)"
+                  },
+                  "allocations": {
+                    "type": "string",
+                    "description": "JSON array of allocations - REQUIRED if payment_type=against_invoice or mixed. Format: [{\"invoice_id\":1,\"order_id\":1,\"amount\":2500.00}]. Each allocation needs invoice_id and amount (>0), order_id is optional.",
+                    "example": "[{\"invoice_id\":1,\"order_id\":1,\"amount\":2500.00}]"
+                  }
+                },
+                "required": ["created_by", "workspace_id", "supplier_id", "site_id", "payment_date", "amount", "payment_type"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Payment created successfully",
+                  "data": {
+                    "id": 1,
+                    "payment_number": "PAY-0001",
+                    "created_by": 1,
+                    "workspace_id": 1,
+                    "supplier_id": 1,
+                    "site_id": 1,
+                    "payment_date": "2026-03-24",
+                    "amount": 5000.00,
+                    "payment_type": "against_invoice",
+                    "mode": "bank_transfer",
+                    "reference_number": "REF-001",
+                    "notes": "Payment for invoice",
+                    "purchase_invoice_id": null,
+                    "purchase_order_id": null,
+                    "ac_payment_status": "pending",
+                    "rejection_reason": null,
+                    "payment_proff_file": null,
+                    "created_at": "2026-03-24T10:00:00Z",
+                    "updated_at": "2026-03-24T10:00:00Z",
+                    "supplier": {"id": 1, "name": "ABC Suppliers"},
+                    "site": {"id": 1, "name": "Project Site A"},
+                    "allocations": [
+                      {"id": 1, "payment_module_id": 1, "purchase_invoice_id": 1, "purchase_order_id": 1, "allocated_amount": 5000.00}
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Unauthenticated", "data": null}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "The supplier_id field is required.",
+                  "data": null,
+                  "errors": {
+                    "supplier_id": ["The supplier_id field is required."],
+                    "payment_type": ["The payment_type field is required."],
+                    "amount": ["The amount field is required."]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Failed to create payment", "data": null}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payments/{id}": {
+      "get": {
+        "tags": ["Payments"],
+        "summary": "Get a single payment",
+        "description": "Returns details of a specific payment by ID.",
+        "operationId": "showPayment",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "description": "Payment ID", "schema": {"type": "integer", "example": 1}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Payment retrieved successfully",
+                  "data": {
+                    "id": 1,
+                    "payment_number": "PAY-0001",
+                    "created_by": 1,
+                    "workspace_id": 1,
+                    "supplier_id": 1,
+                    "site_id": 1,
+                    "payment_date": "2026-03-24",
+                    "amount": 5000.00,
+                    "payment_type": "against_invoice",
+                    "mode": "bank_transfer",
+                    "reference_number": "REF-001",
+                    "notes": "Payment for invoice",
+                    "purchase_invoice_id": 1,
+                    "purchase_order_id": null,
+                    "ac_payment_status": "approved",
+                    "rejection_reason": null,
+                    "payment_proff_file": "/storage/payments/proofs/file_123456.jpg",
+                    "created_at": "2026-03-24T10:00:00Z",
+                    "updated_at": "2026-03-24T10:00:00Z",
+                    "supplier": {"id": 1, "name": "ABC Suppliers"},
+                    "site": {"id": 1, "name": "Project Site A"},
+                    "invoice": {"id": 1, "invoice_number": "INV-001", "creator": {"id": 1, "name": "John Doe"}},
+                    "allocations": [
+                      {
+                        "id": 1,
+                        "payment_module_id": 1,
+                        "purchase_invoice_id": 1,
+                        "purchase_order_id": 1,
+                        "allocated_amount": 5000.00,
+                        "invoice": {"id": 1, "invoice_number": "INV-001"},
+                        "purchase_order": {"id": 1, "po_number": "PO-001"}
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Payment not found",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Payment not found", "data": null}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Unauthenticated", "data": null}
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Failed to fetch payment", "data": null}
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Payments"],
+        "summary": "Update a payment",
+        "description": "Updates an existing payment. Note: Existing allocations are deleted and recreated.\n\n--- MOBILE DEVELOPER FORM-DATA GUIDE ---\n\nALWAYS REQUIRED (include in every request):\n- created_by (integer): User ID who created the payment\n- workspace_id (integer): Workspace ID\n- supplier_id (integer): Supplier ID - must exist in suppliers table\n- site_id (integer): Site/Project ID - must exist in projects table\n- payment_date (string): Payment date in YYYY-MM-DD format\n- amount (number): Payment amount - must be greater than 0\n- payment_type (string): Type - enum: against_invoice, advance, mixed\n\nOPTIONAL FIELDS:\n- mode (string): Payment mode - bank_transfer, cash, check, online\n- reference_number (string): Reference number\n- notes (string): Additional notes\n- purchase_invoice_id (integer): Purchase Invoice ID\n- purchase_order_id (integer): REQUIRED if payment_type=advance\n- ac_payment_status (string): pending, approved, rejected\n- rejection_reason (string): REQUIRED if ac_payment_status=rejected\n- payment_proff_file (file): Payment proof file upload\n- allocations (string): JSON array - REQUIRED if payment_type=against_invoice or mixed\n  Format: [{\"invoice_id\":1,\"order_id\":1,\"amount\":2500.00}]",
+        "operationId": "updatePayment",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "description": "Payment ID to update", "schema": {"type": "integer", "example": 1}}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "created_by": {
+                    "type": "integer",
+                    "description": "User ID (ALWAYS REQUIRED)",
+                    "example": 1
+                  },
+                  "workspace_id": {
+                    "type": "integer",
+                    "description": "Workspace ID (ALWAYS REQUIRED)",
+                    "example": 1
+                  },
+                  "supplier_id": {
+                    "type": "integer",
+                    "description": "Supplier ID - must exist in suppliers table (ALWAYS REQUIRED)",
+                    "example": 1
+                  },
+                  "site_id": {
+                    "type": "integer",
+                    "description": "Site/Project ID - must exist in projects table (ALWAYS REQUIRED)",
+                    "example": 1
+                  },
+                  "payment_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Payment date in YYYY-MM-DD format (ALWAYS REQUIRED)",
+                    "example": "2026-03-24"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "description": "Payment amount - must be greater than 0 (ALWAYS REQUIRED)",
+                    "example": 7500.00
+                  },
+                  "payment_type": {
+                    "type": "string",
+                    "enum": ["against_invoice", "advance", "mixed"],
+                    "description": "Type of payment (ALWAYS REQUIRED)",
+                    "example": "against_invoice"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "description": "Payment mode: bank_transfer, cash, check, online (OPTIONAL)",
+                    "example": "bank_transfer"
+                  },
+                  "reference_number": {
+                    "type": "string",
+                    "description": "Reference number (OPTIONAL)",
+                    "example": "REF-002"
+                  },
+                  "notes": {
+                    "type": "string",
+                    "description": "Additional notes (OPTIONAL)",
+                    "example": "Updated payment"
+                  },
+                  "purchase_invoice_id": {
+                    "type": "integer",
+                    "description": "Purchase Invoice ID (OPTIONAL)",
+                    "example": 1
+                  },
+                  "purchase_order_id": {
+                    "type": "integer",
+                    "description": "Purchase Order ID - REQUIRED if payment_type=advance (OPTIONAL)",
+                    "example": 1
+                  },
+                  "ac_payment_status": {
+                    "type": "string",
+                    "enum": ["pending", "approved", "rejected"],
+                    "description": "Account payment status (OPTIONAL)",
+                    "example": "approved"
+                  },
+                  "rejection_reason": {
+                    "type": "string",
+                    "description": "Reason for rejection - REQUIRED if ac_payment_status=rejected",
+                    "example": "Verified"
+                  },
+                  "payment_proff_file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Payment proof file upload (OPTIONAL)"
+                  },
+                  "allocations": {
+                    "type": "string",
+                    "description": "JSON array of allocations - REQUIRED if payment_type=against_invoice or mixed. Format: [{\"invoice_id\":1,\"order_id\":1,\"amount\":2500.00}]",
+                    "example": "[{\"invoice_id\":1,\"order_id\":1,\"amount\":7500.00}]"
+                  }
+                },
+                "required": ["created_by", "workspace_id", "supplier_id", "site_id", "payment_date", "amount", "payment_type"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment updated successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Payment updated successfully",
+                  "data": {
+                    "id": 1,
+                    "payment_number": "PAY-0001",
+                    "created_by": 1,
+                    "workspace_id": 1,
+                    "supplier_id": 1,
+                    "site_id": 1,
+                    "payment_date": "2026-03-24",
+                    "amount": 7500.00,
+                    "payment_type": "against_invoice",
+                    "mode": "bank_transfer",
+                    "reference_number": "REF-002",
+                    "notes": "Updated payment",
+                    "ac_payment_status": "approved",
+                    "created_at": "2026-03-24T10:00:00Z",
+                    "updated_at": "2026-03-25T14:30:00Z",
+                    "supplier": {"id": 1, "name": "ABC Suppliers"},
+                    "site": {"id": 1, "name": "Project Site A"},
+                    "allocations": [{"id": 2, "payment_module_id": 1, "purchase_invoice_id": 1, "allocated_amount": 7500.00}]
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Payment not found",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Payment not found", "data": null}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Unauthenticated", "data": null}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "The amount must be greater than 0.", "data": null}
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Failed to update payment", "data": null}
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Payments"],
+        "summary": "Delete a payment",
+        "description": "Deletes a payment record. Warning: This also deletes associated allocations.",
+        "operationId": "deletePayment",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "description": "Payment ID to delete", "schema": {"type": "integer", "example": 1}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment deleted successfully",
+            "content": {
+              "application/json": {
+                "example": {"success": true, "message": "Payment deleted successfully", "data": null}
+              }
+            }
+          },
+          "404": {
+            "description": "Payment not found",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Payment not found", "data": null}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Unauthenticated", "data": null}
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Failed to delete payment", "data": null}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payments/create-data": {
+      "post": {
+        "tags": ["Payments"],
+        "summary": "Get create payment form data",
+        "description": "Returns dropdown options and initial data for creating a new payment.",
+        "operationId": "getCreateData",
+        "parameters": [
+          {"name": "site_id", "in": "query", "description": "Filter by site ID (optional)", "schema": {"type": "integer"}},
+          {"name": "workspace_id", "in": "query", "description": "Filter by workspace ID (optional)", "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Data retrieved successfully",
+                  "data": {
+                    "suppliers": {"1": "ABC Suppliers", "2": "XYZ Corporation"},
+                    "invoices": {"1": "INV-001", "2": "INV-002"},
+                    "sites": [{"id": 1, "name": "Project Site A"}, {"id": 2, "name": "Project Site B"}],
+                    "purchase_orders": {"1": "PO-001", "2": "PO-002"},
+                    "customFields": null,
+                    "nextPaymentNumber": "PAY-0005"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Unauthenticated", "data": null}
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Failed to load create data", "data": null}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payments/create-from-po/{po_id}": {
+      "get": {
+        "tags": ["Payments"],
+        "summary": "Prefill payment from Purchase Order",
+        "description": "Returns prefill data for creating a payment from a Purchase Order. Sets payment_type to advance by default.",
+        "operationId": "createFromPO",
+        "parameters": [
+          {"name": "po_id", "in": "path", "required": true, "description": "Purchase Order ID", "schema": {"type": "integer", "example": 1}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Payment data prefilled successfully",
+                  "data": {
+                    "purchase_order_id": 1,
+                    "po_number": "PO-ECO-2026-00001",
+                    "supplier_id": 1,
+                    "supplier_name": "ABC Suppliers",
+                    "site_id": 1,
+                    "site_name": "Project Site A",
+                    "order_amount": 15000.00
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Purchase Order not found",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Purchase Order not found", "data": null}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Unauthenticated", "data": null}
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Failed to fetch purchase order data", "data": null}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payments/create-from-invoice/{invoice_id}": {
+      "get": {
+        "tags": ["Payments"],
+        "summary": "Prefill payment from Invoice",
+        "description": "Returns prefill data for creating a payment from a Purchase Invoice. Includes balance calculation.",
+        "operationId": "createFromInvoice",
+        "parameters": [
+          {"name": "invoice_id", "in": "path", "required": true, "description": "Purchase Invoice ID", "schema": {"type": "integer", "example": 1}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Payment data prefilled successfully",
+                  "data": {
+                    "purchase_invoice_id": 1,
+                    "invoice_number": "INV-001",
+                    "supplier_id": 1,
+                    "supplier_name": "ABC Suppliers",
+                    "site_id": 1,
+                    "site_name": "Project Site A",
+                    "payment_type": "against_invoice",
+                    "invoice": {
+                      "id": 1,
+                      "invoice_number": "INV-001",
+                      "invoice_date": "2026-03-10",
+                      "total_amount": 5000.00,
+                      "paid_amount": 2000.00,
+                      "balance": 3000.00,
+                      "status": "partial"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invoice not found",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Invoice not found", "data": null}
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Unauthenticated", "data": null}
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Failed to prefill payment data", "data": null}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payments/supplier-unpaid-invoices": {
+      "get": {
+        "tags": ["Payments"],
+        "summary": "Get supplier's unpaid invoices",
+        "description": "Returns a list of unpaid invoices for a specific supplier.",
+        "operationId": "getSupplierUnpaidInvoices",
+        "parameters": [
+          {"name": "supplier_id", "in": "query", "required": true, "description": "Supplier ID (required)", "schema": {"type": "integer", "example": 1}},
+          {"name": "site_id", "in": "query", "description": "Site ID (optional)", "schema": {"type": "integer", "example": 1}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Unpaid invoices retrieved successfully",
+                  "data": [
+                    {"id": 1, "invoice_number": "INV-001", "invoice_date": "2026-03-10", "total_amount": 5000.00, "paid_amount": 2000.00, "balance": 3000.00},
+                    {"id": 2, "invoice_number": "INV-002", "invoice_date": "2026-03-15", "total_amount": 3000.00, "paid_amount": 0.00, "balance": 3000.00}
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Unauthenticated", "data": null}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "The supplier_id field is required.", "data": null}
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Failed to fetch unpaid invoices", "data": null}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payments/adjustable-advances": {
+      "get": {
+        "tags": ["Payments"],
+        "summary": "Get adjustable advance payments",
+        "description": "Returns advance payments that can be adjusted against invoices (where unallocated_amount > 0).",
+        "operationId": "getAdjustableAdvances",
+        "parameters": [
+          {"name": "supplier_id", "in": "query", "required": true, "description": "Supplier ID (required)", "schema": {"type": "integer", "example": 1}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Adjustable advances retrieved successfully",
+                  "data": [
+                    {"id": 1, "payment_number": "PAY-0001", "payment_date": "2026-03-20", "amount": 5000.00, "unallocated_amount": 3000.00},
+                    {"id": 3, "payment_number": "PAY-0003", "payment_date": "2026-03-22", "amount": 2000.00, "unallocated_amount": 2000.00}
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Unauthenticated", "data": null}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "The supplier_id field is required.", "data": null}
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "example": {"success": false, "message": "Failed to fetch adjustable advances", "data": null}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT Bearer Token authentication. Include in all requests: Authorization: Bearer {your_token_here}"
+      }
+    }
+  }
+}

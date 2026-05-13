@@ -1,0 +1,750 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "SitePilot Indent API",
+    "description": "Indent API Collection for SitePilot",
+    "version": "1.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/api/indents": {
+      "get": {
+        "summary": "Get Indents",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "site_id",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "14",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace_id",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{token}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Indent",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{token}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "workspace_id": {
+                    "example": " 1",
+                    "type": "string"
+                  },
+                  "indent_date": {
+                    "example": " 2026-02-28",
+                    "type": "string"
+                  },
+                  "supplier_id": {
+                    "example": " 1",
+                    "type": "string"
+                  },
+                  "site_id": {
+                    "example": "6",
+                    "type": "string"
+                  },
+                  "description": {
+                    "example": " Test indent from Postman",
+                    "type": "string"
+                  },
+                  "assign_to[]": {
+                    "example": [
+                      "4",
+                      "28"
+                    ],
+                    "type": "array"
+                  },
+                  "delivery_date": {
+                    "example": " 2026-03-05",
+                    "type": "string"
+                  },
+                  "remark": {
+                    "example": " Urgent delivery",
+                    "type": "string"
+                  },
+                  "items[0][material_id]": {
+                    "example": " 1",
+                    "type": "string"
+                  },
+                  "items[0][quantity]": {
+                    "example": " 10",
+                    "type": "string"
+                  },
+                  "items[0][unit]": {
+                    "example": " Nos",
+                    "type": "string"
+                  },
+                  "items[0][price]": {
+                    "example": " 100",
+                    "type": "string"
+                  },
+                  "items[0][remarks]": {
+                    "example": " Test item",
+                    "type": "string"
+                  },
+                  "reference_file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "created_by": {
+                    "example": "10",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "workspace_id",
+                  "indent_date",
+                  "supplier_id",
+                  "site_id",
+                  "description",
+                  "assign_to[]",
+                  "delivery_date",
+                  "remark",
+                  "items[0][material_id]",
+                  "items[0][quantity]",
+                  "items[0][unit]",
+                  "items[0][price]",
+                  "items[0][remarks]",
+                  "reference_file",
+                  "created_by"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/indents/7": {
+      "post": {
+        "summary": "Update Indent",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{token}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "workspace_id": {
+                    "example": " 1",
+                    "type": "string"
+                  },
+                  "indent_date": {
+                    "example": " 2026-02-28",
+                    "type": "string"
+                  },
+                  "supplier_id": {
+                    "example": " 1",
+                    "type": "string"
+                  },
+                  "site_id": {
+                    "example": " 6",
+                    "type": "string"
+                  },
+                  "description": {
+                    "example": " Test indent from Postman",
+                    "type": "string"
+                  },
+                  "assign_to[]": {
+                    "example": [
+                      " 1",
+                      " 2"
+                    ],
+                    "type": "array"
+                  },
+                  "delivery_date": {
+                    "example": " 2026-03-05",
+                    "type": "string"
+                  },
+                  "remark": {
+                    "example": " Urgent delivery",
+                    "type": "string"
+                  },
+                  "items[0][material_id]": {
+                    "example": " 1",
+                    "type": "string"
+                  },
+                  "items[0][quantity]": {
+                    "example": " 10",
+                    "type": "string"
+                  },
+                  "items[0][unit]": {
+                    "example": " Nos",
+                    "type": "string"
+                  },
+                  "items[0][price]": {
+                    "example": " 100",
+                    "type": "string"
+                  },
+                  "items[0][remarks]": {
+                    "example": " Test item",
+                    "type": "string"
+                  },
+                  "created_by": {
+                    "example": "10",
+                    "type": "string"
+                  },
+                  "_method": {
+                    "example": "PUT",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "workspace_id",
+                  "indent_date",
+                  "supplier_id",
+                  "site_id",
+                  "description",
+                  "assign_to[]",
+                  "delivery_date",
+                  "remark",
+                  "items[0][material_id]",
+                  "items[0][quantity]",
+                  "items[0][unit]",
+                  "items[0][price]",
+                  "items[0][remarks]",
+                  "created_by",
+                  "_method"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "{{base_url}}/api/indents/7",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{token}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "workspace_id": {
+                    "example": "1",
+                    "type": "string"
+                  },
+                  "indent_date": {
+                    "example": "2026-02-28",
+                    "type": "string"
+                  },
+                  "supplier_id": {
+                    "example": "1",
+                    "type": "string"
+                  },
+                  "site_id": {
+                    "example": "6",
+                    "type": "string"
+                  },
+                  "description": {
+                    "example": "Test indent from Postman",
+                    "type": "string"
+                  },
+                  "assign_to[]": {
+                    "example": [
+                      "1",
+                      "2"
+                    ],
+                    "type": "array"
+                  },
+                  "delivery_date": {
+                    "example": "2026-03-05",
+                    "type": "string"
+                  },
+                  "remark": {
+                    "example": "Urgent delivery",
+                    "type": "string"
+                  },
+                  "items[0][material_id]": {
+                    "example": "1",
+                    "type": "string"
+                  },
+                  "items[0][quantity]": {
+                    "example": "10",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "workspace_id",
+                  "indent_date",
+                  "supplier_id",
+                  "site_id",
+                  "description",
+                  "assign_to[]",
+                  "delivery_date",
+                  "remark",
+                  "items[0][material_id]",
+                  "items[0][quantity]"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/indents/11": {
+      "get": {
+        "summary": "Show Indent",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{token}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/indents/1": {
+      "delete": {
+        "summary": "Delete Indent",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{token}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/indents/5/status": {
+      "post": {
+        "summary": "Update Indent Status",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{token}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "_method": {
+                    "example": "PUT",
+                    "type": "string"
+                  },
+                  "status": {
+                    "example": "Closed",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "_method",
+                  "status"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/indents/create-data": {
+      "post": {
+        "summary": "Create Data Indent",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer {{token}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "site_id": {
+                    "type": "integer"
+                  },
+                  "workspace_id": {
+                    "type": "integer"
+                  },
+                  "created_by": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "site_id",
+                  "workspace_id",
+                  "created_by"
+                ]
+              },
+              "example": {
+                "site_id": 6,
+                "workspace_id": 1,
+                "created_by": 9
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "responses": {},
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "servers": [],
+  "security": []
+}

@@ -1,0 +1,80 @@
+{
+  "info": {
+    "name": "Attendance Clock In/Out API",
+    "_postman_id": "attendance-clockinout-collection-001",
+    "description": "Postman collection for Workdo HRM Attendance Clock In/Out API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Clock In",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/Hrm/clock-in-out",
+          "host": ["{{base_url}}"],
+          "path": ["api", "Hrm", "clock-in-out"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"clockin\",\n  \"user_id\": 1,\n  \"workspace_id\": 1,\n  \"latitude\": \"18.5204\",\n  \"longitude\": \"73.8567\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Clock Out",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/Hrm/clock-in-out",
+          "host": ["{{base_url}}"],
+          "path": ["api", "Hrm", "clock-in-out"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"clockout\",\n  \"user_id\": 1,\n  \"workspace_id\": 1,\n  \"attendence_id\": 10,\n  \"latitude\": \"18.5204\",\n  \"longitude\": \"73.8567\"\n}"
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}

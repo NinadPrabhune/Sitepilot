@@ -1,0 +1,467 @@
+openapi: 3.0.3
+
+info:
+  title: SitePilot Activity API
+  version: 1.0.0
+  description: Activity Management APIs for SitePilot ERP
+
+servers:
+  - url: http://localhost
+    description: Local Server
+
+security:
+  - bearerAuth: []
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    Activity:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 5
+        title:
+          type: string
+          example: Electrical Wiring
+        scope:
+          type: string
+          example: Wiring for Building A
+        quantity:
+          type: integer
+          example: 100
+        unit:
+          type: string
+          example: sqft
+        priority:
+          type: string
+          example: high
+        status:
+          type: string
+          example: pending
+        completed_qty:
+          type: integer
+          example: 20
+        completion_percentage:
+          type: number
+          example: 20
+        reference_file:
+          type: string
+          example: /storage/activities/ref.pdf
+
+    ActivityCompleted:
+      type: object
+      properties:
+        id:
+          type: integer
+        completed_quantity:
+          type: integer
+        completed_date:
+          type: string
+          format: date
+        completed_reference_file:
+          type: string
+
+paths:
+
+  /api/activities:
+
+    get:
+      summary: Get Activities
+      tags:
+        - Activities
+
+      parameters:
+        - name: workspace_id
+          in: query
+          schema:
+            type: integer
+          example: 1
+
+        - name: site_id
+          in: query
+          schema:
+            type: integer
+          example: 2
+
+      responses:
+        "200":
+          description: Activities list
+          content:
+            application/json:
+              example:
+                status: true
+                data:
+                  pending:
+                    - id: 1
+                      title: Electrical Wiring
+                      quantity: 100
+                      completed_qty: 20
+                      completion_percentage: 20
+                      status: pending
+                  completed:
+                    - id: 2
+                      title: Plumbing
+                      quantity: 50
+                      completed_qty: 50
+                      completion_percentage: 100
+                      status: completed
+
+    post:
+      summary: Create Activity
+      tags:
+        - Activities
+
+      requestBody:
+        required: true
+        content:
+
+          multipart/form-data:
+
+            schema:
+              type: object
+              required:
+                - assign_to
+                - title
+                - start_date
+                - due_date
+                - scope
+                - quantity
+                - unit
+                - priority
+                - created_by
+                - workspace_id
+                - site_id
+
+              properties:
+
+                assign_to:
+                  type: string
+                  example: "1,2,3"
+
+                title:
+                  type: string
+                  example: Electrical Wiring
+
+                start_date:
+                  type: string
+                  example: 2026-03-01
+
+                due_date:
+                  type: string
+                  example: 2026-03-20
+
+                scope:
+                  type: string
+                  example: Wiring for Building A
+
+                quantity:
+                  type: integer
+                  example: 100
+
+                unit:
+                  type: string
+                  example: sqft
+
+                priority:
+                  type: string
+                  example: high
+
+                completed_quantity:
+                  type: integer
+                  example: 10
+
+                created_by:
+                  type: integer
+                  example: 1
+
+                workspace_id:
+                  type: integer
+                  example: 1
+
+                site_id:
+                  type: integer
+                  example: 2
+
+                reference_file:
+                  type: string
+                  format: binary
+
+      responses:
+        "201":
+          description: Activity created
+          content:
+            application/json:
+              example:
+                status: true
+                message: Activity created successfully
+
+  /api/activities/create-data:
+
+    get:
+      summary: Get Activity Form Data
+      tags:
+        - Activities
+
+      parameters:
+
+        - name: workspace_id
+          in: query
+          schema:
+            type: integer
+          example: 1
+
+        - name: site_id
+          in: query
+          schema:
+            type: integer
+          example: 2
+
+      responses:
+
+        "200":
+          description: Form metadata
+          content:
+            application/json:
+              example:
+                status: true
+                message: Form metadata fetched successfully
+                workspaces:
+                  - id: 1
+                    name: Main Workspace
+                sites:
+                  - id: 2
+                    name: Building A
+                priorities:
+                  - low
+                  - medium
+                  - high
+                users:
+                  - id: 1
+                    name: Engineer
+
+  /api/activities/progress/create:
+
+    get:
+      summary: Get Progress Form Data
+      tags:
+        - Activities
+
+      parameters:
+
+        - name: workspace_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: 1
+
+        - name: site_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: 2
+
+        - name: activity_id
+          in: query
+          schema:
+            type: integer
+          example: 5
+
+      responses:
+
+        "200":
+          description: Progress form data
+          content:
+            application/json:
+              example:
+                status: true
+                message: Progress data fetched successfully
+                alreadyCompleted: 20
+
+  /api/activities/progress/store:
+
+    post:
+      summary: Store Activity Progress
+      tags:
+        - Activities
+
+      requestBody:
+        required: true
+        content:
+
+          multipart/form-data:
+
+            schema:
+              type: object
+
+              required:
+                - workspace_id
+                - site_id
+                - activity_id
+                - completed_quantity
+                - date
+
+              properties:
+
+                workspace_id:
+                  type: integer
+                  example: 1
+
+                site_id:
+                  type: integer
+                  example: 2
+
+                activity_id:
+                  type: integer
+                  example: 5
+
+                completed_quantity:
+                  type: integer
+                  example: 20
+
+                date:
+                  type: string
+                  example: 2026-03-11
+
+                completed_reference_file:
+                  type: string
+                  format: binary
+
+      responses:
+        "201":
+          description: Progress stored
+          content:
+            application/json:
+              example:
+                status: true
+                message: Progress stored successfully
+
+  /api/activities/{id}:
+
+    get:
+      summary: Get Activity Details
+      tags:
+        - Activities
+
+      parameters:
+
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 5
+
+      responses:
+
+        "200":
+          description: Activity details
+          content:
+            application/json:
+              example:
+                status: true
+                data:
+                  id: 5
+                  title: Electrical Wiring
+                  quantity: 100
+                  completed_qty: 20
+                  completion_percentage: 20
+
+    put:
+      summary: Update Activity
+      tags:
+        - Activities
+
+      parameters:
+
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 5
+
+      requestBody:
+        required: true
+        content:
+
+          multipart/form-data:
+
+            schema:
+              type: object
+
+              properties:
+
+                title:
+                  type: string
+                  example: Electrical Wiring Phase 2
+
+                quantity:
+                  type: integer
+                  example: 100
+
+                unit:
+                  type: string
+                  example: sqft
+
+                priority:
+                  type: string
+                  example: medium
+
+                activities_completed:
+                  type: string
+                  example: |
+                    [
+                      {
+                        "id":1,
+                        "completed_quantity":25,
+                        "completed_date":"2026-03-11"
+                      }
+                    ]
+
+                activities_completed_0_completed_reference_file:
+                  type: string
+                  format: binary
+
+      responses:
+
+        "200":
+          description: Activity updated
+          content:
+            application/json:
+              example:
+                status: true
+                message: Activity updated successfully
+
+    delete:
+      summary: Delete Activity
+      tags:
+        - Activities
+
+      parameters:
+
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 5
+
+      responses:
+
+        "200":
+          description: Activity deleted
+          content:
+            application/json:
+              example:
+                status: true
+                message: Activity deleted successfully

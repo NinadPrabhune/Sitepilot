@@ -1,0 +1,1428 @@
+openapi: 3.0.3
+info:
+  title: Purchase Invoice API
+  description: |
+    API endpoints for Purchase Invoice management in SitePilot.
+    All create and update operations use multipart/form-data to support file uploads.
+    
+    ## Authentication
+    Bearer Token authentication is required for all endpoints.
+    
+    ## Response Format
+    All responses follow a standard format:
+    ```json
+    {
+      "success": true,
+      "message": "string",
+      "data": {}
+    }
+    ```
+    
+    ## Permission Requirements
+    - purchase-invoice manage: Full access to list and view
+    - purchase-invoice create: Create new invoices
+    - purchase-invoice edit: Update existing invoices
+    - purchase-invoice delete: Delete invoices
+    - purchase-invoice show: View invoice details
+    
+    ## API Routes
+    Note: The API uses singular route names (purchase-invoice).
+  version: 1.0.0
+  contact:
+    name: SitePilot API Support
+  license:
+    name: Proprietary
+
+servers:
+  - url: /api
+    description: API Base URL
+
+tags:
+  - name: Purchase Invoice
+    description: Purchase invoice CRUD operations
+  - name: Supplier
+    description: Supplier-related invoice queries
+  - name: GRN
+    description: GRN-related invoice operations
+
+paths:
+  # ============================================
+  # Purchase Invoice Resource (apiResource)
+  # ============================================
+  
+  /api/purchase-invoice:
+    get:
+      summary: List all purchase invoices
+      description: |
+        Retrieves all purchase invoices with optional filtering by workspace_id and site_id.
+        Requires 'purchase-invoice manage' permission.
+      operationId: getPurchaseInvoices
+      tags:
+        - Purchase Invoice
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: workspace_id
+          in: query
+          description: Filter by workspace ID (optional)
+          required: false
+          schema:
+            type: integer
+          example: 1
+        - name: site_id
+          in: query
+          description: Filter by site/project ID (optional)
+          required: false
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Purchase invoices fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseInvoiceListResponse'
+              example:
+                success: true
+                message: Purchase invoices fetched successfully
+                data:
+                  - id: 1
+                    invoice_number: INV-0001
+                    supplier_invoice_number: SUP-INV-2026-001
+                    invoice_date: "2026-03-15"
+                    invoice_type: general_po
+                    total_amount: 15000.00
+                    payment_status: pending
+                    supplier_id: 1
+                    site_id: 1
+                    workspace_id: 1
+                    invoice_file: "/storage/invoices/1234567890_invoice_INV-0001_test.pdf"
+                    created_by: 1
+                    supplier:
+                      id: 1
+                      name: ABC Supplies
+                    site:
+                      id: 1
+                      name: Project Alpha
+                    items:
+                      - id: 1
+                        material_id: 1
+                        quantity: 10
+                        unit: pieces
+                        price: 1500.00
+                        subtotal: 15000.00
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      summary: Create a new purchase invoice
+      description: |
+        Creates a new purchase invoice with optional file upload.
+        Uses multipart/form-data for file upload support.
+        
+        **Invoice Types:**
+        - `general_po`: Requires items array with material_id, quantity, unit, price
+        - `minor_misc_service`: Requires total_amount, no items required
+        
+        Requires 'purchase-invoice create' permission.
+      operationId: createPurchaseInvoice
+      tags:
+        - Purchase Invoice
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PurchaseInvoiceCreate'
+            encoding:
+              invoice_file:
+                contentType: application/pdf,image/jpeg,image/png
+      responses:
+        '201':
+          description: Purchase invoice created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseInvoiceResponse'
+              example:
+                success: true
+                message: Purchase invoice created successfully
+                data:
+                  id: 1
+                  invoice_number: INV-0001
+                  supplier_invoice_number: SUP-INV-2026-001
+                  invoice_date: "2026-03-15"
+                  invoice_type: general_po
+                  total_amount: 15000.00
+                  supplier_id: 1
+                  site_id: 1
+                  workspace_id: 1
+                  invoice_file: "/storage/invoices/1234567890_invoice_INV-0001_test.pdf"
+                  created_by: 1
+                  items:
+                    - id: 1
+                      material_id: 1
+                      quantity: 10
+                      unit: pieces
+                      price: 1500.00
+                      subtotal: 15000.00
+                      material:
+                        id: 1
+                        name: Cement
+        '400':
+          $ref: '#/components/responses/BusinessError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/purchase-invoice/create:
+    get:
+      summary: Get create form page
+      description: |
+        Returns the create form view data.
+        Requires 'purchase-invoice create' permission.
+      operationId: getPurchaseInvoiceCreate
+      tags:
+        - Purchase Invoice
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Create form data fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                success: true
+                message: Create form fetched
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /api/purchase-invoice/create-data:
+    post:
+      summary: Get create form data
+      description: |
+        Retrieves necessary data for creating a new purchase invoice.
+        Returns suppliers, materials, sites, and stock data.
+        Requires 'purchase-invoice create' permission.
+      operationId: getCreateData
+      tags:
+        - Purchase Invoice
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: site_id
+          in: query
+          description: Filter materials and stock by site ID
+          required: false
+          schema:
+            type: integer
+        - name: workspace_id
+          in: query
+          description: Filter sites by workspace
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Data fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDataResponse'
+              example:
+                success: true
+                message: Data fetched successfully
+                data:
+                  suppliers:
+                    - id: 1
+                      name: ABC Supplies
+                    - id: 2
+                      name: XYZ Traders
+                  materials:
+                    1:
+                      name: Cement
+                      price: 450.00
+                      unit:
+                        id: 1
+                        name: Bags
+                    2:
+                      name: Sand
+                      price: 800.00
+                      unit:
+                        id: 2
+                        name: Cubic Meter
+                  sites:
+                    - id: 1
+                      name: Project Alpha
+                    - id: 2
+                      name: Project Beta
+                  stockData: []
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/purchase-invoice/{id}:
+    get:
+      summary: Get purchase invoice by ID
+      description: |
+        Retrieves detailed information about a specific purchase invoice.
+        Requires 'purchase-invoice show' permission.
+      operationId: getPurchaseInvoice
+      tags:
+        - Purchase Invoice
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Purchase invoice ID
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Purchase invoice fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseInvoiceResponse'
+              example:
+                success: true
+                message: Purchase invoice fetched successfully
+                data:
+                  id: 1
+                  invoice_number: INV-0001
+                  supplier_invoice_number: SUP-INV-2026-001
+                  invoice_date: "2026-03-15"
+                  invoice_type: general_po
+                  total_amount: 15000.00
+                  payment_status: pending
+                  supplier_id: 1
+                  site_id: 1
+                  workspace_id: 1
+                  invoice_file: "/storage/invoices/1234567890_invoice_INV-0001_test.pdf"
+                  created_by: 1
+                  supplier:
+                    id: 1
+                    name: ABC Supplies
+                  site:
+                    id: 1
+                    name: Project Alpha
+                  items:
+                    - id: 1
+                      material_id: 1
+                      quantity: 10
+                      unit: pieces
+                      price: 1500.00
+                      subtotal: 15000.00
+                      material:
+                        id: 1
+                        name: Cement
+                        price: 450.00
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      summary: Update a purchase invoice (PUT)
+      description: |
+        Updates an existing purchase invoice with optional file upload.
+        Uses multipart/form-data for file upload support.
+        
+        **Notes:**
+        - For general_po: items array is required
+        - For minor_misc_service: total_amount is required, items are optional
+        - Existing invoice file will be replaced if new file is uploaded
+        
+        Requires 'purchase-invoice edit' permission.
+      operationId: updatePurchaseInvoicePut
+      tags:
+        - Purchase Invoice
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Purchase invoice ID to update
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PurchaseInvoiceUpdate'
+            encoding:
+              invoice_file:
+                contentType: application/pdf,image/jpeg,image/png
+      responses:
+        '200':
+          description: Purchase invoice updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseInvoiceResponse'
+              example:
+                success: true
+                message: Purchase invoice updated successfully
+                data:
+                  id: 1
+                  invoice_number: INV-0001
+                  supplier_invoice_number: SUP-INV-2026-002
+                  invoice_date: "2026-03-20"
+                  invoice_type: general_po
+                  total_amount: 20000.00
+                  supplier_id: 1
+                  site_id: 1
+                  workspace_id: 1
+                  invoice_file: "/storage/invoices/1234567890_invoice_INV-0001_test.pdf"
+                  created_by: 1
+                  items:
+                    - id: 2
+                      material_id: 1
+                      quantity: 20
+                      unit: pieces
+                      price: 1000.00
+                      subtotal: 20000.00
+        '400':
+          $ref: '#/components/responses/BusinessError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    patch:
+      summary: Update a purchase invoice (PATCH)
+      description: |
+        Partially updates an existing purchase invoice.
+        Requires 'purchase-invoice edit' permission.
+      operationId: updatePurchaseInvoicePatch
+      tags:
+        - Purchase Invoice
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Purchase invoice ID to update
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PurchaseInvoiceUpdate'
+            encoding:
+              invoice_file:
+                contentType: application/pdf,image/jpeg,image/png
+      responses:
+        '200':
+          description: Purchase invoice updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseInvoiceResponse'
+        '400':
+          $ref: '#/components/responses/BusinessError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      summary: Delete a purchase invoice
+      description: |
+        Deletes a purchase invoice and its associated items.
+        
+        **Business Rule:** Invoice cannot be deleted if it's used in Payments Module.
+        
+        Requires 'purchase-invoice delete' permission.
+      operationId: deletePurchaseInvoice
+      tags:
+        - Purchase Invoice
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Purchase invoice ID to delete
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Invoice deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                success: true
+                message: Invoice deleted successfully
+        '400':
+          description: Cannot delete - invoice used in Payments Module
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                success: false
+                message: Purchase Invoice cannot be deleted because it is used in Payments Module.
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # ============================================
+  # Custom AJAX Routes
+  # ============================================
+  
+  /api/ajax/get-purchase-invoice-by-supplier-id:
+    get:
+      summary: Get purchase invoices by supplier
+      description: |
+        Retrieves unpaid purchase invoices for a specific supplier.
+        Returns only invoices where payment_status is not 'paid'.
+        
+        Requires 'purchase-invoice manage' permission.
+      operationId: getPurchaseInvoicesBySupplier
+      tags:
+        - Purchase Invoice
+        - Supplier
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: supplier_id
+          in: query
+          description: Supplier ID (required)
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Purchase invoices fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    example:
+                      1: INV-0001
+                      2: INV-0002
+              example:
+                success: true
+                message: Purchase invoices fetched successfully
+                data:
+                  1: INV-0001
+                  2: INV-0002
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          description: No purchase invoices found for this supplier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                success: false
+                message: No purchase invoices found for this supplier.
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/ajax/get-purchase-invoice-by-supplier-id-edit:
+    get:
+      summary: Get purchase invoices by supplier (for edit)
+      description: |
+        Retrieves unpaid purchase invoices for a specific supplier, optionally including
+        a specific invoice by payments_module_id (for editing while in payment module).
+        
+        Requires 'purchase-invoice edit' permission.
+      operationId: getPurchaseInvoicesBySupplierEdit
+      tags:
+        - Purchase Invoice
+        - Supplier
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: supplier_id
+          in: query
+          description: Supplier ID (required)
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: payments_module_id
+          in: query
+          description: Payments module ID to include (optional)
+          required: false
+          schema:
+            type: integer
+          example: 5
+      responses:
+        '200':
+          description: Purchase invoices fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    additionalProperties:
+                      type: string
+              example:
+                success: true
+                message: Purchase invoices fetched successfully
+                data:
+                  1: INV-0001
+                  2: INV-0002
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/ajax/get-purchase-invoice-remaining-amount-by-purchase-invoice-id:
+    get:
+      summary: Get remaining amount for an invoice
+      description: |
+        Calculates the remaining (unpaid) amount for a purchase invoice.
+        Optionally excludes a specific payments_module_id (for editing).
+      operationId: getRemainingAmount
+      tags:
+        - Purchase Invoice
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: purchase_invoice_id
+          in: query
+          description: Purchase invoice ID (required)
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: payments_module_id
+          in: query
+          description: Payments module ID to exclude (optional - for edit mode)
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Remaining amount fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      remaining_amount:
+                        type: number
+                        format: double
+              example:
+                success: true
+                message: Remaining amount fetched successfully
+                data:
+                  remaining_amount: 10000.00
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # ============================================
+  # GRN Invoice Routes
+  # ============================================
+
+  /api/purchase-invoice/grn/{grn_id}/invoice-preview:
+    get:
+      summary: Get GRN invoice preview
+      description: |
+        Retrieves GRN details for invoice creation preview.
+        Returns supplier, site, and items with accepted quantities.
+        
+        **Note:** Returns 400 if invoice already exists for this GRN.
+        
+        Requires 'purchase-invoice create' permission.
+      operationId: getGrnInvoicePreview
+      tags:
+        - Purchase Invoice
+        - GRN
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: grn_id
+          in: path
+          description: GRN ID
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: GRN details fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      grn_id:
+                        type: integer
+                      supplier:
+                        $ref: '#/components/schemas/Supplier'
+                      site:
+                        $ref: '#/components/schemas/Project'
+                      items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/GrnItemPreview'
+              example:
+                success: true
+                message: GRN details fetched successfully
+                data:
+                  grn_id: 1
+                  supplier:
+                    id: 1
+                    name: ABC Supplies
+                  site:
+                    id: 1
+                    name: Project Alpha
+                  items:
+                    - material:
+                        id: 1
+                        name: Cement
+                      accepted_qty: 50
+                      price: 450.00
+                      gst:
+                        id: 1
+                        name: GST 18%
+                        rate: 18
+        '400':
+          description: Invoice already exists for this GRN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                success: false
+                message: Invoice already exists for this GRN
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/purchase-invoice/from-grn:
+    post:
+      summary: Create invoice from GRN
+      description: |
+        Creates a purchase invoice from an existing GRN (Goods Receipt Note).
+        
+        **Business Rules:**
+        - Only 1 invoice can be created per GRN (if invoice exists, returns error)
+        - Always uses full quantity (accepted_qty) - no partial invoicing
+        - Invoice items are created from GRN items with accepted_qty
+        
+        Requires 'purchase-invoice create' permission.
+      operationId: createInvoiceFromGrn
+      tags:
+        - Purchase Invoice
+        - GRN
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateInvoiceFromGrn'
+            encoding:
+              invoice_file:
+                contentType: application/pdf,image/jpeg,image/png
+      responses:
+        '201':
+          description: Purchase invoice created successfully from GRN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseInvoiceResponse'
+              example:
+                success: true
+                message: Purchase invoice created successfully
+                data:
+                  id: 1
+                  invoice_number: INV-0001
+                  invoice_date: "2026-03-15"
+                  invoice_type: general_po
+                  total_amount: 25000.00
+                  grn_id: 1
+                  supplier_id: 1
+                  site_id: 1
+                  workspace_id: 1
+                  items:
+                    - id: 1
+                      material_id: 1
+                      quantity: 25
+                      unit: bags
+                      price: 1000.00
+                      subtotal: 25000.00
+        '400':
+          description: Invoice already exists for this GRN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                success: false
+                message: Invoice already exists for this GRN
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT token authentication. Get token from `/api/login` endpoint.
+
+  schemas:
+    # Base Response Schema
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Operation successful
+        data:
+          type: object
+          nullable: true
+      required:
+        - success
+        - message
+
+    # Purchase Invoice List Response
+    PurchaseInvoiceListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Purchase invoices fetched successfully
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PurchaseInvoice'
+
+    # Purchase Invoice Response
+    PurchaseInvoiceResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/PurchaseInvoice'
+
+    # Create Data Response
+    CreateDataResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Data fetched successfully
+        data:
+          type: object
+          properties:
+            suppliers:
+              type: array
+              items:
+                $ref: '#/components/schemas/Supplier'
+            materials:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/MaterialWithUnit'
+            sites:
+              type: array
+              items:
+                $ref: '#/components/schemas/Project'
+            stockData:
+              type: array
+              items:
+                type: object
+
+    # Purchase Invoice Schema
+    PurchaseInvoice:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        invoice_number:
+          type: string
+          example: INV-0001
+        supplier_invoice_number:
+          type: string
+          nullable: true
+          example: SUP-INV-2026-001
+        invoice_date:
+          type: string
+          format: date
+          example: "2026-03-15"
+        invoice_type:
+          type: string
+          enum:
+            - general_po
+            - minor_misc_service
+          example: general_po
+        total_amount:
+          type: number
+          format: double
+          example: 15000.00
+        payment_status:
+          type: string
+          enum:
+            - pending
+            - partial
+            - paid
+          example: pending
+        supplier_id:
+          type: integer
+          example: 1
+        site_id:
+          type: integer
+          example: 1
+        workspace_id:
+          type: integer
+          example: 1
+        invoice_file:
+          type: string
+          nullable: true
+          example: "/storage/invoices/1234567890_invoice_INV-0001_test.pdf"
+        grn_id:
+          type: integer
+          nullable: true
+        created_by:
+          type: integer
+          example: 1
+        supplier:
+          $ref: '#/components/schemas/Supplier'
+        site:
+          $ref: '#/components/schemas/Project'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PurchaseInvoiceItem'
+      required:
+        - id
+        - invoice_number
+        - invoice_date
+        - invoice_type
+        - total_amount
+        - supplier_id
+        - site_id
+        - workspace_id
+
+    # Purchase Invoice Item Schema
+    PurchaseInvoiceItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        purchase_invoice_id:
+          type: integer
+          example: 1
+        material_id:
+          type: integer
+          example: 1
+        quantity:
+          type: number
+          format: double
+          example: 10
+        unit:
+          type: string
+          example: pieces
+        price:
+          type: number
+          format: double
+          example: 1500.00
+        subtotal:
+          type: number
+          format: double
+          example: 15000.00
+        material:
+          $ref: '#/components/schemas/Material'
+      required:
+        - id
+        - purchase_invoice_id
+        - material_id
+        - quantity
+        - unit
+        - price
+        - subtotal
+
+    # Supplier Schema
+    Supplier:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: ABC Supplies
+      required:
+        - id
+        - name
+
+    # Material Schema
+    Material:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Cement
+        price:
+          type: number
+          format: double
+          example: 450.00
+        unit:
+          $ref: '#/components/schemas/Unit'
+      required:
+        - id
+        - name
+        - price
+
+    # Material with Unit (for create data)
+    MaterialWithUnit:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Cement
+        price:
+          type: number
+          format: double
+          example: 450.00
+        unit:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+      required:
+        - name
+        - price
+
+    # Unit Schema
+    Unit:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Bags
+
+    # Project (Site) Schema
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Project Alpha
+      required:
+        - id
+        - name
+
+    # GST Schema
+    Gst:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: GST 18%
+        rate:
+          type: number
+          format: double
+          example: 18
+
+    # GRN Item Preview Schema
+    GrnItemPreview:
+      type: object
+      properties:
+        material:
+          $ref: '#/components/schemas/Material'
+        accepted_qty:
+          type: number
+          format: double
+          example: 50
+        price:
+          type: number
+          format: double
+          example: 450.00
+        gst:
+          $ref: '#/components/schemas/Gst'
+
+    # Create Invoice From GRN Schema (multipart/form-data)
+    CreateInvoiceFromGrn:
+      type: object
+      required:
+        - grn_id
+        - invoice_date
+      properties:
+        grn_id:
+          type: integer
+          description: GRN ID to create invoice from (required)
+          example: 1
+        invoice_date:
+          type: string
+          format: date
+          description: Invoice date (required)
+          example: "2026-03-15"
+        supplier_invoice_number:
+          type: string
+          nullable: true
+          description: Supplier's invoice number (optional)
+          example: SUP-INV-2026-001
+        invoice_file:
+          type: string
+          format: binary
+          description: Invoice file upload (optional)
+          nullable: true
+        workspace_id:
+          type: integer
+          nullable: true
+          description: Workspace ID (optional - auto-detected from GRN if not provided)
+          example: 1
+
+    # Purchase Invoice Create Schema (multipart/form-data)
+    PurchaseInvoiceCreate:
+      type: object
+      required:
+        - supplier_id
+        - workspace_id
+        - site_id
+        - invoice_date
+        - invoice_type
+      properties:
+        supplier_invoice_number:
+          type: string
+          description: Supplier's invoice number (optional)
+          nullable: true
+          example: SUP-INV-2026-001
+        supplier_id:
+          type: integer
+          description: Supplier ID (required)
+          example: 1
+        workspace_id:
+          type: integer
+          description: Workspace ID (required)
+          example: 1
+        site_id:
+          type: integer
+          description: Site/Project ID (required)
+          example: 1
+        invoice_date:
+          type: string
+          format: date
+          description: Invoice date (required)
+          example: "2026-03-15"
+        invoice_type:
+          type: string
+          enum:
+            - general_po
+            - minor_misc_service
+          description: Invoice type (required)
+          example: general_po
+        total_amount:
+          type: number
+          format: double
+          description: Total amount (required for minor_misc_service, optional for general_po)
+          nullable: true
+          example: 15000.00
+        invoice_file:
+          type: string
+          format: binary
+          description: Invoice file upload (optional) - PDF, JPG, JPEG, PNG - Max 2MB
+          nullable: true
+        items:
+          type: array
+          description: Items array (required for general_po invoice type)
+          items:
+            type: object
+            properties:
+              material_id:
+                type: integer
+                example: 1
+              quantity:
+                type: number
+                format: double
+                example: 10
+              unit:
+                type: string
+                nullable: true
+                example: pieces
+              price:
+                type: number
+                format: double
+                example: 1500.00
+
+    # Purchase Invoice Update Schema (multipart/form-data)
+    PurchaseInvoiceUpdate:
+      type: object
+      required:
+        - supplier_id
+        - workspace_id
+        - site_id
+        - invoice_date
+        - invoice_type
+      properties:
+        supplier_invoice_number:
+          type: string
+          nullable: true
+          example: SUP-INV-2026-002
+        workspace_id:
+          type: integer
+          example: 1
+        supplier_id:
+          type: integer
+          example: 1
+        site_id:
+          type: integer
+          example: 1
+        invoice_file:
+          type: string
+          format: binary
+          description: New invoice file to replace existing (optional)
+          nullable: true
+        invoice_date:
+          type: string
+          format: date
+          example: "2026-03-20"
+        invoice_type:
+          type: string
+          enum:
+            - general_po
+            - minor_misc_service
+          example: general_po
+        total_amount:
+          type: number
+          format: double
+          nullable: true
+          example: 20000.00
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              material_id:
+                type: integer
+              quantity:
+                type: number
+                format: double
+              unit:
+                type: string
+                nullable: true
+              price:
+                type: number
+                format: double
+
+  # Reusable Response Schemas
+    responses:
+      ApiResponse:
+        type: object
+        properties:
+          success:
+            type: boolean
+          message:
+            type: string
+          data:
+            type: object
+            nullable: true
+        required:
+          - success
+          - message
+
+      ForbiddenError:
+        description: Permission denied
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Permission denied
+            example:
+              success: false
+              message: Permission denied
+
+      NotFoundError:
+        description: Resource not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Resource not found
+            example:
+              success: false
+              message: Resource not found
+
+      BusinessError:
+        description: Business logic error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+            example:
+              success: false
+              message: Business error message
+
+      ValidationError:
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                data:
+                  type: object
+                  properties:
+                    errors:
+                      type: object
+                      additionalProperties:
+                        type: array
+                        items:
+                          type: string
+            example:
+              success: false
+              message: The given data was invalid.
+              data:
+                errors:
+                  supplier_id:
+                    - The supplier_id field is required.
+                  invoice_date:
+                    - The invoice_date field is required.
+
+      ServerError:
+        description: Internal server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: false
+                message:
+                  type: string
+                  example: Failed to process request
+                data:
+                  type: object
+                  nullable: true
+            example:
+              success: false
+              message: Failed to process request
+              data: null

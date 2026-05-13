@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AJAX Validation Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Test AJAX Validation Fix</h1>
+    <button id="testBtn">Test DPR Edit AJAX</button>
+    <div id="result"></div>
+
+    <script>
+        // Copy the validation functions from custom.js
+        function extractScripts(html) {
+            const scripts = [];
+            const scriptRegex = /<script[^>]*>([\s\S]*?)<\/script>/gi;
+            let match;
+            
+            while ((match = scriptRegex.exec(html)) !== null) {
+                scripts.push({
+                    fullMatch: match[0],
+                    content: match[1].trim(),
+                    hasSrc: /src=/i.test(match[0])
+                });
+            }
+            
+            return scripts;
+        }
+
+        function validateJavaScript(code) {
+            try {
+                // Skip validation for Laravel Blade templates with @json() - they're usually valid
+                if (code.includes('@json(') || code.includes('{{') || code.includes('{!!')) {
+                    // Just check for obvious syntax errors like duplicate closing braces
+                    const braceCount = (code.match(/};/g) || []).length;
+                    if (braceCount > 3) { // Allow some closing braces, but flag excessive ones
+                        console.warn('Multiple closing braces detected, but allowing for Blade template');
+                    }
+                    return true; // Assume Blade templates are valid unless obviously broken
+                }
+                
+                // For pure JavaScript, do strict validation
+                new Function(code);
+                return true;
+            } catch (error) {
+                console.error('JavaScript validation failed:', error.message);
+                console.error('Problematic code snippet:', code.substring(0, 200));
+                return false;
+            }
+        }
+
+        // Test the validation
+        function testValidation() {
+            // Simulate the problematic script content from your logs
+            const testScript = `try {
+$(document).ready(function () {
+    let materials = {"50":{"name":"Bio-Diesel","unit":"Number"}};
+    let rowIndex = 0;
+    
+    // Calculation variables
+    let currentRate = parseFloat(0) || 0;
+    let standardRate = currentRate;
+    let minimumBillingHours = parseFloat(0) || 0;
+    let isRental = "" === 'rental';
+    let overrideRate = 0;
+    let isOverrideEnabled = false;
+    
+    // PREVIEW-ONLY CALCULATION FUNCTION
+    function updateCalculationPreview() {
+        const startReading = parseFloat($('#machine_start_reading').val()) || 0;
+        const endReading = parseFloat($('#machine_end_reading').val()) || 0;
+        const idleHours = parseFloat($('#machine_idle_reading').val()) || 0;
+        
+        const workingHours = Math.max(0, endReading - startReading);
+        let billableHours = Math.max(0, workingHours - idleHours);
+        
+        // Apply minimum billing preview
+        let minimumBillingApplied = false;
+        if (isRental && minimumBillingHours > 0) {
+            billableHours = Math.max(billableHours, minimumBillingHours);
+            minimumBillingApplied = billableHours > workingHours;
+        }
+        
+        const rate = currentRate;
+        const total = billableHours * rate;
+        
+        // Update preview
+        $('#calculation-preview').html(\`Working: \${workingHours.toFixed(2)}, Billable: \${billableHours.toFixed(2)}, Total: ₹\${total.toFixed(2)}\`);
+    }
+    
+    updateCalculationPreview();
+    $('#machine_start_reading, #machine_end_reading, #machine_idle_reading').on('input', updateCalculationPreview);
+});
+} catch (error) {
+    console.error('DPR Edit Script Error:', error);
+}`;
+
+            console.log('Testing script validation...');
+            const isValid = validateJavaScript(testScript);
+            console.log('Validation result:', isValid);
+            
+            document.getElementById('result').innerHTML = `
+                <h3>Validation Result: ${isValid ? '✅ PASSED' : '❌ FAILED'}</h3>
+                <pre>${testScript.substring(0, 500)}...</pre>
+            `;
+        }
+
+        document.getElementById('testBtn').onclick = testValidation;
+    </script>
+</body>
+</html>

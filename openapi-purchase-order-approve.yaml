@@ -1,0 +1,361 @@
+openapi: 3.0.3
+info:
+  title: SitePilot Purchase Order API
+  description: |
+    API documentation for Purchase Order operations in SitePilot application.
+    This specification covers the approve form endpoint for retrieving purchase order
+    details and allowed status transitions.
+  version: 1.0.0
+  contact:
+    name: SitePilot API Support
+    email: support@sitepilot.io
+  license:
+    name: Proprietary
+    url: https://sitepilot.io/license
+
+servers:
+  - url: https://api.sitepilot.io
+    description: Production server
+  - url: https://staging-api.sitepilot.io
+    description: Staging server
+  - url: http://localhost
+    description: Local development server
+
+tags:
+  - name: Purchase Orders
+    description: Purchase order management endpoints
+    externalDocs:
+      description: Learn more about purchase orders
+      url: https://docs.sitepilot.io/purchase-orders
+
+paths:
+  /api/purchase-orders/{id}/approve:
+    get:
+      tags:
+        - Purchase Orders
+      summary: Get purchase order approve form data
+      description: |
+        Retrieves the purchase order details along with allowed status transitions
+        for approval workflow. This endpoint is used by mobile/web clients to display
+        the approve/reject/flag options for a purchase order.
+      operationId: getPurchaseOrderApproveForm
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the purchase order
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 123
+        - name: Accept-Language
+          in: header
+          description: Language for error messages (en, es, fr, etc.)
+          required: false
+          schema:
+            type: string
+            default: en
+          example: en
+        - name: Authorization
+          in: header
+          description: Bearer token for authentication
+          required: true
+          schema:
+            type: string
+            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      responses:
+        '200':
+          description: Successful response - purchase order approve form data retrieved
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApproveFormSuccessResponse'
+              example:
+                success: true
+                message: Purchase order approve form data retrieved successfully
+                data:
+                  purchase_order:
+                    id: 123
+                    po_number: "PO-2026-00019"
+                    po_date: "2026-03-15"
+                    status: "Draft"
+                    supplier:
+                      id: 5
+                      name: "ABC Suppliers Ltd."
+                      email: "contact@abcsuppliers.com"
+                      phone: "+1-555-0123"
+                    site:
+                      id: 10
+                      name: "Project Alpha"
+                    total_amount: 15000.00
+                    tax_amount: 2700.00
+                    grand_total: 17700.00
+                    created_at: "2026-03-15T10:30:00+05:30"
+                    items_count: 5
+                  allowed_transitions:
+                    - value: "Approved"
+                      label: "Approve"
+                    - value: "Rejected"
+                      label: "Reject"
+                    - value: "Flagged"
+                      label: "Flag for Review"
+
+        '400':
+          description: Bad Request - No allowed transitions for this status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApproveFormNoTransitionsResponse'
+              example:
+                success: false
+                message: "This purchase order status cannot be changed."
+                error_code: "PO_NO_TRANSITIONS"
+                data:
+                  purchase_order:
+                    id: 123
+                    po_number: "PO-2026-00019"
+                    status: "Completed"
+                  allowed_transitions: []
+
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: "Unauthorized. Invalid or missing authentication token."
+                error_code: "AUTH_UNAUTHORIZED"
+
+        '404':
+          description: Not Found - Purchase order does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: "Purchase order not found"
+                error_code: "PO_NOT_FOUND"
+
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: "An error occurred while fetching approve form data"
+                error_code: "PO_APPROVE_ERROR_500"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT token authentication. Include the token in the Authorization header
+        as `Bearer <token>`. Token can be obtained from the login endpoint.
+
+  schemas:
+    ApproveFormSuccessResponse:
+      type: object
+      required:
+        - success
+        - message
+        - data
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the request was successful
+          example: true
+        message:
+          type: string
+          description: Human-readable response message
+          example: "Purchase order approve form data retrieved successfully"
+        data:
+          type: object
+          required:
+            - purchase_order
+            - allowed_transitions
+          properties:
+            purchase_order:
+              $ref: '#/components/schemas/PurchaseOrderSummary'
+            allowed_transitions:
+              type: array
+              description: List of allowed status transitions
+              items:
+                $ref: '#/components/schemas/StatusTransition'
+              example:
+                - value: "Approved"
+                  label: "Approve"
+                - value: "Rejected"
+                  label: "Reject"
+                - value: "Flagged"
+                  label: "Flag for Review"
+
+    ApproveFormNoTransitionsResponse:
+      type: object
+      required:
+        - success
+        - message
+        - error_code
+        - data
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "This purchase order status cannot be changed."
+        error_code:
+          type: string
+          example: "PO_NO_TRANSITIONS"
+        data:
+          type: object
+          properties:
+            purchase_order:
+              $ref: '#/components/schemas/PurchaseOrderSummary'
+            allowed_transitions:
+              type: array
+              items: {}
+              example: []
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - message
+        - error_code
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          description: Human-readable error message
+        error_code:
+          type: string
+          description: Machine-readable error code
+
+    PurchaseOrderSummary:
+      type: object
+      description: Summary of purchase order for approve form
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier
+          example: 123
+        po_number:
+          type: string
+          description: Purchase order number
+          example: "PO-2026-00019"
+        po_date:
+          type: string
+          format: date
+          description: Purchase order date
+          example: "2026-03-15"
+        status:
+          type: string
+          description: Current status of the purchase order
+          enum:
+            - Draft
+            - Approved
+            - Partial Received
+            - Completed
+            - Rejected
+            - Flagged
+            - Short Closed
+          example: "Draft"
+        supplier:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+            email:
+              type: string
+              nullable: true
+            phone:
+              type: string
+              nullable: true
+        site:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+              format: int64
+            name:
+              type: string
+        total_amount:
+          type: number
+          format: double
+          description: Subtotal before tax
+          example: 15000.00
+        tax_amount:
+          type: number
+          format: double
+          description: Tax amount
+          example: 2700.00
+        grand_total:
+          type: number
+          format: double
+          description: Total including tax
+          example: 17700.00
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp in ISO 8601 format
+          example: "2026-03-15T10:30:00+05:30"
+        items_count:
+          type: integer
+          description: Number of items in the purchase order
+          example: 5
+
+    StatusTransition:
+      type: object
+      description: Allowed status transition with human-readable label
+      required:
+        - value
+        - label
+      properties:
+        value:
+          type: string
+          description: Status value to use in API requests
+          enum:
+            - Approved
+            - Rejected
+            - Flagged
+            - Short Closed
+          example: "Approved"
+        label:
+          type: string
+          description: Human-readable label for UI display
+          example: "Approve"
+
+    PurchaseOrderStatus:
+      type: string
+      description: All possible purchase order statuses
+      enum:
+        - Draft
+        - Approved
+        - Partial Received
+        - Completed
+        - Rejected
+        - Flagged
+        - Short Closed

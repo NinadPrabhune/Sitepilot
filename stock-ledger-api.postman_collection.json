@@ -1,0 +1,411 @@
+{
+  "info": {
+    "name": "Stock Ledger API",
+    "_postman_id": "stock-ledger-api-collection",
+    "description": "API collection for Stock Ledger operations. This collection provides endpoints to fetch and export stock ledger transactions with various filters.\n\n## Authentication\nAll endpoints require Bearer Token authentication. Use the `token` variable in the collection.\n\n## Base URL\nSet the `base_url` variable to your API base URL (e.g., http://localhost:8000).\n\n## Endpoints\n1. **GET /api/stock-ledger** - Fetch stock ledger list with optional filters\n2. **GET /api/stock-ledger/export** - Export stock ledger to Excel file\n\n## Request Parameters\nAll parameters are optional and can be sent as query parameters or form-data.\n\n## Response Format\nAll responses follow a standard JSON format with `success`, `message`, and `data`/`errors` fields.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "your_bearer_token_here",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Stock Ledger",
+      "item": [
+        {
+          "name": "Get Stock Ledger List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/stock-ledger",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "stock-ledger"
+              ],
+              "query": [
+                {
+                  "key": "project_id",
+                  "value": "",
+                  "description": "Project ID to filter by (must exist in projects table). Type: integer. Required: No.",
+                  "disabled": true
+                },
+                {
+                  "key": "material_id",
+                  "value": "",
+                  "description": "Material ID to filter by (must exist in materials table). Type: integer. Required: No.",
+                  "disabled": true
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "description": "Type of stock transaction. Allowed values: opening, grn, issue, transfer_in, transfer_out, adjustment. Required: No.",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "2026-01-01",
+                  "description": "Filter start date (format: Y-m-d). Required: No.",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2026-01-31",
+                  "description": "Filter end date (format: Y-m-d). Must be >= start_date. Required: No.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Fetch stock ledger list with optional filters.\n\n## Authentication\nRequires Bearer Token authentication.\n\n## Query Parameters\nAll parameters are optional:\n- **project_id** (integer): Project ID to filter by. Must exist in projects table.\n- **material_id** (integer): Material ID to filter by. Must exist in materials table.\n- **type** (string): Type of stock transaction. Allowed values: opening, grn, issue, transfer_in, transfer_out, adjustment.\n- **start_date** (string): Filter start date (format: Y-m-d).\n- **end_date** (string): Filter end date (format: Y-m-d). Must be >= start_date.\n\n## Response\nReturns a JSON object with:\n- **success** (boolean): Indicates if the request was successful\n- **message** (string): Success or error message\n- **data** (object): Contains transactions array and filters object\n\n## Validation Rules\n- project_id → exists:projects,id\n- material_id → exists:materials,id\n- type → enum (opening, grn, issue, transfer_in, transfer_out, adjustment)\n- start_date → date\n- end_date → date >= start_date"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/stock-ledger",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "stock-ledger"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Stock ledger fetched successfully\",\n  \"data\": {\n    \"transactions\": [\n      {\n        \"id\": 1,\n        \"project_id\": 1,\n        \"material_id\": 1,\n        \"type\": \"opening\",\n        \"quantity\": \"100.0000\",\n        \"rate\": \"50.0000\",\n        \"reference_type\": null,\n        \"reference_id\": null,\n        \"remarks\": \"Opening stock\",\n        \"created_by\": 1,\n        \"created_at\": \"2026-01-01T00:00:00.000000Z\",\n        \"updated_at\": \"2026-01-01T00:00:00.000000Z\",\n        \"project\": {\n          \"id\": 1,\n          \"name\": \"Project Alpha\"\n        },\n        \"material\": {\n          \"id\": 1,\n          \"name\": \"Cement\"\n        },\n        \"creator\": {\n          \"id\": 1,\n          \"name\": \"John Doe\"\n        }\n      }\n    ],\n    \"filters\": {\n      \"project_id\": null,\n      \"material_id\": null,\n      \"type\": null,\n      \"start_date\": null,\n      \"end_date\": null\n    }\n  }\n}"
+            },
+            {
+              "name": "Validation Error Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/stock-ledger?type=invalid",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "stock-ledger"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "invalid"
+                    }
+                  ]
+                }
+              },
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation error\",\n  \"errors\": {\n    \"type\": [\n      \"Type must be one of: opening, grn, issue, transfer_in, transfer_out, adjustment.\"\n    ]\n  }\n}"
+            },
+            {
+              "name": "Server Error Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/stock-ledger",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "stock-ledger"
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Something went wrong\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Export Stock Ledger",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/stock-ledger/export",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "stock-ledger",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "project_id",
+                  "value": "",
+                  "description": "Project ID to filter by (must exist in projects table). Type: integer. Required: No.",
+                  "disabled": true
+                },
+                {
+                  "key": "material_id",
+                  "value": "",
+                  "description": "Material ID to filter by (must exist in materials table). Type: integer. Required: No.",
+                  "disabled": true
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "description": "Type of stock transaction. Allowed values: opening, grn, issue, transfer_in, transfer_out, adjustment. Required: No.",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "2026-01-01",
+                  "description": "Filter start date (format: Y-m-d). Required: No.",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2026-01-31",
+                  "description": "Filter end date (format: Y-m-d). Must be >= start_date. Required: No.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Export stock ledger to Excel file.\n\n## Authentication\nRequires Bearer Token authentication.\n\n## Query Parameters\nAll parameters are optional:\n- **project_id** (integer): Project ID to filter by. Must exist in projects table.\n- **material_id** (integer): Material ID to filter by. Must exist in materials table.\n- **type** (string): Type of stock transaction. Allowed values: opening, grn, issue, transfer_in, transfer_out, adjustment.\n- **start_date** (string): Filter start date (format: Y-m-d).\n- **end_date** (string): Filter end date (format: Y-m-d). Must be >= start_date.\n\n## Response\nReturns a downloadable Excel file (.xlsx) with the following columns:\n- Date\n- Project\n- Material\n- Type\n- Quantity\n- Rate\n- Reference\n- Remarks\n- Created By\n\n## File Details\n- **Content-Type**: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\n- **File Name**: stock_ledger_YYYYMMDD_HHMMSS.xlsx\n\n## Validation Rules\n- project_id → exists:projects,id\n- material_id → exists:materials,id\n- type → enum (opening, grn, issue, transfer_in, transfer_out, adjustment)\n- start_date → date\n- end_date → date >= start_date"
+          },
+          "response": [
+            {
+              "name": "Success Response (Excel File)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/stock-ledger/export",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "stock-ledger",
+                    "export"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=stock_ledger_20260101_120000.xlsx"
+                }
+              ],
+              "body": "[Binary Excel file content]"
+            },
+            {
+              "name": "Validation Error Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/stock-ledger/export?type=invalid",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "stock-ledger",
+                    "export"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "invalid"
+                    }
+                  ]
+                }
+              },
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation error\",\n  \"errors\": {\n    \"type\": [\n      \"Type must be one of: opening, grn, issue, transfer_in, transfer_out, adjustment.\"\n    ]\n  }\n}"
+            },
+            {
+              "name": "Server Error Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/stock-ledger/export",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "stock-ledger",
+                    "export"
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Export failed\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

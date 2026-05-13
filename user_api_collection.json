@@ -1,0 +1,598 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "UserApiController",
+    "description": "User Management API Collection",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "{{base_url}}",
+      "variables": {
+        "base_url": {
+          "default": "http://localhost:8000"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/api/users": {
+      "get": {
+        "summary": "List Users",
+        "description": "List all users with optional filters",
+        "operationId": "usersList",
+        "parameters": [
+          {"name": "name", "in": "query", "schema": {"type": "string"}, "description": "Filter by name"},
+          {"name": "email", "in": "query", "schema": {"type": "string"}, "description": "Filter by email"},
+          {"name": "role", "in": "query", "schema": {"type": "integer"}, "description": "Filter by role ID"},
+          {"name": "workspace_id", "in": "query", "schema": {"type": "integer"}, "description": "Filter by workspace"},
+          {"name": "page", "in": "query", "schema": {"type": "integer"}, "description": "Page number"},
+          {"name": "per_page", "in": "query", "schema": {"type": "integer"}, "description": "Items per page"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "Users retrieved successfully", "data": {"users": [], "pagination": {}}}
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create User",
+        "description": "Create a new user",
+        "operationId": "usersCreate",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "roles"],
+                "properties": {
+                  "name": {"type": "string", "description": "User name"},
+                  "email": {"type": "string", "description": "User email"},
+                  "mobile_no": {"type": "string", "description": "Mobile number"},
+                  "password": {"type": "string", "description": "Password"},
+                  "password_switch": {"type": "string", "description": "'on' to enable login"},
+                  "roles": {"type": "integer", "description": "Role ID"},
+                  "avatar": {"type": "string", "format": "binary", "description": "Profile image file"},
+                  "workspace_id": {"type": "integer", "description": "Workspace ID"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "User created successfully", "data": {"user": {}}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/create-data": {
+      "get": {
+        "summary": "Get Create Data",
+        "description": "Get data needed for creating a user (roles list)",
+        "operationId": "usersCreateData",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "Roles data retrieved successfully", "data": {"roles": {}}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{user_id}": {
+      "get": {
+        "summary": "Show User",
+        "description": "Show a specific user",
+        "operationId": "usersShow",
+        "parameters": [
+          {"name": "user_id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "User retrieved successfully", "data": {"user": {}, "role": {}}}
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update User",
+        "description": "Update a user",
+        "operationId": "usersUpdate",
+        "parameters": [
+          {"name": "user_id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email"],
+                "properties": {
+                  "name": {"type": "string", "description": "User name"},
+                  "email": {"type": "string", "description": "User email"},
+                  "mobile_no": {"type": "string", "description": "Mobile number"},
+                  "roles": {"type": "integer", "description": "Role ID"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "User updated successfully", "data": {"user": {}}}
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete User",
+        "description": "Delete a user",
+        "operationId": "usersDelete",
+        "parameters": [
+          {"name": "user_id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "User deleted successfully", "data": {}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{user_id}/edit": {
+      "get": {
+        "summary": "Edit User",
+        "description": "Get user data for editing",
+        "operationId": "usersEdit",
+        "parameters": [
+          {"name": "user_id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "User data retrieved successfully", "data": {"user": {}, "roles": {}}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/profile": {
+      "get": {
+        "summary": "Get Profile",
+        "description": "Get current authenticated user's profile",
+        "operationId": "usersProfile",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "Profile retrieved successfully", "data": {"user": {}}}
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Profile",
+        "description": "Update current authenticated user's profile",
+        "operationId": "usersProfileUpdate",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email"],
+                "properties": {
+                  "name": {"type": "string", "description": "User name"},
+                  "email": {"type": "string", "description": "User email"},
+                  "mobile_no": {"type": "string", "description": "Mobile number"},
+                  "avatar": {"type": "string", "format": "binary", "description": "Profile image file"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "Profile updated successfully", "data": {"user": {}}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/profile/avatar": {
+      "put": {
+        "summary": "Update Avatar",
+        "description": "Update only user avatar",
+        "operationId": "usersProfileAvatar",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["avatar"],
+                "properties": {
+                  "avatar": {"type": "string", "format": "binary", "description": "Profile image file (jpeg,png,jpg,gif)"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "Avatar updated successfully", "data": {"avatar": "storage/uploads/avatars/filename.jpg"}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/password": {
+      "put": {
+        "summary": "Update Password",
+        "description": "Update current user's password",
+        "operationId": "usersPassword",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["current_password", "new_password", "confirm_password"],
+                "properties": {
+                  "current_password": {"type": "string", "description": "Current password"},
+                  "new_password": {"type": "string", "description": "New password (min 6 chars)"},
+                  "confirm_password": {"type": "string", "description": "Confirm new password"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "Password updated successfully", "data": {}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{user_id}/password": {
+      "put": {
+        "summary": "Reset User Password",
+        "description": "Reset user's password (Admin)",
+        "operationId": "usersPasswordReset",
+        "parameters": [
+          {"name": "user_id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["password", "password_confirmation"],
+                "properties": {
+                  "password": {"type": "string", "description": "New password"},
+                  "password_confirmation": {"type": "string", "description": "Confirm password"},
+                  "login_enable": {"type": "string", "description": "Enable login after reset"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "Password reset successfully", "data": {}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{user_id}/login-manage": {
+      "post": {
+        "summary": "Login Manage",
+        "description": "Enable/disable user login",
+        "operationId": "usersLoginManage",
+        "parameters": [
+          {"name": "user_id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "User login enabled successfully", "data": {}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/import-preview": {
+      "post": {
+        "summary": "Import Preview",
+        "description": "Preview CSV import file",
+        "operationId": "usersImportPreview",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file"],
+                "properties": {
+                  "file": {"type": "string", "format": "binary", "description": "CSV file"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "File preview data", "data": {"columns": [], "roles": {}}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/import": {
+      "post": {
+        "summary": "Import Users",
+        "description": "Import users from CSV",
+        "operationId": "usersImport",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "role", "file_data"],
+                "properties": {
+                  "name": {"type": "string", "description": "Name column index"},
+                  "email": {"type": "string", "description": "Email column index"},
+                  "role": {"type": "string", "description": "Role column index"},
+                  "file_data": {"type": "string", "description": "CSV data (JSON)"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "Import completed", "data": {"total_imported": 10, "imported": [], "failed": []}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/logs": {
+      "get": {
+        "summary": "User Logs",
+        "description": "Get user login history",
+        "operationId": "usersLogs",
+        "parameters": [
+          {"name": "month", "in": "query", "schema": {"type": "string"}, "description": "Filter by month"},
+          {"name": "users", "in": "query", "schema": {"type": "integer"}, "description": "Filter by user ID"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "User logs retrieved successfully", "data": {"logs": [], "filter_users": {}}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/logs/{log_id}": {
+      "get": {
+        "summary": "View Log",
+        "description": "View specific login log",
+        "operationId": "usersLogView",
+        "parameters": [
+          {"name": "log_id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "Log retrieved successfully", "data": {"log": {}}}
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Log",
+        "description": "Delete login log",
+        "operationId": "usersLogDelete",
+        "parameters": [
+          {"name": "log_id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "Log deleted successfully", "data": {}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{user_id}/impersonate": {
+      "post": {
+        "summary": "Impersonate",
+        "description": "Impersonate as another user",
+        "operationId": "usersImpersonate",
+        "parameters": [
+          {"name": "user_id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "Now impersonating user", "data": {"impersonated_user": 1}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/impersonate-exit": {
+      "post": {
+        "summary": "Exit Impersonation",
+        "description": "Exit impersonation",
+        "operationId": "usersImpersonateExit",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "Exited impersonation", "data": {}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{user_id}/company-info": {
+      "get": {
+        "summary": "Company Info",
+        "description": "Get company info with user/workspace counters",
+        "operationId": "usersCompanyInfo",
+        "parameters": [
+          {"name": "user_id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "Company info retrieved successfully", "data": {"users_data": {}, "workspce_data": {}}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/enable-disable": {
+      "post": {
+        "summary": "Enable/Disable",
+        "description": "Enable/disable user or workspace",
+        "operationId": "usersEnableDisable",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["id", "name", "company_id", "is_disable"],
+                "properties": {
+                  "id": {"type": "integer", "description": "User or Workspace ID"},
+                  "name": {"type": "string", "description": "'user' or 'workspace'"},
+                  "company_id": {"type": "integer", "description": "Company ID"},
+                  "is_disable": {"type": "integer", "description": "0 or 1"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "User/Workspace enabled successfully", "data": {"users_data": {}, "workspce_data": {}}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{user_id}/verify": {
+      "post": {
+        "summary": "Verify User",
+        "description": "Verify user email",
+        "operationId": "usersVerify",
+        "parameters": [
+          {"name": "user_id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {"status": true, "message": "User verified successfully", "data": {}}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {"bearerAuth": []}
+  ]
+}

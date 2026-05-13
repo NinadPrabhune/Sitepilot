@@ -1,0 +1,78 @@
+{
+  "info": {
+    "name": "Stock Report API",
+    "_postman_id": "12345678-abcd-efgh-ijkl-1234567890ab",
+    "description": "API collection for Stock Reports with base_url and token variables",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://yourdomain.com/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Get Stock Reports",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/stock-reports?site_id=3",
+          "host": ["{{base_url}}"],
+          "path": ["stock-reports"],
+          "query": [
+            {
+              "key": "site_id",
+              "value": "3"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Stock Reports (POST)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"site_id\": 3\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/stock-reports",
+          "host": ["{{base_url}}"],
+          "path": ["stock-reports"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+coupons
+credit_notes
+currencies
+custom_domain_requests
+customer_credit_notes
+customer_debit_notes

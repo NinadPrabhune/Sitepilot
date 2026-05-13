@@ -1,0 +1,3 @@
+customers
+daily_consumption_details
+daily_consumption_masters

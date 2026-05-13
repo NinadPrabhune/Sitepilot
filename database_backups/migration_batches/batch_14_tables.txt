@@ -1,0 +1,5 @@
+chart_of_accounts
+client_deals
+client_permissions
+client_projects
+comments

@@ -1,0 +1,142 @@
+{
+  "info": {
+    "name": "Daily Progress Report API",
+    "_postman_id": "dpr-collection-001",
+    "description": "API Collection for DailyProgressReportApiController",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Daily Progress Reports",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/daily-progress-reports",
+          "host": ["{{base_url}}"],
+          "path": ["api", "daily-progress-reports"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"site_id\": 1,\n  \"workspace_id\": 1,\n  \"created_by\": 1\n}"
+        }
+      }
+    },
+    {
+      "name": "Create Daily Progress Report",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/daily-progress-reports",
+          "host": ["{{base_url}}"],
+          "path": ["api", "daily-progress-reports"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"date\": \"2025-01-01\",\n  \"machine_start_reading\": 1200,\n  \"machine_end_reading\": 1300,\n  \"number_of_operators\": 3,\n  \"work_details\": \"Excavation work completed\",\n  \"diesel_consumption\": 45.5,\n  \"maintenance_notes\": \"Oil checked\",\n  \"machinery_advances\": \"Moved to sector B\",\n  \"status\": 0,\n  \"site_id\": 1,\n  \"workspace_id\": 1,\n  \"created_by\": 1\n}"
+        }
+      }
+    },
+    {
+      "name": "Show Daily Progress Report",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/daily-progress-reports/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "daily-progress-reports", "1"]
+        }
+      }
+    },
+    {
+      "name": "Update Daily Progress Report",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/daily-progress-reports/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "daily-progress-reports", "1"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"date\": \"2025-01-02\",\n  \"machine_start_reading\": 1300,\n  \"machine_end_reading\": 1400,\n  \"number_of_operators\": 4,\n  \"work_details\": \"Foundation work started\",\n  \"diesel_consumption\": 50,\n  \"maintenance_notes\": \"Hydraulic pipe replaced\",\n  \"machinery_advances\": \"Bulldozer deployed\",\n  \"status\": 1,\n  \"site_id\": 1,\n  \"workspace_id\": 1,\n  \"created_by\": 1\n}"
+        }
+      }
+    },
+    {
+      "name": "Delete Daily Progress Report",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/daily-progress-reports/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "daily-progress-reports", "1"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}

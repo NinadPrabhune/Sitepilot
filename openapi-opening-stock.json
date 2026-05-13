@@ -1,0 +1,636 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Opening Stock API",
+    "description": "API for managing opening stock in the Stock Management module.\n\n## Authentication\nAll endpoints require Bearer Token (JWT) authentication.\n\n## Response Format\nAll responses follow this structure:\n```json\n{\n  \"success\": true,\n  \"message\": \"string\",\n  \"data\": {},\n  \"error\": null\n}\n```\n\n- **success**: true for success, false for error\n- **message**: Error or success message\n- **data**: Response data (optional)\n- **error**: Error details (optional)\n\n## Error Codes\n- 400: Validation error\n- 401: Unauthorized\n- 403: Permission denied\n- 422: Validation error\n- 500: Server error\n",
+    "version": "1.0.0",
+    "contact": {
+      "name": "SitePilot API Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "API Base URL"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Opening Stock",
+      "description": "Opening stock management endpoints"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "StockTransaction": {
+        "type": "object",
+        "description": "Stock transaction record schema",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the transaction",
+            "example": 1
+          },
+          "project_id": {
+            "type": "integer",
+            "description": "Project ID associated with the transaction",
+            "example": 5
+          },
+          "project_name": {
+            "type": "string",
+            "description": "Project name",
+            "example": "Project Site A"
+          },
+          "material_id": {
+            "type": "integer",
+            "description": "Material ID associated with the transaction",
+            "example": 10
+          },
+          "material_name": {
+            "type": "string",
+            "description": "Material name",
+            "example": "Cement"
+          },
+          "type": {
+            "type": "string",
+            "description": "Transaction type",
+            "example": "opening",
+            "enum": [
+              "opening",
+              "grn",
+              "issue",
+              "transfer_in",
+              "transfer_out",
+              "adjustment"
+            ]
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double",
+            "description": "Quantity of the material",
+            "example": 100.5000
+          },
+          "rate": {
+            "type": "number",
+            "format": "double",
+            "description": "Rate per unit",
+            "example": 250.0000
+          },
+          "remarks": {
+            "type": "string",
+            "description": "Additional remarks",
+            "example": "Initial stock entry"
+          },
+          "created_by": {
+            "type": "integer",
+            "description": "User who created the transaction",
+            "example": 2
+          },
+          "creator_name": {
+            "type": "string",
+            "description": "Name of the creator",
+            "example": "John Doe"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Transaction creation timestamp",
+            "example": "2026-03-24T10:00:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Transaction last update timestamp",
+            "example": "2026-03-24T10:00:00Z"
+          }
+        }
+      },
+      "CurrentStock": {
+        "type": "object",
+        "description": "Current stock information",
+        "properties": {
+          "project_id": {
+            "type": "integer",
+            "description": "Project ID",
+            "example": 5
+          },
+          "material_id": {
+            "type": "integer",
+            "description": "Material ID",
+            "example": 10
+          },
+          "current_stock": {
+            "type": "number",
+            "format": "double",
+            "description": "Current stock quantity",
+            "example": 150.7500
+          }
+        }
+      },
+      "ApiResponse": {
+        "type": "object",
+        "description": "Standard API response",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Response status (true=success, false=error)",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "description": "Response message",
+            "example": "Success"
+          },
+          "data": {
+            "type": "object",
+            "description": "Response data",
+            "nullable": true
+          },
+          "error": {
+            "type": "object",
+            "description": "Error details",
+            "nullable": true
+          }
+        }
+      },
+      "ApiError": {
+        "type": "object",
+        "description": "Error response",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Response status (true=success, false=error)",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Something went wrong"
+          },
+          "error": {
+            "type": "object",
+            "description": "Error details",
+            "nullable": true
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/opening-stock": {
+      "get": {
+        "summary": "List opening stock transactions",
+        "description": "Retrieves all opening stock transactions with optional filtering.\n\n## Authorization\nRequires 'opening stock manage' permission.\n\n## Query Parameters\n- project_id: Filter by project ID (optional)\n- material_id: Filter by material ID (optional)\n- start_date: Filter by start date (optional, format: YYYY-MM-DD)\n- end_date: Filter by end date (optional, format: YYYY-MM-DD)\n",
+        "tags": ["Opening Stock"],
+        "operationId": "listOpeningStock",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "query",
+            "description": "Filter by project ID",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 5
+            }
+          },
+          {
+            "name": "material_id",
+            "in": "query",
+            "description": "Filter by material ID",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Filter by start date (format: YYYY-MM-DD)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2026-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Filter by end date (format: YYYY-MM-DD)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2026-12-31"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Opening stock transactions fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Opening stock transactions fetched successfully."
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/StockTransaction"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Opening stock transactions fetched successfully.",
+                  "data": [
+                    {
+                      "id": 1,
+                      "project_id": 5,
+                      "project_name": "Project Site A",
+                      "material_id": 10,
+                      "material_name": "Cement",
+                      "type": "opening",
+                      "quantity": 100.5000,
+                      "rate": 250.0000,
+                      "remarks": "Initial stock entry",
+                      "created_by": 2,
+                      "creator_name": "John Doe",
+                      "created_at": "2026-03-24T10:00:00Z",
+                      "updated_at": "2026-03-24T10:00:00Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Unauthenticated.",
+                  "error": null
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Permission denied.",
+                  "error": null
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Failed to fetch opening stock transactions.",
+                  "error": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create opening stock",
+        "description": "Creates a new opening stock entry for a material in a project.\n\n## Authorization\nRequires 'opening stock create' permission.\n\n## Validation Rules\n- project_id: Required, must exist in projects table\n- material_id: Required, must exist in materials table\n- quantity: Required, must be greater than 0.0001\n- rate: Optional, must be greater than or equal to 0\n- remarks: Optional, string\n\n## Business Logic\n- Prevents duplicate opening stock for the same material in the same project\n- Creates a stock transaction of type 'opening'\n",
+        "tags": ["Opening Stock"],
+        "operationId": "createOpeningStock",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "project_id",
+                  "material_id",
+                  "quantity"
+                ],
+                "properties": {
+                  "project_id": {
+                    "type": "integer",
+                    "description": "Project ID (ALWAYS REQUIRED). Must exist in projects table.",
+                    "example": 5
+                  },
+                  "material_id": {
+                    "type": "integer",
+                    "description": "Material ID (ALWAYS REQUIRED). Must exist in materials table.",
+                    "example": 10
+                  },
+                  "quantity": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "Quantity of the material (ALWAYS REQUIRED). Must be greater than 0.0001.",
+                    "example": 100.5000
+                  },
+                  "rate": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "Rate per unit (OPTIONAL). Must be greater than or equal to 0. Defaults to 0 if not provided.",
+                    "example": 250.0000
+                  },
+                  "remarks": {
+                    "type": "string",
+                    "description": "Additional remarks (OPTIONAL). Any additional information about the opening stock.",
+                    "example": "Initial stock entry for project"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Opening stock added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Opening stock added successfully."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/StockTransaction"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Opening stock added successfully.",
+                  "data": {
+                    "id": 1,
+                    "project_id": 5,
+                    "material_id": 10,
+                    "type": "opening",
+                    "quantity": 100.5000,
+                    "rate": 250.0000,
+                    "remarks": "Initial stock entry for project",
+                    "created_by": 2,
+                    "created_at": "2026-03-24T10:00:00Z",
+                    "updated_at": "2026-03-24T10:00:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or business logic error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Opening stock already exists for this material in selected project.",
+                  "error": null
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Unauthenticated.",
+                  "error": null
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Permission denied.",
+                  "error": null
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Validation failed.",
+                  "error": {
+                    "project_id": ["The project_id field is required."],
+                    "material_id": ["The material_id field is required."],
+                    "quantity": ["The quantity field is required."]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Failed to add opening stock.",
+                  "error": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opening-stock/stock": {
+      "get": {
+        "summary": "Get current stock",
+        "description": "Retrieves the current stock quantity for a specific material in a project.\n\n## Authorization\nRequires 'opening stock manage' permission.\n\n## Query Parameters\n- project_id: Required, must exist in projects table\n- material_id: Required, must exist in materials table\n",
+        "tags": ["Opening Stock"],
+        "operationId": "getCurrentStock",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "query",
+            "description": "Project ID (ALWAYS REQUIRED). Must exist in projects table.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 5
+            }
+          },
+          {
+            "name": "material_id",
+            "in": "query",
+            "description": "Material ID (ALWAYS REQUIRED). Must exist in materials table.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current stock fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Current stock fetched successfully."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/CurrentStock"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Current stock fetched successfully.",
+                  "data": {
+                    "project_id": 5,
+                    "material_id": 10,
+                    "current_stock": 150.7500
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Unauthenticated.",
+                  "error": null
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Permission denied.",
+                  "error": null
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Validation failed.",
+                  "error": {
+                    "project_id": ["The project_id field is required."],
+                    "material_id": ["The material_id field is required."]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Failed to fetch current stock.",
+                  "error": null
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

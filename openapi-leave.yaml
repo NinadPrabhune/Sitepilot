@@ -1,0 +1,1049 @@
+openapi: 3.0.0
+info:
+  title: Leave API
+  description: |
+    API for managing leave requests in the HRM module.
+    
+    ## Authentication
+    All endpoints require Bearer Token (JWT) authentication.
+    
+    ## Response Format
+    All responses follow this structure:
+    ```json
+    {
+      "status": 1,
+      "message": "string",
+      "data": {}
+    }
+    ```
+    
+    - **status**: 1 for success, 0 for error
+    - **message**: Error or success message
+    - **data**: Response data (optional)
+    
+    ## Error Codes
+    - 403: Permission denied / Validation error
+    - 404: Resource not found
+    - 500: Server error
+  version: 1.0.0
+  contact:
+    name: SitePilot API Support
+
+servers:
+  - url: /api
+    description: API Base URL
+
+tags:
+  - name: Leave
+    description: Leave management endpoints
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Leave:
+      type: object
+      description: Leave record schema
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the leave
+          example: 1
+        employee_id:
+          type: integer
+          description: Employee ID associated with the leave
+          example: 5
+        user_id:
+          type: integer
+          description: User ID associated with the leave
+          example: 2
+        leave_type_id:
+          type: integer
+          description: Leave type ID
+          example: 1
+        leave_type:
+          type: object
+          description: Leave type relationship
+          properties:
+            id:
+              type: integer
+            title:
+              type: string
+            days:
+              type: integer
+        applied_on:
+          type: string
+          format: date
+          description: Date when leave was applied
+          example: "2026-03-24"
+        start_date:
+          type: string
+          format: date
+          description: Leave start date
+          example: "2026-03-25"
+        end_date:
+          type: string
+          format: date
+          description: Leave end date
+          example: "2026-03-28"
+        total_leave_days:
+          type: integer
+          description: Total number of leave days
+          example: 4
+        approved_days:
+          type: integer
+          description: Number of days approved
+          example: 4
+        leave_reason:
+          type: string
+          description: Reason for leave
+          example: "Medical leave"
+        remark:
+          type: string
+          description: Additional remarks
+          example: "Doctor advised rest"
+        status:
+          type: string
+          description: Leave status
+          example: "Pending"
+          enum:
+            - Pending
+            - Approved
+            - Partially Approved
+            - Reject
+        status_reason:
+          type: string
+          description: Reason for status change
+          example: "Approved by manager"
+        workspace:
+          type: integer
+          description: Workspace ID
+          example: 1
+        site_id:
+          type: integer
+          description: Site/Project ID
+          example: 1
+        created_by:
+          type: integer
+          description: User who created the leave
+          example: 2
+
+    LeaveType:
+      type: object
+      description: Leave type schema
+      properties:
+        id:
+          type: integer
+          description: Leave type ID
+          example: 1
+        title:
+          type: string
+          description: Leave type title
+          example: "Annual Leave"
+        days:
+          type: integer
+          description: Number of days allowed
+          example: 12
+
+    User:
+      type: object
+      description: User schema
+      properties:
+        id:
+          type: integer
+          description: User ID
+          example: 2
+        name:
+          type: string
+          description: User name
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          description: User email
+          example: "john@example.com"
+
+    LeaveSummary:
+      type: object
+      description: Leave summary by type
+      properties:
+        id:
+          type: integer
+          description: Leave type ID
+          example: 1
+        title:
+          type: string
+          description: Leave type title
+          example: "Annual Leave"
+        allowed_days:
+          type: integer
+          description: Total days allowed for this leave type
+          example: 12
+        used_days:
+          type: integer
+          description: Days used so far
+          example: 4
+        remaining_days:
+          type: integer
+          description: Days remaining
+          example: 8
+
+    ActionResponse:
+      type: object
+      description: Response from action endpoint
+      properties:
+        leave:
+          $ref: '#/components/schemas/Leave'
+        employee:
+          $ref: '#/components/schemas/User'
+        leave_type:
+          $ref: '#/components/schemas/LeaveType'
+        used_days:
+          type: integer
+          description: Days already used
+          example: 2
+        remaining_days:
+          type: integer
+          description: Days remaining
+          example: 10
+        sundays_worked:
+          type: integer
+          description: Number of Sundays worked
+          example: 1
+
+    ApiResponse:
+      type: object
+      description: Standard API response
+      properties:
+        status:
+          type: integer
+          description: Response status (1=success, 0=error)
+          example: 1
+        message:
+          type: string
+          description: Response message
+          example: "Success"
+        data:
+          type: object
+          description: Response data
+          nullable: true
+
+    ApiError:
+      type: object
+      description: Error response
+      properties:
+        status:
+          type: integer
+          description: Response status (1=success, 0=error)
+          example: 0
+        message:
+          type: string
+          description: Error message
+          example: "Something went wrong"
+
+  requestBodies:
+    StoreLeaveRequest:
+      description: Request body for creating a new leave
+      required: true
+      content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - leave_type_id
+              - start_date
+              - end_date
+              - leave_reason
+              - remark
+            properties:
+              leave_type_id:
+                type: integer
+                description: |
+                  ID of the leave type. Required field.
+                  Use GET /api/Hrm/leaves-types to retrieve available leave types.
+                example: 1
+              start_date:
+                type: string
+                format: date
+                description: |
+                  Leave start date. Required field.
+                  Must be after yesterday.
+                  Format: YYYY-MM-DD
+                example: "2026-03-25"
+              end_date:
+                type: string
+                format: date
+                description: |
+                  Leave end date. Required field.
+                  Format: YYYY-MM-DD
+                example: "2026-03-28"
+              leave_reason:
+                type: string
+                description: |
+                  Reason for leave. Required field.
+                  Describe the reason for taking leave.
+                example: "Medical appointment"
+              remark:
+                type: string
+                description: |
+                  Additional remarks. Required field.
+                  Any additional information about the leave.
+                example: "Need rest after procedure"
+              employee_id:
+                type: integer
+                description: |
+                  Employee ID. Optional field.
+                  Only used when admin/company is creating leave for another employee.
+                  If not provided, current authenticated user's leave will be created.
+                example: 5
+              status:
+                type: string
+                description: |
+                  Leave status. Optional field.
+                  Defaults to "Pending". Only used for admin/company to set initial status.
+                example: "Pending"
+                enum:
+                  - Pending
+                  - Approved
+                  - Reject
+
+    UpdateLeaveRequest:
+      description: Request body for updating an existing leave
+      required: true
+      content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - leave_type_id
+              - start_date
+              - end_date
+              - leave_reason
+              - remark
+            properties:
+              leave_type_id:
+                type: integer
+                description: |
+                  ID of the leave type. Required field.
+                  Use GET /api/Hrm/leaves-types to retrieve available leave types.
+                example: 1
+              start_date:
+                type: string
+                format: date
+                description: |
+                  Leave start date. Required field.
+                  Must be after yesterday.
+                  Format: YYYY-MM-DD
+                example: "2026-03-26"
+              end_date:
+                type: string
+                format: date
+                description: |
+                  Leave end date. Required field.
+                  Format: YYYY-MM-DD
+                example: "2026-03-29"
+              leave_reason:
+                type: string
+                description: |
+                  Reason for leave. Required field.
+                  Describe the reason for taking leave.
+                example: "Updated medical leave reason"
+              remark:
+                type: string
+                description: |
+                  Additional remarks. Required field.
+                  Any additional information about the leave.
+                example: "Updated with new details"
+
+    ChangeStatusRequest:
+      description: Request body for changing leave status
+      required: true
+      content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - leave_id
+              - status
+            properties:
+              leave_id:
+                type: integer
+                description: |
+                  ID of the leave to update. Required field.
+                  The leave ID to change status for.
+                example: 1
+              status:
+                type: string
+                description: |
+                  New status for the leave. Required field.
+                  One of: Approved, Reject, Partially Approved
+                example: "Approved"
+                enum:
+                  - Approved
+                  - Reject
+                  - Partially Approved
+              approved_days:
+                type: integer
+                description: |
+                  Number of approved days. Conditionally required.
+                  Required when status is "Partially Approved".
+                  Must be between 1 and total leave days.
+                example: 2
+              status_reason:
+                type: string
+                description: |
+                  Reason for status change. Optional field.
+                  Provide a reason or comment for the status update.
+                example: "Approved with partial days due to staffing needs"
+
+    LeaveSummaryRequest:
+      description: Request body for getting leave summary
+      required: true
+      content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - employee_id
+            properties:
+              employee_id:
+                type: integer
+                description: |
+                  Employee ID. Required field.
+                  ID of the employee to get leave summary for.
+                example: 5
+
+paths:
+  /api/Hrm/leaves:
+    get:
+      summary: Get all leave records
+      description: |
+        Retrieves all leave records. 
+        - Admin/company users see all leaves
+        - Regular employees see only their own leaves
+      tags:
+        - Leave
+      operationId: getLeaves
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: ""
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Leave'
+        '500':
+          description: Server error
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Something went wrong: Internal server error"
+
+    post:
+      summary: Create a new leave request
+      description: |
+        Creates a new leave request.
+        
+        ## Required Fields
+        - leave_type_id: ID of the leave type
+        - start_date: Leave start date (must be after yesterday)
+        - end_date: Leave end date
+        - leave_reason: Reason for leave
+        - remark: Additional remarks
+        
+        ## Optional Fields
+        - employee_id: Only used by admin/company to create leave for another employee
+        - status: Only used by admin/company to set initial status
+        
+        ## Business Logic
+        - Validates leave balance before creating
+        - Checks for pending leaves
+        - Calculates total leave days automatically
+      tags:
+        - Leave
+      operationId: createLeave
+      requestBody:
+        $ref: '#/components/requestBodies/StoreLeaveRequest'
+      responses:
+        '200':
+          description: Leave created successfully
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: "Leave successfully created."
+                  data:
+                    $ref: '#/components/schemas/Leave'
+        '403':
+          description: Validation error or permission denied
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "You are not eligible for this leave. Maximum days remaining: 5"
+        '404':
+          description: Leave type or employee not found
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Leave type not found"
+        '500':
+          description: Server error
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Something went wrong: Internal server error"
+
+  /api/Hrm/leaves/{id}:
+    get:
+      summary: Get a single leave record
+      description: |
+        Retrieves a specific leave record by ID.
+        
+        ## Authorization
+        - Admin/company can view any leave
+        - Regular employees can only view their own leaves
+      tags:
+        - Leave
+      operationId: getLeave
+      parameters:
+        - name: id
+          in: path
+          description: Leave ID
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Success
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: ""
+                  data:
+                    $ref: '#/components/schemas/Leave'
+        '403':
+          description: Permission denied
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Permission denied"
+        '404':
+          description: Leave not found
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Leave not found"
+        '500':
+          description: Server error
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+    put:
+      summary: Update an existing leave request
+      description: |
+        Updates an existing leave request.
+        
+        ## Restrictions
+        - Only pending leave requests can be updated
+        - Only the leave owner or admin can update
+        
+        ## Required Fields
+        - leave_type_id: ID of the leave type
+        - start_date: Leave start date
+        - end_date: Leave end date
+        - leave_reason: Reason for leave
+        - remark: Additional remarks
+      tags:
+        - Leave
+      operationId: updateLeave
+      parameters:
+        - name: id
+          in: path
+          description: Leave ID
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateLeaveRequest'
+      responses:
+        '200':
+          description: Leave updated successfully
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: "Leave successfully updated."
+                  data:
+                    $ref: '#/components/schemas/Leave'
+        '403':
+          description: Validation error or permission denied
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Only pending leave requests can be updated"
+        '404':
+          description: Leave not found
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Leave not found"
+        '500':
+          description: Server error
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+    delete:
+      summary: Delete a leave request
+      description: |
+        Deletes a leave request.
+        
+        ## Restrictions
+        - Only pending leave requests can be deleted
+        - Only the leave owner or admin can delete
+      tags:
+        - Leave
+      operationId: deleteLeave
+      parameters:
+        - name: id
+          in: path
+          description: Leave ID
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Leave deleted successfully
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: "Leave successfully deleted."
+        '403':
+          description: Permission denied
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Only pending leave requests can be deleted"
+        '404':
+          description: Leave not found
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Leave not found"
+        '500':
+          description: Server error
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/Hrm/leaves/{id}/action:
+    get:
+      summary: Get leave details with employee info and leave balance
+      description: |
+        Retrieves detailed leave information including:
+        - Leave record
+        - Employee details
+        - Leave type details
+        - Used days
+        - Remaining days
+        - Sundays worked
+        
+        ## Authorization
+        Requires approver permission (admin/company).
+      tags:
+        - Leave
+      operationId: getLeaveAction
+      parameters:
+        - name: id
+          in: path
+          description: Leave ID
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Success
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: ""
+                  data:
+                    $ref: '#/components/schemas/ActionResponse'
+        '403':
+          description: Permission denied
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Permission denied. Approver access required."
+        '404':
+          description: Leave or leave type not found
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Leave not found"
+        '500':
+          description: Server error
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/Hrm/leaves/change-status:
+    post:
+      summary: Change leave status
+      description: |
+        Changes the status of a leave request.
+        
+        ## Status Options
+        - **Approved**: Full approval of leave
+        - **Reject**: Rejection of leave
+        - **Partially Approved**: Partial approval (requires approved_days)
+        
+        ## Required Fields
+        - leave_id: ID of the leave
+        - status: New status
+        
+        ## Conditional Fields
+        - approved_days: Required when status is "Partially Approved"
+        
+        ## Authorization
+        Requires approver permission (admin/company).
+      tags:
+        - Leave
+      operationId: changeLeaveStatus
+      requestBody:
+        $ref: '#/components/requestBodies/ChangeStatusRequest'
+      responses:
+        '200':
+          description: Status updated successfully
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: "Leave status successfully updated."
+                  data:
+                    $ref: '#/components/schemas/Leave'
+        '403':
+          description: Validation error or permission denied
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Permission denied. Approver access required."
+        '404':
+          description: Leave not found
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Leave not found"
+        '500':
+          description: Server error
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/Hrm/leaves/summary:
+    post:
+      summary: Get leave summary for an employee
+      description: |
+        Retrieves leave usage summary for an employee grouped by leave type.
+        
+        ## Response Fields
+        - id: Leave type ID
+        - title: Leave type title
+        - allowed_days: Total days allowed
+        - used_days: Days used so far
+        - remaining_days: Days remaining
+        
+        ## Authorization
+        - Admin/company can view any employee's summary
+        - Regular employees can view their own summary
+      tags:
+        - Leave
+      operationId: getLeaveSummary
+      requestBody:
+        $ref: '#/components/requestBodies/LeaveSummaryRequest'
+      responses:
+        '200':
+          description: Success
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: ""
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LeaveSummary'
+        '403':
+          description: Validation error
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "The employee_id field is required."
+        '500':
+          description: Server error
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/Hrm/leaves/{id}/description:
+    get:
+      summary: Get leave description
+      description: |
+        Retrieves the leave reason and remarks for a leave request.
+        
+        ## Response Fields
+        - leave_reason: Reason for taking leave
+        - remark: Additional remarks
+        
+        ## Authorization
+        - Admin/company can view any leave description
+        - Regular employees can view their own leave description
+      tags:
+        - Leave
+      operationId: getLeaveDescription
+      parameters:
+        - name: id
+          in: path
+          description: Leave ID
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Success
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: ""
+                  data:
+                    type: object
+                    properties:
+                      leave_reason:
+                        type: string
+                        example: "Medical leave"
+                      remark:
+                        type: string
+                        example: "Doctor advised rest"
+        '403':
+          description: Permission denied
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Permission denied"
+        '404':
+          description: Leave not found
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Leave not found"
+        '500':
+          description: Server error
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/Hrm/leaves/{id}/status-reason:
+    get:
+      summary: Get leave status reason
+      description: |
+        Retrieves the status and status reason for a leave request.
+        
+        ## Response Fields
+        - status: Current leave status
+        - status_reason: Reason for status change
+        
+        ## Authorization
+        - Admin/company can view any leave status
+        - Regular employees can view their own leave status
+      tags:
+        - Leave
+      operationId: getLeaveStatusReason
+      parameters:
+        - name: id
+          in: path
+          description: Leave ID
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Success
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: ""
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: "Approved"
+                      status_reason:
+                        type: string
+                        example: "Approved by manager"
+        '403':
+          description: Permission denied
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Permission denied"
+        '404':
+          description: Leave not found
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                status: 0
+                message: "Leave not found"
+        '500':
+          description: Server error
+          content:`n        application/json:`n          schema:`n            type: object`n      multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'

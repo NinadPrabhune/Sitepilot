@@ -1,0 +1,2150 @@
+{
+    "timestamp": "2026-05-06 12:39:58",
+    "database": "sitepilot_local",
+    "tables": {
+        "activities": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'activities'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "activities_completed": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'activities_completed'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "activity_logs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'activity_logs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "add_ons": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'add_ons'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "advance_adjustments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'advance_adjustments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "advance_audit_logs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'advance_audit_logs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "advance_utilizations": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'advance_utilizations'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "allowance_options": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'allowance_options'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "allowance_taxs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'allowance_taxs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "allowances": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'allowances'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "announcement_employees": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'announcement_employees'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "announcements": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'announcements'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "api_key_settings": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'api_key_settings'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "app_info": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'app_info'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "assets_tools_and_equipment": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'assets_tools_and_equipment'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "attendances": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'attendances'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "award_types": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'award_types'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "awards": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'awards'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "bank_accounts": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bank_accounts'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "bank_transfer_payments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bank_transfer_payments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "bank_transfers": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bank_transfers'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "bill_accounts": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bill_accounts'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "bill_attechments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bill_attechments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "bill_payments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bill_payments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "bill_products": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bill_products'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "bills": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bills'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "branches": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'branches'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "bug_comments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bug_comments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "bug_files": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bug_files'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "bug_reports": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bug_reports'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "bug_stages": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bug_stages'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "cache": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'cache'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "cache_locks": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'cache_locks'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "categories": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'categories'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "ch_favorites": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'ch_favorites'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "ch_messages": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'ch_messages'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "ch_notification_users": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'ch_notification_users'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "ch_notifications": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'ch_notifications'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "chart_of_account_parents": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'chart_of_account_parents'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "chart_of_account_sub_types": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'chart_of_account_sub_types'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "chart_of_account_types": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'chart_of_account_types'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "chart_of_accounts": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'chart_of_accounts'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "client_deals": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'client_deals'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "client_permissions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'client_permissions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "client_projects": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'client_projects'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "comments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'comments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "commissions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'commissions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "company_contributions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'company_contributions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "company_policies": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'company_policies'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "complaints": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'complaints'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "coupons": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'coupons'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "credit_notes": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'credit_notes'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "currencies": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'currencies'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "custom_domain_requests": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'custom_domain_requests'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "customer_credit_notes": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'customer_credit_notes'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "customer_debit_notes": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'customer_debit_notes'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "customers": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'customers'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "daily_consumption_details": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'daily_consumption_details'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "daily_consumption_masters": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'daily_consumption_masters'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "daily_health_check_logs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'daily_health_check_logs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "daily_progress_reports": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'daily_progress_reports'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "daily_system_snapshots": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'daily_system_snapshots'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "deal_activity_logs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'deal_activity_logs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "deal_calls": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'deal_calls'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "deal_discussions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'deal_discussions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "deal_emails": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'deal_emails'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "deal_files": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'deal_files'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "deal_stages": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'deal_stages'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "deal_tasks": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'deal_tasks'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "deals": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'deals'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "debit_notes": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'debit_notes'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "deduction_options": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'deduction_options'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "departments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'departments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "designations": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'designations'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "destructive_command_attempts": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'destructive_command_attempts'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "device_tokens": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'device_tokens'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "document_types": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'document_types'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "documents": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'documents'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "dpr_anomalies": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'dpr_anomalies'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "dpr_edit_history": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'dpr_edit_history'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "email_template_langs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'email_template_langs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "email_templates": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'email_templates'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "employee_documents": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'employee_documents'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "employees": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'employees'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "escalation_requests": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'escalation_requests'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "event_employees": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'event_employees'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "events": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'events'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "experience_certificates": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'experience_certificates'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "failed_jobs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'failed_jobs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "financial_escalations": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'financial_escalations'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "financial_gate_blocks": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'financial_gate_blocks'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "financial_periods": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'financial_periods'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "financial_postings": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'financial_postings'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "general_transfer": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'general_transfer'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "grn_items": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'grn_items'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "grns": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'grns'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "gst_masters": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'gst_masters'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "helpdesk_conversions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'helpdesk_conversions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "helpdesk_ticket_categories": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'helpdesk_ticket_categories'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "helpdesk_tickets": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'helpdesk_tickets'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "holidays": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'holidays'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "indent_items": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'indent_items'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "indents": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'indents'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "invariant_logs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'invariant_logs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "invoice_attechments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'invoice_attechments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "invoice_payments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'invoice_payments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "invoice_products": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'invoice_products'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "invoices": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'invoices'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "ip_restricts": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'ip_restricts'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "jobs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'jobs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "join_us": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'join_us'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "joining_letters": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'joining_letters'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "labels": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'labels'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "landing_page_settings": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'landing_page_settings'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "landingpage_pixels": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'landingpage_pixels'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "languages": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'languages'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "lead_activity_logs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'lead_activity_logs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "lead_calls": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'lead_calls'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "lead_discussions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'lead_discussions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "lead_emails": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'lead_emails'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "lead_files": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'lead_files'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "lead_stages": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'lead_stages'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "lead_tasks": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'lead_tasks'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "leads": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'leads'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "leave_types": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'leave_types'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "leaves": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'leaves'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "loan_options": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'loan_options'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "loans": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'loans'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "login_details": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'login_details'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "machineries": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'machineries'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "machinery_categories": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'machinery_categories'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "machinery_ledger": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'machinery_ledger'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "machinery_ledgers": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'machinery_ledgers'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "machinery_payment_periods": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'machinery_payment_periods'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "machinery_payment_requests": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'machinery_payment_requests'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "machinery_rate_history": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'machinery_rate_history'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "maintenance_logs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'maintenance_logs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "man_power_details": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'man_power_details'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "man_power_masters": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'man_power_masters'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "man_power_types": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'man_power_types'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "marketplace_page_settings": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'marketplace_page_settings'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "material_categories": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'material_categories'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "material_issue_items": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'material_issue_items'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "material_issues": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'material_issues'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "material_project_stock": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'material_project_stock'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "material_return_items": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'material_return_items'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "material_returns": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'material_returns'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "material_transfer_items": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'material_transfer_items'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "material_transfers": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'material_transfers'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "materials": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'materials'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "migrations": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'migrations'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "milestones": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'milestones'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "noc_certificates": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'noc_certificates'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "notification_logs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'notification_logs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "notification_template_langs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'notification_template_langs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "notifications": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'notifications'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "number_sequences": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'number_sequences'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "numbering_config_logs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'numbering_config_logs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "numbering_configs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'numbering_configs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "orders": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'orders'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "other_payments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'other_payments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "overtimes": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'overtimes'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "password_reset_tokens": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'password_reset_tokens'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "password_resets": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'password_resets'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "pay_slips": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'pay_slips'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "payment_migration_map": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'payment_migration_map'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "payment_module_allocations": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'payment_module_allocations'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "payment_requests": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'payment_requests'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "payments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'payments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "payments_module": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'payments_module'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "payslip_types": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'payslip_types'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "permission_role": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'permission_role'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "permission_user": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'permission_user'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "permissions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'permissions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "personal_access_tokens": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'personal_access_tokens'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "pipelines": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'pipelines'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "plans": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'plans'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "po_status_logs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'po_status_logs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "pos": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'pos'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "pos_payments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'pos_payments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "pos_products": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'pos_products'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "product_services": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'product_services'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "production_safety_locks": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'production_safety_locks'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "products_log_times": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'products_log_times'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "project_documents": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'project_documents'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "project_files": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'project_files'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "project_files_new": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'project_files_new'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "projects": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'projects'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "promotions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'promotions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "proposal_attechments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'proposal_attechments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "proposal_products": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'proposal_products'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "proposals": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'proposals'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "purchase_attachments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'purchase_attachments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "purchase_debit_notes": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'purchase_debit_notes'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "purchase_invoice_items": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'purchase_invoice_items'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "purchase_invoices": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'purchase_invoices'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "purchase_order_items": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'purchase_order_items'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "purchase_orders": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'purchase_orders'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "purchase_payments": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'purchase_payments'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "purchase_products": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'purchase_products'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "purchases": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'purchases'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "reason_intelligence": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'reason_intelligence'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "receipts": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'receipts'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "referral_settings": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'referral_settings'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "referral_transactions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'referral_transactions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "report_snapshots": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'report_snapshots'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "resignations": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'resignations'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "revenues": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'revenues'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "role_user": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'role_user'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "roles": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'roles'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "saturation_deductions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'saturation_deductions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "schema_change_approvals": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'schema_change_approvals'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "sessions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sessions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "settings": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'settings'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "skipped_numbers": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'skipped_numbers'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "sources": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sources'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "spent_ledgers": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'spent_ledgers'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "spents": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'spents'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "stages": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'stages'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "states": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'states'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "stock_reports": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'stock_reports'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "stock_transactions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'stock_transactions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "sub_tasks": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'sub_tasks'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "subscriptions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'subscriptions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "supplier_advance_audit_logs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'supplier_advance_audit_logs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "supplier_advances": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'supplier_advances'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "supplier_categories": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'supplier_categories'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "supplier_ledger": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'supplier_ledger'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "supplier_ledger_snapshots": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'supplier_ledger_snapshots'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "supplier_transactions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'supplier_transactions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "suppliers": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'suppliers'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "system_health_logs": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'system_health_logs'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "system_locks": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'system_locks'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "system_migration_state": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'system_migration_state'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "task_files": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'task_files'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "tasks": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tasks'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "tax_brackets": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tax_brackets'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "tax_rebates": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tax_rebates'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "tax_thresholds": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tax_thresholds'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "taxes": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'taxes'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "termination_types": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'termination_types'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "terminations": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'terminations'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "time_sheets": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'time_sheets'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "transaction_lines": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'transaction_lines'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "transaction_orders": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'transaction_orders'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "transactions": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'transactions'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "transfers": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'transfers'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "travels": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'travels'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "trust_review_schedule": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'trust_review_schedule'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "units": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'units'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "user_active_modules": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_active_modules'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "user_coupons": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_coupons'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "user_deals": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_deals'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "user_leads": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_leads'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "user_notifications": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_notifications'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "user_projects": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_projects'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "user_trust_log": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_trust_log'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "user_warning_metrics": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'user_warning_metrics'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "users": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "vender_projects": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vender_projects'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "vendors": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vendors'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "warehouse_products": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'warehouse_products'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "warehouse_transfers": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'warehouse_transfers'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "warehouses": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'warehouses'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "warning_overrides": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'warning_overrides'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "warnings": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'warnings'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "work_spaces": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'work_spaces'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        },
+        "workspaces": {
+            "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'CONSTRAINT_TYPE' in 'field list' (Connection: mysql, SQL: \n                SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME\n                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE \n                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'workspaces'\n            )",
+            "columns": [],
+            "indexes": [],
+            "constraints": [],
+            "row_count": 0,
+            "checksum": null
+        }
+    }
+}

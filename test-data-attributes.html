@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Data Attributes</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Test Data Attributes Loading</h1>
+    
+    <!-- Simulate the problematic data attributes -->
+    <div id="dpr-data" style="display: none;"
+         data-materials='{"50":{"name":"Bio-Diesel","unit":"Number","price":"3944.00","total_qty":0,"category_id":2,"category_name":"Fuels"},"46":{"name":"CNG","unit":"Number","price":"120.00","total_qty":0,"category_id":2,"category_name":"Fuels"}}'
+         data-machinery='{"id":1,"name":"Test Machine","rate":"0.00","minimum_billing_hours":"8","owned_by":"rental"}'
+         data-is-rental='true'
+         data-report-items='[]'>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        $(document).ready(function() {
+            try {
+                console.log('Testing data attribute loading...');
+                
+                // Test 1: Direct data() method
+                const dprData = $('#dpr-data').data();
+                console.log('Method 1 - data():', dprData);
+                
+                // Test 2: Individual attribute access
+                const materials = $('#dpr-data').attr('data-materials');
+                console.log('Method 2 - attr():', materials);
+                
+                // Test 3: JSON parsing
+                const materialsParsed = JSON.parse(materials);
+                console.log('Method 3 - JSON.parse():', materialsParsed);
+                
+                // Test 4: Try the exact code from your file
+                const dprData2 = $('#dpr-data').data();
+                let materials2 = dprData2.materials || {};
+                let machinery2 = dprData2.machinery || {};
+                let isRental2 = dprData2.isRental || false;
+                
+                console.log('Exact test:', {
+                    materials: materials2,
+                    machinery: machinery2,
+                    isRental: isRental2
+                });
+                
+                document.getElementById('result').innerHTML = `
+                    <h3>✅ Success! Data loaded without errors</h3>
+                    <pre>${JSON.stringify(dprData2, null, 2)}</pre>
+                `;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = `
+                    <h3>❌ Error: ${error.message}</h3>
+                    <p>Line: ${error.lineNumber || 'unknown'}</p>
+                    <p>Column: ${error.columnNumber || 'unknown'}</p>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

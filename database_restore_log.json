@@ -1,0 +1,10 @@
+{
+    "timestamp": "2026-05-09 07:08:53",
+    "action": "database_restore_failed",
+    "backup_file": "backup_before_po_locked_advance_20260412_235814.sql",
+    "return_code": 1,
+    "error_output": [
+        "'mysql' is not recognized as an internal or external command,",
+        "operable program or batch file."
+    ]
+}

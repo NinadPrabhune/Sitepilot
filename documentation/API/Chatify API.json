@@ -1,0 +1,296 @@
+{
+	"info": {
+		"name": "Chatify API",
+		"_postman_id": "f33e0e57-1c87-4c44-a9fb-2e6e7e90c8c0",
+		"description": "This collection contains the API endpoints for the Chatify messaging app.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Send Message",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/chat/send",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"chat",
+						"send"
+					]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\"to_id\": 2, \"type\": \"chat\", \"message\": \"Hello, how are you?\"}"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Messages",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/chat/fetch/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"chat",
+						"fetch",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Contacts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/chat/contacts",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"chat",
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Favorites",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/chat/favorites",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"chat",
+						"favorites"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mark Messages as Seen",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/chat/seen",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"chat",
+						"seen"
+					]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\": 1}"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Contact Item",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/chat/updateContactItem",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"chat",
+						"updateContactItem"
+					]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\"user_id\": 2}"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search Users",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/chat/search",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"chat",
+						"search"
+					]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\"input\": \"John\"}"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Conversation",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/chat/deleteConversation",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"chat",
+						"deleteConversation"
+					]
+				},
+				"body": {
+					"mode": "raw",
+					"raw": "{\"conversation_id\": 1}"
+				}
+			},
+			"response": []
+		}
+	]
+}

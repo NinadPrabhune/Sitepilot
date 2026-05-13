@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notification UI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .navbar {
+      background: white;
+      padding: 15px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .logo { font-size: 24px; font-weight: bold; color: #667eea; }
+    .notification-container { position: relative; }
+    .bell-icon {
+      width: 44px; height: 44px;
+      background: #f7fafc; border: none; border-radius: 50%;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s ease; position: relative;
+    }
+    .bell-icon:hover { background: #edf2f7; transform: scale(1.05); }
+    .bell-icon svg { width: 24px; height: 24px; fill: #4a5568; }
+    .notification-badge {
+      position: absolute; top: -2px; right: -2px;
+      background: #f56565; color: white; border-radius: 10px;
+      padding: 2px 6px; font-size: 11px; font-weight: bold; border: 2px solid white;
+    }
+    .dropdown {
+      position: absolute; top: 60px; right: 0; width: 380px;
+      background: white; border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      display: none; flex-direction: column; z-index: 1000;
+      animation: slideDown 0.3s ease;
+    }
+    .dropdown.active { display: flex; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .dropdown-header {
+      padding: 20px; border-bottom: 1px solid #e2e8f0;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .dropdown-header h3 { font-size: 18px; color: #2d3748; }
+    .mark-read, .clear-all {
+      color: #667eea; font-size: 13px; cursor: pointer; text-decoration: none; margin-left: 12px;
+    }
+    .mark-read:hover, .clear-all:hover { text-decoration: underline; }
+    .notifications-list { max-height: 400px; overflow-y: auto; }
+    .notification-item {
+      padding: 16px 20px; border-bottom: 1px solid #f7fafc;
+      cursor: pointer; transition: background 0.2s ease;
+      display: flex; gap: 12px;
+    }
+    .notification-item:hover { background: #f7fafc; }
+    .notification-item.unread { background: #edf2f7; }
+    .notification-icon {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .notification-icon.info { background: #bee3f8; color: #2c5282; }
+    .notification-icon.success { background: #c6f6d5; color: #22543d; }
+    .notification-icon.warning { background: #feebc8; color: #7c2d12; }
+    .notification-content { flex: 1; }
+    .notification-title { font-weight: 600; color: #2d3748; font-size: 14px; margin-bottom: 4px; }
+    .notification-message { color: #718096; font-size: 13px; line-height: 1.4; margin-bottom: 4px; }
+    .notification-time { color: #a0aec0; font-size: 12px; }
+    .dropdown-footer { padding: 16px; border-top: 1px solid #e2e8f0; text-align: center; }
+    .see-more {
+      color: #667eea; font-weight: 600; text-decoration: none; font-size: 14px;
+      display: inline-block; padding: 8px 16px; border-radius: 6px; transition: background 0.2s ease;
+    }
+    .see-more:hover { background: #f7fafc; }
+    .empty-state { padding: 60px 20px; text-align: center; color: #a0aec0; }
+    .empty-state svg { width: 64px; height: 64px; margin-bottom: 16px; opacity: 0.5; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="logo">MyApp</div>
+    <div class="notification-container">
+      <button class="bell-icon" id="bellIcon" aria-label="Notifications">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+        </svg>
+        <span class="notification-badge" id="badge">5</span>
+      </button>
+      <div class="dropdown" id="dropdown">
+        <div class="dropdown-header">
+          <h3>Notifications</h3>
+          <div>
+            <a href="#" class="mark-read" id="markRead">Mark all as read</a>
+            <a href="#" class="clear-all" id="clearAll">Clear all</a>
+          </div>
+        </div>
+        <div class="notifications-list" id="notificationsList" role="list">
+          <!-- Notifications will appear here -->
+        </div>
+        <div class="dropdown-footer">
+          <a href="#" class="see-more">See All Notifications</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+
+    <script>
+        const notifications = [
+  { id: 1, type: 'info', title: 'New message from Sarah', message: 'Hey! Are we still on for the meeting tomorrow?', time: '2 minutes ago', unread: true },
+  { id: 2, type: 'success', title: 'Payment received', message: 'Your payment of $150.00 has been successfully processed.', time: '1 hour ago', unread: true },
+  { id: 3, type: 'warning', title: 'Security alert', message: 'New login detected from Chrome on Windows.', time: '3 hours ago', unread: true },
+  { id: 4, type: 'info', title: 'Project update', message: 'John updated the project timeline. Check the latest changes.', time: '5 hours ago', unread: true },
+  { id: 5, type: 'success', title: 'Task completed', message: 'Your export has finished processing and is ready to download.', time: '1 day ago', unread: true }
+];
+
+const bellIcon = document.getElementById('bellIcon');
+const dropdown = document.getElementById('dropdown');
+const badge = document.getElementById('badge');
+const notificationsList = document.getElementById('notificationsList');
+const markReadBtn = document.getElementById('markRead');
+const clearAllBtn = document.getElementById('clearAll');
+
+function getIconSVG(type) {
+  const icons = {
+    info: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>',
+    success: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>',
+    warning: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>'
+  };
+  return icons[type];
+}
+
+function renderNotifications() {
+  notificationsList.innerHTML = '';
+  if (notifications.length === 0) {
+    notificationsList.innerHTML = `
+      <div class="empty-state">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+        </svg>
+        <p>No notifications</p>
+      </div>
+    `;
+    return;
+  }
+  notifications.forEach(notif => {
+    const item = document.createElement('div');
+    item.className = `notification-item ${notif.unread ? 'unread' : ''}`;
+    item.innerHTML = `
+      <div class="notification-icon ${notif.type}">
+        ${getIconSVG(notif.type)}
+      </div>
+      <div class="notification-content">
+        <div class="notification-title">${notif.title}</div>
+        <div class="notification-message">${notif.message}</div>
+        <div class="notification-time">${notif.time}</div>
+      </div>
+    `;
+    item.addEventListener('click', () => {
+      notif.unread = false;
+      updateBadge();
+      item.classList.remove('unread');
+    });
+    notificationsList.appendChild(item);
+  });
+}
+
+function updateBadge() {
+  const unreadCount = notifications.filter(n => n.unread).length;
+  if (unreadCount > 0) {
+    badge.textContent = unreadCount;
+    badge.style.display = 'block';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+bellIcon.addEventListener('click', (e) => {
+  e.stopPropagation();
+  dropdown.classList.toggle('active');
+});
+
+document.addEventListener('click', (e) => {
+  if (!dropdown.contains(e.target) && e.target !== bellIcon) {
+    dropdown.classList.remove('active');
+  }
+});
+
+markReadBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  notifications.forEach(n => n.unread = false);
+  updateBadge();
+  renderNotifications();
+});
+
+clearAllBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  notifications.length = 0;
+  updateBadge();
+  renderNotifications();
+});
+
+// Initialize
+renderNotifications();
+updateBadge();
+
+    </script>
+</body>
+</html>

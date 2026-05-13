@@ -1,0 +1,122 @@
+{
+  "info": {
+    "name": "Activity API",
+    "_postman_id": "activity-api-collection",
+    "description": "Postman collection for ActivityApiController endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "List Activities",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": { "raw": "{{base_url}}/api/activities", "host": ["{{base_url}}"], "path": ["api","activities"] }
+      }
+    },
+    {
+      "name": "Create Activity",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Test Activity\",\n  \"scope\": \"Scope details\",\n  \"quantity\": 10,\n  \"unit\": \"pcs\",\n  \"priority\": \"medium\",\n  \"completed_quantity\": 2\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/activities", "host": ["{{base_url}}"], "path": ["api","activities"] }
+      }
+    },
+    {
+      "name": "Show Activity",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": { "raw": "{{base_url}}/api/activities/1", "host": ["{{base_url}}"], "path": ["api","activities","1"] }
+      }
+    },
+    {
+      "name": "Update Activity",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated Activity\",\n  \"scope\": \"Updated scope\",\n  \"quantity\": 20,\n  \"unit\": \"kg\",\n  \"priority\": \"high\",\n  \"completed_quantity\": 5\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/activities/1", "host": ["{{base_url}}"], "path": ["api","activities","1"] }
+      }
+    },
+    {
+      "name": "Delete Activity",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": { "raw": "{{base_url}}/api/activities/1", "host": ["{{base_url}}"], "path": ["api","activities","1"] }
+      }
+    },
+    {
+      "name": "Create Data (Form Metadata)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": { "raw": "{{base_url}}/api/activities/create-data", "host": ["{{base_url}}"], "path": ["api","activities","create-data"] }
+      }
+    },
+    {
+      "name": "Create Progress",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "url": { "raw": "{{base_url}}/api/activities/progress/create?workspace_id=1&site_id=1", "host": ["{{base_url}}"], "path": ["api","activities","progress","create"], "query":[{"key":"workspace_id","value":"1"},{"key":"site_id","value":"1"}] }
+      }
+    },
+    {
+      "name": "Store Progress",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+          { "key": "Content-Type", "value": "application/json", "type": "text" },
+          { "key": "Accept", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"workspace_id\": 1,\n  \"site_id\": 1,\n  \"activity_id\": 10,\n  \"completed_quantity\": 3\n}"
+        },
+        "url": { "raw": "{{base_url}}/api/activities/progress/store", "host": ["{{base_url}}"], "path": ["api","activities","progress","store"] }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" },
+    { "key": "token", "value": "" }
+  ]
+}

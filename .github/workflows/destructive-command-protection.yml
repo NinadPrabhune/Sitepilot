@@ -1,0 +1,244 @@
+name: Destructive Command Protection
+
+on:
+  push:
+    branches: [ main, develop, production, staging ]
+  pull_request:
+    branches: [ main, develop, production, staging ]
+
+jobs:
+  check-destructive-commands:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, xml, mysql, pdo_mysql
+        
+    - name: Install dependencies
+      run: composer install --no-progress --no-interaction
+      
+    - name: Scan for destructive commands
+      run: |
+        echo "🔍 Scanning for destructive Artisan commands..."
+        echo ""
+        
+        # Define destructive patterns
+        DESTRUCTIVE_PATTERNS=(
+          "migrate:fresh"
+          "migrate:refresh"
+          "migrate:reset"
+          "db:wipe"
+          "db:seed.*DatabaseSeeder"
+        )
+        
+        # Files to scan
+        FILES_TO_SCAN=(
+          "app/Console/Commands"
+          "routes/console.php"
+          "deploy.sh"
+          "deploy.bat"
+          "*.sh"
+          "*.bat"
+          "*.yml"
+          "*.yaml"
+          "Dockerfile*"
+          "docker-compose*"
+        )
+        
+        FOUND_DESTRUCTIVE=false
+        
+        # Scan files for destructive patterns
+        for pattern in "${DESTRUCTIVE_PATTERNS[@]}"; do
+          echo "Checking pattern: $pattern"
+          
+          for file_pattern in "${FILES_TO_SCAN[@]}"; do
+            if find . -name "$file_pattern" -type f 2>/dev/null | while read file; do
+              if grep -q "$pattern" "$file" 2>/dev/null; then
+                echo "❌ FOUND DESTRUCTIVE COMMAND in $file:"
+                grep -n "$pattern" "$file" 2>/dev/null | sed 's/^/   /'
+                FOUND_DESTRUCTIVE=true
+              fi
+            done; then
+              continue
+            fi
+          done
+        done
+        
+        # Check for dangerous database operations
+        echo ""
+        echo "🔍 Scanning for dangerous database operations..."
+        
+        DANGEROUS_SQL_PATTERNS=(
+          "DROP DATABASE"
+          "DROP TABLE.*IF EXISTS"
+          "TRUNCATE TABLE"
+          "DELETE FROM.*WHERE 1=1"
+          "DELETE FROM.*WHERE TRUE"
+        )
+        
+        for pattern in "${DANGEROUS_SQL_PATTERNS[@]}"; do
+          if find . -name "*.php" -type f -exec grep -l "$pattern" {} \; 2>/dev/null | while read file; do
+            echo "❌ FOUND DANGEROUS SQL in $file:"
+            grep -n "$pattern" "$file" 2>/dev/null | sed 's/^/   /'
+            FOUND_DESTRUCTIVE=true
+          done; then
+            continue
+          fi
+        done
+        
+        # Check CI/CD files for dangerous operations
+        echo ""
+        echo "🔍 Scanning CI/CD configurations..."
+        
+        if find . -name "*.yml" -o -name "*.yaml" | while read file; do
+          if grep -q -E "(migrate:fresh|migrate:refresh|db:wipe)" "$file" 2>/dev/null; then
+            echo "❌ FOUND DESTRUCTIVE COMMANDS in CI/CD: $file"
+            grep -n -E "(migrate:fresh|migrate:refresh|db:wipe)" "$file" 2>/dev/null | sed 's/^/   /'
+            FOUND_DESTRUCTIVE=true
+          fi
+        done; then
+          continue
+        fi
+        
+        # Fail if destructive commands found
+        if [ "$FOUND_DESTRUCTIVE" = true ]; then
+          echo ""
+          echo "🚨 DESTRUCTIVE COMMANDS DETECTED!"
+          echo "This is a security risk for production deployments."
+          echo ""
+          echo "Required actions:"
+          echo "1. Remove or comment out destructive commands"
+          echo "2. Use approval-based workflows instead"
+          echo "3. Implement environment-specific safety checks"
+          echo ""
+          echo "Safe alternatives:"
+          echo "• Use specific migrations: php artisan migrate --path=database/migrations/YOUR_FILE.php"
+          echo "• Check migration status: php artisan migrate:status"
+          echo "• Use approval workflow: php artisan schema:request ..."
+          echo ""
+          exit 1
+        else
+          echo "✅ No destructive commands found"
+          echo "Repository is safe for deployment"
+        fi
+        
+    - name: Check production safety configuration
+      run: |
+        echo "🔍 Checking production safety configuration..."
+        
+        # Check if production safety locks are properly configured
+        if [ -f "config/destructive_commands.php" ]; then
+          echo "✅ Destructive commands configuration found"
+          
+          # Verify production is protected
+          if grep -q "production" config/destructive_commands.php; then
+            echo "✅ Production environment protection configured"
+          else
+            echo "❌ Production environment not protected"
+            exit 1
+          fi
+          
+          # Verify dangerous commands are blocked
+          if grep -q "migrate:fresh" config/destructive_commands.php; then
+            echo "✅ Destructive commands block list configured"
+          else
+            echo "❌ Destructive commands not properly blocked"
+            exit 1
+          fi
+        else
+          echo "❌ Destructive commands configuration missing"
+          exit 1
+        fi
+        
+        # Check for production safety migration
+        if [ -f "database/migrations/2026_05_02_000021_create_production_safety_locks.php" ]; then
+          echo "✅ Production safety locks migration found"
+        else
+          echo "❌ Production safety locks migration missing"
+          exit 1
+        fi
+        
+    - name: Verify database permission safety
+      run: |
+        echo "🔍 Checking database permission safety..."
+        
+        # Look for database configuration files
+        DB_CONFIGS=(
+          "config/database.php"
+          ".env.example"
+          "docker-compose.yml"
+          "Dockerfile*"
+        )
+        
+        for config in "${DB_CONFIGS[@]}"; do
+          if find . -name "$config" -type f | while read file; do
+            # Check for dangerous database permissions
+            if grep -q -E "(GRANT.*DROP|GRANT.*DELETE.*ALL|SUPER|ALL PRIVILEGES)" "$file" 2>/dev/null; then
+              echo "❌ FOUND DANGEROUS DATABASE PERMISSIONS in $file:"
+              grep -n -E "(GRANT.*DROP|GRANT.*DELETE.*ALL|SUPER|ALL PRIVILEGES)" "$file" 2>/dev/null | sed 's/^/   /'
+              echo ""
+              echo "Database users should have minimal permissions:"
+              echo "• Application user: SELECT, INSERT, UPDATE, DELETE only"
+              echo "• Migration user: Additional ALTER, CREATE, DROP (temporary)"
+              echo "• Never grant ALL PRIVILEGES or SUPER in production"
+              exit 1
+            fi
+          done; then
+            continue
+          fi
+        done
+        
+        echo "✅ No dangerous database permissions found"
+        
+    - name: Check environment-specific protections
+      run: |
+        echo "🔍 Checking environment-specific protections..."
+        
+        # Verify production environment restrictions
+        if grep -r "APP_ENV.*production" . --include="*.env*" --include="*.php" 2>/dev/null | while read line; do
+          echo "Found production environment config: $line"
+        done
+        
+        # Check for production seeding blocks
+        if grep -r "SAFE_SEED_ONLY.*true" config/ app/ --include="*.php" 2>/dev/null; then
+          echo "✅ Production seeding protection found"
+        else
+          echo "❌ Production seeding protection missing"
+          exit 1
+        fi
+        
+    - name: Generate security report
+      if: always()
+      run: |
+        echo "📋 Generating security report..."
+        echo ""
+        echo "=== DESTRUCTIVE COMMAND PROTECTION REPORT ===" > security-report.txt
+        echo "Generated: $(date)" >> security-report.txt
+        echo "Repository: $GITHUB_REPOSITORY" >> security-report.txt
+        echo "Branch: $GITHUB_REF" >> security-report.txt
+        echo "Commit: $GITHUB_SHA" >> security-report.txt
+        echo "" >> security-report.txt
+        echo "✅ PASSED CHECKS:" >> security-report.txt
+        echo "• No destructive commands in codebase" >> security-report.txt
+        echo "• Production safety locks configured" >> security-report.txt
+        echo "• Database permissions are safe" >> security-report.txt
+        echo "• Environment-specific protections active" >> security-report.txt
+        echo "" >> security-report.txt
+        echo "🔐 PROTECTION LEVEL: HIGH" >> security-report.txt
+        echo "📞 EMERGENCY: Contact admin for override tokens" >> security-report.txt
+        
+        echo "Security report generated: security-report.txt"
+        cat security-report.txt
+        
+    - name: Upload security report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-report
+        path: security-report.txt

@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+    
+    environment {
+        MYSQL_DATABASE = 'test_db'
+        MYSQL_USER = 'root'
+        MYSQL_PASSWORD = 'password'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Setup') {
+            steps {
+                sh 'cp .env.example .env'
+                sh 'composer install --no-dev --optimize-autoloader'
+                sh 'php artisan key:generate'
+                sh 'php artisan config:cache'
+            }
+        }
+        
+        stage('Drift Detection') {
+            steps {
+                sh 'chmod +x ci_scripts/detect-drift.sh'
+                sh './ci_scripts/detect-drift.sh'
+            }
+            post {
+                failure {
+                    archiveArtifacts artifacts: 'storage/logs/laravel.log', fingerprint: true
+                }
+            }
+        }
+    }
+}

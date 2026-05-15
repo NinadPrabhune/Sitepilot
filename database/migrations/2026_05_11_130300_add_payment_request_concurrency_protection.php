@@ -12,16 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('machinery_payment_requests', function (Blueprint $table) {
-            // Add unique constraint for concurrent protection
-            $table->unique(['machinery_id', 'billing_month', 'billing_year'], 'unique_machinery_billing_period');
-            
             // Add billing month and year columns for the constraint
             $table->unsignedTinyInteger('billing_month')->after('period_end');
             $table->unsignedInteger('billing_year')->after('billing_month');
             
             // Indexes for performance
-            $table->index(['machinery_id', 'billing_month', 'billing_year']);
-            $table->index(['billing_year', 'billing_month']);
+            $table->index(['machinery_id', 'billing_month', 'billing_year'], 'mp_mach_bill_idx');
+            $table->index(['billing_year', 'billing_month'], 'mp_bill_year_idx');
+            
+            // Add unique constraint for concurrent protection
+            $table->unique(['machinery_id', 'billing_month', 'billing_year'], 'unique_machinery_billing_period');
         });
     }
 
@@ -30,11 +30,15 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('machinery_payment_requests', function (Blueprint $table) {
-            $table->dropIndex(['machinery_id', 'billing_month', 'billing_year']);
-            $table->dropIndex(['billing_year', 'billing_month']);
-            $table->dropUnique('unique_machinery_billing_period');
-            $table->dropColumn(['billing_month', 'billing_year']);
-        });
+        try {
+            Schema::table('machinery_payment_requests', function (Blueprint $table) {
+                $table->dropIndex('mp_mach_bill_idx');
+                $table->dropIndex('mp_bill_year_idx');
+                $table->dropUnique('unique_machinery_billing_period');
+                $table->dropColumn(['billing_month', 'billing_year']);
+            });
+        } catch (\Exception $e) {
+            // Silently ignore errors during rollback
+        }
     }
 };

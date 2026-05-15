@@ -889,7 +889,6 @@ function loadActions() {
                 @if(config('machinery_payment.enable_erp_payment_button', false))
                 actions += `<button onclick="createErpPayment()" class="btn btn-primary"><i class="ti ti-building-factory-2 me-1"></i> Create Machinery Payment</button> `;
                 @endif
-//                actions += `<button onclick="markAsPaid()" class="btn btn-success"><i class="ti ti-cash me-1"></i> Mark Paid (Legacy)</button>`;
             }
 
             if (['draft', 'submitted', 'verified'].includes(status)) {
@@ -900,12 +899,18 @@ function loadActions() {
                 actions = '<span class="text-muted"><i class="ti ti-info-circle me-1"></i> No actions available for this status</span>';
             }
 
-            document.getElementById('actionButtons').innerHTML = actions;
+            const actionButtons = document.getElementById('actionButtons');
+            if (actionButtons) {
+                actionButtons.innerHTML = actions;
+            }
         }
     })
     .catch(error => {
         console.error('Error loading actions:', error);
-        document.getElementById('actionButtons').innerHTML = '<span class="text-danger"><i class="ti ti-alert-triangle me-1"></i> Error loading actions</span>';
+        const actionButtons = document.getElementById('actionButtons');
+        if (actionButtons) {
+            actionButtons.innerHTML = '<span class="text-danger"><i class="ti ti-alert-triangle me-1"></i> Error loading actions</span>';
+        }
     });
 }
 
@@ -1854,7 +1859,6 @@ let currentPaymentRequestId = null;
 document.addEventListener('DOMContentLoaded', function() {
     loadActions();
     loadLedgerEntries();
-    
-});    });
+});
 </script>
 @endpush

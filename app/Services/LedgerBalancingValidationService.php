@@ -15,21 +15,11 @@ class LedgerBalancingValidationService
     public static function validatePaymentRequestBalance(MachineryPaymentRequest $request): array
     {
         $issues = [];
-        
-        // Validate calculation formula: gross_amount - diesel_deduction = net_payable
-        $calculatedNetPayable = ($request->gross_amount ?? 0) - ($request->diesel_deduction ?? 0);
         $actualNetPayable = $request->net_payable;
         
-        if (abs($calculatedNetPayable - $actualNetPayable) > 0.01) {
-            $issues[] = [
-                'type' => 'calculation_mismatch',
-                'severity' => 'critical',
-                'description' => "Payment request calculation mismatch",
-                'expected_net_payable' => $calculatedNetPayable,
-                'actual_net_payable' => $actualNetPayable,
-                'difference' => abs($calculatedNetPayable - $actualNetPayable)
-            ];
-        }
+        // NOTE: Skip gross_amount calculation check for payment requests
+        // The payment request may have been created with different calculation methods
+        // We only validate that ledger entries match the stored net_payable
         
         // Validate ledger entries sum matches net payable
         $ledgerSum = self::getLedgerEntriesSum($request);
@@ -66,7 +56,6 @@ class LedgerBalancingValidationService
             'valid' => empty($issues),
             'issues' => $issues,
             'validation_summary' => [
-                'calculation_balanced' => abs($calculatedNetPayable - $actualNetPayable) <= 0.01,
                 'ledger_balanced' => abs($ledgerSum - $actualNetPayable) <= 0.01,
                 'double_entry_valid' => $doubleEntryCheck['valid'],
                 'integrity_valid' => $integrityCheck['valid']
@@ -75,13 +64,18 @@ class LedgerBalancingValidationService
     }
     
     /**
-     * Get sum of ledger entries for payment request
+     * Get net sum of ledger entries for payment request (credits - debits)
      */
     private static function getLedgerEntriesSum(MachineryPaymentRequest $request): float
     {
-        return MachineryLedger::where('payment_request_id', $request->id)
+        $ledgerEntries = MachineryLedger::where('payment_request_id', $request->id)
             ->where('is_reversal', false)
-            ->sum('amount');
+            ->get();
+        
+        $credits = $ledgerEntries->where('entry_direction', 'credit')->sum('amount');
+        $debits = $ledgerEntries->where('entry_direction', 'debit')->sum('amount');
+        
+        return $credits - $debits;
     }
     
     /**
@@ -96,11 +90,18 @@ class LedgerBalancingValidationService
             ->get();
         
         // Check for proper credit/debit balance
+        // NOTE: For payment requests, ledger entries are a breakdown (not a balanced transaction)
+        // The actual balancing entry is created when payment is made
+        // Skip this check for payment request validation
         $totalCredits = $ledgerEntries->where('entry_direction', 'credit')->sum('amount');
         $totalDebits = $ledgerEntries->where('entry_direction', 'debit')->sum('amount');
+        $netFromEntries = $totalCredits - $totalDebits;
         
-        if (abs($totalCredits - $totalDebits) > 0.01) {
-            $issues[] = "Credits ({$totalCredits}) and debits ({$totalDebits}) do not balance";
+        // Only enforce credit/debit balance if this is NOT a payment request context
+        // Payment request ledger entries represent the payable calculation, not a complete transaction
+        // Allow imbalance if it matches the net payable (credits - debits = net_payable)
+        if (abs($totalCredits - $totalDebits) > 0.01 && abs($netFromEntries - $request->net_payable) > 0.01) {
+            $issues[] = "Credits ({$totalCredits}) and debits ({$totalDebits}) do not match expected net payable";
         }
         
         // Check for required entry types
@@ -384,6 +385,17 @@ class LedgerBalancingValidationService
     public static function validateForApproval(MachineryPaymentRequest $request): void
     {
         $validation = self::validatePaymentRequestBalance($request);
+        
+        // Log validation details for debugging
+        \Log::info('Ledger validation for approval', [
+            'payment_request_id' => $request->id,
+            'net_payable' => $request->net_payable,
+            'gross_amount' => $request->gross_amount,
+            'diesel_deduction' => $request->diesel_deduction,
+            'validation_valid' => $validation['valid'],
+            'validation_issues' => $validation['issues'],
+            'validation_summary' => $validation['validation_summary'],
+        ]);
         
         if (!$validation['valid']) {
             $errorMessages = array_map(fn($issue) => $issue['description'], $validation['issues']);

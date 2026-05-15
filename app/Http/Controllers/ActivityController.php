@@ -191,7 +191,10 @@ class ActivityController extends Controller {
                 'completeds.allConsumptions.details.material',
                 'completeds.allConsumptions.site',
             ]);
+            
+            
             $workspaces = WorkSpace::all();
+           
             $sites = \Workdo\Taskly\Entities\Project::where('workspace', getActiveWorkSpace())
                             ->projectonly()->get()->pluck('name', 'id');
 
@@ -206,7 +209,7 @@ class ActivityController extends Controller {
 
             $manpowerTypes = ManPowerType::pluck('name', 'id');
             $manpowerSuppliers = \App\Models\Supplier::where('category_id', 1)->pluck('name', 'id');
-
+ 
             // Get DPR (Daily Progress Report) linked to this activity through completeds
             $dprList = \App\Models\DailyProgressReport::whereHas('activityCompleted', function ($query) use ($activity) {
                     $query->where('activity_id', $activity->id);
@@ -268,6 +271,9 @@ class ActivityController extends Controller {
             // Get next consumption number
             $maxId = \App\Models\DailyConsumptionMaster::max('id');
             $nextConsumptionNumber = 'DCM-'.str_pad(($maxId ? $maxId + 1 : 1),4,'0',STR_PAD_LEFT);
+            
+           
+            
             return view('activities.edit', compact('activity', 'workspaces', 'sites', 'users', 'manpowerTypes', 'manpowerSuppliers', 'dprList', 'machineryList', 'materials', 'consumptionList', 'materials_all', 'machineryOptions', 'nextConsumptionNumber'));
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Unable to load edit form: ' . $e->getMessage()]);

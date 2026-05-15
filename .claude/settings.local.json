@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -l app/Domain/Machinery/Services/MachineryNotificationService.php)",
+      "Bash(php -l app/Jobs/CheckMachineryDueDateNotification.php)",
+      "Bash(php -l tests/Feature/MachineryDueDateNotificationTest.php)"
+    ]
+  }
+}

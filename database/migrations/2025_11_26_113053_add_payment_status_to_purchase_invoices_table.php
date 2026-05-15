@@ -20,10 +20,16 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('purchase_invoices', function (Blueprint $table) {
-            $table->dropColumn('payment_status');
-        });
+        try {
+            Schema::table('purchase_invoices', function (Blueprint $table) {
+                if (Schema::hasColumn('purchase_invoices', 'payment_status')) {
+                    $table->dropColumn('payment_status');
+                }
+            });
+        } catch (\Exception $e) {
+            // ignore
+        }
     }
 };

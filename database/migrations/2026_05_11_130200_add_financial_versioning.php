@@ -56,17 +56,23 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('machinery_payment_requests', function (Blueprint $table) {
-            $table->dropIndex('calculation_version');
-            $table->dropIndex('formula_version');
-            $table->dropColumn(['calculation_version', 'formula_version', 'diesel_rate_version', 'calculation_metadata']);
-        });
-
-        Schema::table('machinery_ledgers', function (Blueprint $table) {
-            $table->dropIndex('calculation_version');
-            $table->dropColumn(['calculation_version', 'formula_version']);
-        });
-
+        try {
+            Schema::table('machinery_payment_requests', function (Blueprint $table) {
+                $table->dropIndex(['calculation_version']);
+                $table->dropIndex(['formula_version']);
+                $table->dropColumn(['calculation_version', 'formula_version', 'diesel_rate_version', 'calculation_metadata']);
+            });
+        } catch (\Exception $e) {
+            // ignore
+        }
+        try {
+            Schema::table('machinery_ledgers', function (Blueprint $table) {
+                $table->dropIndex(['calculation_version']);
+                $table->dropColumn(['calculation_version', 'formula_version']);
+            });
+        } catch (\Exception $e) {
+            // ignore
+        }
         Schema::dropIfExists('calculation_versions');
     }
 };

@@ -210,7 +210,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [MachineryPaymentRequestController::class, 'apiIndex']);
         Route::get('/{id}', [MachineryPaymentRequestController::class, 'apiShow']);
         Route::post('/{id}/submit', [MachineryPaymentRequestController::class, 'submit']);
-        Route::post('/{id}/verify', [MachineryPaymentRequestController::class, 'verify']);
         Route::post('/{id}/approve', [MachineryPaymentRequestController::class, 'approve']);
         Route::post('/{id}/lock', [MachineryPaymentRequestController::class, 'lock']);
         Route::post('/{id}/pay', [MachineryPaymentRequestController::class, 'pay']);

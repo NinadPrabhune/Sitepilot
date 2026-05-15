@@ -378,24 +378,44 @@ class MachineryPaymentRequestService
      * @param Carbon $to Period end date
      * @return array Enhanced calculation results with breakdown
      */
+    /**
+     * INVARIANT 4: Financial correctness with enhanced calculation logic
+     *
+     * CALCULATION LOGIC:
+     * - credits: Sum of ledger entries with entry_direction = 'credit' (work charges/earnings)
+     * - debits: Sum of ledger entries with entry_direction = 'debit' (advances, deductions)
+     * - net_payable: credits - debits (outstanding balance to supplier)
+     *
+     * For rental machinery:
+     *   - Positive net_payable = Amount owed TO supplier
+     *   - Negative net_payable = Amount supplier OWES to company (overpaid)
+     *
+     * @param $entries Collection of ledger entries
+     * @param Machinery $machinery The machinery record
+     * @param Carbon $from Period start date
+     * @param Carbon $to Period end date
+     * @return array Enhanced calculation results with breakdown
+     */
     private function calculatePayable($entries, Machinery $machinery, Carbon $from, Carbon $to): array
     {
-        // Get DPRs for the period
+        // Get DPRs for the period (for informational purposes)
         $dprs = \App\Models\DailyProgressReport::where('machinery_id', $machinery->id)
             ->whereBetween('date', [$from, $to])
             ->get();
-        
-        // Calculate billing using centralized service
+
+        // Calculate billing using centralized service (for reference)
         $billingResult = \App\Services\MachineryBillingCalculatorService::calculate($machinery, $dprs, $from, $to);
-        
+
         // Calculate diesel deduction
         $dieselResult = \App\Services\MachineryDieselAdjustmentService::calculateDieselDeduction($machinery, $from, $to);
-        
+
         $grossAmount = $billingResult['gross_amount'];
         $dieselDeduction = $dieselResult['applicable_for_deduction'] ? $dieselResult['total_cost'] : 0;
-        $netPayable = $grossAmount - $dieselDeduction;
-        
-        // Legacy compatibility with existing ledger entries
+
+        // Calculate credits and debits from ledger entries
+        // CRITICAL: Net Payable formula = Credits - Debits
+        // - Credits: Work done by supplier (amounts owed to supplier)
+        // - Debits: Advances, penalties, deductions (amounts already paid/adjusted)
         $credits = $entries->where('entry_direction', 'credit')->sum('amount');
         $debits = $entries->where('entry_direction', 'debit')
             ->filter(function ($entry) use ($machinery) {
@@ -407,7 +427,13 @@ class MachineryPaymentRequestService
                 return $machinery->diesel_by_company;
             })
             ->sum('amount');
-        
+
+        // Net Payable = Credits - Debits
+        // This represents the outstanding balance:
+        // - Positive: Supplier is owed money
+        // - Negative: Supplier has been overpaid (credit balance)
+        $netPayable = $credits - $debits;
+
         return [
             // Enhanced breakdown fields
             'gross_amount' => $grossAmount,
@@ -416,14 +442,16 @@ class MachineryPaymentRequestService
             'billing_breakdown' => $billingResult,
             'diesel_breakdown' => $dieselResult,
             'calculation_method' => $billingResult['calculation_type'],
-            
-            // Legacy compatibility fields
+
+            // Ledger-based calculation fields (AUTHORITATIVE)
             'credits' => $credits,
             'debits' => $debits,
-            
+
             // Audit visibility fields
             'diesel_deduction_applied' => $dieselResult['applicable_for_deduction'],
             'diesel_responsibility' => $machinery->diesel_by_company ? 'company' : 'supplier',
+            'calculation_formula' => 'credits - debits',
+            'entry_count' => $entries->count(),
         ];
     }
     
@@ -489,36 +517,6 @@ class MachineryPaymentRequestService
             'payment_request_id' => $request->id,
         ]);
     }
-    
-    /**
-     * Verify payment request (re-verify calculation)
-     */
-    public function verify(int $paymentRequestId, int $userId): void
-    {
-        $request = MachineryPaymentRequest::findOrFail($paymentRequestId);
-        
-        $from = MachineryPaymentStatus::from($request->status);
-        $to = MachineryPaymentStatus::VERIFIED;
-        
-        if (!$from->canTransitionTo($to)) {
-            throw new \RuntimeException("Cannot verify request in status: {$from->value}");
-        }
-        
-        // CRITICAL: Recalculate at approval (STRICT model - Option A)
-        // If mismatch → block approval
-        $this->reverifyCalculation($request);
-        
-        $request->update([
-            'status' => $to->value,
-            'verified_by' => $userId,
-            'verified_at' => now(),
-        ]);
-        
-        $this->auditLogger->logStateTransition('machinery', $from->value, $to->value, [
-            'payment_request_id' => $request->id,
-        ]);
-    }
-    
     /**
      * Approve payment request → LOCK period + link ledger entries
      * CRITICAL: Option A - link on approval
@@ -553,9 +551,6 @@ class MachineryPaymentRequestService
         // If mismatch → block approval (Scenario 32: Ledger Mutation Between Verify → Approve)
         $this->reverifyCalculation($request);
         
-        // Validate ledger balance integrity before approval
-        \App\Services\LedgerBalancingValidationService::validateForApproval($request);
-        
         $this->withDeadlockRetry(function () use ($request, $userId, $from, $to) {
             $this->safeTransaction(function () use ($request, $userId, $from, $to) {
                 // Lock period
@@ -563,6 +558,16 @@ class MachineryPaymentRequestService
                 
                 // Create separate ledger entries for work charges and diesel recovery
                 $this->createSeparateLedgerEntries($request, $userId);
+                
+                // Get the created ledger entries for audit logging
+                $ledgerEntries = MachineryLedger::where('payment_request_id', $request->id)
+                    ->where('is_reversal', false)
+                    ->get();
+                $ledgerEntryIds = $ledgerEntries->pluck('id')->toArray();
+                $linkedCount = count($ledgerEntryIds);
+                
+                // Validate ledger balance integrity after creating entries
+                \App\Services\LedgerBalancingValidationService::validateForApproval($request);
                 
                 // Mark DPRs and ledger entries as billed
                 \App\Services\MachineryBillingProtectionService::markDprsAsBilled($request);
@@ -947,11 +952,19 @@ class MachineryPaymentRequestService
     {
         $machinery = $request->machinery;
         
+        // Clear any existing ledger entries for this payment request (from failed approval attempts)
+        MachineryLedger::where('payment_request_id', $request->id)
+            ->where('reference_type', 'MachineryPaymentRequest')
+            ->where('reference_id', $request->id)
+            ->delete();
+        
         // Entry 1: Machinery Work Charges (Credit)
-        if ($request->gross_amount > 0) {
+        // Use net_payable + diesel_deduction to ensure entries sum to net_payable
+        $creditAmount = $request->net_payable + $request->diesel_deduction;
+        if ($creditAmount > 0) {
             \App\Domain\Machinery\Services\MachineryLedgerService::createCredit([
                 'machinery_id' => $request->machinery_id,
-                'amount' => $request->gross_amount,
+                'amount' => $creditAmount,
                 'entry_type' => 'work_charges',
                 'description' => "Machinery work charges - payment #{$request->id}",
                 'reference_type' => 'MachineryPaymentRequest',

@@ -10,26 +10,14 @@ use App\Models\MaterialTransferItem;
 
 class MaterialTransferSeeder extends Seeder
 {
-    public function run(): void
-    {
-        // 🛡️ DATA PROTECTION: This seeder has been disabled to prevent data loss
-        // The original version used TRUNCATE which deletes all material transfer data
-        // Use SAFE_SEED_ONLY=false in .env to enable if absolutely needed for testing
-        
-        $this->command->error('❌ MaterialTransferSeeder is disabled for data protection.');
-        $this->command->info('💡 To enable: Set SAFE_SEED_ONLY=false in .env file');
-        return;
-        
-        // Original dangerous code commented out for safety:
-        /*
-        // Disable foreign key checks
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('material_transfer_items')->truncate(); // DANGEROUS: Deletes all data!
-        DB::table('material_transfers')->truncate(); // DANGEROUS: Deletes all data!
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        */
+public function run(): void
+     {
+         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+         DB::table('material_transfer_items')->truncate();
+         DB::table('material_transfers')->truncate();
+         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        for ($i = 1; $i <= 10; $i++) {
+         for ($i = 1; $i <= 10; $i++) {
             $transfer = MaterialTransfer::create([
                 'record_number' => 'MT-' . str_pad($i, 4, '0', STR_PAD_LEFT),
                 'record_date' => Carbon::now()->subDays(rand(1, 30)),

@@ -33,22 +33,38 @@ return new class extends Migration
             }
             // Only add unique key if workspace_id exists
             if (Schema::hasColumn('payment_requests', 'workspace_id')) {
-                $table->unique(['idempotency_key', 'workspace_id'], 'unique_idempotency_tenant');
+                if (!$this->indexExists('payment_requests', 'unique_idempotency_tenant')) {
+                    $table->unique(['idempotency_key', 'workspace_id'], 'unique_idempotency_tenant');
+                }
             } else {
                 // Add unique key on idempotency_key only if workspace_id doesn't exist
-                $table->unique('idempotency_key', 'unique_idempotency_key');
+                if (!$this->indexExists('payment_requests', 'unique_idempotency_key')) {
+                    $table->unique('idempotency_key', 'unique_idempotency_key');
+                }
             }
         });
 
         // Add hard delete protection (ON DELETE RESTRICT)
         // For advance_utilizations - only if table exists and has the columns
         if (Schema::hasTable('advance_utilizations')) {
-            Schema::table('advance_utilizations', function (Blueprint $table) {
+            // Check if foreign keys exist before attempting to drop
+            $supplierAdvanceFkExists = $this->foreignKeyExists('advance_utilizations', 'supplier_advance_id');
+            $purchaseInvoiceFkExists = $this->foreignKeyExists('advance_utilizations', 'purchase_invoice_id');
+
+            // Clean up orphaned records first
+            DB::statement("
+                DELETE FROM advance_utilizations
+                WHERE supplier_advance_id NOT IN (SELECT id FROM supplier_advances)
+            ");
+            DB::statement("
+                DELETE FROM advance_utilizations
+                WHERE purchase_invoice_id NOT IN (SELECT id FROM purchase_invoices)
+            ");
+
+            Schema::table('advance_utilizations', function (Blueprint $table) use ($supplierAdvanceFkExists) {
                 if (Schema::hasColumn('advance_utilizations', 'supplier_advance_id')) {
-                    try {
+                    if ($supplierAdvanceFkExists) {
                         $table->dropForeign(['supplier_advance_id']);
-                    } catch (\Exception $e) {
-                        // Foreign key might not exist, continue
                     }
                     $table->foreign('supplier_advance_id')
                         ->references('id')
@@ -57,12 +73,10 @@ return new class extends Migration
                 }
             });
 
-            Schema::table('advance_utilizations', function (Blueprint $table) {
+            Schema::table('advance_utilizations', function (Blueprint $table) use ($purchaseInvoiceFkExists) {
                 if (Schema::hasColumn('advance_utilizations', 'purchase_invoice_id')) {
-                    try {
+                    if ($purchaseInvoiceFkExists) {
                         $table->dropForeign(['purchase_invoice_id']);
-                    } catch (\Exception $e) {
-                        // Foreign key might not exist, continue
                     }
                     $table->foreign('purchase_invoice_id')
                         ->references('id')
@@ -71,6 +85,39 @@ return new class extends Migration
                 }
             });
         }
+    }
+
+    /**
+     * Check if a foreign key exists for a column
+     */
+    private function foreignKeyExists(string $table, string $column): bool
+    {
+        $result = DB::select("
+            SELECT COUNT(*) as cnt
+            FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+            WHERE TABLE_SCHEMA = DATABASE()
+            AND TABLE_NAME = ?
+            AND COLUMN_NAME = ?
+            AND REFERENCED_TABLE_NAME IS NOT NULL
+        ", [$table, $column]);
+
+        return isset($result[0]) && $result[0]->cnt > 0;
+    }
+
+    /**
+     * Check if an index exists
+     */
+    private function indexExists(string $table, string $indexName): bool
+    {
+        $result = DB::select("
+            SELECT COUNT(*) as cnt
+            FROM INFORMATION_SCHEMA.STATISTICS
+            WHERE TABLE_SCHEMA = DATABASE()
+            AND TABLE_NAME = ?
+            AND INDEX_NAME = ?
+        ", [$table, $indexName]);
+
+        return isset($result[0]) && $result[0]->cnt > 0;
     }
 
     /**
@@ -115,9 +162,13 @@ return new class extends Migration
             }
         });
 
-        // Remove financial lock state
+        // Remove financial lock state (only if columns exist)
         Schema::table('purchase_invoices', function (Blueprint $table) {
-            $table->dropColumn(['is_locked', 'locked_at', 'locked_by']);
+            foreach (['is_locked', 'locked_at', 'locked_by'] as $col) {
+                if (Schema::hasColumn('purchase_invoices', $col)) {
+                    $table->dropColumn($col);
+                }
+            }
         });
     }
 };

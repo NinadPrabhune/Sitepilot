@@ -18,14 +18,6 @@
     </div>
 @elseif($request->status === 'submitted')
     <div class="action-btn me-2">
-        <button onclick="verifyRequest({{ $request->id }})" 
-                class="mx-3 btn btn-sm align-items-center bg-info"
-                data-bs-toggle="tooltip" title="{{ __('Verify') }}">
-            <i class="ti ti-check text-white"></i>
-        </button>
-    </div>
-@elseif($request->status === 'verified')
-    <div class="action-btn me-2">
         <button onclick="approveRequest({{ $request->id }})" 
                 class="mx-3 btn btn-sm align-items-center bg-success"
                 data-bs-toggle="tooltip" title="{{ __('Approve') }}">

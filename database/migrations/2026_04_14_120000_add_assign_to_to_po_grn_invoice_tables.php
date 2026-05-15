@@ -38,16 +38,26 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('purchase_orders', function (Blueprint $table) {
-            $table->dropColumn('assign_to');
-        });
-
-        Schema::table('grns', function (Blueprint $table) {
-            $table->dropColumn('assign_to');
-        });
-
-        Schema::table('purchase_invoices', function (Blueprint $table) {
-            $table->dropColumn('assign_to');
-        });
+        try {
+            Schema::table('purchase_orders', function (Blueprint $table) {
+                if (Schema::hasColumn('purchase_orders', 'assign_to')) {
+                    $table->dropColumn('assign_to');
+                }
+            });
+        } catch (\Exception $e) {}
+        try {
+            Schema::table('grns', function (Blueprint $table) {
+                if (Schema::hasColumn('grns', 'assign_to')) {
+                    $table->dropColumn('assign_to');
+                }
+            });
+        } catch (\Exception $e) {}
+        try {
+            Schema::table('purchase_invoices', function (Blueprint $table) {
+                if (Schema::hasColumn('purchase_invoices', 'assign_to')) {
+                    $table->dropColumn('assign_to');
+                }
+            });
+        } catch (\Exception $e) {}
     }
 };

@@ -61,15 +61,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('daily_progress_reports', function (Blueprint $table) {
-            $table->dropIndex(['is_billed', 'machinery_id', 'date']);
-            $table->dropIndex('payment_request_id');
-            $table->dropColumn(['is_billed', 'billed_at', 'payment_request_id']);
-        });
-
-        Schema::table('machinery_ledgers', function (Blueprint $table) {
-            $table->dropIndex(['is_billed', 'machinery_id', 'date']);
-            $table->dropColumn(['is_billed', 'billed_at']);
-        });
+        // This migration is idempotent and does not drop columns/indexes to avoid conflicts
+        // The columns are managed by earlier migrations (2026_05_11_130000_add_billing_protection_fields)
     }
 };

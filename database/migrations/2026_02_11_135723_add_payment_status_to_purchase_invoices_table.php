@@ -15,10 +15,19 @@ class AddPaymentStatusToPurchaseInvoicesTable extends Migration
 
     }
 
-    public function down()
+    public function down(): void
     {
-        Schema::table('purchase_invoices', function (Blueprint $table) {
-            $table->dropColumn(['ac_payment_status', 'rejection_reason']);
-        });
+        try {
+            Schema::table('purchase_invoices', function (Blueprint $table) {
+                if (Schema::hasColumn('purchase_invoices', 'ac_payment_status')) {
+                    $table->dropColumn('ac_payment_status');
+                }
+                if (Schema::hasColumn('purchase_invoices', 'rejection_reason')) {
+                    $table->dropColumn('rejection_reason');
+                }
+            });
+        } catch (\Exception $e) {
+            // ignore
+        }
     }
 }

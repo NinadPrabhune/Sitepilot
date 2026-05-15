@@ -542,13 +542,13 @@ Route::prefix('machinery/payment-requests')->name('machinery-payment.')->group(f
     Route::get('/create', [MachineryPaymentRequestController::class, 'create'])->name('create');
     Route::get('/api-index', [MachineryPaymentRequestController::class, 'apiIndex'])->name('api-index');
     Route::post('/store-ajax', [MachineryPaymentRequestController::class, 'calculate'])->name('store-ajax');
+    Route::post('/store', [MachineryPaymentRequestController::class, 'store'])->name('store');
     Route::get('/debug-ledger-query', [MachineryPaymentRequestController::class, 'debugLedgerQuery'])->name('debug-ledger-query');
     Route::get('/{id}', [MachineryPaymentRequestController::class, 'show'])->name('show');
 
     // Web AJAX routes (using session auth instead of API auth)
     Route::get('/{id}/data', [MachineryPaymentRequestController::class, 'apiShow'])->name('data');
     Route::post('/{id}/submit', [MachineryPaymentRequestController::class, 'submit'])->name('submit');
-    Route::post('/{id}/verify', [MachineryPaymentRequestController::class, 'verify'])->name('verify');
     Route::post('/{id}/approve', [MachineryPaymentRequestController::class, 'approve'])->name('approve');
     Route::post('/{id}/lock', [MachineryPaymentRequestController::class, 'lock'])->name('lock');
     Route::post('/{id}/pay', [MachineryPaymentRequestController::class, 'pay'])->name('pay');

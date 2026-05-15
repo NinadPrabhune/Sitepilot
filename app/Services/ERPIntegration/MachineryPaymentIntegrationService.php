@@ -259,18 +259,19 @@ class MachineryPaymentIntegrationService
             'payment_date' => $paymentData['payment_date'],
             'mode' => $paymentData['payment_mode'] ?? $paymentData['mode'] ?? 'bank_transfer', // Use actual ERP field name
             'reference_number' => $paymentData['reference_number'] ?? $integrationReference,
-            'payment_type' => 'against_invoice', // Use allowed payment type
-            'purchase_invoice_id' => 1, // Use real invoice ID from ERP data creation
+            'payment_type' => 'against_invoice',
+            'purchase_invoice_id' => null, // Machinery payments don't require a purchase invoice
+            'source_type' => PaymentSources::MACHINERY_PAYMENT_REQUEST,
             'payment_number' => $this->generatePartialPaymentNumber($request), // Unique payment number for partial payments
-            'notes' => "Machinery Payment Integration - Ref: {$integrationReference}\n" .
-                     "Request ID: {$request->id}\n" .
-                     "Period: {$request->period_start} to {$request->period_end}\n" .
-                     "Supplier: " . ($request->supplier->name ?? 'N/A') . "\n" .
-                     "Snapshot: " . json_encode($snapshot),
-            'supplier_id' => 3, // Use real supplier ID from ERP data creation
-            'workspace_id' => 1,
-            'created_by' => auth()->id() ?? 1,
-            'site_id' => 4, // Use real project ID from ERP data creation
+'notes'                 => "Machinery Payment Integration - Ref: {$integrationReference}\n" .
+                      "Request ID: {$request->id}\n" .
+                      "Period: {$request->period_start} to {$request->period_end}\n" .
+                      "Supplier: " . ($request->supplier->name ?? 'N/A') . "\n" .
+                      "Snapshot: " . json_encode($snapshot),
+             'supplier_id'           => $request->supplier_id,
+             'workspace_id'          => $request->workspace_id,
+             'created_by'            => auth()->id() ?? 1,
+             'site_id'               => $request->machinery->site_id ?? 1,
             'payment_proff_file' => $paymentData['payment_proof_file'] ?? null, // Add payment proof file
             // Include snapshot metadata for audit
             'source_snapshot_total' => $snapshot['source_snapshot_total'],

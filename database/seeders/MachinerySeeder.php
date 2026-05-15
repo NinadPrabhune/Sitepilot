@@ -13,35 +13,25 @@ class MachinerySeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run()
-    {
-        // 🛡️ DATA PROTECTION: This seeder has been disabled to prevent data loss
-        // The original version used TRUNCATE which deletes all machinery data
-        // Use SAFE_SEED_ONLY=false in .env to enable if absolutely needed for testing
+public function run()
+     {
+         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+         DB::table('machineries')->truncate();
+         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+         // Get sites with workspace info for proper relations
+         
+         
+//        $sites = DB::table('projects')->select('id', 'workspace')->get();
         
-        $this->command->error('❌ MachinerySeeder is disabled for data protection.');
-        $this->command->info('💡 To enable: Set SAFE_SEED_ONLY=false in .env file');
-        return;
+         
+         $sites = DB::table('projects')->select('id', 'workspace')->where('id', 1)->get();
         
-        // Original dangerous code commented out for safety:
-        /*
-        // Disable foreign key checks
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        // Truncate the table - DANGEROUS: Deletes all machinery data!
-        DB::table('machineries')->truncate();
-
-        // Re-enable foreign key checks
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        */
-
-        // Get sites with workspace info for proper relations
-        $sites = DB::table('projects')->select('id', 'workspace')->get();
-
-        if ($sites->isEmpty()) {
-            $this->command->warn('No projects found. Please seed projects first.');
-            return;
-        }
+if ($sites->isEmpty()) {
+             $this->command->warn('No projects found. Skipping MachinerySeeder.');
+             return;
+         }
 
         // Get available categories
         $categories = DB::table('machinery_categories')->pluck('id')->toArray();
@@ -57,7 +47,9 @@ class MachinerySeeder extends Seeder
 
         $manufacturers = ['JCB', 'Tata Hitachi', 'ACE', 'Voltas', 'Kirloskar', 'Komatsu', 'Hyundai', 'Liebherr'];
         $rateTypes = ['hourly', 'daily', 'monthly'];
-        $operationalStatuses = ['active', 'breakdown', 'scrap'];
+//        $operationalStatuses = ['active', 'breakdown', 'scrap'];
+        
+        $operationalStatuses = ['active'];
 
         // Create 12 Owned Machinery
         for ($i = 1; $i <= 12; $i++) {

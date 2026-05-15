@@ -20,6 +20,7 @@ class DailyProgressReport extends Model {
     const SOURCE_TYPE_MANUAL_ADJUSTMENT = 'manual_adjustment';
 
     protected $fillable = [
+        // Basic fields
         'date',
         'machinery_id',
         'machine_start_reading',
@@ -27,30 +28,107 @@ class DailyProgressReport extends Model {
         'machine_idle_reading',
         'number_of_operators',
         'operator_names',
-        'override_rate',
-        'override_reason',
-        'override_by',
-        'override_at',
         'work_details',
         'diesel_consumption',
         'maintenance_notes',
         'machinery_advances',
         'status',
-        'billable_hours',
-        'calculated_amount',
-        'ledger_entry_id',
-        'approved_by',
-        'approved_at',
-        'rejection_reason',
-        'rejected_by',
-        'rejected_at',
         'created_by',
         'workspace_id',
         'site_id',
         'activity_completed_id',
-        'source_type', // NEW: Dual flow tracking
+        'source_type',
+        // Override fields
+        'override_rate',
+        'override_reason',
+        'override_by',
+        'override_at',
+        // Approval/Verification fields
+        'approved_by',
+        'approved_at',
+        'verified_by',
+        'verified_at',
+        // Rejection fields
+        'rejection_reason',
+        'rejected_by',
+        'rejected_at',
+        // Lock fields
+        'is_locked',
+        'locked_at',
+        'locked_by',
+        // Billing/Payment fields
+        'billable_hours',
+        'calculated_amount',
+        'payment_status',
+        'is_billed',
+        'payment_request_id',
+        'paid_at',
+        'paid_by',
+        'billed_at',
+        // Ledger linkage
+        'ledger_entry_id',
+        'supplier_ledger_entry_id',
+        // Lifecycle & Workflow
+        'lifecycle_state',
+        // Rate snapshot & Calculation
+        'rate_snapshot',
+        'calculation_hash',
+        // Manual balance verification
+        'manual_balance_check',
+        'manual_balance_matched',
+        'manual_balance_notes',
+        // Anomaly tracking
+        'orphan_count',
+        'critical_drift_count',
+        'hash_mismatch_count',
+        // Reconciliation
+        'total_entries',
+        'total_reversals',
+        'reversal_rate_percent',
+        // System health
+        'system_health_status',
+        // Warning overrides
+        'warning_override_count',
+        'warning_overrides',
+        // Capture tracking
+        'captured_at',
+        'captured_by',
+        // Snapshot
+        'snapshot_date',
+        // Audit
+        'audit_log',
+        'deleted_by',
+        // Pending approvals
+        'pending_approvals',
+        'oldest_pending_age_hours',
     ];
-    protected $casts = ['date' => 'date',];
+
+    protected $casts = [
+        'date' => 'date',
+        'is_locked' => 'boolean',
+        'is_billed' => 'boolean',
+        'manual_balance_check' => 'boolean',
+        'manual_balance_matched' => 'boolean',
+        'rate_snapshot' => 'array',
+        'warning_overrides' => 'array',
+        'pending_approvals' => 'array',
+        'audit_log' => 'array',
+    ];
+
+    protected $dates = [
+        'date',
+        'approved_at',
+        'verified_at',
+        'rejected_at',
+        'locked_at',
+        'paid_at',
+        'billed_at',
+        'override_at',
+        'captured_at',
+        'snapshot_date',
+        'created_at',
+        'updated_at',
+    ];
 
     /**
      * Boot the model to add event listeners

@@ -21,7 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Restore default value (not recommended as it causes feature flag leakage)
-        DB::statement('ALTER TABLE purchase_invoices MODIFY COLUMN grn_type ENUM("PO", "DIRECT") NOT NULL DEFAULT "PO"');
+        // Restore default value only if column exists (safe rollback)
+        if (Schema::hasColumn('purchase_invoices', 'grn_type')) {
+            DB::statement('ALTER TABLE purchase_invoices MODIFY COLUMN grn_type ENUM("PO", "DIRECT") NOT NULL DEFAULT "PO"');
+        }
     }
 };

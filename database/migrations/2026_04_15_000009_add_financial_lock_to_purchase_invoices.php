@@ -34,10 +34,21 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('purchase_invoices', function (Blueprint $table) {
-            $table->dropForeign(['financially_locked_by']);
-            $table->dropIndex(['is_financially_locked']);
-            $table->dropColumn(['is_financially_locked', 'financially_locked_at', 'financially_locked_by']);
-        });
+        try {
+            Schema::table('purchase_invoices', function (Blueprint $table) {
+                // Drop foreign key if exists
+                $table->dropForeign(['financially_locked_by']);
+                // Drop index if exists
+                $table->dropIndex(['is_financially_locked']);
+                // Drop columns if they exist
+                foreach (['is_financially_locked', 'financially_locked_at', 'financially_locked_by'] as $col) {
+                    if (Schema::hasColumn('purchase_invoices', $col)) {
+                        $table->dropColumn($col);
+                    }
+                }
+            });
+        } catch (\Exception $e) {
+            // Silently ignore errors during rollback
+        }
     }
 };

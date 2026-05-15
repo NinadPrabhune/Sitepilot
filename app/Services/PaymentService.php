@@ -44,8 +44,9 @@ class PaymentService
             );
         }
 
-        // HARD FREEZE: Require purchase_invoice_id for all payments
-        if (empty($data['purchase_invoice_id'])) {
+        // HARD FREEZE: Require purchase_invoice_id for all payments (except machinery payment request payments)
+        $isMachineryPayment = isset($data['source_type']) && $data['source_type'] === \App\Support\PaymentSources::MACHINERY_PAYMENT_REQUEST;
+        if (empty($data['purchase_invoice_id']) && !$isMachineryPayment) {
             Log::channel('payment_audit')->error('HARD FREEZE: Attempted to create payment without invoice', [
                 'payment_type' => $data['payment_type'] ?? 'unknown',
                 'attempted_by' => auth()->id() ?? 1,

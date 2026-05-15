@@ -113,35 +113,32 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // 🛡️ SAFE: Only drop columns if they exist and were added by this migration
-        if (Schema::hasTable('payments_module')) {
-            if (Schema::hasColumn('payments_module', 'idempotency_key')) {
-                Schema::table('payments_module', function (Blueprint $table) {
+        if (!Schema::hasTable('payments_module')) {
+            return;
+        }
+        try {
+            Schema::table('payments_module', function (Blueprint $table) {
+                // Drop idempotency_key unique and column if they exist
+                if (Schema::hasColumn('payments_module', 'idempotency_key')) {
                     $table->dropUnique(['idempotency_key']);
                     $table->dropColumn('idempotency_key');
-                });
-            }
-
-            if (Schema::hasColumn('payments_module', 'payment_pdf')) {
-                Schema::table('payments_module', function (Blueprint $table) {
+                }
+                // Drop payment_pdf
+                if (Schema::hasColumn('payments_module', 'payment_pdf')) {
                     $table->dropColumn('payment_pdf');
-                });
-            }
-
-            if (Schema::hasColumn('payments_module', 'purchase_order_id')) {
-                Schema::table('payments_module', function (Blueprint $table) {
+                }
+                // Drop purchase_order_id foreign key and column
+                if (Schema::hasColumn('payments_module', 'purchase_order_id')) {
                     $table->dropForeign(['purchase_order_id']);
                     $table->dropColumn('purchase_order_id');
-                });
-            }
-
-            if (Schema::hasColumn('payments_module', 'status')) {
-                Schema::table('payments_module', function (Blueprint $table) {
+                }
+                // Drop status
+                if (Schema::hasColumn('payments_module', 'status')) {
                     $table->dropColumn('status');
-                });
-            }
-
-            // Note: We don't revert the enum change as it could break existing data
+                }
+            });
+        } catch (\Exception $e) {
+            // Silently ignore errors during rollback
         }
     }
 };

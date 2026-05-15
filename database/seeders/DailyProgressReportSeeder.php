@@ -18,29 +18,13 @@ class DailyProgressReportSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
-    {
-        // 🛡️ DATA PROTECTION: This seeder has been disabled to prevent data loss
-        // The original version used TRUNCATE which deletes all daily progress report data
-        // Use SAFE_SEED_ONLY=false in .env to enable if absolutely needed for testing
-        
-        $this->command->error('❌ DailyProgressReportSeeder is disabled for data protection.');
-        $this->command->info('💡 To enable: Set SAFE_SEED_ONLY=false in .env file');
-        return;
-        
-        // Original dangerous code commented out for safety:
-        /*
-        // Disable foreign key checks (optional but useful if there are constraints)
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+public function run(): void
+     {
+         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+         DB::table('daily_progress_reports')->truncate();
+         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // Truncate the table - DANGEROUS: Deletes all daily progress report data!
-        DB::table('daily_progress_reports')->truncate();
-
-        // Re-enable foreign key checks
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        */
-        
-        $user = User::first(); // or User::inRandomOrder()->first();
+         $user = User::first(); // or User::inRandomOrder()->first();
         $workspace = Workspace::first();
         $project = Project::first();
 

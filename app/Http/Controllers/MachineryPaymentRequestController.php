@@ -210,20 +210,7 @@ class MachineryPaymentRequestController extends Controller
             'message' => 'Payment request submitted successfully',
         ]);
     }
-    
-    /**
-     * Verify payment request
-     */
-    public function verify(int $id): JsonResponse
-    {
-        $this->service->verify($id, auth()->id());
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Payment request verified successfully',
-        ]);
-    }
-    
+
     /**
      * Approve payment request
      */
@@ -724,7 +711,7 @@ class MachineryPaymentRequestController extends Controller
                 'payment_proof' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
             ]);
 
-            $paymentRequest = MachineryPaymentRequest::findOrFail($id);
+$paymentRequest = MachineryPaymentRequest::with('machinery')->findOrFail($id);
 
             // Validate that request is in locked status
             if ($paymentRequest->status !== 'locked') {

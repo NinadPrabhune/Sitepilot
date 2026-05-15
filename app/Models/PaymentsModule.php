@@ -135,9 +135,10 @@ class PaymentsModule extends Model
             }
 
             // For PO advance payments via payment request workflow, purchase_invoice_id can be null
-            // For invoice payments, purchase_invoice_id is required
-            if ($isPaymentRequestWorkflow && in_array($model->payment_type, ['against_po', 'advance_against_po'])) {
-                // PO advance payments don't require purchase_invoice_id
+            // For machinery payment request payments, purchase_invoice_id is not applicable
+            $isMachineryPayment = $model->source_type === \App\Support\PaymentSources::MACHINERY_PAYMENT_REQUEST;
+            if (($isPaymentRequestWorkflow && in_array($model->payment_type, ['against_po', 'advance_against_po'])) || $isMachineryPayment) {
+                // PO advance and machinery payments don't require purchase_invoice_id
             } elseif (empty($model->purchase_invoice_id)) {
                 Log::channel('payment_audit')->error('HARD FREEZE: Model validation - Attempted to create payment without invoice', [
                     'payment_type' => $model->payment_type ?? 'unknown',
@@ -205,9 +206,11 @@ class PaymentsModule extends Model
             }
         });
 
-        static::saving(function ($model) {
+static::saving(function ($model) {
             // For invoice-based payments, purchase_invoice_id is required
-            if ($model->payment_type === self::PAYMENT_TYPE_AGAINST_INVOICE && empty($model->purchase_invoice_id)) {
+            // EXCEPTION: Machinery payment request payments don't require a purchase invoice
+            $isMachineryPayment = $model->source_type === \App\Support\PaymentSources::MACHINERY_PAYMENT_REQUEST;
+            if ($model->payment_type === self::PAYMENT_TYPE_AGAINST_INVOICE && empty($model->purchase_invoice_id) && !$isMachineryPayment) {
                 throw new \Exception(
                     'HARD FREEZE: Cannot remove purchase_invoice_id from payment. ' .
                     'System now enforces invoice-only payments.'

@@ -914,10 +914,10 @@ $(document).ready(function () {
                     }
                 });
 
-                // Add a fresh row only if table is empty
-                if ($('#consumption-items-table tbody tr').length === 0) {
-                    addItemRow({}, materials);
-                }
+//                // Add a fresh row only if table is empty
+//                if ($('#consumption-items-table tbody tr').length === 0) {
+//                    addItemRow({}, materials);
+//                }
             },
             error: function (xhr) {
                 console.error('Error fetching stock:', xhr.responseText);

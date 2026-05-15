@@ -101,9 +101,16 @@ class MachineryDataTable extends DataTable {
                     }
                     
                     return '<span class="badge ' . $badgeClass . '">' . $displayText . '</span>';
+                })
+                ->editColumn('owned_by', function (Machinery $model) {
+                    $ownership = $model->owned_by;
+                    $badgeClass = $ownership === 'owned' ? 'bg-primary' : 'bg-info';
+                    $displayText = $ownership === 'owned' ? 'Owned' : 'Rental';
+                    return '<span class="badge ' . $badgeClass . '">' . $displayText . '</span>';
                 });
         // Add operational_status to raw columns for HTML badge rendering
         $rowColumn[] = 'operational_status';
+        $rowColumn[] = 'owned_by';
         
         if (\Laratrust::hasPermission('machinery show') || \Laratrust::hasPermission('machinery edit') || \Laratrust::hasPermission('machinery delete')) {
             $dataTable->addColumn('action', function (Machinery $machinery) {
@@ -217,6 +224,7 @@ class MachineryDataTable extends DataTable {
             Column::make('category_id')->title(__('Category')),
             Column::make('site_id')->title(__('Current Site')),
             Column::make('vehicle_number')->title(__('Vehicle Number')),
+            Column::make('owned_by')->title(__('Ownership')),
             Column::make('operational_status')->title(__('Operational Status')),
         ];
         if (\Laratrust::hasPermission('machinery show') || \Laratrust::hasPermission('machinery edit') || \Laratrust::hasPermission('machinery delete')) {

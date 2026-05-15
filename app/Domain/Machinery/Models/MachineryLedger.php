@@ -66,7 +66,9 @@ class MachineryLedger extends Model
     
     protected $fillable = [
         'machinery_id',
+        'supplier_id',
         'workspace_id',
+        'site_id',
         'entry_direction',
         'entry_type',
         'ledger_type',
@@ -94,9 +96,11 @@ class MachineryLedger extends Model
         'reversal_reference_id',
         'calculation_snapshot',
         'cost_center',
-        'site_id',
+        // Billing version and calculation hash
+        'billing_version',
+        'calculation_hash',
     ];
-    
+
     protected $casts = [
         'amount' => 'decimal:2',
         'running_balance' => 'decimal:2',
@@ -105,6 +109,10 @@ class MachineryLedger extends Model
         'is_reversal' => 'boolean',
         'is_locked' => 'boolean',
         'locked_at' => 'datetime',
+        'is_settled' => 'boolean',
+        'is_reversed' => 'boolean',
+        'calculation_snapshot' => 'array',
+    ];
         'is_settled' => 'boolean',
         'is_reversed' => 'boolean',
         'calculation_snapshot' => 'array',

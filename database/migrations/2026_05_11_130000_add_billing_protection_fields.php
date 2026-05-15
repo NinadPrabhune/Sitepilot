@@ -33,15 +33,25 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('daily_progress_reports', function (Blueprint $table) {
-            $table->dropIndex(['is_billed', 'machinery_id', 'date']);
-            $table->dropIndex('payment_request_id');
-            $table->dropColumn(['is_billed', 'billed_at', 'payment_request_id']);
-        });
+        // Safely reverse changes for daily_progress_reports
+        try {
+            Schema::table('daily_progress_reports', function (Blueprint $table) {
+                $table->dropIndex(['is_billed', 'machinery_id', 'date']);
+                $table->dropIndex('payment_request_id');
+                $table->dropColumn(['is_billed', 'billed_at', 'payment_request_id']);
+            });
+        } catch (\Exception $e) {
+            // Ignore errors (indexes/columns may not exist)
+        }
 
-        Schema::table('machinery_ledgers', function (Blueprint $table) {
-            $table->dropIndex(['is_billed', 'machinery_id', 'date']);
-            $table->dropColumn(['is_billed', 'billed_at']);
-        });
+        // Safely reverse changes for machinery_ledgers
+        try {
+            Schema::table('machinery_ledgers', function (Blueprint $table) {
+                $table->dropIndex(['is_billed', 'machinery_id', 'date']);
+                $table->dropColumn(['is_billed', 'billed_at']);
+            });
+        } catch (\Exception $e) {
+            // Ignore errors
+        }
     }
 };

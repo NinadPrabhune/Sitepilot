@@ -11,13 +11,14 @@ return new class extends Migration
     public function up(): void
     {
         // Check if total_amount column exists
-        $totalAmountExists = DB::select("
-            SELECT COUNT(*) as count 
-            FROM INFORMATION_SCHEMA.COLUMNS 
-            WHERE TABLE_SCHEMA = DATABASE() 
-            AND TABLE_NAME = 'purchase_orders' 
+        $result = DB::select("
+            SELECT COUNT(*) as count
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = DATABASE()
+            AND TABLE_NAME = 'purchase_orders'
             AND COLUMN_NAME = 'total_amount'
-        ")[0]->count > 0;
+        ");
+        $totalAmountExists = isset($result[0]) && $result[0]->count > 0;
 
         if ($totalAmountExists) {
             DB::statement("

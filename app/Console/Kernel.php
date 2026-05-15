@@ -6,6 +6,7 @@ use App\Jobs\CheckBirthdayNotification;
 use App\Jobs\CheckEventNotification;
 use App\Jobs\CheckHolidayNotification;
 use App\Jobs\CheckLowStockNotification;
+use App\Jobs\CheckMachineryDueDateNotification;
 use App\Console\Commands\BlockDestructiveCommands;
 use App\Console\Commands\RequestSchemaChange;
 use App\Console\Commands\ApproveSchemaChange;
@@ -81,6 +82,17 @@ class Kernel extends ConsoleKernel
         })
         ->onFailure(function () {
             \Log::error('Event notification job failed at ' . now()->format('Y-m-d H:i:s'));
+        });
+
+    // Check for machinery PUC and Service due dates - Every day at 10 AM
+    $schedule->job(new CheckMachineryDueDateNotification)
+        ->dailyAt('10:00')
+        ->withoutOverlapping()
+        ->onSuccess(function () {
+            \Log::info('Machinery due date notification job completed successfully at ' . now()->format('Y-m-d H:i:s'));
+        })
+        ->onFailure(function () {
+            \Log::error('Machinery due date notification job failed at ' . now()->format('Y-m-d H:i:s'));
         });
 
     // System health check - Every 6 hours

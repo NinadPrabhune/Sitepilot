@@ -128,13 +128,19 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-2">
+                                    <div class="text-center p-3 border rounded">
+                                        <h5 id="grossAmountValue" class="mb-1 text-success">Rs. 0.00</h5>
+                                        <small class="text-muted">{{ __('Total Billing') }}</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
                                     <div class="text-center p-3 border rounded">
                                         <h5 id="creditsValue" class="mb-1">Rs. 0.00</h5>
                                         <small class="text-muted">{{ __('Credits') }}</small>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="text-center p-3 border rounded">
                                         <h5 id="debitsValue" class="mb-1">Rs. 0.00</h5>
                                         <small class="text-muted">{{ __('Debits') }}</small>
@@ -150,6 +156,30 @@
                                     <div class="text-center p-3 border rounded">
                                         <h5 id="entryCountValue" class="mb-1">0</h5>
                                         <small class="text-muted">{{ __('Entry Count') }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="alert alert-info mb-0">
+                                        <strong>{{ __('Calculation Formula:') }}</strong>
+                                        <span id="formulaDisplay">Net Payable = Credits - Debits</span>
+                                        <hr class="my-2">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <small>
+                                                    <strong>Credits:</strong> Work charges/earnings<br>
+                                                    <strong>Debits:</strong> Advances, deductions<br>
+                                                    <strong>Net:</strong> Outstanding balance
+                                                </small>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <small id="calculationDebug"></small>
+                                            </div>
+                                            <div class="col-md-4 text-end">
+                                                <small class="text-muted">Negative = Supplier owes us</small>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -335,30 +365,77 @@ calculateBtn.addEventListener('click', function() {
             period_end: endDate
         })
     })
-    .then(response => response.json())
-    .then(data => {
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.text();
+    })
+    .then(text => {
+        console.log('Raw response:', text);
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            console.error('JSON parse error:', e, text);
+            calculateBtn.disabled = false;
+            calculateBtn.innerHTML = '<i class="ti ti-calculator me-2"></i> {{ __('Calculate from Ledger') }}';
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Invalid JSON response' });
+            return;
+        }
+
         // Reset button
         calculateBtn.disabled = false;
         calculateBtn.innerHTML = '<i class="ti ti-calculator me-2"></i> {{ __('Calculate from Ledger') }}';
-        
+
+        console.log('Parsed data:', data);
+        console.log('data.data:', data.data);
+        console.log('credits:', data.data?.credits);
+        console.log('debits:', data.data?.debits);
+        console.log('net_payable:', data.data?.net_payable);
+
         if (data.success) {
             // Update results display
             const resultsContainer = document.getElementById('calculationResults');
-            
-            // Format currency values (assuming currency symbol is Rs.)
+
+            // Format currency values
+            const grossAmount = parseFloat(data.data.gross_amount) || 0;
             const credits = parseFloat(data.data.credits) || 0;
             const debits = parseFloat(data.data.debits) || 0;
             const netPayable = parseFloat(data.data.net_payable) || 0;
             const entryCount = data.data.audit_snapshot?.entry_count || 0;
-            
+
+            // Client-side verification
+            const calculatedNet = credits - debits;
+            console.log('Verification: ' + credits + ' - ' + debits + ' = ' + calculatedNet);
+
+            document.getElementById('grossAmountValue').textContent = 'Rs. ' + grossAmount.toFixed(2);
             document.getElementById('creditsValue').textContent = 'Rs. ' + credits.toFixed(2);
             document.getElementById('debitsValue').textContent = 'Rs. ' + debits.toFixed(2);
             document.getElementById('netPayableValue').textContent = 'Rs. ' + netPayable.toFixed(2);
             document.getElementById('entryCountValue').textContent = entryCount;
-            
+
+            // Update formula display with verification
+            const formulaDisplay = document.getElementById('formulaDisplay');
+            const calculationDebug = document.getElementById('calculationDebug');
+
+            // Net Payable formula: Credits - Debits
+            formulaDisplay.innerHTML = `
+                <span class="text-success">Gross: Rs.${grossAmount.toFixed(2)}</span> -
+                <span class="text-danger">Debits: Rs.${debits.toFixed(2)}</span> =
+                <strong class="text-primary">Net: Rs.${netPayable.toFixed(2)}</strong>
+            `;
+
+            const balanceType = netPayable >= 0 ? 'Supplier is owed money' : 'Supplier overpaid (credit balance)';
+            const mismatchWarning = Math.abs(calculatedNet - netPayable) > 0.01
+                ? '<span class="text-danger">⚠️ MISMATCH!</span>'
+                : '<span class="text-success">✓ Verified</span>';
+            calculationDebug.innerHTML = `
+                <strong>Balance:</strong> ${balanceType}<br>
+                <strong>Entries:</strong> ${entryCount}<br>
+                <strong>Formula:</strong> Credits (${credits}) - Debits (${debits}) = ${calculatedNet.toFixed(2)}
+                ${mismatchWarning}
+            `;
+
             resultsContainer.style.display = 'block';
-            
-            // Scroll to results
             resultsContainer.scrollIntoView({ behavior: 'smooth' });
         } else {
             Swal.fire({
@@ -381,7 +458,68 @@ calculateBtn.addEventListener('click', function() {
 
 // Submit button handler
 submitBtn.addEventListener('click', function() {
-    window.location.href = '/machinery/payment-requests';
+    const machineryId = machinerySelect.value;
+    const supplierId = supplierSelect.value;
+    const startDate = periodStart.value;
+    const endDate = periodEnd.value;
+    
+    if (!machineryId || !supplierId || !startDate || !endDate) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Validation Error',
+            text: '{{ __('Please fill all required fields and calculate first') }}'
+        });
+        return;
+    }
+    
+    // Disable button during submission
+    this.disabled = true;
+    this.innerHTML = '<i class="ti ti-loader-2 me-2"></i> {{ __('Submitting...') }}';
+    
+    fetch('{{ route('machinery-payment.store') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            machinery_id: machineryId,
+            supplier_id: supplierId,
+            period_start: startDate,
+            period_end: endDate
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '{{ __('Payment request created successfully') }}'
+            }).then(() => {
+                clearFormState();
+                window.location.href = '/machinery/payment-requests';
+            });
+        } else {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="ti ti-check me-2"></i> {{ __('Submit Payment Request') }}';
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || '{{ __('Error creating payment request') }}'
+            });
+        }
+    })
+    .catch(error => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="ti ti-check me-2"></i> {{ __('Submit Payment Request') }}';
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '{{ __('Error') }}: ' + error.message
+        });
+    });
 });
 </script>
 @endsection

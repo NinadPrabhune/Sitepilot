@@ -93,64 +93,52 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('machinery_ledgers', function (Blueprint $table) {
-            // Try to drop indexes (may not exist)
-            try {
-                $table->dropIndex('ledger_unique_entry');
-            } catch (\Exception $e) {}
-            try {
+        try {
+            Schema::table('machinery_ledgers', function (Blueprint $table) {
+                // Drop indexes if they exist (ignore errors if they don't)
+                $table->dropUnique('ledger_unique_entry');
                 $table->dropIndex('ledger_date_machine_idx');
-            } catch (\Exception $e) {}
-            try {
                 $table->dropIndex('ledger_ref_type_id_idx');
-            } catch (\Exception $e) {}
-            try {
                 $table->dropIndex('ledger_payment_lookup');
-            } catch (\Exception $e) {}
-            try {
                 $table->dropIndex('ledger_source_date_idx');
-            } catch (\Exception $e) {}
-            try {
                 $table->dropUnique(['idempotency_key']);
-            } catch (\Exception $e) {}
-            try {
                 $table->dropIndex(['source_type']);
-            } catch (\Exception $e) {}
-            try {
                 $table->dropIndex(['cost_center']);
-            } catch (\Exception $e) {}
-            
-            // Drop columns if they exist
-            if (Schema::hasColumn('machinery_ledgers', 'source_type')) {
-                $table->dropColumn('source_type');
-            }
-            if (Schema::hasColumn('machinery_ledgers', 'entry_source')) {
-                $table->dropColumn('entry_source');
-            }
-            if (Schema::hasColumn('machinery_ledgers', 'entry_source_id')) {
-                $table->dropColumn('entry_source_id');
-            }
-            if (Schema::hasColumn('machinery_ledgers', 'is_settled')) {
-                $table->dropColumn('is_settled');
-            }
-            if (Schema::hasColumn('machinery_ledgers', 'is_reversed')) {
-                $table->dropColumn('is_reversed');
-            }
-            if (Schema::hasColumn('machinery_ledgers', 'reversal_reference_id')) {
-                $table->dropColumn('reversal_reference_id');
-            }
-            if (Schema::hasColumn('machinery_ledgers', 'idempotency_key')) {
-                $table->dropColumn('idempotency_key');
-            }
-            if (Schema::hasColumn('machinery_ledgers', 'calculation_snapshot')) {
-                $table->dropColumn('calculation_snapshot');
-            }
-            if (Schema::hasColumn('machinery_ledgers', 'cost_center')) {
-                $table->dropColumn('cost_center');
-            }
-            if (Schema::hasColumn('machinery_ledgers', 'site_id')) {
-                $table->dropColumn('site_id');
-            }
-        });
+
+                // Drop columns if they exist
+                if (Schema::hasColumn('machinery_ledgers', 'source_type')) {
+                    $table->dropColumn('source_type');
+                }
+                if (Schema::hasColumn('machinery_ledgers', 'entry_source')) {
+                    $table->dropColumn('entry_source');
+                }
+                if (Schema::hasColumn('machinery_ledgers', 'entry_source_id')) {
+                    $table->dropColumn('entry_source_id');
+                }
+                if (Schema::hasColumn('machinery_ledgers', 'is_settled')) {
+                    $table->dropColumn('is_settled');
+                }
+                if (Schema::hasColumn('machinery_ledgers', 'is_reversed')) {
+                    $table->dropColumn('is_reversed');
+                }
+                if (Schema::hasColumn('machinery_ledgers', 'reversal_reference_id')) {
+                    $table->dropColumn('reversal_reference_id');
+                }
+                if (Schema::hasColumn('machinery_ledgers', 'idempotency_key')) {
+                    $table->dropColumn('idempotency_key');
+                }
+                if (Schema::hasColumn('machinery_ledgers', 'calculation_snapshot')) {
+                    $table->dropColumn('calculation_snapshot');
+                }
+                if (Schema::hasColumn('machinery_ledgers', 'cost_center')) {
+                    $table->dropColumn('cost_center');
+                }
+                if (Schema::hasColumn('machinery_ledgers', 'site_id')) {
+                    $table->dropColumn('site_id');
+                }
+            });
+        } catch (\Exception $e) {
+            // Silently ignore errors during rollback
+        }
     }
 };

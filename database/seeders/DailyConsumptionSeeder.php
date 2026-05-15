@@ -9,26 +9,14 @@ use Illuminate\Support\Facades\DB;
 
 class DailyConsumptionSeeder extends Seeder
 {
-    public function run()
-    {
-        // 🛡️ DATA PROTECTION: This seeder has been disabled to prevent data loss
-        // The original version used TRUNCATE which deletes all daily consumption data
-        // Use SAFE_SEED_ONLY=false in .env to enable if absolutely needed for testing
-        
-        $this->command->error('❌ DailyConsumptionSeeder is disabled for data protection.');
-        $this->command->info('💡 To enable: Set SAFE_SEED_ONLY=false in .env file');
-        return;
-        
-        // Original dangerous code commented out for safety:
-        /*
-        // Disable foreign key checks
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('daily_consumption_details')->truncate(); // DANGEROUS: Deletes all data!
-        DB::table('daily_consumption_masters')->truncate(); // DANGEROUS: Deletes all data!
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        */
+public function run()
+     {
+         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+         DB::table('daily_consumption_details')->truncate();
+         DB::table('daily_consumption_masters')->truncate();
+         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        for ($i = 1; $i <= 10; $i++) {
+         for ($i = 1; $i <= 10; $i++) {
             $consumptionType = $i % 2 === 0 ? 'fuel' : 'all';
             $machineryType = $consumptionType === 'fuel' ? ($i % 3 === 0 ? 'rental' : 'own') : null;
             $machineryId = $machineryType === 'own' ? rand(1, 5) : null;

@@ -218,14 +218,25 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // 🛡️ SAFE: Only drop columns that were added by this migration
-        if (Schema::hasTable('purchase_invoices')) {
+        if (!Schema::hasTable('purchase_invoices')) {
+            return;
+        }
+        try {
+            // Drop foreign keys first for columns whose FK was added by this migration
+            $foreignKeyColumns = ['grn_id', 'locked_by'];
+            foreach ($foreignKeyColumns as $fkColumn) {
+                if (Schema::hasColumn('purchase_invoices', $fkColumn)) {
+                    Schema::table('purchase_invoices', function (Blueprint $table) use ($fkColumn) {
+                        $table->dropForeign([$fkColumn]);
+                    });
+                }
+            }
+
+            // Drop only the columns that were actually added by this migration (not present before)
             $columnsToDrop = [
-                'grn_type', 'assign_to', 'grn_id', 'is_financially_locked', 'financially_locked_at',
-                'pi_pdf', 'tax_type', 'total_taxable_value', 'total_cgst', 'total_sgst', 'total_igst',
-                'total_tax', 'total_discount', 'grand_total', 'paid_amount', 'payment_request_flag',
-                'payment_status', 'ac_payment_status', 'rejection_reason', 'is_locked', 'locked_at',
-                'locked_by', 'financially_locked_by', 'idempotency_key'
+                'grn_id', 'pi_pdf', 'tax_type', 'total_taxable_value',
+                'total_cgst', 'total_sgst', 'total_igst', 'total_tax', 'total_discount',
+                'grand_total', 'payment_request_flag', 'idempotency_key'
             ];
 
             foreach ($columnsToDrop as $column) {
@@ -235,6 +246,9 @@ return new class extends Migration
                     });
                 }
             }
+        } catch (\Exception $e) {
+            // Silently ignore errors during rollback
+
         }
     }
 };

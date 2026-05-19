@@ -111,11 +111,7 @@ class MachineryLedger extends Model
         'locked_at' => 'datetime',
         'is_settled' => 'boolean',
         'is_reversed' => 'boolean',
-        'calculation_snapshot' => 'array',
-    ];
-        'is_settled' => 'boolean',
-        'is_reversed' => 'boolean',
-        'calculation_snapshot' => 'array',
+        'calculation_snapshot' => 'array'
     ];
     
     public function machinery()

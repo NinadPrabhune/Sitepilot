@@ -95,6 +95,31 @@ class StockService
      * @return StockTransaction
      * @throws Exception
      */
+    public function receiveMaterial($projectId, $materialId, $quantity, $remarks = null, $referenceType = null, $referenceId = null)
+    {
+        if ($quantity <= 0) {
+            throw new Exception('Quantity must be greater than zero');
+        }
+
+        return DB::transaction(function () use ($projectId, $materialId, $quantity, $remarks, $referenceType, $referenceId) {
+            $transaction = StockTransaction::create([
+                'project_id' => $projectId,
+                'material_id' => $materialId,
+                'type' => StockTransaction::TYPE_ADJUSTMENT,
+                'quantity' => $quantity,
+                'rate' => null,
+                'reference_type' => $referenceType,
+                'reference_id' => $referenceId,
+                'remarks' => $remarks ?: 'Stock receipt',
+                'created_by' => auth()->id(),
+            ]);
+
+            $this->updateCurrentStock($projectId, $materialId, $quantity);
+
+            return $transaction;
+        });
+    }
+
     public function issueMaterial($projectId, $materialId, $quantity, $remarks = null, $referenceType = null, $referenceId = null)
     {
         if ($quantity <= 0) {

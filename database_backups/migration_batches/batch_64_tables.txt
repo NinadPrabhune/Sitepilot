@@ -1,3 +1,0 @@
-supplier_advances
-supplier_categories
-supplier_ledger

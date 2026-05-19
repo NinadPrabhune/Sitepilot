@@ -1,3 +1,0 @@
-pay_slips
-payment_migration_map
-payment_module_allocations

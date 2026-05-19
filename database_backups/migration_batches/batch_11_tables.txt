@@ -1,6 +1,0 @@
-bills
-branches
-bug_comments
-bug_files
-bug_reports
-bug_stages

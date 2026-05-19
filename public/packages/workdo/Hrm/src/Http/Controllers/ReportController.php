@@ -58,10 +58,13 @@ class ReportController extends Controller
                 $data['department'] = $department->get($request->department_id);
             }
 
+            $employeeId = $request->employee_id ?? 'all';
+
             $employees = User::where('workspace_id', getActiveWorkSpace())
                 ->leftjoin('employees', 'users.id', '=', 'employees.user_id')
                 ->where('users.created_by', creatorId())->emp()
-                ->select('users.id', 'users.name');
+                ->select('users.id', 'users.name', 'employees.id as employee_id');
+
             if (!empty($request->branch)) {
                 $employees->where('branch_id', $request->branch);
             }
@@ -69,10 +72,22 @@ class ReportController extends Controller
             if (!empty($request->department)) {
                 $employees->where('department_id', $request->department);
             }
-            if (!empty($request->employee_id && !in_array('0', $request->employee_id))) {
-                $employees->whereIn('employees.id', $request->employee_id);
+            if (!empty($request->employee_id) && $request->employee_id !== 'all') {
+                if (is_array($request->employee_id)) {
+                    if (!in_array('0', $request->employee_id)) {
+                        $employees->whereIn('employees.id', $request->employee_id);
+                    }
+                } else {
+                    $employees->where('employees.id', $request->employee_id);
+                }
             }
-            $employees = $employees->get()->pluck('name', 'id');
+            $employees = $employees->get()
+                ->map(function($user) {
+                    return [
+                        'employee_id' => $user->employee_id,
+                        'name' => $user->name
+                    ];
+                });
 
             if ($request->has('week') && $request->type == 'weekly') {
                 $week = $request->input('week');
@@ -116,14 +131,17 @@ class ReportController extends Controller
             $employeesAttendance = [];
             $totalPresent        = $totalLeave = $totalEarlyLeave = 0;
             $ovetimeHours        = $overtimeMins = $earlyleaveHours = $earlyleaveMins = $lateHours = $lateMins = 0;
-            foreach ($employees as $id => $employee) {
-                $attendances['name'] = $employee;
+            foreach ($employees as $employee) {
+                $employeeIdValue = $employee['employee_id'];
+                $attendances['name'] = $employee['name'];
+                $attendances['status'] = [];
+                $attendanceStatus = [];
                 if ($request->type == 'weekly') {
                     foreach ($week_dates as $date) {
-                        $employeeAttendance = Attendance::where('employee_id', $id)
-                            ->whereDate('date', '=', date('Y-m-d', strtotime($date)))
-                            ->where('workspace', getActiveWorkSpace())
-                            ->first();
+$employeeAttendance = Attendance::where('employee_id', $employeeIdValue)
+                             ->whereDate('date', '=', date('Y-m-d', strtotime($date)))
+                             ->where('workspace', getActiveWorkSpace())
+                             ->first();
 
                         if (!empty($employeeAttendance) && $employeeAttendance->status == 'Present') {
                             $attendanceStatus[$date] = 'P';
@@ -154,7 +172,7 @@ class ReportController extends Controller
                     foreach ($dates as $date) {
                         $dateFormat = $year . '-' . $month . '-' . $date;
                         if ($dateFormat <= date('Y-m-d')) {
-                            $employeeAttendance = Attendance::where('employee_id', $id)->where('date', $dateFormat)->where('workspace', getActiveWorkSpace())->first();
+                            $employeeAttendance = Attendance::where('employee_id', $employeeIdValue)->where('date', $dateFormat)->where('workspace', getActiveWorkSpace())->first();
 
                             if (!empty($employeeAttendance) && $employeeAttendance->status == 'Present') {
                                 $attendanceStatus[$date] = 'P';
@@ -209,7 +227,7 @@ class ReportController extends Controller
                 'total_leave' => $data['totalLeave'] ?? 0
             ]);
             
-            return view('hrm::report.monthlyAttendance', compact('employeesAttendance', 'branch', 'department', 'dates', 'data'));
+            return view('hrm::report.monthlyAttendance', compact('employeesAttendance', 'employees', 'branch', 'department', 'dates', 'data', 'employeeId'));
         } else {
             \Log::warning('Permission denied for attendance monthly-report', [
                 'user_id' => Auth::id(),

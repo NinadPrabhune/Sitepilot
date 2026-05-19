@@ -15,7 +15,7 @@
  @if (in_array(\Auth::user()->type, \Auth::user()->not_emp_type))
     <div class="action-btn me-2">
         <a class="mx-3 btn btn-sm bg-warning align-items-center" data-url="{{ URL::to('leave/' . $leaves->id . '/action') }}"
-            data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip" title="" data-title="{{ __('Manage Leave') }}"
+            data-ajax-popup="true" data-size="xl" data-bs-toggle="tooltip" title="" data-title="{{ __('Manage Leave') }}"
             data-bs-original-title="{{ __('Leave Action') }}">
             <i class="ti ti-caret-right text-white"></i>
         </a>
@@ -26,7 +26,7 @@
     @permission('leave edit')
         <div class="action-btn  me-2">
             <a class="mx-3 btn btn-sm bg-info align-items-center" data-url="{{ URL::to('leave/' . $leaves->id . '/edit') }}"
-                data-ajax-popup="true" data-size="md" data-bs-toggle="tooltip" title=""
+                data-ajax-popup="true" data-size="xl" data-bs-toggle="tooltip" title=""
                 data-title="{{ __('Edit Leave') }}" data-bs-original-title="{{ __('Edit') }}">
                 <i class="ti ti-pencil text-white"></i>
             </a>

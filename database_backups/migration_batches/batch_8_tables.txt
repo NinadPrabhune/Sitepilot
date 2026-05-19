@@ -1,2 +1,0 @@
-bank_accounts
-bank_transfer_payments

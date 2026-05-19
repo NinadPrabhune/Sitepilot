@@ -1,2 +1,0 @@
-numbering_config_logs
-numbering_configs

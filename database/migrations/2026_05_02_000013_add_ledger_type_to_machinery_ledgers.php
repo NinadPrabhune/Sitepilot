@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Add ledger_type field to machinery_ledgers table
+     * Add ledger_type field to machinery_ledger table
      */
     public function up(): void
     {
-        if (!Schema::hasColumn('machinery_ledgers', 'ledger_type')) {
-            Schema::table('machinery_ledgers', function (Blueprint $table) {
+        if (!Schema::hasColumn('machinery_ledger', 'ledger_type')) {
+            Schema::table('machinery_ledger', function (Blueprint $table) {
                 $table->enum('ledger_type', ['internal_cost', 'payable', 'expense'])->default('payable')->after('entry_type');
                 
                 // Index for reporting
@@ -22,7 +22,7 @@ return new class extends Migration
         
         // Update existing records based on machinery ownership
         DB::statement("
-            UPDATE machinery_ledgers ml
+            UPDATE machinery_ledger ml
             JOIN machineries m ON ml.machinery_id = m.id
             SET ml.ledger_type = CASE 
                 WHEN m.owned_by = 'owned' THEN 'internal_cost'
@@ -35,8 +35,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        if (Schema::hasColumn('machinery_ledgers', 'ledger_type')) {
-            Schema::table('machinery_ledgers', function (Blueprint $table) {
+        if (Schema::hasColumn('machinery_ledger', 'ledger_type')) {
+            Schema::table('machinery_ledger', function (Blueprint $table) {
                 $table->dropIndex('idx_ledger_type');
                 $table->dropColumn('ledger_type');
             });

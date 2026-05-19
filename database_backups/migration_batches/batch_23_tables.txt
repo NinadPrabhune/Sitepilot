@@ -1,3 +1,0 @@
-events
-experience_certificates
-failed_jobs

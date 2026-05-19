@@ -1,3 +1,0 @@
-projects
-purchase_invoices
-purchase_orders

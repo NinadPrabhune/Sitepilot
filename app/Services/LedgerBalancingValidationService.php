@@ -298,7 +298,7 @@ class LedgerBalancingValidationService
         }
         
         // Check for orphaned ledger entries
-        $orphanedEntries = DB::table('machinery_ledgers')
+        $orphanedEntries = DB::table('machinery_ledger')
             ->where('workspace_id', $workspaceId)
             ->whereNull('reference_type')
             ->orWhereNull('reference_id')

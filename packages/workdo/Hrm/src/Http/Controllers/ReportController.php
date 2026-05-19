@@ -13,6 +13,7 @@ use Workdo\Hrm\Entities\Branch;
 use Workdo\Hrm\Entities\Department;
 use Workdo\Hrm\Entities\Employee;
 use Workdo\Hrm\Entities\Leave;
+use Workdo\Hrm\Entities\LeaveRequestDate;
 use Workdo\Hrm\Entities\LeaveType;
 use Workdo\Hrm\Entities\PaySlip;
 
@@ -54,7 +55,7 @@ class ReportController extends Controller
                 ->select('users.id', 'users.name', 'employees.id as employee_id');
 
             // Set employeeId for view
-            $employeeId = $request->employee_id ?? '';
+            $employeeId = $request->employee_id ?? 'all';
 
             // Employee filter processing - no debug logging needed
 
@@ -65,7 +66,7 @@ class ReportController extends Controller
             if (!empty($request->department)) {
                 $employeeQuery->where('department_id', $request->department);
             }
-            if (!empty($request->employee_id)) {
+            if (!empty($request->employee_id) && $request->employee_id !== 'all') {
                 if (is_array($request->employee_id)) {
                     if (!in_array('0', $request->employee_id)) {
                         $employeeQuery->whereIn('employees.id', $request->employee_id);
@@ -145,26 +146,25 @@ class ReportController extends Controller
                 ->get()
                 ->groupBy('employee_id');
             
-            // Get all approved leaves for all employees in one query
-            $allLeaves = Leave::whereIn('employee_id', $employeeIds)
-                ->whereIn('status', ['Approved', 'Partially Approved'])
-                ->where(function($query) use ($monthStart, $monthEnd) {
-                    $query->whereBetween('start_date', [$monthStart, $monthEnd])
-                        ->orWhereBetween('end_date', [$monthStart, $monthEnd])
-                        ->orWhere(function($q) use ($monthStart, $monthEnd) {
-                            $q->where('start_date', '<', $monthStart)
-                                ->where('end_date', '>', $monthEnd);
-                        });
-                })
-                ->get()
-                ->groupBy('employee_id');
+             // Get all approved leave dates for all employees in one query
+             // This properly handles partially approved leaves by checking individual date status
+             $allApprovedLeaveDates = LeaveRequestDate::select('leave_request_dates.*', 'leaves.employee_id')
+                 ->join('leaves', 'leave_request_dates.leave_request_id', '=', 'leaves.id')
+                 ->whereIn('leaves.employee_id', $employeeIds)
+                 ->where('leave_request_dates.status', 'approved')
+                 ->where(function($query) use ($monthStart, $monthEnd) {
+                     $query->where('leave_request_dates.leave_date', '>=', $monthStart)
+                         ->where('leave_request_dates.leave_date', '<=', $monthEnd);
+                 })
+                 ->get()
+                 ->groupBy('employee_id');
             
-            \Log::info('Batch data fetched', [
-                'total_employees' => count($employeeIds),
-                'attendance_records' => $allAttendances->count(),
-                'leave_records' => $allLeaves->count(),
-                'month_range' => [$monthStart, $monthEnd]
-            ]);
+             \Log::info('Batch data fetched', [
+                 'total_employees' => count($employeeIds),
+                 'attendance_records' => $allAttendances->count(),
+                 'leave_records' => $allApprovedLeaveDates->count(),
+                 'month_range' => [$monthStart, $monthEnd]
+             ]);
             
             foreach ($employees as $employee) {
                 $employeeId = $employee['employee_id'];
@@ -204,64 +204,63 @@ class ReportController extends Controller
                         }
                     }
                 } else {
-                    // Use pre-fetched data instead of individual queries
-                    $employeeAttendances = $allAttendances->get($employeeId, collect());
-                    $approvedLeaves = $allLeaves->get($employeeId, collect());
-                    
-                    // Key attendance records by day for faster lookup
-                    $employeeAttendances = $employeeAttendances->keyBy(function($attendance) {
-                        return date('d', strtotime($attendance->date));
-                    });
-                    
-                    foreach ($dates as $date) {
-                        $dateFormat = $year . '-' . $month . '-' . $date;
-                        
-                        // Check if this date is within any approved leave period
-                        $isOnLeave = false;
-                        foreach ($approvedLeaves as $leave) {
-                            if ($dateFormat >= $leave->start_date && $dateFormat <= $leave->end_date) {
-                                $isOnLeave = true;
-                                break;
-                            }
-                        }
-                        
-                        if ($isOnLeave) {
-                            // Show 'L' for approved leave dates (both past and future)
-                            $attendanceStatus[$date] = 'L';
-                            $totalLeave              += 1;
-                        } elseif ($dateFormat <= date('Y-m-d')) {
-                            // Only check attendance for past dates
-                            $employeeAttendance = $employeeAttendances->get($date);
-                            
-                            if (!empty($employeeAttendance) && $employeeAttendance->status == 'Present') {
-                                $attendanceStatus[$date] = 'P';
-                                $totalPresent            += 1;
-
-                                if ($employeeAttendance->overtime > 0) {
-                                    $ovetimeHours += date('h', strtotime($employeeAttendance->overtime));
-                                    $overtimeMins += date('i', strtotime($employeeAttendance->overtime));
-                                }
-
-                                if ($employeeAttendance->early_leaving > 0) {
-                                    $earlyleaveHours += date('h', strtotime($employeeAttendance->early_leaving));
-                                    $earlyleaveMins  += date('i', strtotime($employeeAttendance->early_leaving));
-                                }
-
-                                if ($employeeAttendance->late > 0) {
-                                    $lateHours += date('h', strtotime($employeeAttendance->late));
-                                    $lateMins  += date('i', strtotime($employeeAttendance->late));
-                                }
-                            } elseif (!empty($employeeAttendance) && $employeeAttendance->status == 'Leave') {
-                                $attendanceStatus[$date] = 'L';
-                                $totalLeave              += 1;
-                            } else {
-                                $attendanceStatus[$date] = 'A';
-                            }
-                        } else {
-                            // Future dates without approved leave show blank
-                            $attendanceStatus[$date] = '';
-                        }
-                    }
+                     // Use pre-fetched data instead of individual queries
+                     $employeeAttendances = $allAttendances->get($employeeId, collect());
+                     $approvedLeaveDates = $allApprovedLeaveDates->get($employeeId, collect());
+                     
+                     // Key attendance records by day for faster lookup
+                     $employeeAttendances = $employeeAttendances->keyBy(function($attendance) {
+                         return date('d', strtotime($attendance->date));
+                     });
+                     
+                     // Key approved leave dates by day for faster lookup
+                     $approvedLeaveDatesByDay = $approvedLeaveDates->keyBy(function($leaveDate) {
+                         return date('d', strtotime($leaveDate->leave_date));
+                     });
+                     
+                     foreach ($dates as $date) {
+                         $dateFormat = $year . '-' . $month . '-' . $date;
+                         
+                         // Check if this date has an approved leave request date
+                         $isOnApprovedLeave = $approvedLeaveDatesByDay->has($date);
+                         
+                         if ($isOnApprovedLeave) {
+                             // Show 'L' for approved leave dates (both past and future)
+                             $attendanceStatus[$date] = 'L';
+                             $totalLeave              += 1;
+                         } elseif ($dateFormat <= date('Y-m-d')) {
+                             // Only check attendance for past dates
+                             $employeeAttendance = $employeeAttendances->get($date);
+                             
+                             if (!empty($employeeAttendance) && $employeeAttendance->status == 'Present') {
+                                 $attendanceStatus[$date] = 'P';
+                                 $totalPresent            += 1;
+ 
+                                 if ($employeeAttendance->overtime > 0) {
+                                     $ovetimeHours += date('h', strtotime($employeeAttendance->overtime));
+                                     $overtimeMins += date('i', strtotime($employeeAttendance->overtime));
+                                 }
+ 
+                                 if ($employeeAttendance->early_leaving > 0) {
+                                     $earlyleaveHours += date('h', strtotime($employeeAttendance->early_leaving));
+                                     $earlyleaveMins  += date('i', strtotime($employeeAttendance->early_leaving));
+                                 }
+ 
+                                 if ($employeeAttendance->late > 0) {
+                                     $lateHours += date('h', strtotime($employeeAttendance->late));
+                                     $lateMins  += date('i', strtotime($employeeAttendance->late));
+                                 }
+                             } elseif (!empty($employeeAttendance) && $employeeAttendance->status == 'Leave') {
+                                 $attendanceStatus[$date] = 'L';
+                                 $totalLeave              += 1;
+                             } else {
+                                 $attendanceStatus[$date] = 'A';
+                             }
+                         } else {
+                             // Future dates without approved leave show blank
+                             $attendanceStatus[$date] = '';
+                         }
+                     }
                 }
 
                 // Calculate present days for this employee

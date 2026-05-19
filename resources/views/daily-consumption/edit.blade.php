@@ -227,6 +227,9 @@
             }
             $(this).closest('tr').remove();
             refreshMaterialDropdowns();
+            if (typeof refreshRemainingStockDisplay === 'function') {
+                refreshRemainingStockDisplay();
+            }
         });
         
         $('#consumption-items-table').on('change', '.item-material', function () {
@@ -250,10 +253,8 @@
                 unitInput.val(unitName);
                 unitLabel.text(unitName);
                 
-                // Update current stock display - handle both total_qty and qty fields
-                const stockValue = material.total_qty !== undefined ? material.total_qty : (material.qty || 0);
-                itemStock.val(stockValue);
                 itemStockUnit.text(unitName);
+                refreshRemainingStockDisplay();
                 
                 // (Optional) If you want to auto-fill price or other fields, you can add here
                 // row.find('.item-price').val(material.price);
@@ -347,6 +348,7 @@
                     const type = $('#consumption_type').val();
                     const materials = type === 'fuel' ? materialsFuel : materialsAll;
                     addItemRow({}, materials);
+                    refreshRemainingStockDisplay();
                 },
                 error: function (xhr) {
                     console.error('Error fetching stock:', xhr.responseText);
@@ -356,27 +358,55 @@
             });
         });
         
+        function getAllMaterialsMap() {
+            return { ...materialsFuel, ...materialsAll };
+        }
+
+        function refreshRemainingStockDisplay() {
+            const allMaterials = getAllMaterialsMap();
+            const usedByMaterial = {};
+            $('#consumption-items-table tbody tr').each(function () {
+                const materialId = $(this).find('.item-material').val();
+                if (!materialId) return;
+                usedByMaterial[materialId] = (usedByMaterial[materialId] || 0) + (parseFloat($(this).find('.item-quantity').val()) || 0);
+            });
+            $('#consumption-items-table tbody tr').each(function () {
+                const row = $(this);
+                const materialId = row.find('.item-material').val();
+                const base = allMaterials[materialId]?.total_qty || 0;
+                const remaining = materialId ? Math.max(0, base - (usedByMaterial[materialId] || 0)) : 0;
+                row.find('.item-stock').val(remaining);
+            });
+        }
+
+        function getAvailableQtyForRow(row, materialId) {
+            const base = getAllMaterialsMap()[materialId]?.total_qty || 0;
+            const rowEl = row[0] || row;
+            let otherQty = 0;
+            $('#consumption-items-table tbody tr').each(function () {
+                if (this === rowEl) return;
+                if ($(this).find('.item-material').val() == materialId) {
+                    otherQty += parseFloat($(this).find('.item-quantity').val()) || 0;
+                }
+            });
+            return Math.max(0, base - otherQty);
+        }
+
         $('#consumption-items-table').on('input', '.item-quantity', function () {
             const row = $(this).closest('tr');
             const qtyInput = row.find('.item-quantity');
             const materialId = row.find('.item-material').val();
-            // Merge both collections if you're using materialsFuel/materialsAll
-            const allMaterials = { ...materialsFuel, ...materialsAll };
-            const available = allMaterials[materialId]?.total_qty || 0;
+            const available = getAvailableQtyForRow(row, materialId);
             const enteredQty = parseFloat(qtyInput.val()) || 0;
             if (enteredQty > available) {
-                // Show error feedback
                 alert(`Quantity exceeds available stock (${available})`);
-                // Reset quantity to max available or 1
-                qtyInput.val(available > 0 ? available : 1);
-                // Mark invalid for HTML5 validation
-                // qtyInput.addClass('is-invalid');
+                qtyInput.val(available > 0 ? available : 0);
                 qtyInput[0].setCustomValidity('Quantity exceeds available stock');
             } else {
-                // Clear error state
                 qtyInput.removeClass('is-invalid');
                 qtyInput[0].setCustomValidity('');
             }
+            refreshRemainingStockDisplay();
         });
         
         function refreshMaterialDropdowns() {
@@ -410,6 +440,8 @@
             });
         }
         
+        refreshRemainingStockDisplay();
+
         // Form submission validation
         $('form').on('submit', function (e) {
             let valid = true;

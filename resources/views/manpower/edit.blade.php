@@ -1,5 +1,5 @@
 {{ Form::model($manPowerMaster, ['route' => ['manpower.update', $manPowerMaster->id], 'method' => 'PUT', 'class' => 'needs-validation', 'novalidate']) }}
-{{ Form::hidden('activity_id', $manPowerMaster->activity_id) }}
+{{ Form::hidden('activity_completed_id', $manPowerMaster->activity_completed_id) }}
 <div class="modal-body">
     <div class="row">
         {{-- Work Date --}}

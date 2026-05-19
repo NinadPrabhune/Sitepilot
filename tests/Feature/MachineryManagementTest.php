@@ -178,7 +178,7 @@ class MachineryManagementTest extends TestCase
         $this->assertEquals('approved', $dpr->status);
 
         // Check ledger entry was created
-        $this->assertDatabaseHas('machinery_ledgers', [
+        $this->assertDatabaseHas('machinery_ledger', [
             'machinery_id' => $this->ownedMachine->id,
             'reference_type' => 'DailyProgressReport',
             'reference_id' => $dpr->id,
@@ -542,7 +542,7 @@ class MachineryManagementTest extends TestCase
         ]);
 
         // Verify diesel ledger entry
-        $this->assertDatabaseHas('machinery_ledgers', [
+        $this->assertDatabaseHas('machinery_ledger', [
             'id' => $dieselLedger->id,
             'machinery_id' => $this->complexRentalMachine->id,
             'entry_direction' => 'debit',

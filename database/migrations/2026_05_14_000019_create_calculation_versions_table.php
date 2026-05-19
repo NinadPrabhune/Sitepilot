@@ -38,6 +38,7 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // If table doesn't exist, create it fresh
         if (!Schema::hasTable('calculation_versions')) {
             Schema::create('calculation_versions', function (Blueprint $table) {
                 $table->id();
@@ -65,11 +66,50 @@ return new class extends Migration
                     ->on('users')
                     ->onDelete('restrict');
             });
+        } else {
+            // Table exists (potentially created by another migration)
+            // Add missing columns from this schema
+            Schema::table('calculation_versions', function (Blueprint $table) {
+                if (!Schema::hasColumn('calculation_versions', 'version')) {
+                    $table->string('version', 20)->unique()->comment('Semantic version like v1.2.3');
+                }
+                if (!Schema::hasColumn('calculation_versions', 'type')) {
+                    $table->string('type', 50)->comment('dpr_calculation, billing, diesel');
+                }
+                if (!Schema::hasColumn('calculation_versions', 'description')) {
+                    $table->text('description');
+                }
+                if (!Schema::hasColumn('calculation_versions', 'rules')) {
+                    $table->json('rules')->nullable()->comment('Serialized calculation rules/config');
+                }
+                if (!Schema::hasColumn('calculation_versions', 'deprecated_at')) {
+                    $table->timestamp('deprecated_at')->nullable();
+                }
+                if (!Schema::hasColumn('calculation_versions', 'deprecation_reason')) {
+                    $table->text('deprecation_reason')->nullable();
+                }
+            });
+            
+            // Add indexes if they don't exist
+            if (!Schema::hasIndex('calculation_versions', 'idx_type_active')) {
+                Schema::table('calculation_versions', function (Blueprint $table) {
+                    $table->index(['type', 'is_active'], 'idx_type_active');
+                });
+            }
         }
     }
 
     public function down(): void
     {
+        if (Schema::hasTable('calculation_versions')) {
+            Schema::table('calculation_versions', function (Blueprint $table) {
+                try {
+                    $table->dropIndex('idx_type_active');
+                    $table->dropIndex('idx_type_effective_from');
+                    $table->dropIndex('idx_validity_range');
+                } catch (\Exception $e) {}
+            });
+        }
         Schema::dropIfExists('calculation_versions');
     }
 };

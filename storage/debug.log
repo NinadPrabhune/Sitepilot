@@ -29,3 +29,20 @@ DailyConsumptionController@store - Permission passed
 DailyConsumptionController@store ENTRY - Request data: {"daily_progress_report_id":1,"consumption_date":"2026-05-13","site_id":"1","consumption_type":"fuel","machinery_type":"rental","machinery_id":"17","activity_completed_id":"1","items":{"1":{"material_id":"45","quantity":"5","unit":"Liter","remarks":null}},"consumption_file":null,"InsertFrom":"DailyProgressReportController"}
 DailyConsumptionController@store - Permission passed
 DailyConsumptionController@store SUCCESS - Master ID: 1
+DailyConsumptionController@store ENTRY - Request data: {"_token":"vD0tAWqRVTBB9Q1cp3WJz8lNOJeh6ZMtGbK44Htc","activity_id":"7","activity_completed_id":"11","consumption_number":"DCM-0004","consumption_date":"2026-05-15","site_id":"1","consumption_type":"all","machinery_type":"own","machinery_id":null,"items":{"1":{"material_id":"1","quantity":"10","unit":"Number","remarks":null}}}
+DailyConsumptionController@store - Permission passed
+DailyConsumptionController@store SUCCESS - Master ID: 4
+DailyConsumptionController@store ENTRY - Request data: {"_token":"vD0tAWqRVTBB9Q1cp3WJz8lNOJeh6ZMtGbK44Htc","activity_id":"7","activity_completed_id":"12","consumption_number":"DCM-0005","consumption_date":"2026-05-15","site_id":"1","consumption_type":"all","machinery_type":"own","machinery_id":null,"items":{"1":{"material_id":"11","quantity":"100","unit":"Liter","remarks":null}}}
+DailyConsumptionController@store - Permission passed
+DailyConsumptionController@store SUCCESS - Master ID: 5
+DailyConsumptionController@store ENTRY - Request data: {"daily_progress_report_id":5,"consumption_date":"2026-05-15","site_id":"1","consumption_type":"fuel","machinery_type":"rental","machinery_id":"20","activity_completed_id":"13","items":[{"material_id":"13","quantity":"5","unit":"Ton","remarks":null}],"consumption_file":null,"InsertFrom":"DailyProgressReportController"}
+DailyConsumptionController@store - Permission passed
+DailyConsumptionController@store SUCCESS - Master ID: 7
+DailyConsumptionController@store ENTRY - Request data: {"daily_progress_report_id":7,"consumption_date":"2026-05-16","site_id":"1","consumption_type":"fuel","machinery_type":"rental","machinery_id":"20","activity_completed_id":"13","items":[{"material_id":"13","quantity":"5","unit":"Ton","remarks":null}],"consumption_file":null,"InsertFrom":"DailyProgressReportController"}
+DailyConsumptionController@store - Permission passed
+DailyConsumptionController@store SUCCESS - Master ID: 8
+DailyConsumptionController@store ENTRY - Request data: {"daily_progress_report_id":8,"consumption_date":"2026-05-16","site_id":"1","consumption_type":"fuel","machinery_type":"rental","machinery_id":"20","activity_completed_id":"13","items":[{"material_id":"13","quantity":"5","unit":"Ton","remarks":null}],"consumption_file":null,"InsertFrom":"DailyProgressReportController"}
+DailyConsumptionController@store - Permission passed
+DailyConsumptionController@store SUCCESS - Master ID: 9
+DailyConsumptionController@store ENTRY - Request data: {"daily_progress_report_id":9,"consumption_date":"2026-05-16","site_id":"1","consumption_type":"fuel","machinery_type":"rental","machinery_id":"20","activity_completed_id":"14","items":[{"material_id":"13","quantity":"25","unit":"Ton","remarks":"Remarks"}],"consumption_file":null,"InsertFrom":"DailyProgressReportController"}
+DailyConsumptionController@store - Permission passed

@@ -1,4 +1,0 @@
-commissions
-company_contributions
-company_policies
-complaints

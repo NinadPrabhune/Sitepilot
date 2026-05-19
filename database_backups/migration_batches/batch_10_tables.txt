@@ -1,2 +1,0 @@
-bill_payments
-bill_products

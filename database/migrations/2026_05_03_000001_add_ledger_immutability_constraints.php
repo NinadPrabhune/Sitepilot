@@ -32,7 +32,7 @@ return new class extends Migration
         // Prevent updates
         DB::unprepared('
             CREATE TRIGGER prevent_machinery_ledger_update
-            BEFORE UPDATE ON machinery_ledgers
+            BEFORE UPDATE ON machinery_ledger
             FOR EACH ROW
             BEGIN
                 SIGNAL SQLSTATE "45000"
@@ -43,7 +43,7 @@ return new class extends Migration
         // Prevent deletes
         DB::unprepared('
             CREATE TRIGGER prevent_machinery_ledger_delete
-            BEFORE DELETE ON machinery_ledgers
+            BEFORE DELETE ON machinery_ledger
             FOR EACH ROW
             BEGIN
                 SIGNAL SQLSTATE "45000"

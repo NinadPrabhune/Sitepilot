@@ -1,6 +1,0 @@
-deal_discussions
-deal_emails
-deal_files
-deal_stages
-deal_tasks
-deals

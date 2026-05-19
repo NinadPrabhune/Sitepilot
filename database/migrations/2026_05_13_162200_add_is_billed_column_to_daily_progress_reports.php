@@ -36,21 +36,21 @@ return new class extends Migration
             }
         });
 
-        Schema::table('machinery_ledgers', function (Blueprint $table) {
+        Schema::table('machinery_ledger', function (Blueprint $table) {
             // Add is_billed column if it doesn't exist
-            if (!Schema::hasColumn('machinery_ledgers', 'is_billed')) {
+            if (!Schema::hasColumn('machinery_ledger', 'is_billed')) {
                 $table->boolean('is_billed')->default(false)->after('is_settled');
             }
             
             // Add billed_at column if it doesn't exist
-            if (!Schema::hasColumn('machinery_ledgers', 'billed_at')) {
+            if (!Schema::hasColumn('machinery_ledger', 'billed_at')) {
                 $table->timestamp('billed_at')->nullable()->after('is_billed');
             }
             
             // Add composite index if it doesn't exist
             $schemaBuilder = Schema::getConnection()->getSchemaBuilder();
-            $indexes = $schemaBuilder->getIndexListing('machinery_ledgers');
-            if (!in_array('machinery_ledgers_is_billed_machinery_id_date_index', $indexes)) {
+            $indexes = $schemaBuilder->getIndexListing('machinery_ledger');
+            if (!in_array('machinery_ledger_is_billed_machinery_id_date_index', $indexes)) {
                 $table->index(['is_billed', 'machinery_id', 'date']);
             }
         });

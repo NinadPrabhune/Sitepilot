@@ -1,6 +1,0 @@
-document_types
-documents
-dpr_anomalies
-dpr_edit_history
-email_template_langs
-email_templates

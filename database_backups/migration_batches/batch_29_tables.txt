@@ -1,2 +1,0 @@
-invariant_logs
-invoice_attechments

@@ -10,6 +10,7 @@ use Workdo\Hrm\Entities\Employee;
 use Workdo\Hrm\Entities\Leave;
 use Workdo\Hrm\Entities\LeaveType;
 use Workdo\Hrm\Entities\Attendance;
+use Workdo\Hrm\Entities\LeaveRequestDate;
 use App\Models\User;
 
 /**
@@ -208,6 +209,19 @@ class LeaveApiController extends Controller
                 $leave->created_by = creatorId();
                 $leave->save();
 
+                // Create leave request date records
+                $currentDate = new \DateTime($request->start_date);
+                $endDate = new \DateTime($request->end_date);
+                
+                while ($currentDate <= $endDate) {
+                    LeaveRequestDate::create([
+                        'leave_request_id' => $leave->id,
+                        'leave_date' => $currentDate->format('Y-m-d'),
+                        'status' => 'pending',
+                    ]);
+                    $currentDate->add(new \DateInterval('P1D'));
+                }
+
                 return response()->json([
                     'status' => 1,
                     'data' => $this->formatLeaveRecord($leave),
@@ -358,10 +372,12 @@ class LeaveApiController extends Controller
             }
 
             // Calculate used days for this employee and leave type
-            $usedDays = Leave::where('employee_id', $leave->employee_id)
-                ->where('leave_type_id', $leave->leave_type_id)
-                ->whereIn('status', ['Approved', 'Partially Approved'])
-                ->sum('approved_days');
+            // Updated: Calculate from approved dates instead of approved_days field
+            $usedDays = LeaveRequestDate::join('leaves', 'leave_request_dates.leave_request_id', '=', 'leaves.id')
+                ->where('leaves.employee_id', $leave->employee_id)
+                ->where('leaves.leave_type_id', $leave->leave_type_id)
+                ->where('leave_request_dates.status', 'approved')
+                ->count();
 
             // Count Sundays worked from attendance
             $sundaysWorked = Attendance::where('employee_id', $leave->employee_id)
@@ -439,30 +455,89 @@ class LeaveApiController extends Controller
             $totalDays = \Carbon\Carbon::parse($leave->start_date)
                 ->diffInDays(\Carbon\Carbon::parse($leave->end_date)) + 1;
 
-            // For Partially Approved, validate approved_days
-            if ($request->status === 'Partially Approved') {
-                $validator2 = \Validator::make($request->all(), [
-                    'approved_days' => 'required|integer|min:1|max:' . $totalDays,
-                ]);
-                
-                if ($validator2->fails()) {
-                    return response()->json(['status' => 0, 'message' => $validator2->errors()->first()], 403);
+            DB::beginTransaction();
+            try {
+                if ($request->status === 'Approved') {
+                    // Approve all dates
+                    LeaveRequestDate::where('leave_request_id', $leave->id)
+                        ->update([
+                            'status' => 'approved',
+                            'approved_by' => $user->id,
+                            'approved_at' => now(),
+                        ]);
+                    $leave->status = 'Approved';
+                    $leave->total_leave_days = $totalDays;
+                    $leave->approved_days = $totalDays;
+                    $leave->rejected_days = 0;
+                    $leave->pending_days = 0;
+                } elseif ($request->status === 'Reject') {
+                    // Reject all dates
+                    LeaveRequestDate::where('leave_request_id', $leave->id)
+                        ->update([
+                            'status' => 'rejected',
+                            'approved_by' => $user->id,
+                            'approved_at' => now(),
+                        ]);
+                    $leave->status = 'Reject';
+                    $leave->approved_days = 0;
+                    $leave->rejected_days = $totalDays;
+                    $leave->pending_days = 0;
+                } elseif ($request->status === 'Partially Approved') {
+                    // Check if new date-level approval payload exists
+                    if ($request->has('approved_dates') && is_array($request->approved_dates)) {
+                        // New date-level approval
+                        foreach ($request->approved_dates as $date => $data) {
+                            LeaveRequestDate::where('leave_request_id', $leave->id)
+                                ->where('leave_date', $date)
+                                ->update([
+                                    'status' => $data['status'],
+                                    'approved_by' => $user->id,
+                                    'approved_at' => now(),
+                                    'remarks' => $data['remarks'] ?? null,
+                                ]);
+                        }
+                        $leave->recalculateDays();
+                        $leave->status = 'Partially Approved';
+                    } else {
+                        // Legacy approval with count only
+                        $validator2 = \Validator::make($request->all(), [
+                            'approved_days' => 'required|integer|min:1|max:' . $totalDays,
+                        ]);
+                        
+                        if ($validator2->fails()) {
+                            return response()->json(['status' => 0, 'message' => $validator2->errors()->first()], 403);
+                        }
+                        
+                        // Approve first N days (legacy behavior)
+                        $dateRecords = LeaveRequestDate::where('leave_request_id', $leave->id)
+                            ->orderBy('leave_date')
+                            ->get();
+
+                        foreach ($dateRecords as $index => $dateRecord) {
+                            if ($index < $request->approved_days) {
+                                $dateRecord->status = 'approved';
+                                $dateRecord->approved_by = $user->id;
+                                $dateRecord->approved_at = now();
+                            } else {
+                                $dateRecord->status = 'rejected';
+                                $dateRecord->approved_by = $user->id;
+                                $dateRecord->approved_at = now();
+                            }
+                            $dateRecord->save();
+                        }
+                        $leave->recalculateDays();
+                        $leave->status = 'Partially Approved';
+                    }
                 }
                 
-                $leave->status = 'Partially Approved';
-                $leave->approved_days = $request->approved_days;
-                $leave->total_leave_days = $totalDays;
-            } elseif ($request->status === 'Approved') {
-                $leave->status = 'Approved';
-                $leave->total_leave_days = $totalDays;
-                $leave->approved_days = $totalDays;
-            } elseif ($request->status === 'Reject') {
-                $leave->status = 'Reject';
-                $leave->approved_days = 0;
+                $leave->status_reason = $request->status_reason;
+                $leave->save();
+                
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json(['status' => 0, 'message' => 'Error updating leave status: ' . $e->getMessage()], 500);
             }
-
-            $leave->status_reason = $request->status_reason;
-            $leave->save();
 
             return response()->json([
                 'status' => 1,

@@ -1,4 +1,0 @@
-payment_requests
-payments
-payslip_types
-permission_role

@@ -847,6 +847,7 @@
 @include('layouts.includes.datatable-js')
 <script>
 const paymentRequestId = {{ $paymentRequest->id ?? 0 }};
+const settlementStatus = {{ json_encode($paymentRequest->settlement_status) }};
 
 function getStatusBadge(status) {
     const badges = {
@@ -884,12 +885,12 @@ function loadActions() {
                 actions += `<button onclick="approveRequest()" class="btn btn-success"><i class="ti ti-check me-1"></i> Approve</button>`;
             } else if (status === 'approved') {
                 actions += `<button onclick="lockRequest()" class="btn btn-warning" title="Freezes the payment period and secures ledger entries from further modifications"><i class="ti ti-lock me-1"></i> Lock</button>`;
-            } else if (status === 'locked') {
-                // Feature flag for ERP payment creation
-                @if(config('machinery_payment.enable_erp_payment_button', false))
-                actions += `<button onclick="createErpPayment()" class="btn btn-primary"><i class="ti ti-building-factory-2 me-1"></i> Create Machinery Payment</button> `;
-                @endif
-            }
+            } else if (status === 'locked' && ['unpaid', 'partial'].includes(settlementStatus)) {
+                 // Feature flag for ERP payment creation
+                 @if(config('machinery_payment.enable_erp_payment_button', false))
+                 actions += `<button onclick="createErpPayment()" class="btn btn-primary"><i class="ti ti-building-factory-2 me-1"></i> Create Machinery Payment</button> `;
+                 @endif
+             }
 
             if (['draft', 'submitted', 'verified'].includes(status)) {
                 actions += ` <button onclick="rejectRequest()" class="btn btn-danger"><i class="ti ti-ban me-1"></i> Reject</button>`;

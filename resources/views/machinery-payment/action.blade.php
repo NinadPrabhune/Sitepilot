@@ -34,7 +34,7 @@
         </button>
     </div>
 @elseif($request->status === 'locked')
-    @if(config('machinery_payment.enable_erp_payment_button', false))
+    @if(config('machinery_payment.enable_erp_payment_button', false) && in_array($request->settlement_status, ['unpaid', 'partial']))
         <div class="action-btn me-2">
             <button onclick="createMachineryPayment({{ $request->id }})" 
                     class="mx-3 btn btn-sm align-items-center bg-primary"

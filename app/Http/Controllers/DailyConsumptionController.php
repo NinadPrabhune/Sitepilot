@@ -143,7 +143,7 @@ class DailyConsumptionController extends Controller
 
             // Additional validation: Machinery is required for fuel consumption
             if ($data['consumption_type'] === 'fuel' && empty($data['machinery_id'])) {
-                return back()->withErrors(['machinery_id' => 'Machinery is required for fuel consumption.'])->withInput();
+                return back()->withErrors(['machinery_id' => 'Machinery is required for fuel consumption. Please select a machinery for fuel consumption.'])->withInput();
             }
 
             // Check for duplicate daily reading for same machine and date
@@ -187,7 +187,10 @@ class DailyConsumptionController extends Controller
             
             foreach ($request->items as $item) {
                 // Check stock availability using StockService for real-time validation
-                $availableStock = $stockService->getCurrentStock($data['site_id'], $item['material_id']);
+                $availableStock = getStockQtyForConsumptionForm($data['site_id'], $item['material_id']);
+                // #region agent log
+                @file_put_contents(base_path('debug-75ca7e.log'), json_encode(['sessionId' => '75ca7e', 'runId' => 'post-fix-v2', 'hypothesisId' => 'H6', 'location' => 'DailyConsumptionController@store', 'message' => 'stock check before issue', 'data' => ['site_id' => $data['site_id'], 'material_id' => $item['material_id'], 'requested' => $item['quantity'], 'formStock' => $availableStock, 'ledgerStock' => getConsumptionAvailableStock($data['site_id'], $item['material_id'])], 'timestamp' => (int) round(microtime(true) * 1000)]) . "\n", FILE_APPEND);
+                // #endregion
                 if ($item['quantity'] > $availableStock) {
                     $materialName = \App\Models\Material::find($item['material_id'])->name ?? 'Unknown';
                     throw new \Exception("Insufficient stock for material '{$materialName}'. Available: {$availableStock}, Requested: {$item['quantity']}");
@@ -204,6 +207,14 @@ class DailyConsumptionController extends Controller
                 
                 // Create stock transaction for proper stock deduction
                 try {
+                    ensureConsumptionLedgerStock(
+                        $stockService,
+                        $data['site_id'],
+                        $item['material_id'],
+                        $item['quantity'],
+                        null,
+                        "Sync receipt stock before consumption - {$master->consumption_number}"
+                    );
                     $stockService->issueMaterial(
                         $data['site_id'],
                         $item['material_id'],
@@ -300,21 +311,54 @@ class DailyConsumptionController extends Controller
             
             
             
-        } catch (ValidationException $e) {
-            DB::rollBack();
-            return back()->withErrors($e->validator)->withInput();
-        } catch (QueryException $e) {
-            DB::rollBack();
-            if ($e->errorInfo[1] == 1062) {
-                return back()->with('error','Duplicate consumption number detected. Please try again.');
-            }
-            \Log::error('Database error: '.$e->getMessage());
-            return back()->with('error','Database error occurred.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            \Log::error('Error creating DailyConsumption: '.$e->getMessage());
-            return back()->with('error','Error creating record: '.$e->getMessage());
-        }
+         } catch (ValidationException $e) {
+             DB::rollBack();
+             
+             if ($request->ajax() || $request->wantsJson()) {
+                 return response()->json([
+                     'success' => false,
+                     'message' => 'Validation failed',
+                     'errors' => $e->validator->errors()->toArray()
+                 ], 422);
+             }
+             
+             return back()->withErrors($e->validator)->withInput();
+         } catch (QueryException $e) {
+             DB::rollBack();
+             if ($e->errorInfo[1] == 1062) {
+                 if ($request->ajax() || $request->wantsJson()) {
+                     return response()->json([
+                         'success' => false,
+                         'message' => 'Duplicate consumption number detected. Please try again.'
+                     ], 409);
+                 }
+                 return back()->with('error','Duplicate consumption number detected. Please try again.');
+             }
+             \Log::error('Database error: '.$e->getMessage());
+             
+             if ($request->ajax() || $request->wantsJson()) {
+                 return response()->json([
+                     'success' => false,
+                     'message' => 'Database error occurred.',
+                     'error' => $e->getMessage()
+                 ], 500);
+             }
+             
+             return back()->with('error','Database error occurred.');
+         } catch (\Exception $e) {
+             DB::rollBack();
+             \Log::error('Error creating DailyConsumption: '.$e->getMessage());
+             
+             if ($request->ajax() || $request->wantsJson()) {
+                 return response()->json([
+                     'success' => false,
+                     'message' => 'Error creating record',
+                     'error' => $e->getMessage()
+                 ], 500);
+             }
+             
+             return back()->with('error','Error creating record: '.$e->getMessage());
+         }
     }
 
     public function show(DailyConsumptionMaster $daily_consumption)
@@ -374,13 +418,13 @@ class DailyConsumptionController extends Controller
             $materials_all = [];
 
             if ($daily_consumption->site_id) {
-                $stockItems = getCurrentStockBySiteId($daily_consumption->site_id,$daily_consumption->id,null, null,null, null);
+                $stockItems = getCurrentStockBySiteId($daily_consumption->site_id, $daily_consumption->id, null, null, null, null, true);
                 foreach ($stockItems as $item) {
                     $materialData = [
                         'name'=>$item->material_name,
                         'unit'=>$item->unit_name,
                         'price'=>$item->material_price,
-                        'total_qty'=>max(0,$item->total_qty),
+                        'total_qty'=>max(0, getStockQtyForConsumptionForm($daily_consumption->site_id, $item->material_id, $daily_consumption->id)),
                         'category_id'=>$item->category_id,
                         'category_name'=>$item->category_name,
                     ];
@@ -453,17 +497,28 @@ class DailyConsumptionController extends Controller
             
             // Get old consumption details for stock reversal
             $oldDetails = $daily_consumption->details()->get();
-            
+            // #region agent log
+            @file_put_contents(base_path('debug-75ca7e.log'), json_encode(['sessionId' => '75ca7e', 'runId' => 'post-fix', 'hypothesisId' => 'H4', 'location' => 'DailyConsumptionController@update', 'message' => 'reversal before new issue', 'data' => ['consumption_id' => $daily_consumption->id, 'oldDetailsCount' => $oldDetails->count(), 'newItemsCount' => count($request->items ?? [])], 'timestamp' => (int) round(microtime(true) * 1000)]) . "\n", FILE_APPEND);
+            // #endregion
+
+            foreach ($oldDetails as $oldDetail) {
+                $stockService->adjustStock(
+                    $daily_consumption->site_id,
+                    $oldDetail->material_id,
+                    $oldDetail->quantity,
+                    "Stock reversal for consumption update - {$daily_consumption->consumption_number}"
+                );
+            }
+
             $daily_consumption->details()->delete();
 
             foreach ($request->items as $item) {
-                // Check stock availability using StockService for real-time validation
-                $availableStock = $stockService->getCurrentStock($data['site_id'], $item['material_id']);
+                $availableStock = getStockQtyForConsumptionForm($data['site_id'], $item['material_id'], $daily_consumption->id);
                 if ($item['quantity'] > $availableStock) {
                     $materialName = \App\Models\Material::find($item['material_id'])->name ?? 'Unknown';
                     throw new \Exception("Insufficient stock for material '{$materialName}'. Available: {$availableStock}, Requested: {$item['quantity']}");
                 }
-                
+
                 DailyConsumptionDetails::create([
                     'daily_consumption_master_id'=>$daily_consumption->id,
                     'material_id'=>$item['material_id'],
@@ -471,9 +526,16 @@ class DailyConsumptionController extends Controller
                     'unit'=>$item['unit'],
                     'remarks'=>$item['remarks'] ?? null,
                 ]);
-                
-                // Create stock transaction for proper stock deduction
+
                 try {
+                    ensureConsumptionLedgerStock(
+                        $stockService,
+                        $data['site_id'],
+                        $item['material_id'],
+                        $item['quantity'],
+                        $daily_consumption->id,
+                        "Sync receipt stock before consumption update - {$daily_consumption->consumption_number}"
+                    );
                     $stockService->issueMaterial(
                         $data['site_id'],
                         $item['material_id'],
@@ -483,28 +545,7 @@ class DailyConsumptionController extends Controller
                         $daily_consumption->id
                     );
                 } catch (\Exception $stockError) {
-                    // If stock transaction fails, we need to rollback the consumption detail
                     throw new \Exception("Stock deduction failed: " . $stockError->getMessage());
-                }
-            }
-            
-            // Reverse old stock transactions
-            foreach ($oldDetails as $oldDetail) {
-                try {
-                    $stockService->adjustStock(
-                        $daily_consumption->site_id,
-                        $oldDetail->material_id,
-                        $oldDetail->quantity, // Add back the old quantity
-                        "Stock reversal for consumption update - {$daily_consumption->consumption_number}"
-                    );
-                } catch (\Exception $reversalError) {
-                    // Log reversal error but don't fail the update
-                    \Log::warning('Stock reversal failed during consumption update', [
-                        'consumption_id' => $daily_consumption->id,
-                        'material_id' => $oldDetail->material_id,
-                        'quantity' => $oldDetail->quantity,
-                        'error' => $reversalError->getMessage()
-                    ]);
                 }
             }
 
@@ -672,8 +713,18 @@ class DailyConsumptionController extends Controller
     {
         try {
             $siteId = $request->input('site_id');
-            // Call helper function without materialId to get all materials
-            $stock = getCurrentStockBySiteId($siteId);
+            $stock = getCurrentStockBySiteId($siteId, null, null, null, null, null, true);
+            foreach ($stock as $item) {
+                $item->total_qty = getStockQtyForConsumptionForm($siteId, $item->material_id);
+            }
+            // #region agent log
+            $fuelRows = collect($stock)->filter(fn ($r) => (int) ($r->category_id ?? 0) === 2)->map(fn ($r) => [
+                'material_id' => $r->material_id,
+                'total_qty' => $r->total_qty,
+                'ledger_qty' => getConsumptionAvailableStock($siteId, $r->material_id),
+            ])->values()->all();
+            @file_put_contents(base_path('debug-75ca7e.log'), json_encode(['sessionId' => '75ca7e', 'runId' => 'post-fix-v2', 'hypothesisId' => 'H6', 'location' => 'DailyConsumptionController@getStockBySite', 'message' => 'UI stock API fuel rows', 'data' => ['site_id' => $siteId, 'fuelMaterials' => $fuelRows], 'timestamp' => (int) round(microtime(true) * 1000)]) . "\n", FILE_APPEND);
+            // #endregion
             return response()->json($stock);
         } catch (\Exception $e) {
             \Log::error('Error fetching stock: '.$e->getMessage());
@@ -687,7 +738,10 @@ class DailyConsumptionController extends Controller
             $siteId = $request->input('site_id');
             $daily_consumption_masters_id = $request->input('daily_consumption_masters_id');
             // Call helper function with excludeConsumptionId parameter to get all materials
-            $stock = getCurrentStockBySiteId($siteId, $daily_consumption_masters_id);
+            $stock = getCurrentStockBySiteId($siteId, $daily_consumption_masters_id, null, null, null, null, true);
+            foreach ($stock as $item) {
+                $item->total_qty = getStockQtyForConsumptionForm($siteId, $item->material_id, $daily_consumption_masters_id);
+            }
             return response()->json($stock);
         } catch (\Exception $e) {
             \Log::error('Error fetching stock: '.$e->getMessage());

@@ -1,2 +1,0 @@
-purchase_products
-purchases

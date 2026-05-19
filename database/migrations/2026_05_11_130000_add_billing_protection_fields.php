@@ -20,7 +20,7 @@ return new class extends Migration
             $table->index('payment_request_id');
         });
 
-        Schema::table('machinery_ledgers', function (Blueprint $table) {
+        Schema::table('machinery_ledger', function (Blueprint $table) {
             // Add billing protection to ledger entries
             $table->boolean('is_billed')->default(false)->after('is_settled');
             $table->timestamp('billed_at')->nullable()->after('is_billed');
@@ -44,9 +44,9 @@ return new class extends Migration
             // Ignore errors (indexes/columns may not exist)
         }
 
-        // Safely reverse changes for machinery_ledgers
+        // Safely reverse changes for machinery_ledger
         try {
-            Schema::table('machinery_ledgers', function (Blueprint $table) {
+            Schema::table('machinery_ledger', function (Blueprint $table) {
                 $table->dropIndex(['is_billed', 'machinery_id', 'date']);
                 $table->dropColumn(['is_billed', 'billed_at']);
             });

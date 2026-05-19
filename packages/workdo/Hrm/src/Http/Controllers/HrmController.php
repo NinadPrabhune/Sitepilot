@@ -1,5 +1,4 @@
 <?php
-
 namespace Workdo\Hrm\Http\Controllers;
 
 use App\Models\Setting;

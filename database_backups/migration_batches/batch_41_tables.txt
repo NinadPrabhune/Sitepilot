@@ -1,3 +1,0 @@
-migrations
-milestones
-noc_certificates

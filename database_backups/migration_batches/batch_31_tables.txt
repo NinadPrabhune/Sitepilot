@@ -1,6 +1,0 @@
-invoices
-ip_restricts
-jobs
-join_us
-joining_letters
-labels

@@ -711,6 +711,7 @@ $compnay_permission = [
                 'machinery export',
                 'machinery transfer',
 
+                'machinery-category manage',
                 'machinery-category create',
                 'machinery-category edit',
                 'machinery-category delete',
@@ -1385,6 +1386,32 @@ $compnay_permission = [
 
         if ($companyRole && $adminRole) {
             $adminRole->syncPermissions($companyRole->permissions);
+        }
+
+        // Create Admin user if not exists and assign admin role
+        $adminUser = User::where('type', 'admin')->first();
+        if (empty($adminUser)) {
+            $adminUser = new User();
+            $adminUser->name = 'Admin';
+            $adminUser->email = 'admin@example.com';
+            $adminUser->password = Hash::make('1234');
+            $adminUser->email_verified_at = date('Y-m-d H:i:s');
+            $adminUser->type = 'admin';
+            $adminUser->active_status = 1;
+            $adminUser->active_workspace = 0;
+            $adminUser->avatar = 'uploads/users-avatar/avatar.png';
+            $adminUser->dark_mode = 0;
+            $adminUser->lang = 'en';
+            $adminUser->workspace_id = 0;
+            $adminUser->created_by = $admin->id;
+            $adminUser->save();
+
+            $adminUser->addRole($adminRole);
+        } else {
+            // Ensure admin user has admin role
+            if (!$adminUser->hasRole('admin')) {
+                $adminUser->addRole($adminRole);
+            }
         }
 
         // Give all task-related permissions to ALL roles by default

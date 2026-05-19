@@ -51,7 +51,7 @@ class IntegrityCheckDpr extends Command
         // Check 3: DPRs without ledger entries
         $this->info('Checking: DPRs without ledger entries...');
         $dprsWithoutLedger = DB::table('daily_progress_reports as dpr')
-            ->leftJoin('machinery_ledgers as ml', function ($join) {
+            ->leftJoin('machinery_ledger as ml', function ($join) {
                 $join->on('ml.reference_id', '=', 'dpr.id')
                      ->where('ml.reference_type', 'DailyProgressReport');
             })
@@ -63,7 +63,7 @@ class IntegrityCheckDpr extends Command
         
         // Check 4: CRITICAL - Ledger entries without DPRs (orphaned financial records)
         $this->info('Checking: Ledger entries without DPRs (orphaned)...');
-        $ledgerWithoutDpr = DB::table('machinery_ledgers as ml')
+        $ledgerWithoutDpr = DB::table('machinery_ledger as ml')
             ->leftJoin('daily_progress_reports as dpr', function ($join) {
                 $join->on('dpr.id', '=', 'ml.reference_id')
                      ->where('ml.reference_type', 'DailyProgressReport');
@@ -77,7 +77,7 @@ class IntegrityCheckDpr extends Command
         
         // Check 5: Missing idempotency keys
         $this->info('Checking: Missing idempotency keys...');
-        $missingIdempotency = DB::table('machinery_ledgers')
+        $missingIdempotency = DB::table('machinery_ledger')
             ->whereNull('idempotency_key')
             ->count();
         if ($missingIdempotency > 0) {
@@ -89,7 +89,7 @@ class IntegrityCheckDpr extends Command
         
         // Check 6: Duplicate idempotency keys
         $this->info('Checking: Duplicate idempotency keys...');
-        $duplicates = DB::table('machinery_ledgers')
+        $duplicates = DB::table('machinery_ledger')
             ->select('idempotency_key', DB::raw('COUNT(*) as count'))
             ->whereNotNull('idempotency_key')
             ->groupBy('idempotency_key')
@@ -101,7 +101,7 @@ class IntegrityCheckDpr extends Command
         
         // Check 7: Settled but not locked ledger entries
         $this->info('Checking: Settled ledger entries...');
-        $settledWithoutLock = DB::table('machinery_ledgers')
+        $settledWithoutLock = DB::table('machinery_ledger')
             ->where('is_settled', true)
             ->whereNull('payment_request_id')
             ->count();

@@ -1,2 +1,0 @@
-purchase_order_items
-purchase_payments

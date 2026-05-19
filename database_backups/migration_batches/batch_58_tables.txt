@@ -1,4 +1,0 @@
-reason_intelligence
-receipts
-referral_settings
-referral_transactions

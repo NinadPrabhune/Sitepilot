@@ -283,7 +283,7 @@ class DailyProgressReportApiController extends Controller
 
         // Validate meter readings
         $readingValidation = \App\Services\MeterReadingValidationService::validateReading($request->all(), $machinery);
-        
+         
         if (!$readingValidation['valid']) {
             Log::warning('Meter reading validation failed', ['errors' => $readingValidation['errors']]);
             return response()->json([
@@ -303,7 +303,7 @@ class DailyProgressReportApiController extends Controller
 
         // Calculate billable hours using centralized service
         $billableHours = \App\Services\MeterReadingValidationService::calculateBillableHours($request->all());
-        
+         
         // Calculate DPR amount using centralized service
         $calculatedAmount = \App\Services\MachineryBillingCalculatorService::calculateDprAmount($machinery, $billableHours);
 
@@ -407,6 +407,17 @@ class DailyProgressReportApiController extends Controller
             'validation_warnings' => $readingValidation['warnings'] ?? []
         ], 201);
 
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        Log::error('Validation Exception', [
+            'message' => $e->getMessage(),
+            'errors' => $e->errors()
+        ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation failed.',
+            'errors' => $e->errors()
+        ], 422);
     } catch (\Exception $e) {
 
         Log::error('DPR Creation Exception', [

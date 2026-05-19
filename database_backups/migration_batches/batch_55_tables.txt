@@ -1,3 +1,0 @@
-purchase_attachments
-purchase_debit_notes
-purchase_invoice_items

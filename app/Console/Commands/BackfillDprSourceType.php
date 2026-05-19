@@ -23,7 +23,7 @@ class BackfillDprSourceType extends Command
         $this->info("✅ Updated {$dprCount} DPR records");
         
         // Backfill Ledger source_type
-        $ledgerCount = DB::table('machinery_ledgers')
+        $ledgerCount = DB::table('machinery_ledger')
             ->where(function ($q) {
                 $q->whereNull('source_type')->orWhere('source_type', '');
             })
@@ -31,14 +31,14 @@ class BackfillDprSourceType extends Command
         $this->info("✅ Updated {$ledgerCount} Ledger records");
         
         // Generate idempotency keys for existing ledger entries (DPR references only)
-        $existing = DB::table('machinery_ledgers')
+        $existing = DB::table('machinery_ledger')
             ->whereNull('idempotency_key')
             ->where('reference_type', 'DailyProgressReport')
             ->get();
             
         $generated = 0;
         foreach ($existing as $entry) {
-            DB::table('machinery_ledgers')
+            DB::table('machinery_ledger')
                 ->where('id', $entry->id)
                 ->update([
                     'idempotency_key' => "dpr_{$entry->reference_id}_operational_legacy_{$entry->id}",
@@ -50,10 +50,10 @@ class BackfillDprSourceType extends Command
         $this->info("✅ Generated idempotency keys for {$generated} ledger entries");
         
         // Update unsettled flags
-        DB::table('machinery_ledgers')
+        DB::table('machinery_ledger')
             ->whereNull('is_settled')
             ->update(['is_settled' => false]);
-        DB::table('machinery_ledgers')
+        DB::table('machinery_ledger')
             ->whereNull('is_reversed')
             ->update(['is_reversed' => false]);
         

@@ -1,4 +1,0 @@
-notification_logs
-notification_template_langs
-notifications
-number_sequences

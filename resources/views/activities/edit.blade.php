@@ -310,7 +310,7 @@
                                        data-ajax-popup="true"
                                        data-size="lg"
                                        data-title="{{ __('Add Man Power to Completion') }}">
-                                        <i class="ti ti-plus"></i> {{ __('Add Man Power') }}
+                                        <i class="ti ti-plus"></i> {{ __('Add') }}
                                     </a>
                                 </div>
                                 @if($completed->manpowers->count() > 0)
@@ -363,14 +363,14 @@
                             {{-- DPR for this completion --}}
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6 class="mb-0">{{ __('Daily Progress Report') }}</h6>
+                                    <h6 class="mb-0">{{ __('Machinery Reading and Operator Entry') }}</h6>
                                     <a href="#"
                                        class="btn btn-sm btn-primary"
                                        data-url="{{ route('daily-progress-reports-new.createdpr', ['activity_completed_id' => $completed->id ?? '', 'activity_id' => $activity->id ?? '' ]) }}"
                                        data-ajax-popup="true"
-                                       data-size="xl"
-                                       data-title="{{ __('Add DPR to Completion') }}">
-                                        <i class="ti ti-plus"></i> {{ __('Add DPR') }}
+                                       data-size="xxl"
+                                       data-title="{{ __('Add Machinery Reading and Operator Entry') }}">
+                                        <i class="ti ti-plus"></i> {{ __('Add') }}
                                     </a>
                                 </div>
                                 @if($completed->dailyProgressReports->count() > 0)
@@ -394,7 +394,7 @@
                                                 <td>{{ $dpr->machine_end_reading ?? '-' }}</td>
                                                 <td>
                                                     <div class="d-flex gap-2">
-                                                        <a class="btn btn-sm btn-outline-info" data-url="{{ route('daily-progress-reports.edit', $dpr->id) }}" data-ajax-popup="true" data-size="xl" data-title="{{ __('Edit Daily Report') }}">
+                                                        <a class="btn btn-sm btn-outline-info" data-url="{{ route('daily-progress-reports.edit', $dpr->id) }}" data-ajax-popup="true" data-size="xxl" data-title="{{ __('Edit Machinery Reading and Operator Entry') }}">
                                                             <i class="ti ti-pencil"></i>
                                                         </a>
                                                         {!! Form::open(['method' => 'DELETE', 'route' => ['daily-progress-reports.destroy', $dpr->id], 'id' => 'delete-dpr-' . $dpr->id]) !!}
@@ -424,7 +424,7 @@
                                        data-ajax-popup="true"
                                        data-size="xl"
                                        data-title="{{ __('Add Consumption to Completion') }}">
-                                        <i class="ti ti-plus"></i> {{ __('Add Consumption') }}
+                                        <i class="ti ti-plus"></i> {{ __('Add') }}
                                     </a>
                                 </div>
                                 @if($completed->allConsumptions->count() > 0)
@@ -586,7 +586,7 @@
                                                                                        data-size="xl"
                                                                                        data-bs-toggle="tooltip"
                                                                                        title="{{ __('Edit Daily Report') }}"
-                                                                                       data-title="{{ __('Edit Daily Progress Report') }}">
+                                                                                       data-title="{{ __('Edit Machinery Reading and Operator Entry') }}">
                                                                                         <i class="ti ti-pencil text-white"></i>
                                                                                     </a>
                                                                                 </div>
@@ -1183,7 +1183,7 @@
             reasons.push("• Manpower records exist");
             }
             if (dpr > 0) {
-            reasons.push("• Daily Progress Reports exist");
+            reasons.push("• Machinery Reading and Operator Entrys exist");
             }
             if (consumption > 0) {
             reasons.push("• Daily Consumptions exist");

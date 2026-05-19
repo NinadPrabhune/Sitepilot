@@ -273,7 +273,7 @@ class User2TestSeeder extends Seeder
     private function createLedgerEntries(): void
     {
         // Check if ledger entries already exist
-        $existing = DB::table('machinery_ledgers')->count();
+        $existing = DB::table('machinery_ledger')->count();
         if ($existing > 0) {
             Log::info('Ledger entries already exist');
             return;
@@ -284,7 +284,7 @@ class User2TestSeeder extends Seeder
         $consumptionMaster = DB::table('daily_consumption_masters')->where('consumption_date', '2026-05-01')->first();
 
         // Create DPR credit entry
-        DB::table('machinery_ledgers')->insert([
+        DB::table('machinery_ledger')->insert([
             'machinery_id' => $machinery->id,
             'workspace_id' => $machinery->workspace_id,
             'entry_direction' => 'credit',
@@ -305,7 +305,7 @@ class User2TestSeeder extends Seeder
             ->where('daily_consumption_masters.id', $consumptionMaster->id)
             ->value('total_price');
 
-        DB::table('machinery_ledgers')->insert([
+        DB::table('machinery_ledger')->insert([
             'machinery_id' => $machinery->id,
             'workspace_id' => $machinery->workspace_id,
             'entry_direction' => 'debit',
@@ -335,7 +335,7 @@ class User2TestSeeder extends Seeder
             'dpr' => DB::table('daily_progress_reports')->where('date', '2026-05-01')->first(),
             'consumption' => DB::table('daily_consumption_masters')->where('consumption_date', '2026-05-01')->first(),
             'manpower' => DB::table('man_power_masters')->where('work_date', '2026-05-01')->first(),
-            'ledger_entries' => DB::table('machinery_ledgers')->get(),
+            'ledger_entries' => DB::table('machinery_ledger')->get(),
         ];
     }
 }

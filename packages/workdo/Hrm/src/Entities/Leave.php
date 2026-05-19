@@ -20,6 +20,8 @@ class Leave extends Model
         'end_date',
         'total_leave_days',
         'approved_days',
+        'rejected_days',
+        'pending_days',
         'leave_reason',
         'remark',
         'status',
@@ -65,6 +67,50 @@ class Leave extends Model
     public function site()
     {
         return $this->belongsTo(Project::class, 'site_id', 'id');
+    }
+
+    /**
+     * Relationship to LeaveRequestDate
+     */
+    public function leaveDates()
+    {
+        return $this->hasMany(LeaveRequestDate::class, 'leave_request_id');
+    }
+
+    /**
+     * Get approved dates
+     */
+    public function getApprovedDatesAttribute()
+    {
+        return $this->leaveDates()->where('status', 'approved')->get();
+    }
+
+    /**
+     * Get rejected dates
+     */
+    public function getRejectedDatesAttribute()
+    {
+        return $this->leaveDates()->where('status', 'rejected')->get();
+    }
+
+    /**
+     * Get pending dates
+     */
+    public function getPendingDatesAttribute()
+    {
+        return $this->leaveDates()->where('status', 'pending')->get();
+    }
+
+    /**
+     * Recalculate days based on leave request dates
+     */
+    public function recalculateDays()
+    {
+        $this->total_leave_days = $this->leaveDates()->count();
+        $this->approved_days = $this->leaveDates()->where('status', 'approved')->count();
+        $this->rejected_days = $this->leaveDates()->where('status', 'rejected')->count();
+        $this->pending_days = $this->leaveDates()->where('status', 'pending')->count();
+        $this->save();
     }
 
 }

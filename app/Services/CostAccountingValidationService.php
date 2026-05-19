@@ -20,7 +20,7 @@ class CostAccountingValidationService
         $issues = [];
         
         // Get totals by ledger type
-        $totals = DB::table('machinery_ledgers')
+        $totals = DB::table('machinery_ledger')
             ->where('is_reversal', false)
             ->selectRaw('
                 ledger_type,
@@ -53,7 +53,7 @@ class CostAccountingValidationService
         }
         
         // Validate cost categories don't overlap
-        $categoryTotals = DB::table('machinery_ledgers')
+        $categoryTotals = DB::table('machinery_ledger')
             ->where('is_reversal', false)
             ->selectRaw('
                 cost_category,
@@ -104,17 +104,17 @@ class CostAccountingValidationService
         $issues = [];
         
         // Check for double counting risk scenarios
-        $dprMachineCosts = DB::table('machinery_ledgers')
-            ->join('daily_progress_reports', 'machinery_ledgers.dpr_id', '=', 'daily_progress_reports.id')
-            ->where('machinery_ledgers.is_reversal', false)
-            ->where('machinery_ledgers.cost_category', 'machine')
-            ->where('machinery_ledgers.entry_type', 'reading')
+        $dprMachineCosts = DB::table('machinery_ledger')
+            ->join('daily_progress_reports', 'machinery_ledger.dpr_id', '=', 'daily_progress_reports.id')
+            ->where('machinery_ledger.is_reversal', false)
+            ->where('machinery_ledger.cost_category', 'machine')
+            ->where('machinery_ledger.entry_type', 'reading')
             ->selectRaw('
                 daily_progress_reports.id as dpr_id,
                 daily_progress_reports.date,
                 daily_progress_reports.calculated_amount,
-                machinery_ledgers.amount as ledger_amount,
-                ABS(daily_progress_reports.calculated_amount - machinery_ledgers.amount) as difference
+                machinery_ledger.amount as ledger_amount,
+                ABS(daily_progress_reports.calculated_amount - machinery_ledger.amount) as difference
             ')
             ->get();
         
@@ -151,7 +151,7 @@ class CostAccountingValidationService
     public static function generateCostAccountingReport(): array
     {
         // Get comprehensive cost breakdown
-        $costBreakdown = DB::table('machinery_ledgers')
+        $costBreakdown = DB::table('machinery_ledger')
             ->where('is_reversal', false)
             ->selectRaw('
                 ledger_type,
@@ -167,7 +167,7 @@ class CostAccountingValidationService
             ->get();
         
         // Get monthly trends
-        $monthlyTrends = DB::table('machinery_ledgers')
+        $monthlyTrends = DB::table('machinery_ledger')
             ->where('is_reversal', false)
             ->selectRaw('
                 DATE_FORMAT(date, "%Y-%m") as month,
@@ -181,19 +181,19 @@ class CostAccountingValidationService
             ->groupBy('month');
         
         // Get machinery breakdown
-        $machineryBreakdown = DB::table('machinery_ledgers')
-            ->join('machineries', 'machinery_ledgers.machinery_id', '=', 'machineries.id')
-            ->where('machinery_ledgers.is_reversal', false)
+        $machineryBreakdown = DB::table('machinery_ledger')
+            ->join('machineries', 'machinery_ledger.machinery_id', '=', 'machineries.id')
+            ->where('machinery_ledger.is_reversal', false)
             ->selectRaw('
                 machineries.id,
                 machineries.name,
                 machineries.owned_by,
-                machinery_ledgers.ledger_type,
-                SUM(machinery_ledgers.amount) as total_amount
+                machinery_ledger.ledger_type,
+                SUM(machinery_ledger.amount) as total_amount
             ')
-            ->groupBy('machineries.id', 'machineries.name', 'machineries.owned_by', 'machinery_ledgers.ledger_type')
+            ->groupBy('machineries.id', 'machineries.name', 'machineries.owned_by', 'machinery_ledger.ledger_type')
             ->orderBy('machineries.name')
-            ->orderBy('machinery_ledgers.ledger_type')
+            ->orderBy('machinery_ledger.ledger_type')
             ->get()
             ->groupBy('id');
         
@@ -215,7 +215,7 @@ class CostAccountingValidationService
         $scenarios = [];
         
         // Scenario 1: Machine cost in expense ledger
-        $machineInExpense = DB::table('machinery_ledgers')
+        $machineInExpense = DB::table('machinery_ledger')
             ->where('is_reversal', false)
             ->where('cost_category', 'machine')
             ->where('ledger_type', 'expense')
@@ -232,7 +232,7 @@ class CostAccountingValidationService
         }
         
         // Scenario 2: Same DPR with multiple machine cost entries
-        $duplicateMachineCosts = DB::table('machinery_ledgers')
+        $duplicateMachineCosts = DB::table('machinery_ledger')
             ->where('is_reversal', false)
             ->where('cost_category', 'machine')
             ->where('entry_type', 'reading')
@@ -253,7 +253,7 @@ class CostAccountingValidationService
         }
         
         // Scenario 3: Cost category inconsistencies
-        $categoryInconsistencies = DB::table('machinery_ledgers')
+        $categoryInconsistencies = DB::table('machinery_ledger')
             ->where('is_reversal', false)
             ->selectRaw('
                 entry_type,

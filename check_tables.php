@@ -1,70 +1,33 @@
 <?php
 
-// Connect to database
-$host = 'localhost';
-$username = 'root';
-$password = '';
-$database = 'sitepilot_local';
+require __DIR__ . '/vendor/autoload.php';
 
-try {
-    $conn = new PDO("mysql:host=$host;dbname=$database", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    echo "Connected to database: $database\n\n";
-    
-    // Show all tables and their counts
-    $stmt = $conn->prepare("SHOW TABLES");
-    $stmt->execute();
-    $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-    
-    echo "Table data counts:\n";
-    echo "==================\n";
-    
-    $totalTables = 0;
-    $emptyTables = 0;
-    $tablesWithData = 0;
-    
-    foreach ($tables as $table) {
-        $totalTables++;
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM `$table`");
-        $stmt->execute();
-        $count = $stmt->fetchColumn();
-        
-        if ($count == 0) {
-            $emptyTables++;
-            echo "$table: 0 rows\n";
-        } else {
-            $tablesWithData++;
-            echo "$table: $count rows\n";
-        }
-    }
-    
-    echo "\nSummary:\n";
-    echo "========\n";
-    echo "Total tables: $totalTables\n";
-    echo "Tables with data: $tablesWithData\n";
-    echo "Empty tables: $emptyTables\n";
-    
-    // Specifically check users table
-    echo "\nUsers table details:\n";
-    echo "====================\n";
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM users");
-    $stmt->execute();
-    $userCount = $stmt->fetchColumn();
-    echo "User count: $userCount\n";
-    
-    if ($userCount > 0) {
-        $stmt = $conn->prepare("SELECT id, name, email, created_at FROM users LIMIT 5");
-        $stmt->execute();
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo "Sample users:\n";
-        foreach ($users as $user) {
-            echo "- ID: {$user['id']}, Name: {$user['name']}, Email: {$user['email']}, Created: {$user['created_at']}\n";
-        }
-    }
-    
-} catch(PDOException $e) {
-    echo "Error: " . $e->getMessage() . "\n";
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+// Initialize Laravel
+$app = require __DIR__ . '/bootstrap/app.php';
+$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+echo "=== DATABASE TABLES CHECK ===\n\n";
+
+echo "leave_request_dates table: " . (Schema::hasTable('leave_request_dates') ? 'EXISTS' : 'MISSING') . "\n";
+echo "attendances table: " . (Schema::hasTable('attendances') ? 'EXISTS' : 'MISSING') . "\n";
+
+if (Schema::hasTable('leave_request_dates')) {
+    $row = DB::select("SELECT COUNT(*) as cnt FROM leave_request_dates")[0];
+    echo "leave_request_dates count: {$row->cnt}\n";
 }
 
-$conn = null;
+$columns = DB::select("DESCRIBE attendances");
+echo "\nAttendances columns:\n";
+foreach ($columns as $col) {
+    echo "  - {$col->Field}\n";
+}
+
+// Check if columns exist
+$hasLeaveRequestId = Schema::hasColumn('attendances', 'leave_request_id');
+$hasLeaveRequestDateId = Schema::hasColumn('attendances', 'leave_request_date_id');
+
+echo "\nleave_request_id column: " . ($hasLeaveRequestId ? 'EXISTS' : 'MISSING') . "\n";
+echo "leave_request_date_id column: " . ($hasLeaveRequestDateId ? 'EXISTS' : 'MISSING') . "\n";

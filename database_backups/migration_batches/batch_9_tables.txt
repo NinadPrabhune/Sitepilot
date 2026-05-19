@@ -1,3 +1,0 @@
-bank_transfers
-bill_accounts
-bill_attechments

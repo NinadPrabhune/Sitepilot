@@ -54,7 +54,7 @@ class MachineryLedgerService
             }
             
             // Calculate running balance with row lock to prevent race conditions
-            $runningBalance = DB::table('machinery_ledgers')
+            $runningBalance = DB::table('machinery_ledger')
                 ->where('machinery_id', $data['machinery_id'])
                 ->where('is_reversal', false)
                 ->lockForUpdate()

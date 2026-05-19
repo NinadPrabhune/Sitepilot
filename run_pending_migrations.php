@@ -21,7 +21,7 @@ $pendingMigrations = [
     '2026_05_03_000001_add_ledger_immutability_constraints',
     '2026_05_03_000002_add_financial_period_locking',
     '2026_05_04_000001_add_source_type_to_daily_progress_reports',
-    '2026_05_04_000002_complete_machinery_ledgers',
+    '2026_05_04_000002_complete_machinery_ledger',
     '2026_05_05_000001_create_monthly_locks_table',
     '2026_05_05_000002_create_machinery_billing_items_table',
     '2026_05_05_000003_create_machinery_bills_table',

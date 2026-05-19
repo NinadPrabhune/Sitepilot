@@ -17,14 +17,19 @@
             {{ Form::select('site_id', $sites->toArray(), $defaultSiteId ?? null, ['class' => 'form-control', 'required']) }}
         </div>
     </div>
+@php
+$consumption_type_arr_old = [
 
+        'all' => 'All Material',
+        'fuel' => 'Fuel',
+    ];    
+@endphp
     <!-- Second Row: Consumption Type and Machinery -->
     <div class="row mb-3">
         <div class="form-group col-md-3">
-            {{ Form::label('consumption_type', __('Consumption Type'), ['class' => 'form-label']) }}<x-required />
+            {{ Form::label('consumption_type', __('Consumption Type 123'), ['class' => 'form-label']) }}<x-required />
             {{ Form::select('consumption_type', [
-                'all' => 'All Material',
-                'fuel' => 'Fuel'
+                'all' => 'All Material',                
             ], 'all', ['class' => 'form-control', 'required' => 'required', 'id' => 'consumption_type']) }}
         </div>
         
@@ -191,6 +196,9 @@ $(document).ready(function () {
         }
         $(this).closest('tr').remove();
         refreshMaterialDropdowns();
+        if (typeof refreshRemainingStockDisplay === 'function') {
+            refreshRemainingStockDisplay();
+        }
     });
 
     $('#consumption-items-table').on('change', '.item-material', function () {
@@ -228,9 +236,9 @@ $(document).ready(function () {
             unitLabel.text(unitName);
 
             // Update current stock display - handle both total_qty and qty fields
-            const stockValue = material.total_qty !== undefined ? material.total_qty : (material.qty || 0);
-            itemStock.val(stockValue);
             itemStockUnit.text(unitName);
+            row.find('.item-quantity').val(row.find('.item-quantity').val() || 0);
+            refreshRemainingStockDisplay();
 
             console.log('Stock updated:', {
                 stockValue: stockValue,
@@ -305,6 +313,7 @@ $(document).ready(function () {
             const materials = type === 'fuel' ? materialsFuel : materialsAll;
 
             addItemRow({}, materials);
+            refreshRemainingStockDisplay();
         },
         error: function (xhr) {
             console.error('Error fetching stock:', xhr.responseText);
@@ -320,6 +329,41 @@ $(document).ready(function () {
 }
         
     
+    function getAllMaterialsMap() {
+        return { ...materialsFuel, ...materialsAll };
+    }
+
+    function refreshRemainingStockDisplay() {
+        const allMaterials = getAllMaterialsMap();
+        const usedByMaterial = {};
+        $('#consumption-items-table tbody tr').each(function () {
+            const materialId = $(this).find('.item-material').val();
+            if (!materialId) return;
+            usedByMaterial[materialId] = (usedByMaterial[materialId] || 0) + (parseFloat($(this).find('.item-quantity').val()) || 0);
+        });
+        $('#consumption-items-table tbody tr').each(function () {
+            const row = $(this);
+            const materialId = row.find('.item-material').val();
+            const base = allMaterials[materialId]?.total_qty || 0;
+            const remaining = materialId ? Math.max(0, base - (usedByMaterial[materialId] || 0)) : 0;
+            row.find('.item-stock').val(remaining);
+        });
+    }
+
+    function getAvailableQtyForRow(row, materialId) {
+        const allMaterials = getAllMaterialsMap();
+        const base = allMaterials[materialId]?.total_qty || 0;
+        const rowEl = row[0] || row;
+        let otherQty = 0;
+        $('#consumption-items-table tbody tr').each(function () {
+            if (this === rowEl) return;
+            if ($(this).find('.item-material').val() == materialId) {
+                otherQty += parseFloat($(this).find('.item-quantity').val()) || 0;
+            }
+        });
+        return Math.max(0, base - otherQty);
+    }
+
     $('#site_id').on('change', function () {
     loadStockBySite($(this).val());
 });
@@ -329,29 +373,18 @@ $(document).ready(function () {
     const row = $(this).closest('tr');
     const qtyInput = row.find('.item-quantity');
     const materialId = row.find('.item-material').val();
-
-    // Merge both collections if you're using materialsFuel/materialsAll
-    const allMaterials = { ...materialsFuel, ...materialsAll };
-    const available = allMaterials[materialId]?.total_qty || 0;
+    const available = getAvailableQtyForRow(row, materialId);
     const enteredQty = parseFloat(qtyInput.val()) || 0;
 
     if (enteredQty > available) {
-        // Show error feedback
         alert(`Quantity exceeds available stock (${available})`);
-
-        // Reset quantity to max available or 1
-        qtyInput.val(available > 0 ? available : 1);
-
-        // Mark invalid for HTML5 validation
-//        qtyInput.addClass('is-invalid');
+        qtyInput.val(available > 0 ? available : 0);
         qtyInput[0].setCustomValidity('Quantity exceeds available stock');
     } else {
-        // Clear error state
         qtyInput.removeClass('is-invalid');
         qtyInput[0].setCustomValidity('');
-        
-        
     }
+    refreshRemainingStockDisplay();
 });
 
 

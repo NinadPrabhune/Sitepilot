@@ -264,6 +264,16 @@ function loadFormState() {
 // Clear form state
 function clearFormState() {
     localStorage.removeItem(FORM_STATE_KEY);
+
+    // Explicitly reset form fields to defaults
+    machinerySelect.value = '';
+    supplierSelect.innerHTML = '<option value="">{{ __('Select Machinery First') }}</option>';
+    periodYear.value = '{{ date("Y") }}';
+    periodMonth.value = '{{ date("m") }}';
+    updatePeriodDates();
+
+    // Hide results if visible
+    document.getElementById('calculationResults').style.display = 'none';
 }
 
 // Update period dates when month/year changes
@@ -321,13 +331,8 @@ periodMonth.addEventListener('change', function() {
 // Initialize period dates on page load
 updatePeriodDates();
 
-// Load form state on page load
+// Clear form state on page load (reset form on refresh)
 document.addEventListener('DOMContentLoaded', function() {
-    loadFormState();
-});
-
-// Clear form state when form is successfully submitted
-submitBtn.addEventListener('click', function() {
     clearFormState();
 });
 

@@ -1,3 +1,0 @@
-suppliers
-users
-work_spaces

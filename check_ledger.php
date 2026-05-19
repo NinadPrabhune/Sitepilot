@@ -9,7 +9,7 @@ $kernel->bootstrap();
 
 echo "Checking ledger entries:\n";
 
-$entries = DB::table('machinery_ledgers')->get(['id', 'amount', 'reference_type', 'reference_id']);
+$entries = DB::table('machinery_ledger')->get(['id', 'amount', 'reference_type', 'reference_id']);
 
 foreach ($entries as $entry) {
     echo "ID: {$entry->id}, Amount: {$entry->amount}, Type: {$entry->reference_type}, Ref: {$entry->reference_id}\n";

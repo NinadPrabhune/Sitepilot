@@ -2926,6 +2926,19 @@ if (!function_exists('getCurrentStockBySiteId')) {
             if ($useMaterialProjectStock) {
                 // Use MaterialProjectStock table as primary source
                 $item->total_qty = \App\Models\MaterialProjectStock::getCurrentStock($siteId, $currentMaterialId);
+                if ($excludeConsumptionId) {
+                    $addBackQty = DB::table('daily_consumption_details as dcd')
+                        ->join('daily_consumption_masters as dc', 'dc.id', '=', 'dcd.daily_consumption_master_id')
+                        ->where('dc.id', $excludeConsumptionId)
+                        ->where('dcd.material_id', $currentMaterialId)
+                        ->sum('dcd.quantity');
+                    $item->total_qty += (float) ($addBackQty ?? 0);
+                }
+                // #region agent log
+                if ((int) ($item->category_id ?? 0) === 2) {
+                    @file_put_contents(base_path('debug-75ca7e.log'), json_encode(['sessionId' => '75ca7e', 'hypothesisId' => 'H1', 'location' => 'helper.php:getCurrentStockBySiteId', 'message' => 'fuel stock MPS path', 'data' => ['siteId' => $siteId, 'materialId' => $currentMaterialId, 'useMaterialProjectStock' => true, 'total_qty' => $item->total_qty], 'timestamp' => (int) round(microtime(true) * 1000)]) . "\n", FILE_APPEND);
+                }
+                // #endregion
             } else {
                 // Use calculation method (original logic + GRN + Opening Stock)
                 $purchasedQty = $purchased[$currentMaterialId] ?? 0;
@@ -2933,9 +2946,18 @@ if (!function_exists('getCurrentStockBySiteId')) {
                 $transferredOutQty = $transferredOut[$currentMaterialId] ?? 0;
                 $transferredInQty = $transferredIn[$currentMaterialId] ?? 0;
                 $consumedQty = $consumed[$currentMaterialId] ?? 0;
-                $openingStockQty = $openingStock[$currentMaterialId] ?? 0; // Add opening stock
+                // Avoid double-counting purchase invoices and GRNs for the same receipts
+                $inboundQty = ($purchasedQty > 0 && $grnQty > 0)
+                    ? max($purchasedQty, $grnQty)
+                    : ($purchasedQty + $grnQty);
 
-                $item->total_qty = max(0, $openingStockQty + $purchasedQty + $grnQty + $transferredInQty - $transferredOutQty - $consumedQty);
+                $item->total_qty = max(0, $inboundQty + $transferredInQty - $transferredOutQty - $consumedQty);
+                $openingStockQty = $openingStock[$currentMaterialId] ?? 0;
+                // #region agent log
+                if ((int) ($item->category_id ?? 0) === 2) {
+                    @file_put_contents(base_path('debug-75ca7e.log'), json_encode(['sessionId' => '75ca7e', 'hypothesisId' => 'H1', 'location' => 'helper.php:getCurrentStockBySiteId', 'message' => 'fuel stock calc breakdown', 'data' => ['siteId' => $siteId, 'materialId' => $currentMaterialId, 'useMaterialProjectStock' => false, 'openingStockQty' => $openingStockQty, 'purchasedQty' => $purchasedQty, 'grnQty' => $grnQty, 'transferredInQty' => $transferredInQty, 'transferredOutQty' => $transferredOutQty, 'consumedQty' => $consumedQty, 'total_qty' => $item->total_qty, 'mpsOnly' => \App\Models\MaterialProjectStock::getCurrentStock($siteId, $currentMaterialId)], 'timestamp' => (int) round(microtime(true) * 1000)]) . "\n", FILE_APPEND);
+                }
+                // #endregion
             }
         }
 
@@ -2957,7 +2979,84 @@ if (!function_exists('getCurrentStockBySiteId')) {
 
 }
 
+if (!function_exists('getConsumptionAvailableStock')) {
 
+    /**
+     * Stock available for consumption entry (ledger-based, with edit add-back).
+     */
+    function getConsumptionAvailableStock($siteId, $materialId, $excludeConsumptionMasterId = null)
+    {
+        $available = (float) \App\Models\MaterialProjectStock::getCurrentStock($siteId, $materialId);
+
+        if ($excludeConsumptionMasterId) {
+            $addBack = DB::table('daily_consumption_details as dcd')
+                ->join('daily_consumption_masters as dc', 'dc.id', '=', 'dcd.daily_consumption_master_id')
+                ->where('dc.id', $excludeConsumptionMasterId)
+                ->where('dcd.material_id', $materialId)
+                ->sum('dcd.quantity');
+            $available += (float) ($addBack ?? 0);
+        }
+
+        return $available;
+    }
+}
+
+if (!function_exists('getStockQtyForConsumptionForm')) {
+
+    /**
+     * Stock shown on consumption forms: ledger first, else receipt-based calculation.
+     */
+    function getStockQtyForConsumptionForm($siteId, $materialId, $excludeConsumptionMasterId = null)
+    {
+        $ledgerStock = getConsumptionAvailableStock($siteId, $materialId, $excludeConsumptionMasterId);
+        $calculatedStock = (float) getCurrentStockBySiteId(
+            $siteId,
+            $excludeConsumptionMasterId,
+            null,
+            null,
+            null,
+            $materialId,
+            false
+        );
+
+        return max($ledgerStock, $calculatedStock);
+    }
+}
+
+if (!function_exists('ensureConsumptionLedgerStock')) {
+
+    /**
+     * Ensure MaterialProjectStock can cover consumption (sync from receipt-based stock if needed).
+     */
+    function ensureConsumptionLedgerStock(
+        \App\Services\StockService $stockService,
+        $siteId,
+        $materialId,
+        $requiredQty,
+        $excludeConsumptionMasterId = null,
+        $remarks = null
+    ) {
+        $ledgerStock = getConsumptionAvailableStock($siteId, $materialId, $excludeConsumptionMasterId);
+        if ($ledgerStock >= $requiredQty) {
+            return;
+        }
+
+        $formStock = getStockQtyForConsumptionForm($siteId, $materialId, $excludeConsumptionMasterId);
+        if ($formStock < $requiredQty) {
+            throw new \Exception("Insufficient stock. Available: {$formStock}, Requested: {$requiredQty}");
+        }
+
+        $adjustQty = $formStock - $ledgerStock;
+        if ($adjustQty > 0.001) {
+            $stockService->adjustStock(
+                $siteId,
+                $materialId,
+                $adjustQty,
+                $remarks ?? 'Sync receipt stock before consumption'
+            );
+        }
+    }
+}
 
 if (!function_exists('getSitesWithWorkspace')) {
 

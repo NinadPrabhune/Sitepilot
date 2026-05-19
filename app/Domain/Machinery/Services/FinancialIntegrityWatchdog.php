@@ -59,7 +59,7 @@ class FinancialIntegrityWatchdog
                 COALESCE(SUM(l.amount), 0) as ledger_amount,
                 ABS(d.calculated_amount - COALESCE(SUM(l.amount), 0)) as difference
             FROM daily_progress_reports d
-            LEFT JOIN machinery_ledgers l ON l.dpr_id = d.id AND l.is_reversal = false
+            LEFT JOIN machinery_ledger l ON l.dpr_id = d.id AND l.is_reversal = false
             WHERE d.deleted_at IS NULL
             GROUP BY d.id, d.calculated_amount
             HAVING ABS(d.calculated_amount - COALESCE(SUM(l.amount), 0)) > 0.01
@@ -92,7 +92,7 @@ class FinancialIntegrityWatchdog
                 reference_id,
                 COUNT(*) as duplicate_count,
                 GROUP_CONCAT(id) as ledger_ids
-            FROM machinery_ledgers
+            FROM machinery_ledger
             WHERE is_reversal = false
             GROUP BY reference_type, reference_id
             HAVING COUNT(*) > 1
@@ -122,7 +122,7 @@ class FinancialIntegrityWatchdog
         // Orphan DPR ledger entries
         $orphanDprLedgers = DB::select("
             SELECT l.id, l.dpr_id, l.reference_id
-            FROM machinery_ledgers l
+            FROM machinery_ledger l
             LEFT JOIN daily_progress_reports d ON l.dpr_id = d.id
             WHERE l.dpr_id IS NOT NULL 
             AND d.id IS NULL
@@ -155,7 +155,7 @@ class FinancialIntegrityWatchdog
                 running_balance,
                 date,
                 id
-            FROM machinery_ledgers
+            FROM machinery_ledger
             WHERE running_balance < 0
             AND is_reversal = false
             ORDER BY machinery_id, date
@@ -222,7 +222,7 @@ class FinancialIntegrityWatchdog
                 d.payment_status as dpr_status,
                 l.dpr_payment_status as ledger_status
             FROM daily_progress_reports d
-            JOIN machinery_ledgers l ON l.dpr_id = d.id
+            JOIN machinery_ledger l ON l.dpr_id = d.id
             WHERE d.payment_status != l.dpr_payment_status
             AND l.is_reversal = false
         ");

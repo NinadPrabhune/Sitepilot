@@ -21,6 +21,7 @@ use App\Models\DailyConsumptionMaster;
 use App\Models\DailyConsumptionDetails;
 use Illuminate\Support\Facades\Storage;
 use App\Domain\Machinery\Services\MachineryLedgerService;
+use App\Services\StockService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class DailyProgressReportController extends Controller
@@ -175,7 +176,7 @@ class DailyProgressReportController extends Controller
             // Load fuel materials with stock data for the default site
             $materials = [];
             if ($defaultSiteId) {
-                $stockItems = getCurrentStockBySiteId($defaultSiteId, null, null, null, null, null);
+                $stockItems = getCurrentStockBySiteId($defaultSiteId, null, null, null, null, null, true);
                 foreach ($stockItems as $item) {
                     // Only include category_id = 2 (fuels)
                     if ((int)$item->category_id === 2) {
@@ -183,7 +184,7 @@ class DailyProgressReportController extends Controller
                             'name'          => $item->material_name,
                             'unit'          => $item->unit_name,
                             'price'         => $item->material_price,
-                            'total_qty'     => max(0, $item->total_qty),
+                            'total_qty'     => max(0, getStockQtyForConsumptionForm($defaultSiteId, $item->material_id)),
                             'category_id'   => $item->category_id,
                             'category_name' => $item->category_name,
                         ];
@@ -239,7 +240,7 @@ class DailyProgressReportController extends Controller
             // Load fuel materials with stock data for the default site
             $materials = [];
             if ($defaultSiteId) {
-                $stockItems = getCurrentStockBySiteId($defaultSiteId, null, null, null, null, null);
+                $stockItems = getCurrentStockBySiteId($defaultSiteId, null, null, null, null, null, true);
                 foreach ($stockItems as $item) {
                     // Only include category_id = 2 (fuels)
                     if ((int)$item->category_id === 2) {
@@ -247,7 +248,7 @@ class DailyProgressReportController extends Controller
                             'name'          => $item->material_name,
                             'unit'          => $item->unit_name,
                             'price'         => $item->material_price,
-                            'total_qty'     => max(0, $item->total_qty),
+                            'total_qty'     => max(0, getStockQtyForConsumptionForm($defaultSiteId, $item->material_id)),
                             'category_id'   => $item->category_id,
                             'category_name' => $item->category_name,
                         ];
@@ -356,6 +357,14 @@ class DailyProgressReportController extends Controller
                 'machinery_name' => $machineryName,
                 'date' => $validated['date']
             ]);
+            
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Duplicate daily reading detected. A DPR for machinery '{$machineryName}' on {$validated['date']} already exists (DPR #{$existingDPR->id}). Please use the existing record or choose a different date."
+                ], 409);
+            }
+            
             return back()->withErrors([
                 'duplicate_dpr' => "Duplicate daily reading detected. A DPR for machinery '{$machineryName}' on {$validated['date']} already exists (DPR #{$existingDPR->id}). Please use the existing record or choose a different date."
             ])->withInput();
@@ -364,67 +373,118 @@ class DailyProgressReportController extends Controller
         \Log::info('STORE DEBUG - Validation and duplicate check passed');
 
         // AUDIT-GRADE VALIDATIONS
+        \Log::info('STORE DEBUG - About to find machinery' . PHP_EOL);
         $machinery = Machinery::findOrFail($validated['machinery_id']);
+        \Log::info('STORE DEBUG - Found machinery: ' . $machinery->id . PHP_EOL);
         
         // 1. Meter Reading Validation
-        $readingValidation = MeterReadingValidationService::validateReading([
-            'date' => $validated['date'],
-            'machine_start_reading' => $request->machine_start_reading,
-            'machine_end_reading' => $request->machine_end_reading,
-            'machine_idle_reading' => $request->machine_idle_reading,
-            'billable_hours' => null, // Will be calculated
-        ], $machinery);
+        \Log::info('STORE DEBUG - About to validate reading' . PHP_EOL);
+        try {
+            $readingValidation = MeterReadingValidationService::validateReading([
+                'date' => $validated['date'],
+                'machine_start_reading' => $request->machine_start_reading,
+                'machine_end_reading' => $request->machine_end_reading,
+                'machine_idle_reading' => $request->machine_idle_reading,
+                'billable_hours' => null, // Will be calculated
+            ], $machinery);
+            \Log::info('STORE DEBUG - Reading validation result: ' . print_r($readingValidation, true) . PHP_EOL);
+            $validValue = isset($readingValidation['valid']) ? var_export($readingValidation['valid'], true) : 'NULL/not set';
+            \Log::info('STORE DEBUG - Reading validation completed, valid: ' . $validValue . PHP_EOL);
+        } catch (\Exception $e) {
+            \Log::error('STORE DEBUG - Exception in MeterReadingValidationService: ' . $e->getMessage() . PHP_EOL);
+            \Log::error('STORE DEBUG - Trace: ' . $e->getTraceAsString() . PHP_EOL);
+            throw $e;
+        }
         
         if (!$readingValidation['valid']) {
+            \Log::info('STORE DEBUG - Validation failed, errors: ' . print_r($readingValidation['errors'] ?? null, true) . PHP_EOL);
             // Check if it's a duplicate DPR error and show user-friendly message
-            $errorMessages = $readingValidation['errors'];
+            $errorMessages = $readingValidation['errors'] ?? [];
             $isDuplicateDPR = false;
             
-            foreach ($errorMessages as $error) {
-                if (strpos(strtolower($error), 'already exists') !== false || strpos(strtolower($error), 'duplicate') !== false) {
-                    $isDuplicateDPR = true;
-                    break;
+            if (is_array($errorMessages)) {
+                foreach ($errorMessages as $error) {
+                    if (is_string($error) && (strpos(strtolower($error), 'already exists') !== false || strpos(strtolower($error), 'duplicate') !== false)) {
+                        $isDuplicateDPR = true;
+                        break;
+                    }
                 }
             }
             
+            \Log::info('STORE DEBUG - Is duplicate DPR: ' . var_export($isDuplicateDPR, true) . PHP_EOL);
+            
             if ($isDuplicateDPR) {
                 // Show user-friendly duplicate DPR message
+                \Log::info('STORE DEBUG - Returning duplicate DPR error' . PHP_EOL);
+                
+                if ($request->expectsJson() || $request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => "A Daily Progress Report for this machinery on {$validated['date']} already exists. Please edit the existing report or choose a different date."
+                    ], 409);
+                }
+                
                 return back()->withErrors([
                     'duplicate_dpr' => "A Daily Progress Report for this machinery on {$validated['date']} already exists. Please edit the existing report or choose a different date."
                 ])->withInput();
             } else {
-                // Show other validation errors
-                throw ValidationException::withMessages([
-                    'reading_validation' => 'Meter reading validation failed: ' . implode(', ', $errorMessages)
-                ]);
+                // Show other validation errors with more specific messaging
+                \Log::info('STORE DEBUG - Throwing validation exception for errors: ' . implode(', ', $errorMessages) . PHP_EOL);
+                $validationErrors = [];
+                foreach ($errorMessages as $error) {
+                    if (strpos($error, 'Start reading cannot be less than previous day') !== false) {
+                        $validationErrors['machine_start_reading'] = $error;
+                    } elseif (strpos($error, 'End reading cannot be less than previous day') !== false) {
+                        $validationErrors['machine_end_reading'] = $error;
+                    } elseif (strpos($error, 'End reading cannot be less than start reading') !== false) {
+                        $validationErrors['machine_end_reading'] = $error;
+                    } elseif (strpos($error, 'Idle hours cannot exceed working hours') !== false) {
+                        $validationErrors['machine_idle_reading'] = $error;
+                    } elseif (strpos($error, 'Date cannot be in the future') !== false) {
+                        $validationErrors['date'] = $error;
+                    } else {
+                        $validationErrors['reading_validation'][] = $error;
+                    }
+                }
+                throw ValidationException::withMessages($validationErrors);
             }
         }
         
         // 2. Financial Period Lock Check
+        \Log::info('STORE DEBUG - About to check financial period lock' . PHP_EOL);
         $periodService = new FinancialPeriodService();
         try {
             $periodService->validatePeriodLock($validated['date']);
+            \Log::info('STORE DEBUG - Financial period lock check passed' . PHP_EOL);
         } catch (\Exception $e) {
+            \Log::error('STORE DEBUG - Financial period lock check failed: ' . $e->getMessage() . PHP_EOL);
             throw ValidationException::withMessages(['date' => $e->getMessage()]);
         }
         
         // 3. Historical Rate Lookup
+        \Log::info('STORE DEBUG - About to get historical rate' . PHP_EOL);
         $rateService = new MachineryRateService();
         try {
             $historicalRate = $rateService->getRateForDate($machinery->id, $validated['date']);
+            \Log::info('STORE DEBUG - Historical rate retrieved: ' . $historicalRate . PHP_EOL);
         } catch (\Exception $e) {
+            \Log::error('STORE DEBUG - Historical rate lookup failed: ' . $e->getMessage() . PHP_EOL);
             throw ValidationException::withMessages(['date' => 'No rate available for this date']);
         }
         
         // 3. Overlap Prevention
+        \Log::info('STORE DEBUG - About to check for overlap' . PHP_EOL);
         $existingDpr = DailyProgressReport::where('machinery_id', $machinery->id)
-                                       ->where('date', $validated['date'])
-                                       ->first();
+                                        ->where('date', $validated['date'])
+                                        ->first();
         if ($existingDpr) {
+            \Log::error('STORE DEBUG - Overlap prevention failed - existing DPR found: ' . $existingDpr->id . PHP_EOL);
             throw ValidationException::withMessages(['date' => 'DPR already exists for this machine on this date']);
         }
+        \Log::info('STORE DEBUG - Overlap check passed' . PHP_EOL);
         
         // ✅ Insert DPR record with basic fields only
+        \Log::info('STORE DEBUG - About to create DPR record' . PHP_EOL);
         $dpr = DailyProgressReport::create([
             'date' => $validated['date'],
             'machinery_id' => $validated['machinery_id'],
@@ -441,8 +501,10 @@ class DailyProgressReportController extends Controller
             'workspace_id' => getActiveWorkSpace(),
             'site_id' => $request->site_id ?? getActiveProject(),
         ]);
+        \Log::info('STORE DEBUG - DPR record created with ID: ' . $dpr->id . PHP_EOL);
         
         // ✅ Calculate billable hours and credit amount based on rate type
+        \Log::info('STORE DEBUG - About to calculate billable hours' . PHP_EOL);
         $billableHours = 0;
         $creditAmount = 0;
         
@@ -492,16 +554,22 @@ class DailyProgressReportController extends Controller
                     break;
             }
         }
-
+        
+        \Log::info('STORE DEBUG - Billable hours calculated: ' . $billableHours . ', Credit amount: ' . $creditAmount . PHP_EOL);
+        
         // ✅ Store calculated amount
+        \Log::info('STORE DEBUG - About to update DPR with calculated amounts' . PHP_EOL);
         $dpr->update([
             'billable_hours' => $billableHours,
             'calculated_amount' => $creditAmount,
         ]);
+        \Log::info('STORE DEBUG - DPR updated with calculated amounts' . PHP_EOL);
 
         // ✅ Create ledger entry
+        \Log::info('STORE DEBUG - About to create ledger entry' . PHP_EOL);
         try {
             $ledgerEntry = \App\Domain\Machinery\Services\MachineryLedgerService::createCredit([
+                'workspace_id' => getActiveWorkSpace(),
                 'machinery_id' => $machinery->id,
                 'amount' => $creditAmount,
                 'reference_type' => 'DailyProgressReport',
@@ -513,21 +581,27 @@ class DailyProgressReportController extends Controller
                 'idempotency_key' => "dpr_{$dpr->id}_credit",
             ]);
             
-            Log::info('Ledger entry created for DPR', [
+            \Log::info('Ledger entry created for DPR', [
                 'dpr_id' => $dpr->id,
                 'ledger_id' => $ledgerEntry->id ?? 'unknown',
                 'amount' => $creditAmount,
             ]);
             
+            // Update DPR with ledger entry ID,
+            \Log::info('STORE DEBUG - About to update DPR with ledger entry ID' . PHP_EOL);
+            $dpr->update(['ledger_entry_id' => $ledgerEntry->id]);
+            \Log::info('STORE DEBUG - DPR updated with ledger entry ID' . PHP_EOL);
+            
         } catch (\Exception $ledgerError) {
             // If ledger fails, log but don't fail the DPR creation
-            Log::error('Ledger creation failed for DPR', [
+            \Log::error('Ledger creation failed for DPR', [
                 'dpr_id' => $dpr->id,
                 'error' => $ledgerError->getMessage(),
             ]);
         }
         
         // ✅ Handle consumption file upload using existing helper function
+        \Log::info('STORE DEBUG - About to handle consumption file upload' . PHP_EOL);
         $consumptionFilePath = null;
         if ($request->hasFile('consumption_file')) {
             $filename = time() . '_dpr_' . $dpr->id . '.' . $request->file('consumption_file')->getClientOriginalExtension();
@@ -538,7 +612,7 @@ class DailyProgressReportController extends Controller
                 \Log::error('Consumption file upload failed', ['error' => $upload['msg'] ?? 'Unknown error']);
             }
         }
-
+        
         if (!empty($validated['items'])) {
             $consumptionData = [
                 'daily_progress_report_id' => $dpr->id,
@@ -552,7 +626,7 @@ class DailyProgressReportController extends Controller
                 'consumption_file' => $consumptionFilePath,
                 'InsertFrom'       => 'DailyProgressReportController',
             ];
-
+            
             // STORE STEP 2: Debug - Consumption creation
             \Log::info('STORE STEP 2 - Consumption Creation Debug:', [
                 'dpr_id' => $dpr->id,
@@ -565,9 +639,9 @@ class DailyProgressReportController extends Controller
                 $consumptionRequest = new \Illuminate\Http\Request($consumptionData);
                 $consumptionController = app(\App\Http\Controllers\DailyConsumptionController::class);
                 $consumptionController->store($consumptionRequest);
-                \Log::info('STORE STEP 2.1 - DailyConsumptionController@store call completed');
+                \Log::info('STORE STEP 2.1 - DailyConsumptionController@store call completed' . PHP_EOL);
             } catch (\Exception $e) {
-                \Log::error('STORE STEP 2.2 - DailyConsumptionController@store ERROR: ' . $e->getMessage());
+                \Log::error('STORE STEP 2.2 - DailyConsumptionController@store ERROR: ' . $e->getMessage() . PHP_EOL);
                 throw $e;
             }
         } else {
@@ -578,8 +652,9 @@ class DailyProgressReportController extends Controller
         }
         
         \Log::info('STORE STEP 3 - DPR + Consumption + Ledger Created Successfully:', ['dpr_id' => $dpr->id]);
-
-        DB::commit();
+        
+DB::commit();
+        \Log::info('STORE DEBUG - Database transaction committed' . PHP_EOL);
         
         // Update success message based on machinery type and consumption status
         $hasConsumption = !empty($validated['items']);
@@ -592,27 +667,56 @@ class DailyProgressReportController extends Controller
         } else {
             $successMessage .= ' ' . __('(No fuel consumption recorded)');
         }
-            
-        return back()->with('success', $successMessage);
+        
+        \Log::info('STORE DEBUG - About to return success response' . PHP_EOL);
+        
+        // Return JSON for AJAX requests, redirect for regular form submissions
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $successMessage,
+                'dpr_id' => $dpr->id,
+                'redirect' => route('daily-progress-reports.index')
+            ]);
+        }
+        
+return back()->with('success', $successMessage);
 
 
 //        return redirect()->route('daily-progress-reports.index')->with('success', __('Daily Progress Report & Consumption created successfully.'));
-        
-        
-    } catch (\Illuminate\Validation\ValidationException $e) {
+         
+     } catch (\Illuminate\Validation\ValidationException $e) {
         DB::rollBack();
-        \Log::error('DPR Validation Failed', [
-            'errors' => $e->validator->errors()->toArray(),
-            'request' => $request->all(),
-        ]);
-        return back()->withErrors($e->validator)->withInput();
-    } catch (\Exception $e) {
-        DB::rollBack();
-        \Log::error('DPR Store Error: ' . $e->getMessage());
-        \Log::error('Stack trace: ' . $e->getTraceAsString());
-        \Log::error('Request data: ' . json_encode($request->all()));
-        return back()->with('error', 'Something went wrong: ' . $e->getMessage())->withInput();
-    }
+           \Log::error('DPR Validation Failed', [
+               'errors' => $e->validator->errors()->toArray(),
+               'request' => $request->all(),
+           ]);
+           
+           if ($request->expectsJson() || $request->ajax()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Validation failed',
+                   'errors' => $e->validator->errors()->toArray()
+               ], 422);
+           }
+           
+           return back()->withErrors($e->validator)->withInput();
+       } catch (\Exception $e) {
+           DB::rollBack();
+           \Log::error('DPR Store Error: ' . $e->getMessage() . PHP_EOL);
+           \Log::error('Stack trace: ' . $e->getTraceAsString() . PHP_EOL);
+           \Log::error('Request data: ' . json_encode($request->all()) . PHP_EOL);
+           
+           if ($request->expectsJson() || $request->ajax()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Failed to save daily progress report',
+                   'error' => $e->getMessage()
+               ], 500);
+           }
+           
+           return back()->with('error', 'Something went wrong: ' . $e->getMessage())->withInput();
+       }
 }
     
     /**
@@ -711,33 +815,46 @@ class DailyProgressReportController extends Controller
         $machinery = $report->machinery;
 
         $materials = [];
+        $consumptionMasterId = $report->consumptionMaster?->id;
 
         if ($report->site_id) {
             $stockItems = getCurrentStockBySiteId(
                 $report->site_id,
-                $report->id,
-                null, null, null, null
+                $consumptionMasterId,
+                null,
+                null,
+                null,
+                null,
+                true
             );
 
             foreach ($stockItems as $item) {
                 // Only include category_id = 2 (fuels)
                 if ((int)$item->category_id === 2) {
+                    $formQty = getStockQtyForConsumptionForm(
+                        $report->site_id,
+                        $item->material_id,
+                        $consumptionMasterId
+                    );
                     $materials[$item->material_id] = [
                         'name'          => $item->material_name,
                         'unit'          => $item->unit_name,
                         'price'         => $item->material_price,
-                        'total_qty'     => max(0, $item->total_qty),
+                        'total_qty'     => max(0, $formQty),
                         'category_id'   => $item->category_id,
                         'category_name' => $item->category_name,
                     ];
                 }
             }
+            // #region agent log
+            @file_put_contents(base_path('debug-75ca7e.log'), json_encode(['sessionId' => '75ca7e', 'runId' => 'dpr-edit', 'hypothesisId' => 'H7', 'location' => 'DailyProgressReportController@edit', 'message' => 'DPR edit fuel stock', 'data' => ['dpr_id' => $report->id, 'consumption_master_id' => $consumptionMasterId, 'site_id' => $report->site_id, 'materials' => $materials], 'timestamp' => (int) round(microtime(true) * 1000)]) . "\n", FILE_APPEND);
+            // #endregion
         }
         
         
 
         $isRental = $machinery->owned_by === 'rental';
-        return view('daily-progress-reports.edit', compact('report', 'sites', 'machinery', 'materials', 'isRental'));
+        return view('daily-progress-reports.edit', compact('report', 'sites', 'machinery', 'materials', 'isRental', 'consumptionMasterId'));
     } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
         return redirect()->route('daily-progress-reports.index')
             ->with('error', 'Daily Progress Report not found.');
@@ -1163,12 +1280,68 @@ public function update(Request $request, $id)
                     'unit'        => $item['unit'],
                     'remarks'     => $item['remarks'] ?? null,
                 ]);
-                
+
                 \Log::info('STEP 4.4 - Detail item created', [
                     'detail_id' => $detail->id,
                     'material_id' => $item['material_id'],
                     'quantity' => $item['quantity']
                 ]);
+            }
+
+            // ✅ Adjust stock for owned machinery (non-rental)
+            if (!$isRental && $master) {
+                $stockService = app(StockService::class);
+                $siteId = $report->site_id;
+
+                foreach ($newQuantities as $materialId => $newQuantity) {
+                    $oldQuantity = $oldQuantities[$materialId] ?? 0;
+                    $quantityDiff = $newQuantity - $oldQuantity;
+
+                    if (abs($quantityDiff) > 0.01) {
+                        // #region agent log
+                        @file_put_contents(base_path('debug-75ca7e.log'), json_encode(['sessionId' => '75ca7e', 'hypothesisId' => 'H3', 'location' => 'DailyProgressReportController@update', 'message' => 'DPR stock adjustment', 'data' => ['dpr_id' => $report->id, 'material_id' => $materialId, 'oldQty' => $oldQuantity, 'newQty' => $newQuantity, 'diff' => $quantityDiff, 'receiveMaterialExists' => method_exists($stockService, 'receiveMaterial')], 'timestamp' => (int) round(microtime(true) * 1000)]) . "\n", FILE_APPEND);
+                        // #endregion
+                        try {
+                            if ($quantityDiff > 0) {
+                                // New quantity is higher - deduct additional stock
+                                $stockService->issueMaterial(
+                                    $siteId,
+                                    $materialId,
+                                    $quantityDiff,
+                                    "DPR #{$report->id} update - additional consumption",
+                                    'dpr',
+                                    $report->id
+                                );
+                                \Log::info('Stock deducted on DPR update', [
+                                    'dpr_id' => $report->id,
+                                    'material_id' => $materialId,
+                                    'quantity' => $quantityDiff
+                                ]);
+                            } else {
+                                // New quantity is lower - return stock
+                                $stockService->receiveMaterial(
+                                    $siteId,
+                                    $materialId,
+                                    abs($quantityDiff),
+                                    "DPR #{$report->id} update - stock returned",
+                                    'dpr',
+                                    $report->id
+                                );
+                                \Log::info('Stock returned on DPR update', [
+                                    'dpr_id' => $report->id,
+                                    'material_id' => $materialId,
+                                    'quantity' => abs($quantityDiff)
+                                ]);
+                            }
+                        } catch (\Exception $e) {
+                            \Log::error('Stock adjustment failed on DPR update', [
+                                'dpr_id' => $report->id,
+                                'material_id' => $materialId,
+                                'error' => $e->getMessage()
+                            ]);
+                        }
+                    }
+                }
             }
         } else {
             \Log::info('STEP 4.5 - Skipping consumption details recreation - no changes detected');
@@ -1177,7 +1350,7 @@ public function update(Request $request, $id)
         // ✅ Handle ledger corrections for quantity changes (inside transaction)
         if ($report->ledger_entry_id && ($quantitiesChanged || $materialsChanged)) {
             // Check if ledger entry actually exists
-            $ledgerEntryExists = DB::table('machinery_ledgers')->where('id', $report->ledger_entry_id)->exists();
+            $ledgerEntryExists = DB::table('machinery_ledger')->where('id', $report->ledger_entry_id)->exists();
             
             if (!$ledgerEntryExists) {
                 \Log::warning('Ledger entry reference is invalid, clearing reference', [
@@ -1196,7 +1369,7 @@ public function update(Request $request, $id)
                     
                     if (abs($oldQuantity - $newQuantity) > 0.01) {
                         // Get original rate from ledger entry for consistency
-                        $originalLedger = DB::table('machinery_ledgers')->where('id', $report->ledger_entry_id)->first();
+                        $originalLedger = DB::table('machinery_ledger')->where('id', $report->ledger_entry_id)->first();
                         
                         \Log::info('Ledger correction attempt', [
                             'dpr_id' => $report->id,
@@ -1215,7 +1388,7 @@ public function update(Request $request, $id)
                             continue; // Skip this material and continue with others
                         }
                         
-                        $rate = $originalLedger->metadata['original_rate'] ?? ($originalLedger->amount / $oldQuantity);
+                        $rate = $originalLedger->metadata['original_rate'] ?? ($oldQuantity > 0 ? $originalLedger->amount / $oldQuantity : 0);
                         
                         if ($rate > 0) {
                             // No graceful degradation - ledger correction must succeed

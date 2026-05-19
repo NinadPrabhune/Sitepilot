@@ -23,7 +23,7 @@ return new class extends Migration
             $table->index('formula_version');
         });
 
-        Schema::table('machinery_ledgers', function (Blueprint $table) {
+        Schema::table('machinery_ledger', function (Blueprint $table) {
             // Add versioning to ledger entries
             $table->string('calculation_version', 20)->default('1.0')->after('metadata');
             $table->string('formula_version', 20)->default('1.0')->after('calculation_version');
@@ -66,7 +66,7 @@ return new class extends Migration
             // ignore
         }
         try {
-            Schema::table('machinery_ledgers', function (Blueprint $table) {
+            Schema::table('machinery_ledger', function (Blueprint $table) {
                 $table->dropIndex(['calculation_version']);
                 $table->dropColumn(['calculation_version', 'formula_version']);
             });

@@ -1,3 +1,0 @@
-machinery_rate_history
-maintenance_logs
-man_power_details

@@ -32,10 +32,17 @@ class EmpLeaveDataTable extends DataTable
         $dataTable = (new EloquentDataTable($query))->addIndexColumn();
 
         if (in_array(\Auth::user()->type, \Auth::user()->not_emp_type)) {
-            $dataTable->editColumn('employee_id', function (Leave $leaves) {
-                return $leaves->employee_id ? $leaves->EmployeeName->name ?? '-' : '-';
+            $dataTable->editColumn('employee_name', function (Leave $leaves) {
+                return $leaves->employee_name ?? '-';
             });
-            $rowColumn[] = 'employee_id';
+            $rowColumn[] = 'employee_name';
+        }
+
+        if (\Laratrust::hasPermission('leave edit') || \Laratrust::hasPermission('leave delete') || \Laratrust::hasPermission('leave approver manage')) {
+            $dataTable->addColumn('action', function (Leave $leaves) {
+                return view('hrm::leave.button', compact('leaves'));
+            });
+            $rowColumn[] = 'action';
         }
 
         $dataTable->editColumn('leave_type_id', fn($leaves) => $leaves->leaveType ? $leaves->leaveType->title : '-')
@@ -72,13 +79,6 @@ class EmpLeaveDataTable extends DataTable
             ->editColumn('workspace_name', fn($leaves) => $leaves->workspace_name ?? '-')
             ->editColumn('site_name', fn($leaves) => $leaves->site_name ?? '-');
 
-        if (\Laratrust::hasPermission('leave edit') || \Laratrust::hasPermission('leave delete') || \Laratrust::hasPermission('leave approver manage')) {
-            $dataTable->addColumn('action', function (Leave $leaves) {
-                return view('hrm::leave.button', compact('leaves'));
-            });
-            $rowColumn[] = 'action';
-        }
-
         return $dataTable->rawColumns($rowColumn);
     }
 
@@ -98,7 +98,7 @@ class EmpLeaveDataTable extends DataTable
                 ->leftJoin('users', 'users.id', '=', 'leaves.user_id')
                 ->leftJoin('work_spaces', 'work_spaces.id', '=', 'leaves.workspace')
                 ->leftJoin('projects', 'projects.id', '=', 'leaves.site_id')
-                ->select('leaves.*', 'work_spaces.name as workspace_name', 'projects.name as site_name')
+                ->select('leaves.*', 'work_spaces.name as workspace_name', 'projects.name as site_name', 'users.name as employee_name')
                 ->orderBy('leaves.id', 'desc');
         } elseif (!in_array(Auth::user()->type, Auth::user()->not_emp_type)) {
             // Regular employee: show only their own leaves
@@ -118,7 +118,8 @@ class EmpLeaveDataTable extends DataTable
                 ->leftJoin('users', 'users.id', '=', 'leaves.user_id')
                 ->leftJoin('work_spaces', 'work_spaces.id', '=', 'leaves.workspace')
                 ->leftJoin('projects', 'projects.id', '=', 'leaves.site_id')
-                ->select('leaves.*', 'work_spaces.name as workspace_name', 'projects.name as site_name');
+                ->select('leaves.*', 'work_spaces.name as workspace_name', 'projects.name as site_name', 'users.name as employee_name')
+                ->orderBy('leaves.id', 'desc');
         }
     }
 
@@ -245,7 +246,7 @@ class EmpLeaveDataTable extends DataTable
             $employee = [
                 Column::make('id')->name('leaves.id')->searchable(false)->visible(false)->exportable(false)->printable(false),
                 Column::make('No')->title(__('No'))->data('DT_RowIndex')->name('DT_RowIndex')->searchable(false)->orderable(false),
-                Column::make('employee_id')->title(__('Employee'))->name('leaves.user_id'),
+                Column::make('employee_name')->title(__('Employee')),
             ];
             $column = array_merge($employee, $column);
         } else {

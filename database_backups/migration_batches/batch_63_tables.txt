@@ -1,2 +1,0 @@
-subscriptions
-supplier_advance_audit_logs

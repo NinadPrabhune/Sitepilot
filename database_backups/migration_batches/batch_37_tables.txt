@@ -1,5 +1,0 @@
-man_power_masters
-man_power_types
-marketplace_page_settings
-material_categories
-material_issue_items

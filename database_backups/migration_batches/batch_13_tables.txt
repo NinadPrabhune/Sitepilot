@@ -1,4 +1,0 @@
-ch_notifications
-chart_of_account_parents
-chart_of_account_sub_types
-chart_of_account_types

@@ -62,7 +62,7 @@ class ReadModelValidator
                 machinery_id,
                 SUM(amount) as total_ledger_amount,
                 COUNT(*) as ledger_count
-            FROM machinery_ledgers
+            FROM machinery_ledger
             WHERE reference_type = 'DailyProgressReport'
             AND is_reversal = false
             GROUP BY machinery_id
@@ -123,10 +123,10 @@ class ReadModelValidator
                 running_balance,
                 date,
                 id
-            FROM machinery_ledgers
+            FROM machinery_ledger
             WHERE id IN (
                 SELECT MAX(id)
-                FROM machinery_ledgers
+                FROM machinery_ledger
                 WHERE is_reversal = false
                 GROUP BY machinery_id
             )
@@ -136,7 +136,7 @@ class ReadModelValidator
         foreach ($balances as $balance) {
             $recalculatedBalance = DB::selectOne("
                 SELECT SUM(amount) as total_balance
-                FROM machinery_ledgers
+                FROM machinery_ledger
                 WHERE machinery_id = ?
                 AND is_reversal = false
                 AND date <= ?
@@ -182,7 +182,7 @@ class ReadModelValidator
             SELECT 
                 DATE(date) as report_date,
                 SUM(amount) as daily_total
-            FROM machinery_ledgers
+            FROM machinery_ledger
             WHERE reference_type = 'DailyProgressReport'
             AND is_reversal = false
             GROUP BY DATE(date)
@@ -246,7 +246,7 @@ class ReadModelValidator
             SELECT 
                 DATE_FORMAT(date, '%Y-%m') as report_month,
                 SUM(amount) as monthly_total
-            FROM machinery_ledgers
+            FROM machinery_ledger
             WHERE reference_type = 'DailyProgressReport'
             AND is_reversal = false
             GROUP BY DATE_FORMAT(date, '%Y-%m')
@@ -312,7 +312,7 @@ class ReadModelValidator
                 dpr_payment_status,
                 COUNT(*) as ledger_count,
                 SUM(amount) as total_amount
-            FROM machinery_ledgers
+            FROM machinery_ledger
             WHERE dpr_payment_status IS NOT NULL
             AND is_reversal = false
             GROUP BY dpr_payment_status

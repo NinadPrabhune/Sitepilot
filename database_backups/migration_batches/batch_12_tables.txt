@@ -1,6 +1,0 @@
-cache
-cache_locks
-categories
-ch_favorites
-ch_messages
-ch_notification_users

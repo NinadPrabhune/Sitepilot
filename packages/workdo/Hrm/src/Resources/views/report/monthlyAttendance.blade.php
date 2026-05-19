@@ -34,12 +34,17 @@
                         <div class="col-md-4">
                             <label for="employee_id">Employee</label>
                             <select class="form-select" id="employee_id" name="employee_id">
-                                <option value="">All Employees</option>
-                                @if(isset($employees))
-                                    @foreach($employees as $employee)
-                                        <option value="{{ $employee['employee_id'] }}" {{ ($employeeId ?? '') == $employee['employee_id'] ? 'selected' : '' }}>{{ $employee['name'] }}</option>
-                                    @endforeach
-                                @endif
+                                <option value="all"
+                                    {{ request('employee_id', 'all') == 'all' ? 'selected' : '' }}>
+                                    All Employees
+                                </option>
+
+                                @foreach($employees as $employee)
+                                    <option value="{{ $employee['employee_id'] }}"
+                                        {{ (string) request('employee_id') === (string) $employee['employee_id'] ? 'selected' : '' }}>
+                                        {{ $employee['name'] }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-4">

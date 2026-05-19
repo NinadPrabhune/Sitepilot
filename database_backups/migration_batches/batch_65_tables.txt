@@ -1,2 +1,0 @@
-supplier_ledger_snapshots
-supplier_transactions

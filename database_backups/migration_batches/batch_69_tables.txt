@@ -1,2 +1,0 @@
-transaction_lines
-transaction_orders

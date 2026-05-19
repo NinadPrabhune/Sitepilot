@@ -1,8 +1,9 @@
 
-
-{{ Form::open(['route' => 'daily-progress-reports.store', 'class' => 'needs-validation', 'novalidate', 'files' => true]) }}
+{{ Form::open(['route' => 'daily-progress-reports.store', 'class' => 'needs-validation', 'novalidate', 'files' => true, 'id' => 'dpr-form']) }}
 {{ Form::hidden('activity_completed_id', $activity_completed_id ?? null) }}
 {{ Form::hidden('site_id', $defaultSiteId ?? getActiveProject()) }}
+{{ Form::hidden('consumption_type', 'fuel') }}
+{{ Form::hidden('activity_id', $activity_id ?? null) }}
 
 {{-- Display validation errors --}}
 @if($errors->any())
@@ -18,229 +19,254 @@
 </div>
 @endif
 
+{{-- Display general error messages --}}
+@if(Session::has('error'))
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <h5 class="alert-heading"><i class="fas fa-exclamation-circle"></i> {{ __('Error') }}</h5>
+    <p>{{ Session::get('error') }}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
+{{-- Display success messages --}}
+@if(Session::has('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <h5 class="alert-heading"><i class="fas fa-check-circle"></i> {{ __('Success') }}</h5>
+    <p>{{ Session::get('success') }}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
 <div class="modal-body">
     <div class="row">
 
-       {{-- Machinery Name --}}
-<div class="form-group col-md-3">
-    {{ Form::label('machinery_id', __('Machinery Name'), ['class' => 'form-label']) }}<x-required></x-required>
-    {{ Form::select('machinery_id', ['' => __('Select Machinery')] + $machineryList->pluck('name', 'id')->toArray(), null, ['class' => 'form-control', 'required' => 'required', 'id' => 'machinery_id']) }}
-</div>
-
+        {{-- Machinery Name --}}
+        <div class="form-group col-md-3">
+            {{ Form::label('machinery_id', __('Machinery Name'), ['class' => 'form-label']) }}<x-required></x-required>
+            {{ Form::select('machinery_id', ['' => __('Select Machinery')] + $machineryList->pluck('name', 'id')->toArray(), null, ['class' => 'form-control', 'required' => 'required', 'id' => 'machinery_id']) }}
+        </div>
 
         {{-- Owned By --}}
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-2">
             {{ Form::label('owned_by_new', __('Owned By'), ['class' => 'form-label']) }}<x-required></x-required>
             {{ Form::select('owned_by_new', [
                 '' => __('Select Owned By'),
                 'owned' => 'Owned',
                 'rental' => 'Rental'
             ], null, ['class' => 'form-control', 'id' => 'owned_by_new', 'disabled'=>'disabled']) }}
-            
-             {{ Form::hidden('owned_by', '') }}
+            {{ Form::hidden('owned_by', '') }}
         </div>
 
         {{-- Current Site --}}
         <div class="form-group col-md-3">
             {{ Form::label('site_id_new', __('Current Site'), ['class' => 'form-label']) }}<x-required></x-required>
             {{ Form::select('site_id_new', ['' => __('Select Site')] + $sites->toArray(), $defaultSiteId ?? getActiveProject(), ['class' => 'form-control', 'id' => 'site_id_new', 'disabled'=>'disabled']) }}
-            
-             {{ Form::hidden('owned_by', '') }}
+            {{ Form::hidden('site_id', $defaultSiteId ?? getActiveProject()) }}
         </div>
 
         {{-- Date --}}
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-2">
             {{ Form::label('date', __('Date'), ['class' => 'form-label']) }}<x-required></x-required>
             {{ Form::date('date', now(), ['class' => 'form-control', 'required' => 'required']) }}
         </div>
+        
+        {{-- Reference File --}}
+        <div class="form-group col-md-2">
+            {{ Form::label('consumption_file', __('Reference File'), ['class' => 'form-label']) }}
+            {{ Form::file('consumption_file', ['class' => 'form-control', 'accept' => '.pdf,.jpg,.jpeg,.png,.doc,.docx']) }}
+            <!--<small class="text-muted">{{ __('Allowed: pdf, jpg, jpeg, png, doc, docx') }}</small>-->
+        </div>
+    </div>
 
-        <hr>
-        <h6 class="mb-3">{{ __('Machinery Details') }}</h6>
+    <hr>
 
-        {{-- Previous Reading Display --}}
-        <div id="previousReadingInfo" class="alert alert-info mb-3" style="display: none;">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <strong>Previous Reading:</strong> <span id="previousReadingValue">-</span>
-                    <br>
-                    <small class="text-muted">Last updated: <span id="previousReadingDate">-</span></small>
-                </div>
-                <div class="validation-badge" id="readingValidationBadge">
-                    <i class="fas fa-question-circle"></i>
-                </div>
+    {{-- Single Row for Machinery Details, Operators, Rate & Billing --}}
+    <div class="row">
+
+       {{-- Machinery Details / Readings / Operators --}}
+<div class="col-md-6">
+    <h6 class="mb-3">{{ __('Machinery Details') }}</h6>
+
+    {{-- Previous Reading Display --}}
+    <div id="previousReadingInfo" class="alert alert-info mb-3" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <strong>Previous Reading:</strong> <span id="previousReadingValue">-</span>
+                <br>
+                <small class="text-muted">Last updated: <span id="previousReadingDate">-</span></small>
+            </div>
+            <div class="validation-badge" id="readingValidationBadge">
+                <i class="fas fa-question-circle"></i>
             </div>
         </div>
+    </div>
 
-        {{-- Machine Start Reading --}}
-        <div class="form-group col-md-4">
+    <div class="row">
+        {{-- Start Reading --}}
+        <div class="form-group col-md-4 mb-2">
             {{ Form::label('machine_start_reading', __('Machine Start Reading'), ['class' => 'form-label']) }}
             {{ Form::number('machine_start_reading', null, ['class' => 'form-control', 'min' => 0, 'step' => '0.01','placeholder' => 'e.g. 100.00', 'onchange' => 'validateReadings()']) }}
             <div class="invalid-feedback" id="startReadingError"></div>
         </div>
 
-        {{-- Machine End Reading --}}
-        <div class="form-group col-md-4">
+        {{-- End Reading --}}
+        <div class="form-group col-md-4 mb-2">
             {{ Form::label('machine_end_reading', __('Closing Reading'), ['class' => 'form-label']) }}
             {{ Form::number('machine_end_reading', null, ['class' => 'form-control', 'min' => 0, 'step' => '0.01','placeholder' => 'e.g. 100.00', 'onchange' => 'validateReadings()']) }}
             <div class="invalid-feedback" id="endReadingError"></div>
         </div>
 
         {{-- Idle Hours --}}
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-4 mb-2">
             {{ Form::label('machine_idle_reading', __('Idle Hours'), ['class' => 'form-label']) }}
             {{ Form::number('machine_idle_reading', null, ['class' => 'form-control', 'min' => 0, 'step' => '0.01','placeholder' => 'e.g. 1.00', 'onchange' => 'validateReadings()']) }}
             <div class="invalid-feedback" id="idleHoursError"></div>
         </div>
+    </div>
 
+    <div class="row">
         {{-- Number of Operators --}}
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-4 mb-2">
             {{ Form::label('number_of_operators', __('No. of Operators'), ['class' => 'form-label']) }}
             {{ Form::number('number_of_operators', null, ['class' => 'form-control', 'min' => 0, 'id' => 'number_of_operators']) }}
         </div>
 
         {{-- Operator Names --}}
-        <div class="form-group col-md-8">
+        <div class="form-group col-md-8 mb-2">
             {{ Form::label('operator_names', __('Operator Names'), ['class' => 'form-label']) }}
             {{ Form::text('operator_names', null, ['class' => 'form-control', 'placeholder' => 'e.g. John Doe, Jane Smith']) }}
             <small class="text-muted">{{ __('Enter operator names separated by commas') }}</small>
         </div>
-
         {{-- Work Details --}}
-        <div class="form-group col-md-6 d-none">
+        <div class="form-group col-md-6 ">
             {{ Form::label('work_details', __('Work Details'), ['class' => 'form-label']) }}
-            {{ Form::textarea('work_details', null, ['class' => 'form-control', 'rows' => 3]) }}
+            {{ Form::textarea('work_details', null, ['class' => 'form-control', 'rows' => 2]) }}
         </div>
         
-        {{-- Reference File --}}
-        <div class="form-group col-md-6">
-            {{ Form::label('consumption_file', __('Reference File'), ['class' => 'form-label']) }}
-            {{ Form::file('consumption_file', ['class' => 'form-control', 'accept' => '.pdf,.jpg,.jpeg,.png,.doc,.docx']) }}
-            <small class="text-muted">{{ __('Allowed: pdf, jpg, jpeg, png, doc, docx') }}</small>
-        </div>
-
-        {{-- Maintenance Notes --}}
+         {{-- Maintenance Notes --}}
         <div class="form-group col-md-6">
             {{ Form::label('maintenance_notes', __('Notes'), ['class' => 'form-label']) }}
-            {{ Form::textarea('maintenance_notes', null, ['class' => 'form-control', 'rows' => 3]) }}
+            {{ Form::textarea('maintenance_notes', null, ['class' => 'form-control', 'rows' => 2]) }}
         </div>
+    </div>
+</div>
 
-        {{ Form::hidden('consumption_type', 'fuel') }}
-        {{ Form::hidden('activity_id', $activity_id ?? null) }}
+        {{-- Rate Configuration --}}
+        <div class="col-md-2">
+            <div class="rate-override-section bg-light p-3 h-100">
+                <h6 class="text-muted"><i class="ti ti-calculator"></i> {{ __('Rate Configuration') }}</h6>
+                <hr>
+                <div class="mb-2">
+                    <strong>{{ __('Rate Type') }}:</strong>
+                    <span class="badge bg-primary" id="machinery-rate-type">-</span>
+                </div>
 
-        <hr>
-        
-        {{-- Rate Override Section --}}
-        <div class="rate-override-section bg-light p-3 mb-3">
-            <h6 class="text-muted"><i class="ti ti-calculator"></i> {{ __('Rate Configuration') }}</h6>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-2">
-                        <strong>{{ __('Rate Type') }}:</strong> 
-                        <span class="badge bg-primary" id="machinery-rate-type">-</span>
-                    </div>
-                    <label>{{ __('Standard Rate (Auto):') }}</label>
-                    <div class="fw-bold" id="standard-rate">₹0.00</div>
-                    <small class="text-muted" id="rate-description">{{ __('Based on machinery master and rate history') }}</small>
+                <label>{{ __('Standard Rate (Auto):') }}</label>
+                <div class="fw-bold" id="standard-rate">₹0.00</div>
+                <small class="text-muted" id="rate-description">{{ __('Based on machinery master and rate history') }}</small>
+
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="checkbox" id="enable-rate-override">
+                    <label class="form-check-label" for="enable-rate-override">
+                        {{ __('Override Rate') }} <small class="text-muted">(Admin/Accounts only)</small>
+                    </label>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-check mt-4">
-                        <input class="form-check-input" type="checkbox" id="enable-rate-override">
-                        <label class="form-check-label" for="enable-rate-override">
-                            {{ __('Override Rate') }}
-                            <small class="text-muted">(Admin/Accounts only)</small>
-                        </label>
+
+                <div id="rate-override-fields" class="mt-3" style="display: none;">
+                    <label>{{ __('Override Rate') }}</label>
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">₹</span>
+                        <input type="number" id="override-rate" class="form-control" step="0.01">
                     </div>
-                </div>
-            </div>
-            
-            {{-- Override Fields (Hidden by default) --}}
-            <div id="rate-override-fields" class="mt-3" style="display: none;">
-                <div class="row">
-                    <div class="col-md-4">
-                        <label for="override-rate">{{ __('Override Rate:') }}</label>
-                        <div class="input-group">
-                            <span class="input-group-text">₹</span>
-                            <input type="number" id="override-rate" class="form-control" step="0.01" min="0" placeholder="0.00">
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <label for="override-reason">{{ __('Override Reason:') }} <span class="text-danger">*</span></label>
-                        <textarea id="override-reason" class="form-control" rows="2" placeholder="Please specify reason for rate override (e.g., Night shift, special conditions, etc.)"></textarea>
-                    </div>
+
+                    <label>{{ __('Override Reason') }}</label>
+                    <textarea id="override-reason" class="form-control" rows="2"></textarea>
                 </div>
             </div>
         </div>
 
-        {{-- Enhanced Calculation Preview Panel --}}
-        <div class="calculation-preview-panel bg-light p-3 mb-3">
-            <h6 class="text-muted"><i class="ti ti-calculator"></i> {{ __('Billing Calculation Preview') }}</h6>
-            <div class="row">
-                <div class="col-md-3">
-                    <label>{{ __('Total Progress:') }}</label>
+        {{-- Billing Preview --}}
+        <div class="col-md-2">
+            <div class="calculation-preview-panel bg-light p-3 h-100">
+                <h6 class="text-muted"><i class="ti ti-calculator"></i> {{ __('Billing Preview') }}</h6>
+                <hr>
+                <div class="mb-2">
+                    <label>{{ __('Total Progress') }}</label>
                     <div class="fw-bold" id="preview-total-progress">0.00</div>
-                    <small class="text-muted">Total reading difference</small>
                 </div>
-                <div class="col-md-3">
-                    <label>{{ __('Working Hours:') }}</label>
+
+                <div class="mb-2">
+                    <label>{{ __('Working Hours') }}</label>
                     <div class="fw-bold" id="preview-working-hours">0.00</div>
-                    <small class="text-muted">After idle adjustment</small>
                 </div>
-                <div class="col-md-3">
-                    <label>{{ __('Billable Hours:') }}</label>
+
+                <div class="mb-2">
+                    <label>{{ __('Billable Hours') }}</label>
                     <div class="fw-bold" id="preview-billable-hours">0.00</div>
-                    <small class="text-muted" id="billable-hours-note">Based on rate type</small>
                 </div>
-                <div class="col-md-3">
-                    <label>{{ __('Estimated Amount:') }}</label>
+
+                <div class="mb-2">
+                    <label>{{ __('Estimated Amount') }}</label>
                     <div class="fw-bold text-primary" id="preview-amount">₹0.00</div>
-                    <small class="text-muted d-block" id="rate-usage-note"></small>
-                </div>
-            </div>
-            
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <div class="alert alert-info mb-0">
-                        <h6><i class="ti ti-info-circle"></i> {{ __('Rate Type Logic') }}</h6>
-                        <div id="rate-type-explanation">
-                            <small class="text-muted">{{ __('Select machinery to see rate calculation logic') }}</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="alert alert-warning mb-0" id="validation-warnings" style="display: none;">
-                        <h6><i class="ti ti-alert-triangle"></i> {{ __('Validation Warnings') }}</h6>
-                        <div id="validation-messages"></div>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <hr>
-        <div id="fuel-consumption-section">
-            <h6 class="mb-3">{{ __('Fuel Consumption Details') }}</h6>
-            <div class="alert alert-info d-none" id="rental-fuel-notice">
+        {{-- Validation / Rate Logic --}}
+        <div class="col-md-2">
+            <div class="bg-light p-3 h-100">
+                <h6 class="text-muted"><i class="ti ti-info-circle"></i> {{ __('Rate Logic & Validation') }}</h6>
+                <hr>
+                <div class="alert alert-info">
+                    <small id="rate-type-explanation">{{ __('Select machinery to see rate logic') }}</small>
+                </div>
+
+                <div class="alert alert-warning" id="validation-warnings" style="display:none;">
+                    <div id="validation-messages"></div>
+                </div>
+
+                <small class="text-muted" id="rate-usage-note"></small>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    {{-- Fuel Consumption Section --}}
+<div id="fuel-consumption-section">
+    <h6 class="mb-3">{{ __('Fuel Consumption Details') }}</h6>
+
+    <div class="row mb-2">
+        {{-- Rental Fuel Notice --}}
+        <div class="col-md-8">
+            <div class="alert alert-info d-none mb-0" id="rental-fuel-notice">
                 <i class="fas fa-info-circle"></i> 
                 <strong> Rental Machinery:</strong> Diesel costs will be recovered from supplier as per rental agreement.
             </div>
-            <div class="form-group col-md-12" id="fuel-consumption-form">
-                <button type="button" class="btn btn-sm btn-primary float-end" id="add-item-row">{{ __('Add Item') }}</button>
-                <table class="table table-bordered mt-2" id="consumption-items-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 30%;">{{ __('Material') }}</th>
-                            <th>{{ __('Current Stock') }}</th>
-                            <th>{{ __('Quantity | Unit') }}</th>
-                            <th>{{ __('Remarks') }}</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
         </div>
 
-        
+        {{-- Add Item Button --}}
+        <div class="col-md-4 text-end">
+            <button type="button" class="btn btn-sm btn-primary" id="add-item-row">{{ __('Add Item') }}</button>
+        </div>
     </div>
+
+    {{-- Fuel Consumption Table --}}
+    <div class="form-group col-md-12" id="fuel-consumption-form">
+        <table class="table table-bordered mt-2" id="consumption-items-table">
+            <thead>
+                <tr>
+                    <th style="width: 30%;">{{ __('Material') }}</th>
+                    <th>{{ __('Current Stock') }}</th>
+                    <th>{{ __('Quantity | Unit') }}</th>
+                    <th>{{ __('Remarks') }}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
 </div>
 
 <div class="modal-footer">
@@ -360,6 +386,9 @@
 .calculation-preview-panel .text-primary {
     font-size: 1.2rem;
     font-weight: 600;
+}
+.form-group {
+  margin-bottom: 0!important;
 }
 </style>
 
@@ -857,7 +886,7 @@ $(document).ready(function () {
                 canAdd = false;
             }
             if (materialId && materials[materialId]) {
-                const available = materials[materialId].total_qty || 0;
+                const available = getAvailableQtyForRow($lastRow, materialId);
                 if (quantity > available) {
                     $lastRow.find('.item-quantity').addClass('is-invalid');
                     $lastRow.find('.item-quantity')[0].setCustomValidity(`Quantity exceeds available stock (${available})`);
@@ -876,7 +905,53 @@ $(document).ready(function () {
     // Remove row
     $('#consumption-items-table').on('click', '.remove-item-row', function () {
         $(this).closest('tr').remove();
+        refreshRemainingStockDisplay();
     });
+
+    function getMaterialStock(materialId) {
+        if (!materialId) return null;
+        return materials[String(materialId)] ?? materials[materialId] ?? null;
+    }
+
+    function sumQtyForMaterial(materialId) {
+        let sum = 0;
+        $('#consumption-items-table tbody tr').each(function () {
+            if ($(this).find('.item-material').val() == materialId) {
+                sum += parseFloat($(this).find('.item-quantity').val()) || 0;
+            }
+        });
+        return sum;
+    }
+
+    function getAvailableQtyForRow(row, materialId) {
+        const base = getMaterialStock(materialId)?.total_qty || 0;
+        const rowEl = row[0] || row;
+        let otherQty = 0;
+        $('#consumption-items-table tbody tr').each(function () {
+            if (this === rowEl) return;
+            if ($(this).find('.item-material').val() == materialId) {
+                otherQty += parseFloat($(this).find('.item-quantity').val()) || 0;
+            }
+        });
+        return Math.max(0, base - otherQty);
+    }
+
+    /** Update Current Stock column = ledger stock minus quantities entered on all rows. */
+    function refreshRemainingStockDisplay() {
+        const usedByMaterial = {};
+        $('#consumption-items-table tbody tr').each(function () {
+            const materialId = $(this).find('.item-material').val();
+            if (!materialId) return;
+            usedByMaterial[materialId] = (usedByMaterial[materialId] || 0) + (parseFloat($(this).find('.item-quantity').val()) || 0);
+        });
+        $('#consumption-items-table tbody tr').each(function () {
+            const row = $(this);
+            const materialId = row.find('.item-material').val();
+            const base = getMaterialStock(materialId)?.total_qty || 0;
+            const remaining = materialId ? Math.max(0, base - (usedByMaterial[materialId] || 0)) : 0;
+            row.find('.item-stock').val(remaining);
+        });
+    }
 
     // Load stock by site
     function loadFuelStock(siteId) {
@@ -886,11 +961,13 @@ $(document).ready(function () {
             method: 'GET',
             data: {site_id: siteId},
             success: function (response) {
+                const items = Array.isArray(response) ? response : (response.data || []);
                 // Update materials object with new stock data
                 materials = {};
-                response.forEach(item => {
+                items.forEach(item => {
                     if (parseInt(item.category_id) === 2) { // Only Fuel
-                        materials[item.material_id] = {
+                        const mid = String(item.material_id);
+                        materials[mid] = {
                             name: item.material_name,
                             unit: item.unit_name || 'unit',
                             price: item.material_price,
@@ -901,23 +978,23 @@ $(document).ready(function () {
                     }
                 });
 
-                // Update stock display for existing rows without clearing them
+                // Update unit labels; stock column updated by refreshRemainingStockDisplay
                 $('#consumption-items-table tbody tr').each(function() {
                     const row = $(this);
                     const materialId = row.find('.item-material').val();
-                    if (materialId && materials[materialId]) {
-                        const material = materials[materialId];
-                        row.find('.item-stock').val(material.total_qty);
+                    if (materialId && getMaterialStock(materialId)) {
+                        const material = getMaterialStock(materialId);
                         row.find('.item-stock-unit').text(material.unit);
                         row.find('.item-unit').val(material.unit);
                         row.find('.item-unit-label').text(material.unit);
                     }
                 });
+                refreshRemainingStockDisplay();
 
-//                // Add a fresh row only if table is empty
-//                if ($('#consumption-items-table tbody tr').length === 0) {
-//                    addItemRow({}, materials);
-//                }
+                // Add a fresh row only if table is empty
+                if ($('#consumption-items-table tbody tr').length === 0) {
+                    addItemRow({}, materials);
+                }
             },
             error: function (xhr) {
                 console.error('Error fetching stock:', xhr.responseText);
@@ -939,23 +1016,23 @@ $(document).ready(function () {
         }
     });
 
-    // Quantity validation against stock
+    // Quantity validation against stock (remaining after other rows)
     $('#consumption-items-table').on('input', '.item-quantity', function () {
         const row = $(this).closest('tr');
         const qtyInput = row.find('.item-quantity');
         const materialId = row.find('.item-material').val();
-
-        const available = materials[materialId]?.total_qty || 0;
+        const available = getAvailableQtyForRow(row, materialId);
         const enteredQty = parseFloat(qtyInput.val()) || 0;
 
         if (enteredQty > available) {
             qtyInput.addClass('is-invalid');
             qtyInput[0].setCustomValidity(`Quantity exceeds available stock (${available})`);
-            qtyInput.val(available > 0 ? available : 1);
+            qtyInput.val(available > 0 ? available : 0);
         } else {
             qtyInput.removeClass('is-invalid');
             qtyInput[0].setCustomValidity('');
         }
+        refreshRemainingStockDisplay();
     });
 
     // Update stock/unit when material changes
@@ -967,18 +1044,19 @@ $(document).ready(function () {
         const itemStock = row.find('.item-stock');
         const itemStockUnit = row.find('.item-stock-unit');
 
-        if (materialId && materials[materialId]) {
-            const material = materials[materialId];
+        if (materialId && getMaterialStock(materialId)) {
+            const material = getMaterialStock(materialId);
             unitInput.val(material.unit);
             unitLabel.text(material.unit);
-            itemStock.val(material.total_qty);
             itemStockUnit.text(material.unit);
+            row.find('.item-quantity').val(0);
         } else {
             unitInput.val('');
             unitLabel.text('unit');
             itemStock.val(0);
             itemStockUnit.text('unit');
         }
+        refreshRemainingStockDisplay();
     });
 
     function cleanConsumptionRows() {
@@ -1020,9 +1098,10 @@ $(document).ready(function () {
         $('.modal-body').scrollTop(0);
     }
 
-    // Form submission validation
+    // Form submission validation - AJAX-based to prevent modal close on errors
     $('form.needs-validation').on('submit', function(e) {
-        const form = this; // Capture form reference
+        e.preventDefault();
+        
         const machineryId = $('#machinery_id').val();
         const date = $('#date').val();
         
@@ -1062,7 +1141,6 @@ $(document).ready(function () {
                 $('.modal-body').prepend(alertHtml);
             }
             $('.modal-body').scrollTop(0);
-            e.preventDefault();
             return false;
         }
 
@@ -1074,6 +1152,9 @@ $(document).ready(function () {
         $.ajax({
             url: '{{ route("daily-progress-reports.check-duplicate") }}',
             method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
             data: {
                 machinery_id: machineryId,
                 date: date,
@@ -1099,36 +1180,21 @@ $(document).ready(function () {
                     
                     // Scroll to top to show error
                     $('.modal-body').scrollTop(0);
-                    
-                    // Prevent form submission
-                    e.preventDefault();
                 } else {
-                    // No duplicate, allow submission
-                    submitBtn.prop('disabled', false).text(originalText);
-                    // Remove submit handler and submit form normally
-                    $('form.needs-validation').off('submit');
-                    // Use native form submission to ensure proper validation error display
-                    form.submit();
-                    return;
+                    // No duplicate, submit via AJAX to keep modal open on errors
+                    submitDPRForm();
                 }
             },
             error: function(xhr) {
                 submitBtn.prop('disabled', false).text(originalText);
                 
-                // Try to extract and display validation errors from response
                 let errorMessage = 'Error checking for duplicates';
                 try {
                     const response = JSON.parse(xhr.responseText);
-                    if (response.errors) {
-                        // Display validation errors
-                        displayValidationErrors(response.errors);
-                        return; // Don't submit form if there are validation errors
-                    }
                     if (response.message) {
                         errorMessage = response.message;
                     }
                 } catch (e) {
-                    // If not JSON, use response text
                     if (xhr.responseText) {
                         errorMessage = xhr.responseText;
                     }
@@ -1136,7 +1202,6 @@ $(document).ready(function () {
                 
                 console.error('Error checking for duplicates:', errorMessage);
                 
-                // Show generic error message
                 const alertHtml = `
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Error</h5>
@@ -1149,9 +1214,134 @@ $(document).ready(function () {
                 $('.modal-body').scrollTop(0);
             }
         });
-        
-        // Prevent default submission until AJAX completes
-        e.preventDefault();
     });
+
+    // Submit DPR form via AJAX to keep modal open on validation errors
+    function submitDPRForm() {
+        // Use the specific form ID
+        const form = document.getElementById('dpr-form');
+        if (!form) {
+            console.error('Form not found');
+            return;
+        }
+
+        const formData = new FormData(form);
+
+        // Remove _method field if present (browser extensions may inject it)
+        if (formData.has('_method')) {
+            formData.delete('_method');
+        }
+
+        // Debug: Log what's being sent
+        console.log('Form data entries:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key + ':', value);
+        }
+
+        // Find submit button within this form
+        const submitBtn = $(form).find('button[type="submit"]');
+        const originalText = submitBtn.text();
+
+        submitBtn.prop('disabled', true).text('Saving...');
+
+        $.ajax({
+            url: '{{ route("daily-progress-reports.store") }}',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                submitBtn.prop('disabled', false).text(originalText);
+                
+                if (response.success !== false) {
+                    // Success - close modal and reload page
+                    const modalEl = document.getElementById('dpCreateModal');
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                    
+                    // Show success message
+                    if (response.message) {
+                        showToast('success', response.message);
+                    } else {
+                        showToast('success', 'Daily Progress Report saved successfully');
+                    }
+                    
+                    // Reload page to show updated data
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    // Server returned success=false (validation error occurred)
+                    displayValidationErrors(response.message || 'Validation failed');
+                    $('.modal-body').scrollTop(0);
+                }
+            },
+            error: function(xhr) {
+                submitBtn.prop('disabled', false).text(originalText);
+                
+                // Parse and display error response
+                let response = null;
+                try {
+                    response = JSON.parse(xhr.responseText);
+                } catch (e) {}
+                
+                if (xhr.status === 422 && response && response.errors) {
+                    displayValidationErrors(response.errors);
+                } else if (response && response.message) {
+                    displayValidationErrors(response.message);
+                } else if (response && response.error) {
+                    displayValidationErrors(response.error);
+                } else {
+                    displayValidationErrors('An error occurred while saving. Please try again.');
+                }
+                
+                $('.modal-body').scrollTop(0);
+            }
+        });
+    }
+
+    // Display validation errors in the modal
+    function displayValidationErrors(errors) {
+        // Clear previous error alerts (except duplicate alerts)
+        $('.alert-danger').not('.duplicate-dpr-alert').remove();
+        
+        let errorHtml = '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
+        errorHtml += '<h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Validation Errors Found</h5>';
+        errorHtml += '<hr>';
+        errorHtml += '<ul class="mb-0">';
+        
+        if (typeof errors === 'object') {
+            Object.values(errors).flat().forEach(error => {
+                errorHtml += `<li><strong>${error}</strong></li>`;
+            });
+        } else if (typeof errors === 'string') {
+            errorHtml += `<li><strong>${errors}</strong></li>`;
+        }
+        
+        errorHtml += '</ul>';
+        errorHtml += '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+        errorHtml += '</div>';
+        
+        $('.modal-body').prepend(errorHtml);
+    }
+
+    // Show toast notification
+    function showToast(type, message) {
+        const toastHtml = `
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+                <div class="toast align-items-center text-bg-${type === 'success' ? 'success' : 'danger'} border-0" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">${message}</div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            </div>
+        `;
+        $('body').append(toastHtml);
+        const toastEl = new bootstrap.Toast($('.toast').last()[0]);
+        toastEl.show();
+        setTimeout(() => toastEl.hide(), 3000);
+    }
 });
 </script>

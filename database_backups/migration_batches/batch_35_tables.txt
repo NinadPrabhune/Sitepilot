@@ -1,3 +1,0 @@
-machinery_ledgers
-machinery_payment_periods
-machinery_payment_requests

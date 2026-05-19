@@ -1,8 +1,0 @@
-user_projects
-user_trust_log
-user_warning_metrics
-vender_projects
-vendors
-warehouse_products
-warehouse_transfers
-warehouses

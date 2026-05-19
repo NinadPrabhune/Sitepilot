@@ -102,6 +102,14 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'payment_integration' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/payment_integration.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => env('LOG_PAYMENT_INTEGRATION_DAYS', 14),
+            'replace_placeholders' => true,
+        ],
+
         'stderr' => [
             'driver' => 'monolog',
             'level' => env('LOG_LEVEL', 'debug'),

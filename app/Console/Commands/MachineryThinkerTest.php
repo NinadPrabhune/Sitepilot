@@ -2378,7 +2378,7 @@ class MachineryThinkerTest extends Command
             $originalAmount = $testLedger->amount;
 
             // CORRUPT: Directly modify the amount (simulating manual DB edit)
-            DB::table('machinery_ledgers')
+            DB::table('machinery_ledger')
                 ->where('id', $testLedger->id)
                 ->update(['amount' => 99999]); // Clearly wrong value
 
@@ -2510,7 +2510,7 @@ class MachineryThinkerTest extends Command
                 $originalBalance = $lastEntry->running_balance;
 
                 // Corrupt the running balance
-                DB::table('machinery_ledgers')
+                DB::table('machinery_ledger')
                     ->where('id', $lastEntry->id)
                     ->update(['running_balance' => $originalBalance + 10000]);
 
@@ -2539,7 +2539,7 @@ class MachineryThinkerTest extends Command
                 );
 
                 // Restore original balance
-                DB::table('machinery_ledgers')
+                DB::table('machinery_ledger')
                     ->where('id', $lastEntry->id)
                     ->update(['running_balance' => $originalBalance]);
 
@@ -2796,7 +2796,7 @@ class MachineryThinkerTest extends Command
             $originalType = $ledgerEntry->ledger_type;
 
             // Attempt 1: Try to update amount (simulating direct DB edit)
-            $updateAttempt = DB::table('machinery_ledgers')
+            $updateAttempt = DB::table('machinery_ledger')
                 ->where('id', $ledgerEntry->id)
                 ->update(['amount' => 99999]);
 
@@ -2806,14 +2806,14 @@ class MachineryThinkerTest extends Command
 
             if (!$wasBlocked) {
                 // Restore the value for clean state
-                DB::table('machinery_ledgers')
+                DB::table('machinery_ledger')
                     ->where('id', $ledgerEntry->id)
                     ->update(['amount' => $originalAmount]);
                 $this->warn("⚠️  Direct DB update succeeded but was detected - no DB-level immutability constraint");
             }
 
             // Attempt 2: Try to change ledger_type
-            $typeUpdate = DB::table('machinery_ledgers')
+            $typeUpdate = DB::table('machinery_ledger')
                 ->where('id', $ledgerEntry->id)
                 ->update(['ledger_type' => 'payable']);
 
@@ -2821,7 +2821,7 @@ class MachineryThinkerTest extends Command
             $typeBlocked = ($typeModified->ledger_type === $originalType);
 
             if (!$typeBlocked) {
-                DB::table('machinery_ledgers')
+                DB::table('machinery_ledger')
                     ->where('id', $ledgerEntry->id)
                     ->update(['ledger_type' => $originalType]);
             }
@@ -2878,7 +2878,7 @@ class MachineryThinkerTest extends Command
                     $modelProtected = true;
                 } else {
                     $this->warn("⚠️  Model allowed update - restoring value");
-                    DB::table('machinery_ledgers')
+                    DB::table('machinery_ledger')
                         ->where('id', $testLedger->id)
                         ->update(['amount' => $originalAmount]);
                     $modelProtected = false;

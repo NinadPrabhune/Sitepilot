@@ -56,13 +56,66 @@
             </tr>
 
             
-            <tr @if($totalDays == 1) style="display:none;" @endif>
-                <th>{{ __('Days Approved') }}</th>
-                <td><input type="number" name="approved_days" id="approved_days" class="form-control "
-                           placeholder="Days Approved" min="1" max="{{ $totalDays }}" value="{{ $totalDays }}">
-                @error('approved_days')
-                    <span class="text-danger">{{ $message }}</span>
-                @enderror
+            <!-- Date-wise Approval Section -->
+            <tr>
+                <th>{{ __('Date-wise Approval') }}</th>
+                <td>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered" id="dateApprovalTable">
+                            <thead>
+                                <tr>
+                                    <th>{{ __('Date') }}</th>
+                                    <th>{{ __('Day') }}</th>
+                                    <th>{{ __('Status') }}</th>
+                                    <th>{{ __('Remarks') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $startDate = \Carbon\Carbon::parse($leave->start_date);
+                                    $endDate = \Carbon\Carbon::parse($leave->end_date);
+                                    $currentDate = $startDate;
+                                @endphp
+                                @while($currentDate <= $endDate)
+                                    <tr data-date="{{ $currentDate->format('Y-m-d') }}">
+                                        <td>{{ company_date_formate($currentDate->format('Y-m-d')) }}</td>
+                                        <td>{{ $currentDate->format('l') }}</td>
+                                        <td>
+                                            <select name="approved_dates[{{ $currentDate->format('Y-m-d') }}][status]" 
+                                                    class="form-select form-select-sm date-status-select">
+                                                <option value="approved" {{ ($existingDates[$currentDate->format('Y-m-d')] ?? null) === 'approved' ? 'selected' : '' }}>{{ __('Approve') }}</option>
+                                                <option value="rejected" {{ ($existingDates[$currentDate->format('Y-m-d')] ?? null) === 'rejected' ? 'selected' : '' }}>{{ __('Reject') }}</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" 
+                                                   name="approved_dates[{{ $currentDate->format('Y-m-d') }}][remarks]" 
+                                                   class="form-control form-control-sm" 
+                                                   placeholder="{{ __('Optional remarks') }}">
+                                        </td>
+                                    </tr>
+                                    @php($currentDate->addDay())
+                                @endwhile
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-success" id="approveAllBtn">
+                            {{ __('Approve All') }}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" id="rejectAllBtn">
+                            {{ __('Reject All') }}
+                        </button>
+                    </div>
+                    
+                    <!-- Summary -->
+                    <div class="mt-2 p-2 bg-light rounded">
+                        <strong>{{ __('Approval Summary') }}:</strong>
+                        <span id="approvedCount">0</span> {{ __('approved') }},
+                        <span id="rejectedCount">{{ $totalDays }}</span> {{ __('rejected') }}
+                    </div>
                 </td>
             </tr>
             
@@ -83,15 +136,15 @@
     </div>
 </div>
 
-@if ($leave->status == 'Pending')
+
     <div class="modal-footer">
         <!-- All buttons are type="button" -->
         <input type="button" value="{{ __('Approved') }}" class="btn btn-primary" id="approveBtn">
         <input type="button" value="{{ __('Reject') }}" class="btn btn-danger" id="rejectBtn">
-        <input type="button" value="{{ __('Partially Approved') }}" class="btn btn-warning me-2" @if($totalDays == 1) style="display:none;" @endif id="partialBtn">
+        <input type="button" value="{{ __('Partially Approved') }}" class="btn btn-warning me-2" @if($totalDays == 1 || !($allow_partial ?? true)) style="display:none;" @endif id="partialBtn">
         <input type="hidden" name="status" id="statusField">
     </div>
-@endif
+
 
 {{ Form::close() }}
 
@@ -99,44 +152,72 @@
 $(document).ready(function () {
     const $form = $('#leaveActionForm');
     const $statusField = $('#statusField');
-    const $approvedDaysInput = $('#approved_days');
-    const totalDays = parseInt($approvedDaysInput.attr('max'), 10); // from Blade
-
-    // Approved button
-    $('#approveBtn').on('click', function () {
+    const $dateSelects = $('.date-status-select');
+    const totalDays = {{ $totalDays }};
+    
+    // Update summary
+    function updateSummary() {
+        let approved = 0;
+        let rejected = 0;
+        
+        $dateSelects.each(function() {
+            if ($(this).val() === 'approved') approved++;
+            if ($(this).val() === 'rejected') rejected++;
+        });
+        
+        $('#approvedCount').text(approved);
+        $('#rejectedCount').text(rejected);
+    }
+    
+    $dateSelects.on('change', updateSummary);
+    
+    // Approve all
+    $('#approveAllBtn').on('click', function() {
+        $dateSelects.val('approved').trigger('change');
+    });
+    
+    // Reject all
+    $('#rejectAllBtn').on('click', function() {
+        $dateSelects.val('rejected').trigger('change');
+    });
+    
+    // Full approve
+    $('#approveBtn').on('click', function() {
+        $dateSelects.val('approved').trigger('change');
         $statusField.val('Approved');
-        $approvedDaysInput.val(totalDays); // full approval = total days
         $form.submit();
     });
-
-    // Reject button
-    $('#rejectBtn').on('click', function () {
+    
+    // Full reject
+    $('#rejectBtn').on('click', function() {
+        $dateSelects.val('rejected').trigger('change');
         $statusField.val('Reject');
-        $approvedDaysInput.val(0);
         $form.submit();
     });
-
-    // Partially Approved button
-    $('#partialBtn').on('click', function () {
-        const val = parseInt($approvedDaysInput.val(), 10);
-
-        // 🚫 Block partial approval if total days = 1
-        if (totalDays === 1) {
-            alert('Partially Approved is not allowed when total leave days is 1.');
+    
+    // Partial approval
+    $('#partialBtn').on('click', function() {
+        const approvedCount = parseInt($('#approvedCount').text());
+        
+        if (approvedCount === 0) {
+            alert('Please select at least one date to approve for partial approval.');
             return;
         }
-
-        if (!val || val <= 0) {
-            alert('Please enter a valid number of approved days greater than 0 for partial approval.');
-            $approvedDaysInput.focus();
-        } else if (val > totalDays) {
-            alert('Approved days cannot exceed total leave days.');
-            $approvedDaysInput.focus();
+        
+        if (approvedCount === totalDays) {
+            if (!confirm('All dates are approved. This will be a full approval. Continue?')) {
+                return;
+            }
+            $statusField.val('Approved');
         } else {
             $statusField.val('Partially Approved');
-            $form.submit();
         }
+        
+        $form.submit();
     });
+    
+    // Initialize summary
+    updateSummary();
 });
 </script>
 

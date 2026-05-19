@@ -1,14 +1,14 @@
 @extends('layouts.main')
 
 @section('page-title')
-{{ __('Manage Daily Progress Reports') }}
+{{ __('Manage Machinery Reading and Operator Entry') }}
 @endsection
 
 @push('script-page')
 @endpush
 
 @section('page-breadcrumb')
-{{ __('Daily Progress Reports') }}
+{{ __('Machinery Reading and Operator Entry') }}
 @endsection
 
 @section('page-action')

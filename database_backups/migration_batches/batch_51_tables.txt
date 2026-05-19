@@ -1,2 +1,0 @@
-production_safety_locks
-products_log_times

@@ -30,6 +30,12 @@ class Attendance extends Model {
         'workspace',
         'site_id',
         'created_by',
+        'leave_request_id',
+        'leave_request_date_id',
+    ];
+
+    protected $casts = [
+        'date' => 'date',
     ];
 
     protected static function newFactory() {
@@ -38,6 +44,14 @@ class Attendance extends Model {
 
     public function employees() {
         return $this->belongsTo(Employee::class, 'employee_id');
+    }
+
+    public function leaveRequest() {
+        return $this->belongsTo(Leave::class, 'leave_request_id');
+    }
+
+    public function leaveRequestDate() {
+        return $this->belongsTo(LeaveRequestDate::class, 'leave_request_date_id');
     }
 
     // Relationship to Project/Site

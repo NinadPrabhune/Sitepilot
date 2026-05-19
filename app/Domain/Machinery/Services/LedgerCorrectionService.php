@@ -54,7 +54,7 @@ class LedgerCorrectionService
         
         try {
             // Get original ledger entry
-            $originalEntry = DB::table('machinery_ledgers')->where('id', $originalLedgerId)->first();
+            $originalEntry = DB::table('machinery_ledger')->where('id', $originalLedgerId)->first();
             if (!$originalEntry) {
                 throw new \RuntimeException("Original ledger entry not found for ID: {$originalLedgerId}");
             }
@@ -159,8 +159,8 @@ class LedgerCorrectionService
             'workspace_id' => $originalEntry->workspace_id
         ];
         
-        $reversalId = DB::table('machinery_ledgers')->insertGetId($reversalData);
-        return DB::table('machinery_ledgers')->where('id', $reversalId)->first();
+        $reversalId = DB::table('machinery_ledger')->insertGetId($reversalData);
+        return DB::table('machinery_ledger')->where('id', $reversalId)->first();
     }
     
     /**
@@ -201,8 +201,8 @@ class LedgerCorrectionService
             'workspace_id' => $originalEntry->workspace_id
         ];
         
-        $correctedId = DB::table('machinery_ledgers')->insertGetId($correctedData);
-        $correctedEntry = DB::table('machinery_ledgers')->where('id', $correctedId)->first();
+        $correctedId = DB::table('machinery_ledger')->insertGetId($correctedData);
+        $correctedEntry = DB::table('machinery_ledger')->where('id', $correctedId)->first();
         
         // Delay-deactivation: Now safely deactivate old entries after new active entry is created
         self::deactivateCorrectionChain($rootEntryId, $correctedId);
@@ -223,7 +223,7 @@ class LedgerCorrectionService
      */
     public static function getCorrectionHistory(int $referenceId, string $referenceType): array
     {
-        return DB::table('machinery_ledgers')
+        return DB::table('machinery_ledger')
             ->where('reference_id', $referenceId)
             ->where('reference_type', 'LIKE', '%CORRECTED%')
             ->orWhere('reference_type', 'LIKE', '%REVERSAL%')
@@ -259,7 +259,7 @@ class LedgerCorrectionService
      */
     private static function getActiveEntryForMaterial(int $dprId, int $materialId): ?object
     {
-        return DB::table('machinery_ledgers')
+        return DB::table('machinery_ledger')
             ->where('reference_id', $dprId)
             ->where('reference_type', MachineryLedgerService::REFERENCE_TYPE_DPR)
             ->where('metadata->is_active', true)
@@ -280,7 +280,7 @@ class LedgerCorrectionService
      */
     private static function correctionExists(string $correctionHash): bool
     {
-        return DB::table('machinery_ledgers')
+        return DB::table('machinery_ledger')
             ->where('metadata->correction_hash', $correctionHash)
             ->exists();
     }
@@ -290,7 +290,7 @@ class LedgerCorrectionService
      */
     private static function deactivateCorrectionChain(int $rootEntryId, int $excludeEntryId = null): void
     {
-        $query = DB::table('machinery_ledgers')
+        $query = DB::table('machinery_ledger')
             ->where(function ($query) use ($rootEntryId) {
                 $query->where('id', $rootEntryId)
                       ->orWhere('metadata->root_entry_id', $rootEntryId);
@@ -308,7 +308,7 @@ class LedgerCorrectionService
      */
     public static function getActiveEntry(int $rootEntryId): ?object
     {
-        return DB::table('machinery_ledgers')
+        return DB::table('machinery_ledger')
             ->where(function ($query) use ($rootEntryId) {
                 $query->where('id', $rootEntryId)
                       ->orWhere('metadata->root_entry_id', $rootEntryId);

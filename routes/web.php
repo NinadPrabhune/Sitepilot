@@ -587,6 +587,7 @@ Route::prefix('daily-progress-reports')->name('daily-progress-reports.')->group(
     Route::get('/create', [DailyProgressReportController::class, 'create'])->name('create');
     Route::post('/', [DailyProgressReportController::class, 'store'])->name('store');
     Route::get('/get-previous-reading', [DailyProgressReportController::class, 'getPreviousReading'])->name('get-previous-reading');
+    Route::post('/check-duplicate', [DailyProgressReportController::class, 'checkDuplicate'])->name('check-duplicate');
     Route::get('/{id}', [DailyProgressReportController::class, 'show'])->name('show');
     Route::get('/{id}/edit', [DailyProgressReportController::class, 'edit'])->name('edit');
     Route::put('/{id}', [DailyProgressReportController::class, 'update'])->name('update');
@@ -786,7 +787,7 @@ Route::get('/ajax/get-stock-by-site-for-material-transfer-edit', [MaterialTransf
 
 Route::get('/ajax/get-stock-by-site-for-daily-consumption', [DailyConsumptionController::class, 'getStockBySiteForDailyConsumption'])->name('ajax.getStockBySiteForDailyConsumption');
 
-Route::get('/ajax/get-stock-by-site-for-daily-consumption-edit', [DailyConsumptionController::class, 'edit'])->name('ajax.getStockBySiteForDailyConsumptionEdit');
+Route::get('/ajax/get-stock-by-site-for-daily-consumption-edit', [DailyConsumptionController::class, 'getStockBySiteForDailyConsumptionEdit'])->name('ajax.getStockBySiteForDailyConsumptionEdit');
 
 
 
@@ -853,7 +854,6 @@ Route::resource('general_transfer', GeneralTransferController::class);
 
 
 Route::get('/daily-progress-reports-new/createdpr/{activity_completed_id?}', [DailyProgressReportController::class, 'createdpr'])->name('daily-progress-reports-new.createdpr');
-Route::post('/daily-progress-reports/check-duplicate', [DailyProgressReportController::class, 'checkDuplicate'])->name('daily-progress-reports.check-duplicate');
 
 //Route::get('/test-notification', function () {
 //    event(new \App\Events\UserNotificationEvent(auth()->id(), [

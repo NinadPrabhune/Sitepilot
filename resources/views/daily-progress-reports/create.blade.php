@@ -1,6 +1,6 @@
 {{-- resources/views/daily-progress-reports/create.blade.php --}}
 
-{{ Form::open(['route' => 'daily-progress-reports.store', 'class' => 'needs-validation', 'novalidate']) }}
+{{ Form::open(['route' => 'daily-progress-reports.store', 'class' => 'needs-validation dpr-form', 'novalidate', 'id' => 'dpr-form']) }}
 <div class="modal-body">
     {{-- Error Messages --}}
     @if($errors->any())
@@ -291,6 +291,48 @@ $(document).ready(function () {
             unitLabel.text('unit');
             itemStock.val(0);
             itemStockUnit.text('unit');
+        }
+    });
+
+    // Enhanced form submission handling
+    $('#dpr-form').on('submit', function(e) {
+        // Perform validation first
+        const isValid = window.validateReadings();
+        if (!isValid) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Show general error message
+            const errorMessage = 'Please fix validation errors before submitting the form.';
+            
+            // Remove existing alerts
+            $('.alert-danger').remove();
+            
+            // Find appropriate container
+            const container = $('.modal-body').length > 0 ? $('.modal-body').first() : $('form').first();
+            
+            if (container.length > 0) {
+                const alertDiv = $('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                    `${errorMessage}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>` +
+                    '</div>');
+                
+                container.prepend(alertDiv);
+                
+                // Auto-remove after 5 seconds
+                setTimeout(function() {
+                    alertDiv.fadeOut(500, function() {
+                        $(this).remove();
+                    });
+                }, 5000);
+                
+                // Scroll to first error
+                const firstError = $('.is-invalid').first();
+                if (firstError.length > 0) {
+                    firstError[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
+            }
+            return;
         }
     });
 });

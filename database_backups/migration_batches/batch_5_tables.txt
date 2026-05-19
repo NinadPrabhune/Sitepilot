@@ -1,4 +1,0 @@
-advance_audit_logs
-advance_utilizations
-allowance_options
-allowance_taxs

@@ -1,6 +1,0 @@
-spents
-stages
-states
-stock_reports
-stock_transactions
-sub_tasks

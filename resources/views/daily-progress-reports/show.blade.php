@@ -1,11 +1,11 @@
 @extends('layouts.main')
 
 @section('page-title')
-    {{ __('Daily Progress Report Details') }}
+    {{ __('Machinery Reading and Operator Entry Details') }}
 @endsection
 
 @section('page-breadcrumb')
-    {{ __('Daily Progress Report Details') }}
+    {{ __('Machinery Reading and Operator Entry Details') }}
 @endsection
 
 @section('page-action')
@@ -159,7 +159,7 @@
                 @else
                     <div class="alert alert-warning">
                         <strong>⚠️ No ledger entry linked</strong>
-                        <br>This Daily Progress Report has no associated ledger entry. The financial impact is not visible in the ledger.
+                        <br>This Machinery Reading and Operator Entry has no associated ledger entry. The financial impact is not visible in the ledger.
                     </div>
                 @endif
             </div>

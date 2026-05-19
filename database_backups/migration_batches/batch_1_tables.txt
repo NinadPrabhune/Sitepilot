@@ -1,3 +1,0 @@
-daily_progress_reports
-machineries
-payments_module

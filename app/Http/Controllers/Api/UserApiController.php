@@ -32,22 +32,41 @@ use Illuminate\Support\Facades\Storage;
 class UserApiController extends Controller
 {
     /**
-     * =====================================================
-     * USER LISTING APIs
-     * =====================================================
+     * @group Users
+     * Endpoints for user management including CRUD operations, profile, and password management
      */
 
     /**
-     * GET /api/users
-     * List all users with optional filters
-     * 
-     * Query Params:
-     * - name: Filter by name
-     * - email: Filter by email
-     * - role: Filter by role ID
-     * - workspace_id: Filter by workspace
-     * - page: Page number (default 1)
-     * - per_page: Items per page (default 15)
+     * List Users
+     *
+     * Returns a paginated list of users. Filters by name, email, role, and workspace.
+     * Super admins see only company-type users. Regular admins see only their own workspace.
+     *
+     * @authenticated
+     * @requiredPermission user manage
+     *
+     * @queryParam name string optional Filter users by name (partial match). Example: John
+     * @queryParam email string optional Filter users by email (partial match). Example: john@example.com
+     * @queryParam role integer optional Filter by role ID. Example: 1
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam per_page integer optional Items per page. Defaults to 15. Example: 15
+     *
+     * @response status=200 scenario="Users retrieved successfully"
+     * {
+     *   "status": true,
+     *   "message": "Users retrieved successfully",
+     *   "data": {
+     *     "users": [{ "id": 1, "name": "John Doe", "email": "john@example.com", ... }],
+     *     "pagination": {
+     *       "current_page": 1,
+     *       "total_pages": 5,
+     *       "total_items": 50,
+     *       "per_page": 15
+     *     }
+     *   }
+     * }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function index(Request $request)
     {
@@ -103,8 +122,22 @@ class UserApiController extends Controller
     }
 
     /**
-     * GET /api/users/create-data
-     * Get data needed for creating a user (roles list)
+     * Get Create-User Form Data
+     *
+     * Returns the list of available roles that can be assigned to a new user.
+     * Used to populate the role selector on the user creation form.
+     *
+     * @authenticated
+     * @requiredPermission user create
+     *
+     * @response status=200 scenario="Roles retrieved successfully"
+     * {
+     *   "status": true,
+     *   "message": "Roles data retrieved successfully",
+     *   "data": { "roles": { "1": "staff", "2": "admin" } }
+     * }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function createData(Request $request)
     {
@@ -131,18 +164,34 @@ class UserApiController extends Controller
     }
 
     /**
-     * POST /api/users
-     * Create a new user
-     * 
-     * Form Data:
-     * - name (required): User name
-     * - email (required): User email
-     * - mobile_no (optional): Mobile number
-     * - password (required if login enabled): Password
-     * - password_switch (optional): 'on' to enable login
-     * - roles (required): Role ID
-     * - avatar (optional): Profile image file
-     * - workspace_id (optional): Workspace ID
+     * Create User
+     *
+     * Register a new user in the system. Sends a verification email if email
+     * verification is enabled in company settings. The user is assigned the
+     * role specified by `roles`.
+     *
+     * @authenticated
+     * @requiredPermission user create
+     *
+     * @bodyParam name string required User full name. Example: John Doe
+     * @bodyParam email string required Unique email address. Example: john@example.com
+     * @bodyParam mobile_no string optional Mobile number. Example: +1234567890
+     * @bodyParam password string required if password_switch=on User password (min 6 chars). Example: secret123
+     * @bodyParam password_switch string optional Enable password-based login. Accepts "on". Example: on
+     * @bodyParam roles integer required Role ID to assign. Example: 1
+     * @bodyParam avatar file optional Profile image (jpeg/png/jpg/gif, max 2 MB). No-example
+     * @bodyParam workspace_id integer optional Workspace ID. Example: 1
+     *
+     * @response status=201 scenario="User created successfully"
+     * {
+     *   "status": true,
+     *   "message": "User created successfully",
+     *   "data": { "user": { "id": 3, "name": "John Doe", "email": "john@example.com", ... } }
+     * }
+     * @response status=422 scenario="Validation error"
+     * { "status": false, "message": "The name field is required.", "data": {...} }
+     * @response status=403 scenario="Permission denied or plan limit reached"
+     * { "status": false, "message": "Permission denied" }
      */
     public function store(Request $request)
     {
@@ -267,8 +316,29 @@ class UserApiController extends Controller
     }
 
     /**
-     * GET /api/users/{id}
-     * Show a specific user
+     * Show User
+     *
+     * Retrieve details of a specific user by ID, including their assigned role.
+     * Sensitive fields (password, 2FA tokens, remember_token) are excluded.
+     *
+     * @authenticated
+     * @requiredPermission user manage
+     *
+     * @urlParam id integer required User ID. Example: 1
+     *
+     * @response status=200 scenario="User retrieved successfully"
+     * {
+     *   "status": true,
+     *   "message": "User retrieved successfully",
+     *   "data": {
+     *     "user": { "id": 1, "name": "John Doe", "email": "john@example.com", ... },
+     *     "role": { "id": 1, "name": "staff" }
+     *   }
+     * }
+     * @response status=404 scenario="User not found"
+     * { "status": false, "message": "User not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function show(Request $request, $id)
     {
@@ -298,8 +368,29 @@ class UserApiController extends Controller
     }
 
     /**
-     * GET /api/users/{id}/edit
-     * Get user data for editing
+     * Get User Edit Data
+     *
+     * Retrieve user details and available roles for editing.
+     * Sensitive fields are excluded from the response.
+     *
+     * @authenticated
+     * @requiredPermission user edit
+     *
+     * @urlParam id integer required User ID. Example: 1
+     *
+     * @response status=200 scenario="User data retrieved successfully"
+     * {
+     *   "status": true,
+     *   "message": "User data retrieved successfully",
+     *   "data": {
+     *     "user": { "id": 1, "name": "John Doe", "email": "john@example.com", ... },
+     *     "roles": { "1": "staff", "2": "admin" }
+     *   }
+     * }
+     * @response status=404 scenario="User not found"
+     * { "status": false, "message": "User not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function edit(Request $request, $id)
     {
@@ -330,14 +421,30 @@ class UserApiController extends Controller
     }
 
     /**
-     * PUT /api/users/{id}
-     * Update a user
-     * 
-     * Form Data:
-     * - name (required): User name
-     * - email (required): User email
-     * - mobile_no (optional): Mobile number
-     * - roles (optional): Role ID
+     * Update User
+     *
+     * Update an existing user's name, email, mobile number, and optionally their role.
+     *
+     * @authenticated
+     * @requiredPermission user edit
+     *
+     * @urlParam id integer required User ID. Example: 1
+     *
+     * @bodyParam name string required Updated user name. Example: John Doe
+     * @bodyParam email string required Updated email address (unique within workspace). Example: john@example.com
+     * @bodyParam mobile_no string optional Updated mobile number. Example: +1234567890
+     * @bodyParam roles integer optional New role ID to assign. Example: 2
+     *
+     * @response status=200 scenario="User updated successfully"
+     * {
+     *   "status": true,
+     *   "message": "User updated successfully",
+     *   "data": { "user": { "id": 1, "name": "John Doe", "email": "john@example.com", ... } }
+     * }
+     * @response status=404 scenario="User not found"
+     * { "status": false, "message": "User not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function update(Request $request, $id)
     {
@@ -402,8 +509,26 @@ class UserApiController extends Controller
     }
 
     /**
-     * DELETE /api/users/{id}
-     * Delete a user
+     * Delete a user. Deletes all records created by this user across all tables.
+     * Fails if the associated employee record has attendance history.
+     *
+     * @authenticated
+     * @requiredPermission user delete
+     *
+     * @urlParam id integer required User ID. Example: 1
+     *
+     * @response status=200 scenario="User deleted successfully"
+     * {
+     *   "status": true,
+     *   "message": "User deleted successfully",
+     *   "data": []
+     * }
+     * @response status=400 scenario="Employee has attendance records"
+     * { "status": false, "message": "Cannot delete user. Employee has attendance records." }
+     * @response status=404 scenario="User not found"
+     * { "status": false, "message": "No query results for model" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function destroy(Request $request, $id)
     {
@@ -458,8 +583,24 @@ class UserApiController extends Controller
      */
 
     /**
-     * GET /api/users/profile
-     * Get current authenticated user's profile
+     * Get User Profile
+     *
+     * Retrieve the authenticated user's profile data.
+     * Sensitive fields (password, 2FA secrets, remember_token) are excluded.
+     *
+     * @authenticated
+     * @requiredPermission user profile manage
+     *
+     * @response status=200 scenario="Profile retrieved successfully"
+     * {
+     *   "status": true,
+     *   "message": "Profile retrieved successfully",
+     *   "data": {
+     *     "user": { "id": 1, "name": "John Doe", "email": "john@example.com", ... }
+     *   }
+     * }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function profile(Request $request)
     {
@@ -480,14 +621,28 @@ class UserApiController extends Controller
     }
 
     /**
-     * PUT /api/users/profile
-     * Update current authenticated user's profile
-     * 
-     * Form Data:
-     * - name (required): User name
-     * - email (required): User email
-     * - mobile_no (optional): Mobile number
-     * - avatar (optional): Profile image file
+     * Update Profile
+     *
+     * Update the authenticated user's own name, email, mobile number, and optionally avatar.
+     *
+     * @authenticated
+     * @requiredPermission user profile manage
+     *
+     * @bodyParam name string required User full name. Example: John Doe
+     * @bodyParam email string required Updated email address. Example: john@example.com
+     * @bodyParam mobile_no string optional Updated mobile number. Example: +1234567890
+     * @bodyParam avatar file optional Profile image (jpeg/png/jpg/gif, max 2 MB). No-example
+     *
+     * @response status=200 scenario="Profile updated successfully"
+     * {
+     *   "status": true,
+     *   "message": "Profile updated successfully",
+     *   "data": { "user": { "id": 1, "name": "John Doe", "email": "john@example.com", ... } }
+     * }
+     * @response status=422 scenario="Validation error"
+     * { "status": false, "message": "...", "data": {...} }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function editprofile(Request $request)
     {
@@ -587,11 +742,25 @@ class UserApiController extends Controller
     }
 
     /**
-     * PUT /api/users/profile/avatar
-     * Update only user avatar
-     * 
-     * Form Data:
-     * - avatar (required): Profile image file
+     * Update Avatar
+     *
+     * Replace the authenticated user's profile avatar image.
+     *
+     * @authenticated
+     * @requiredPermission user profile manage
+     *
+     * @bodyParam avatar file required Profile image (jpeg/png/jpg/gif, max 2 MB). No-example
+     *
+     * @response status=200 scenario="Avatar updated successfully"
+     * {
+     *   "status": true,
+     *   "message": "Avatar updated successfully",
+     *   "data": { "avatar": "https://..." }
+     * }
+     * @response status=400 scenario="No avatar file provided"
+     * { "status": false, "message": "No avatar file provided" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function updateAvatar(Request $request)
     {
@@ -652,13 +821,30 @@ class UserApiController extends Controller
     }
 
     /**
-     * PUT /api/users/password
-     * Update current user's password
-     * 
-     * Form Data:
-     * - current_password (required): Current password
-     * - new_password (required): New password (min 6 chars)
-     * - confirm_password (required): Confirm new password
+     * Change Own Password
+     *
+     * Update the authenticated user's password. Requires verification of the current password.
+     * The new password must be at least 6 characters and must match the confirmation field.
+     *
+     * @authenticated
+     * @requiredPermission user profile manage
+     *
+     * @bodyParam current_password string required Current password for verification. Example: oldpass123
+     * @bodyParam new_password string required New password (min 6 characters). Example: newpass456
+     * @bodyParam confirm_password string required Must match new_password. Example: newpass456
+     *
+     * @response status=200 scenario="Password updated successfully"
+     * {
+     *   "status": true,
+     *   "message": "Password updated successfully",
+     *   "data": []
+     * }
+     * @response status=400 scenario="Current password is incorrect"
+     * { "status": false, "message": "Please enter correct current password" }
+     * @response status=422 scenario="Validation error"
+     * { "status": false, "message": "..." }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function updatePassword(Request $request)
     {
@@ -697,8 +883,26 @@ class UserApiController extends Controller
      */
 
     /**
-     * GET /api/users/{id}/password
-     * Get password reset form data
+     * Get Password Reset Form Data (Admin)
+     *
+     * Retrieve a specific user's basic profile data to prepare for an admin-initiated password reset.
+     * The `id` path parameter must be a Laravel-encrypted user ID (see `Crypt::decrypt`).
+     *
+     * @authenticated
+     * @requiredPermission user reset password
+     *
+     * @urlParam id string required Encrypted user ID (Laravel Crypt). Example: eyJpZCI6MX0=
+     *
+     * @response status=200 scenario="User data retrieved successfully"
+     * {
+     *   "status": true,
+     *   "message": "User data retrieved successfully",
+     *   "data": { "user": { "id": 1, "name": "John Doe", "email": "john@example.com", ... } }
+     * }
+     * @response status=404 scenario="User not found"
+     * { "status": false, "message": "User not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function UserPassword(Request $request, $id)
     {
@@ -723,13 +927,30 @@ class UserApiController extends Controller
     }
 
     /**
-     * PUT /api/users/{id}/password
-     * Reset user's password (Admin)
-     * 
-     * Form Data:
-     * - password (required): New password
-     * - password_confirmation (required): Confirm password
-     * - login_enable (optional): Enable login after reset
+     * Reset User Password (Admin)
+     *
+     * Admin-initiated password reset for a specific user. Optionally enables the
+     * user's login after the reset when `login_enable` is provided.
+     *
+     * @authenticated
+     * @requiredPermission user reset password
+     *
+     * @urlParam id integer required User ID. Example: 1
+     *
+     * @bodyParam password string required New password (min 6 characters, must be confirmed). Example: newpass456
+     * @bodyParam password_confirmation string required Must match the new password. Example: newpass456
+     * @bodyParam login_enable integer optional Set to 1 to enable the user's account after reset. Example: 1
+     *
+     * @response status=200 scenario="Password reset successfully"
+     * {
+     *   "status": true,
+     *   "message": "Password reset successfully",
+     *   "data": []
+     * }
+     * @response status=404 scenario="User not found"
+     * { "status": false, "message": "User not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function UserPasswordReset(Request $request, $id)
     {
@@ -770,8 +991,24 @@ class UserApiController extends Controller
     }
 
     /**
-     * POST /api/users/{id}/login-manage
-     * Enable/disable user login
+     * Toggle User Login
+     *
+     * Enable or disable login access for a specific user.
+     * The `id` path parameter must be a Laravel-encrypted user ID.
+     *
+     * @authenticated
+     * @requiredPermission user reset password
+     *
+     * @urlParam id string required Encrypted user ID (Laravel Crypt). Example: eyJpZCI6MX0=
+     *
+     * @response status=200 scenario="Login enabled"
+     * { "status": true, "message": "User login enabled successfully", "data": [] }
+     * @response status=200 scenario="Login disabled"
+     * { "status": true, "message": "User login disabled successfully", "data": [] }
+     * @response status=404 scenario="User not found"
+     * { "status": false, "message": "User not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function LoginManage(Request $request, $id)
     {
@@ -808,8 +1045,19 @@ class UserApiController extends Controller
      */
 
     /**
-     * GET /api/users/import
-     * Get import form data
+     * Get User Import Form Data
+     *
+     * Retrieve form configuration data for the user CSV import screen.
+     * No additional data is returned — this endpoint confirms that the
+     * authenticated user has permission to access the import feature.
+     *
+     * @authenticated
+     * @requiredPermission user import
+     *
+     * @response status=200 scenario="Import form data retrieved successfully"
+     * { "status": true, "message": "Import form data retrieved successfully", "data": {} }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function fileImportExport(Request $request)
     {
@@ -825,11 +1073,30 @@ class UserApiController extends Controller
     }
 
     /**
-     * POST /api/users/import-preview
-     * Preview CSV import file
-     * 
-     * Form Data:
-     * - file (required): CSV file
+     * Preview CSV Import File
+     *
+     * Validate and extract the header row and available roles from a user CSV import file.
+     * Returns column names extracted from the header row so the client can map them
+     * before submitting the actual import.
+     *
+     * @authenticated
+     * @requiredPermission user import
+     *
+     * @bodyParam file file required CSV file to preview. No-example
+     *
+     * @response status=200 scenario="File preview data returned"
+     * {
+     *   "status": true,
+     *   "message": "File preview data",
+     *   "data": {
+     *     "columns": ["name", "email", "role"],
+     *     "roles": { "1": "staff", "2": "admin" }
+     *   }
+     * }
+     * @response status=400 scenario="No file selected or not a CSV"
+     * { "status": false, "message": "Please select a file" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function fileImport(Request $request)
     {
@@ -871,14 +1138,34 @@ class UserApiController extends Controller
     }
 
     /**
-     * POST /api/users/import
-     * Import users from CSV
-     * 
-     * Form Data:
-     * - name (required, array): Name column index
-     * - email (required, array): Email column index
-     * - role (required, array): Role column index
-     * - file_data (required): CSV data
+     * Import Users from CSV
+     *
+     * Bulk-create users from previously validated CSV data.
+     * `file_data` should be a JSON-encoded array of row arrays as returned by the
+     * import-preview step. Returns counts of successfully imported and failed rows.
+     *
+     * @authenticated
+     * @requiredPermission user import
+     *
+     * @bodyParam file_data json required CSV data as a JSON-encoded array of rows. Example: [{"name":"John Doe","email":"john@example.com"}]
+     * @bodyParam name array required Column index mapping for name field. Example: ["0"]
+     * @bodyParam email array required Column index mapping for email field. Example: ["1"]
+     * @bodyParam role array required Column index mapping for role field. Example: ["2"]
+     *
+     * @response status=200 scenario="Import completed"
+     * {
+     *   "status": true,
+     *   "message": "Import completed",
+     *   "data": {
+     *     "total_imported": 5,
+     *     "imported": [{ "row": 1, "email": "john@example.com", "name": "John Doe" }],
+     *     "failed": []
+     *   }
+     * }
+     * @response status=400 scenario="No data provided"
+     * { "status": false, "message": "No data provided" }
+     * @response status=403 scenario="Permission denied or plan limit reached"
+     * { "status": false, "message": "Permission denied" }
      */
     public function UserImportdata(Request $request)
     {
@@ -987,12 +1274,31 @@ class UserApiController extends Controller
      */
 
     /**
-     * GET /api/users/logs
-     * Get user login history
-     * 
-     * Query Params:
-     * - month (optional): Filter by month
-     * - users (optional): Filter by user ID
+     * Get User Login History
+     *
+     * Return a chronological list of login records. Super admins see all company
+     * logins; `user login manage` permission holders see their workspace's logins;
+     * all others see only their own logins.
+     *
+     * @authenticated
+     * @requiredPermission user logs history
+     *
+     * @queryParam month string optional Filter by month name. Defaults to current month. Example: January
+     * @queryParam users integer optional Filter by specific user ID. Example: 1
+     *
+     * @response status=200 scenario="Logs retrieved successfully"
+     * {
+     *   "status": true,
+     *   "message": "User logs retrieved successfully",
+     *   "data": {
+     *     "logs": [
+     *       { "id": 1, "user_id": 1, "user_name": "John Doe", "date": "2025-01-01", "login_time": "09:00:00", ... }
+     *     ],
+     *     "filter_users": { "1": "John Doe", "2": "Jane" }
+     *   }
+     * }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function UserLogHistory(Request $request)
     {
@@ -1046,8 +1352,22 @@ class UserApiController extends Controller
     }
 
     /**
-     * GET /api/users/logs/{id}
-     * View specific login log
+     * View Login Log
+     *
+     * Retrieve a single user login record by its ID.
+     *
+     * @authenticated
+     *
+     * @urlParam id integer required Login log record ID. Example: 1
+     *
+     * @response status=200 scenario="Log retrieved successfully"
+     * {
+     *   "status": true,
+     *   "message": "Log retrieved successfully",
+     *   "data": { "log": { "id": 1, "user_id": 1, "date": "2025-01-01", ... } }
+     * }
+     * @response status=404 scenario="Log not found"
+     * { "status": false, "message": "Log not found" }
      */
     public function UserLogView(Request $request, $id)
     {
@@ -1067,8 +1387,19 @@ class UserApiController extends Controller
     }
 
     /**
-     * DELETE /api/users/logs/{id}
-     * Delete login log
+     * Delete Login Log
+     *
+     * Permanently remove a specific login history record.
+     *
+     * @authenticated
+     * @requiredPermission user delete
+     *
+     * @urlParam id integer required Login log record ID. Example: 1
+     *
+     * @response status=200 scenario="Log deleted successfully"
+     * { "status": true, "message": "Log deleted successfully", "data": [] }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
      */
     public function UserLogDestroy(Request $request, $id)
     {
@@ -1092,8 +1423,23 @@ class UserApiController extends Controller
      */
 
     /**
-     * POST /api/users/{id}/impersonate
-     * Impersonate as another user
+     * Impersonate User
+     *
+     * Impersonate another user as the currently authenticated user.
+     * The authenticated user's session will be temporarily replaced by the target user.
+     *
+     * @authenticated
+     *
+     * @urlParam id integer required Target user ID to impersonate. Example: 2
+     *
+     * @response status=200 scenario="Impersonation started"
+     * {
+     *   "status": true,
+     *   "message": "Now impersonating user",
+     *   "data": { "impersonated_user": 2 }
+     * }
+     * @response status=404 scenario="Target user not found"
+     * { "status": false, "message": "User not found" }
      */
     public function LoginWithCompany(Request $request, $id)
     {
@@ -1118,8 +1464,14 @@ class UserApiController extends Controller
     }
 
     /**
-     * POST /api/users/impersonate-exit
-     * Exit impersonation
+     * Exit Impersonation
+     *
+     * Stop impersonating and return to the original authenticated user's session.
+     *
+     * @authenticated
+     *
+     * @response status=200 scenario="Impersonation exited"
+     * { "status": true, "message": "Impersonation exited", "data": [] }
      */
     public function ExitCompany(Request $request)
     {
@@ -1150,8 +1502,28 @@ class UserApiController extends Controller
      */
 
     /**
-     * GET /api/users/{id}/company-info
-     * Get company info with user/workspace counters
+     * Get Company Info
+     *
+     * Retrieve company-level aggregation data: user counts and workspace counters
+     * broken down per workspace.
+     *
+     * @authenticated
+     *
+     * @urlParam id integer required Company/User ID. Example: 1
+     *
+     * @response status=200 scenario="Company info retrieved successfully"
+     * {
+     *   "status": true,
+     *   "message": "Company info retrieved successfully",
+     *   "data": {
+     *     "users_data": {
+     *       "Workspace A": { "workspace_id": 1, "total_users": 10, "disable_users": 2, "active_users": 8 }
+     *     },
+     *     "workspce_data": { "total_workspace": 3, "disable_workspace": 0, "active_workspace": 3 }
+     *   }
+     * }
+     * @response status=404 scenario="Company not found"
+     * { "status": false, "message": "Company not found" }
      */
     public function CompnayInfo(Request $request, $id)
     {
@@ -1172,14 +1544,29 @@ class UserApiController extends Controller
     }
 
     /**
-     * POST /api/users/enable-disable
-     * Enable/disable user or workspace
-     * 
-     * Form Data:
-     * - id (required): User or Workspace ID
-     * - name (required): 'user' or 'workspace'
-     * - company_id (required): Company ID
-     * - is_disable (required): 0 or 1
+     * Enable or Disable User / Workspace
+     *
+     * Toggle the `is_disable` status of a user or workspace.
+     * Active workspaces cannot be disabled.
+     *
+     * @authenticated
+     *
+     * @bodyParam id integer required User or Workspace ID to toggle. Example: 1
+     * @bodyParam name string required Target type: "user" or "workspace". Example: user
+     * @bodyParam company_id integer required Company/owner user ID. Example: 1
+     * @bodyParam is_disable integer required 0 to disable, 1 to enable. Example: 1
+     *
+     * @response status=200 scenario="Enabled successfully"
+     * {
+     *   "status": "User/Workspace enabled successfully",
+     *   "data": { "users_data": {...}, "workspce_data": {...} }
+     * }
+     * @response status=200 scenario="Disabled successfully"
+     * { "status": "User/Workspace disabled successfully", "data": {...} }
+     * @response status=400 scenario="Active workspace cannot be disabled or invalid request"
+     * { "status": false, "message": "Active Workspace cannot be disabled" }
+     * @response status=400 scenario="Operation failed"
+     * { "status": false, "message": "Operation failed" }
      */
     public function UserUnable(Request $request)
     {
@@ -1187,6 +1574,7 @@ class UserApiController extends Controller
             if (empty($request->id) || empty($request->company_id)) {
                 return $this->jsonResponse(false, 'Invalid request', [], 400);
             }
+
 
             if ($request->name == 'user') {
                 User::where('id', $request->id)->update(['is_disable' => $request->is_disable]);
@@ -1274,8 +1662,18 @@ class UserApiController extends Controller
     }
 
     /**
-     * POST /api/users/{id}/verify
-     * Verify user email
+     * Verify User Email
+     *
+     * Mark the user's email address as verified by setting `email_verified_at`.
+     *
+     * @authenticated
+     *
+     * @urlParam id integer required User ID. Example: 1
+     *
+     * @response status=200 scenario="User verified successfully"
+     * { "status": true, "message": "User verified successfully", "data": [] }
+     * @response status=404 scenario="User not found"
+     * { "status": false, "message": "User not found" }
      */
     public function verifeduser(Request $request, $id)
     {

@@ -245,14 +245,22 @@ class SupplierTransaction extends Model
     /**
      * Get current balance for a supplier.
      */
-    public static function getCurrentBalance($supplierId, ?int $siteId = null)
+    public static function getCurrentBalance($supplierId, ?int $siteId = null, ?string $fromDate = null, ?string $toDate = null)
     {
         $query = self::where('supplier_id', $supplierId);
-        
+
         if ($siteId) {
             $query->where('site_id', $siteId);
         }
-        
+
+        if ($fromDate) {
+            $query->whereDate('transaction_date', '>=', $fromDate);
+        }
+
+        if ($toDate) {
+            $query->whereDate('transaction_date', '<=', $toDate);
+        }
+
         $lastTransaction = $query->orderBy('transaction_date', 'desc')
             ->orderBy('id', 'desc')
             ->first();

@@ -224,6 +224,7 @@ class MachineryDataTable extends DataTable {
             Column::make('category_id')->title(__('Category')),
             Column::make('site_id')->title(__('Current Site')),
             Column::make('vehicle_number')->title(__('Vehicle Number')),
+            Column::make('registration_number')->title(__('Registration Number')),
             Column::make('owned_by')->title(__('Ownership')),
             Column::make('operational_status')->title(__('Operational Status')),
         ];

@@ -171,7 +171,7 @@ class DailyProgressReportApiController extends Controller
 
         $siteId = $request->site_id;
 
-        $machinery = Machinery::select('id', 'name', 'owned_by')
+        $machinery = Machinery::select('id', 'name', 'owned_by', 'registration_number')
             ->where('site_id', $siteId)
             ->get();
 

@@ -67,14 +67,20 @@ class PurchaseOrderApiController extends Controller implements \Illuminate\Routi
                 $query->where('site_id', $siteId);
             }
 
-            // Filter by invoicing_status (replaces payment_flag)
+            // Filter by invoicing_status
             if ($request->has('invoicing_status') && !empty($request->invoicing_status)) {
                 $query->where('invoiced_status', $request->invoicing_status);
             }
-
-            // Legacy payment_flag filter for backward compatibility
+            
+            // Legacy payment_flag filter for backward compatibility (maps to invoicing_status)
             if ($request->has('payment_flag') && !empty($request->payment_flag)) {
-                $query->where('payment_flag_deprecated', $request->payment_flag);
+                $statusMap = [
+                    'Pending' => 'not_invoiced',
+                    'Partial Received' => 'partially_invoiced',
+                    'Fully Received' => 'fully_invoiced'
+                ];
+                $mappedStatus = $statusMap[$request->payment_flag] ?? 'not_invoiced';
+                $query->where('invoiced_status', $mappedStatus);
             }
 
             // Filter for invoicing eligible POs only (replaces payment_eligible)

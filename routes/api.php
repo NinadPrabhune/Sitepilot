@@ -33,6 +33,9 @@ use App\Http\Controllers\Api\ActivityApiController;
 use App\Http\Controllers\Api\OpeningStockApiController;
 use App\Http\Controllers\Api\StockLedgerApiController;
 use App\Http\Controllers\Api\SiteStockApiController;
+use App\Http\Controllers\Api\LedgerApiController;
+use App\Http\Controllers\Api\SupplierLedgerReportApiController;
+use App\Http\Controllers\Api\SupplierActivityReportApiController;
 
 use App\Http\Controllers\Api\RolePermissionApiController;
 use App\Http\Controllers\Api\StockReportApiController;
@@ -75,6 +78,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('materials', MaterialApiController::class)->names('api.materials');
     Route::get('materials/{id}/unit', [MaterialApiController::class, 'getUnit']);
     Route::get('materials/category/{categoryId}', [MaterialApiController::class, 'getByCategory']);
+    Route::post('/materials/create-data', [MaterialApiController::class, 'createData']);
     Route::apiResource('material-categories', MaterialCategoryApiController::class)->names('api.material-categories');
     Route::apiResource('units', UnitApiController::class)->names('api.units');
 
@@ -266,6 +270,31 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [SiteStockApiController::class, 'index']);
         Route::get('/export', [SiteStockApiController::class, 'export']);
         Route::post('/create-data', [SiteStockApiController::class, 'createData']);
+    });
+
+    // ─── Machinery Ledger ────────────────────────────────────────────────
+    // Mirrors: GET /ledger (web)
+    Route::prefix('ledger')->name('api.ledger.')->group(function () {
+        Route::get('/', [LedgerApiController::class, 'index'])->name('index');
+        Route::get('/{id}', [LedgerApiController::class, 'show'])->name('show');
+        Route::get('/balance', [LedgerApiController::class, 'balance'])->name('balance');
+        Route::get('/machinery/list', [LedgerApiController::class, 'machineryList'])->name('machinery-list');
+    });
+
+    // ─── Supplier Ledger Report ──────────────────────────────────────────
+    // Mirrors: GET /reports-supplier-ledger (web)
+    Route::prefix('reports/supplier-ledger')->name('api.reports.supplier-ledger.')->group(function () {
+        Route::get('/', [SupplierLedgerReportApiController::class, 'index'])->name('index');
+        Route::get('/balance/{supplier_id}', [SupplierLedgerReportApiController::class, 'balance'])->name('balance');
+        Route::match(['get', 'post'], '/export-pdf', [SupplierLedgerReportApiController::class, 'exportPdf'])->name('export-pdf');
+        Route::match(['get', 'post'], '/export-excel', [SupplierLedgerReportApiController::class, 'exportExcel'])->name('export-excel');
+    });
+
+    // ─── Supplier Activity Report ────────────────────────────────────────
+    // Mirrors: GET /reports-supplier-activity (web)
+    Route::prefix('reports/supplier-activity')->name('api.reports.supplier-activity.')->group(function () {
+        Route::get('/', [SupplierActivityReportApiController::class, 'index'])->name('index');
+        Route::get('/suppliers', [SupplierActivityReportApiController::class, 'suppliers'])->name('suppliers');
     });
 
     // Role & Permissions

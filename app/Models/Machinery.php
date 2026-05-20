@@ -23,6 +23,7 @@ class Machinery extends Model
         'remarks',
         'description',
         'vehicle_number',
+        'registration_number',
         'owned_by',
         'rate',
         'supplier_id',

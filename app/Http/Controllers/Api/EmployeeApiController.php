@@ -39,9 +39,9 @@ use Illuminate\Support\Facades\DB;
 class EmployeeApiController extends Controller {
 
     public function index(Request $request) {
-    if (!Auth::user()->isAbleTo('employee manage')) {
-        return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
-    }
+        if (!Auth::user()->isAbleTo('employee manage')) {
+            return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
+        }
     
     // DEBUG: Log user type and permissions for diagnosis
     $currentUser = Auth::user();
@@ -147,8 +147,6 @@ class EmployeeApiController extends Controller {
         ], 500);
     }
 }
-
-
 
     public function createData(Request $request) {
         try {

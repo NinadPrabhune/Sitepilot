@@ -86,6 +86,9 @@ tags:
     name: 'Machinery Category'
     description: 'Endpoints for machinery category management'
   -
+    name: 'Machinery Ledger'
+    description: 'Endpoints for viewing and querying machinery ledger entries (immutable credit/debit record for each machine)'
+  -
     name: Manpower
     description: 'Endpoints for manpower management including daily work records'
   -
@@ -105,7 +108,7 @@ tags:
     description: 'Endpoints for material transfer management between sites'
   -
     name: Materials
-    description: 'Endpoints for material management including CRUD operations and category-based filtering'
+    description: 'Endpoints for material management including CRUD operations, reference data, and category-based filtering'
   -
     name: Notifications
     description: 'Endpoints for notification management including read/unread status'
@@ -143,11 +146,17 @@ tags:
     name: 'Stock Report'
     description: 'Endpoints for stock report data retrieval with filtering options'
   -
+    name: 'Supplier Activity Report'
+    description: 'Returns a unified activity timeline per supplier across Purchase Orders, GRNs, Invoices and Payments — exactly matching the web view.'
+  -
     name: 'Supplier Advance'
     description: 'Endpoints for supplier advance management including allocation and utilization'
   -
     name: 'Supplier Categories'
     description: 'Endpoints for supplier category management'
+  -
+    name: 'Supplier Ledger Report'
+    description: 'Endpoints for supplier ledger reconciliation — returns every PO, invoice, advance and payment transaction per supplier within a date range with running balance.'
   -
     name: Suppliers
     description: 'Endpoints for supplier management including CRUD operations'
@@ -608,29 +617,154 @@ paths:
                 - password
   /api/auth/refresh:
     post:
-      summary: ''
-      operationId: postApiAuthRefresh
-      description: ''
+      summary: 'Refresh API Token'
+      operationId: refreshAPIToken
+      description: "Invalidate the current token and generate a new one.\nReturns the new token along with user profile, workspaces, and sites.\nThe new token replaces the old one — the old token will no longer work."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": 1,\n  \"data\": {\n    \"token\": \"1|newtokensring...\",\n    \"refresh_expires_in\": null,\n    \"expires_unit\": \"none\",\n    \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... },\n    \"workspaces\": [...],\n    \"sites\": [...]\n  }\n}"
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 0
+                  message: 'Token cannot be refreshed or something went wrong'
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: 'Token cannot be refreshed or something went wrong'
       tags:
         - Authentication
   /api/change-password:
     post:
-      summary: ''
-      operationId: postApiChangePassword
-      description: ''
+      summary: 'Change Password'
+      operationId: changePassword
+      description: "Update the authenticated user's password.\nRequires the current password for verification.\nThe new password must be different from the current one."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'Password updated successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": 1,\n  \"message\": \"password updated successfully.\",\n  \"data\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... }\n}"
+        400:
+          description: 'Validation error'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 0
+                  message: 'The password field is required.'
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: 'The password field is required.'
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  -
+                    description: 'Current password mismatch'
+                    type: object
+                    example:
+                      message: 'The provided current password does not match our records.'
+                    properties:
+                      message:
+                        type: string
+                        example: 'The provided current password does not match our records.'
+                  -
+                    description: 'New password same as old'
+                    type: object
+                    example:
+                      message: 'The provided password and old password are same.'
+                    properties:
+                      message:
+                        type: string
+                        example: 'The provided password and old password are same.'
       tags:
         - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_password:
+                  type: string
+                  description: 'Current password for verification.'
+                  example: oldpass123
+                password:
+                  type: string
+                  description: 'New password (must be confirmed).'
+                  example: newpass456
+                password_confirmation:
+                  type: string
+                  description: 'Must match the new password.'
+                  example: newpass456
+              required:
+                - current_password
+                - password
+                - password_confirmation
   /api/forgot-password:
     post:
-      summary: "Send reset link to user's email (forgot password)."
-      operationId: sendResetLinkToUsersEmailforgotPassword
-      description: ''
+      summary: 'Send Password Reset Link'
+      operationId: sendPasswordResetLink
+      description: "Send a password reset link to the user's registered email address.\nThe link is valid for the duration configured in Laravel's password broker."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'Reset link sent'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  message: 'Reset link sent to your email.'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Reset link sent to your email.'
+        422:
+          description: 'Invalid or missing email'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 0
+                  message: 'Unable to send reset link.'
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: 'Unable to send reset link.'
       tags:
         - Authentication
       requestBody:
@@ -642,17 +776,49 @@ paths:
               properties:
                 email:
                   type: string
-                  description: 'Must be a valid email address.'
-                  example: gbailey@example.net
+                  description: 'User email address.'
+                  example: john@example.com
               required:
                 - email
   /api/reset-password:
     post:
-      summary: 'Reset password using token from email.'
-      operationId: resetPasswordUsingTokenFromEmail
-      description: ''
+      summary: 'Reset Password'
+      operationId: resetPassword
+      description: "Reset the user's password using the token received via email.\nThe token is sent when calling the forgot-password endpoint."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'Password reset successful'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  message: 'Password reset successful.'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Password reset successful.'
+        422:
+          description: 'Invalid token or email'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 0
+                  message: 'Invalid token or email.'
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: 'Invalid token or email.'
       tags:
         - Authentication
       requestBody:
@@ -664,20 +830,25 @@ paths:
               properties:
                 token:
                   type: string
-                  description: ''
-                  example: architecto
+                  description: 'Password reset token from email.'
+                  example: abc123...
                 email:
                   type: string
-                  description: 'Must be a valid email address.'
-                  example: zbailey@example.net
+                  description: 'User email address.'
+                  example: john@example.com
                 password:
                   type: string
-                  description: ''
-                  example: architecto
+                  description: 'New password (must be confirmed).'
+                  example: newpass456
+                password_confirmation:
+                  type: string
+                  description: 'Must match the new password.'
+                  example: newpass456
               required:
                 - token
                 - email
                 - password
+                - password_confirmation
   /api/daily-consumptions:
     get:
       summary: ''
@@ -721,11 +892,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/daily-consumptions/16 could not be found.'
+                  message: 'The route api/daily-consumptions/1 could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/daily-consumptions/16 could not be found.'
+                    example: 'The route api/daily-consumptions/1 could not be found.'
       tags:
         - 'Daily Consumption'
     put:
@@ -749,7 +920,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the daily consumption.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -1054,8 +1225,8 @@ paths:
         - Endpoints
   /api/machinery/payment-requests:
     post:
-      summary: 'Create payment request from ledger'
-      operationId: createPaymentRequestFromLedger
+      summary: 'Create payment request from ledger (API endpoint - actually creates the payment request)'
+      operationId: createPaymentRequestFromLedgerAPIEndpointActuallyCreatesThePaymentRequest
       description: ''
       parameters: []
       responses: {  }
@@ -1095,11 +1266,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/machinery/payment-requests/16 could not be found.'
+                  message: 'The route api/machinery/payment-requests/1 could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/machinery/payment-requests/16 could not be found.'
+                    example: 'The route api/machinery/payment-requests/1 could not be found.'
       tags:
         - Endpoints
     parameters:
@@ -1107,7 +1278,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the payment request.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -1125,25 +1296,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the payment request.'
-        example: 16
-        required: true
-        schema:
-          type: integer
-  '/api/machinery/payment-requests/{id}/verify':
-    post:
-      summary: 'Verify payment request'
-      operationId: verifyPaymentRequest
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Endpoints
-    parameters:
-      -
-        in: path
-        name: id
-        description: 'The ID of the payment request.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -1161,7 +1314,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the payment request.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -1179,7 +1332,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the payment request.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -1197,7 +1350,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the payment request.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -1227,7 +1380,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the payment request.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -1245,11 +1398,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/machinery/payment-requests/16/debug could not be found.'
+                  message: 'The route api/machinery/payment-requests/1/debug could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/machinery/payment-requests/16/debug could not be found.'
+                    example: 'The route api/machinery/payment-requests/1/debug could not be found.'
       tags:
         - Endpoints
     parameters:
@@ -1257,7 +1410,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the payment request.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -1275,11 +1428,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/machinery/payment-requests/16/recalculate could not be found.'
+                  message: 'The route api/machinery/payment-requests/1/recalculate could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/machinery/payment-requests/16/recalculate could not be found.'
+                    example: 'The route api/machinery/payment-requests/1/recalculate could not be found.'
       tags:
         - Endpoints
     parameters:
@@ -1287,7 +1440,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the payment request.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -1318,7 +1471,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the payment request.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -1349,7 +1502,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the payment request.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -1380,7 +1533,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the payment request.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -1569,7 +1722,7 @@ paths:
                 type:
                   type: string
                   description: ''
-                  example: opening
+                  example: transfer_in
                   enum:
                     - opening
                     - grn
@@ -1581,12 +1734,12 @@ paths:
                 start_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-09T17:30:01'
+                  example: '2026-05-20T11:46:46'
                   nullable: true
                 end_date:
                   type: string
                   description: 'Must be a valid date. Must be a date after or equal to <code>start_date</code>.'
-                  example: '2052-06-01'
+                  example: '2052-06-12'
                   nullable: true
   /api/stock-ledger/export:
     get:
@@ -1710,7 +1863,7 @@ paths:
                 type:
                   type: string
                   description: ''
-                  example: adjustment
+                  example: grn
                   enum:
                     - opening
                     - grn
@@ -1722,12 +1875,12 @@ paths:
                 start_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-09T17:30:01'
+                  example: '2026-05-20T11:46:46'
                   nullable: true
                 end_date:
                   type: string
                   description: 'Must be a valid date. Must be a date after or equal to <code>start_date</code>.'
-                  example: '2052-06-01'
+                  example: '2052-06-12'
                   nullable: true
   /api/stock-ledger/create-data:
     post:
@@ -2613,11 +2766,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/grn/16 could not be found.'
+                  message: 'The route api/grn/1 could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/grn/16 could not be found.'
+                    example: 'The route api/grn/1 could not be found.'
       tags:
         - 'Goods Received Note (GRN)'
     put:
@@ -2641,7 +2794,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the grn.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -2659,11 +2812,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/grn/16/edit could not be found.'
+                  message: 'The route api/grn/1/edit could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/grn/16/edit could not be found.'
+                    example: 'The route api/grn/1/edit could not be found.'
       tags:
         - 'Goods Received Note (GRN)'
     parameters:
@@ -2671,7 +2824,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the grn.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -3201,11 +3354,11 @@ paths:
                 start_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-09T17:30:04'
+                  example: '2026-05-20T11:46:49'
                 end_date:
                   type: string
                   description: 'Must be a date after or equal to <code>start_date</code>.'
-                  example: '2052-06-01'
+                  example: '2052-06-12'
                 color:
                   type: string
                   description: ''
@@ -3838,11 +3991,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/indents/16 could not be found.'
+                  message: 'The route api/indents/1 could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/indents/16 could not be found.'
+                    example: 'The route api/indents/1 could not be found.'
       tags:
         - Indents
     put:
@@ -3866,7 +4019,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the indent.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -3893,11 +4046,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/indents/16/materials could not be found.'
+                  message: 'The route api/indents/1/materials could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/indents/16/materials could not be found.'
+                    example: 'The route api/indents/1/materials could not be found.'
       tags:
         - Indents
     parameters:
@@ -3905,7 +4058,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the indent.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -3944,7 +4097,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the indent.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -4077,7 +4230,7 @@ paths:
                 follow_up_date:
                   type: string
                   description: 'Must be a valid date in the format <code>Y-m-d</code>.'
-                  example: '2026-05-09'
+                  example: '2026-05-20'
                 lead_id:
                   type: string
                   description: 'The <code>id</code> of an existing record in the leads table.'
@@ -4445,6 +4598,7 @@ paths:
                   type: numeric
                   description: 'Rate value.'
                   example: '1500.00'
+                  nullable: true
                 rate_type:
                   type: string
                   description: 'required_if:owned_by,rental Rate type (hourly, daily, monthly).'
@@ -4563,7 +4717,7 @@ paths:
                 purchase_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-09T17:29:55'
+                  example: '2026-05-20T11:46:41'
                   nullable: true
                 capacity:
                   type: string
@@ -4573,7 +4727,7 @@ paths:
                 maintenance_schedule:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-09T17:29:55'
+                  example: '2026-05-20T11:46:41'
                   nullable: true
                 remarks:
                   type: string
@@ -4592,7 +4746,7 @@ paths:
                 operational_status:
                   type: string
                   description: ''
-                  example: active
+                  example: scrap
                   enum:
                     - active
                     - breakdown
@@ -4618,7 +4772,7 @@ paths:
                 owned_by:
                   type: string
                   description: 'Ownership and rate fields.'
-                  example: rental
+                  example: owned
                   enum:
                     - owned
                     - rental
@@ -4629,8 +4783,9 @@ paths:
                   nullable: true
                 rate:
                   type: number
-                  description: 'Must be at least 0.'
+                  description: 'This field is required when <code>owned_by</code> is <code>rental</code>. Must be at least 0.'
                   example: 39
+                  nullable: true
                 rate_type:
                   type: string
                   description: 'Rental-specific fields. This field is required when <code>owned_by</code> is <code>rental</code>.'
@@ -4646,7 +4801,7 @@ paths:
                 diesel_by_company:
                   type: boolean
                   description: ''
-                  example: true
+                  example: false
                 operator_by_supplier:
                   type: boolean
                   description: ''
@@ -4663,19 +4818,19 @@ paths:
                 insurance_due_date:
                   type: string
                   description: 'This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date.'
-                  example: '2026-05-09T17:29:55'
+                  example: '2026-05-20T11:46:41'
                 puc_due_date:
                   type: string
                   description: 'This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date.'
-                  example: '2026-05-09T17:29:55'
+                  example: '2026-05-20T11:46:41'
                 fitness_due_date:
                   type: string
                   description: 'This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date.'
-                  example: '2026-05-09T17:29:55'
+                  example: '2026-05-20T11:46:41'
                 last_service_date:
                   type: string
                   description: 'This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date.'
-                  example: '2026-05-09T17:29:55'
+                  example: '2026-05-20T11:46:41'
                 rental_agreement_file:
                   type: string
                   description: 'File uploads. Must not be greater than 10240 characters.'
@@ -4693,7 +4848,6 @@ paths:
                 - created_by
                 - workspace_id
                 - owned_by
-                - rate
     delete:
       summary: ''
       operationId: deleteApiMachineriesId
@@ -4952,6 +5106,496 @@ paths:
         required: true
         schema:
           type: string
+  /api/ledger:
+    get:
+      summary: 'List machinery ledger entries.'
+      operationId: listMachineryLedgerEntries
+      description: "Returns a paginated list of ledger entries for the authenticated user's workspace.\nLedger entries are always in descending date order (most recent first).\nReversal entries are excluded from default listing."
+      parameters:
+        -
+          in: query
+          name: per_page
+          description: 'optional Number of records per page. Default: 50.'
+          example: 50
+          required: false
+          schema:
+            type: integer
+            description: 'optional Number of records per page. Default: 50.'
+            example: 50
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Ledger entries fetched successfully.'
+                  data:
+                    -
+                      id: 101
+                      machinery_id: 3
+                      entry_direction: credit
+                      entry_type: dpr
+                      amount: '5000.00'
+                      running_balance: '15000.00'
+                      date: '2025-06-15'
+                      description: 'DPR for June week 2'
+                      is_reversal: false
+                      is_locked: false
+                      machinery:
+                        id: 3
+                        name: 'Excavator EX-01'
+                  pagination:
+                    current_page: 1
+                    per_page: 50
+                    total: 127
+                    last_page: 3
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: 'Whether the request succeeded. Example: true'
+                  message:
+                    type: string
+                    example: 'Ledger entries fetched successfully.'
+                    description: 'Response message. Example: Ledger entries fetched successfully.'
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 101
+                        machinery_id: 3
+                        entry_direction: credit
+                        entry_type: dpr
+                        amount: '5000.00'
+                        running_balance: '15000.00'
+                        date: '2025-06-15'
+                        description: 'DPR for June week 2'
+                        is_reversal: false
+                        is_locked: false
+                        machinery:
+                          id: 3
+                          name: 'Excavator EX-01'
+                    description: 'List of ledger entry records.'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 101
+                        machinery_id:
+                          type: integer
+                          example: 3
+                        entry_direction:
+                          type: string
+                          example: credit
+                        entry_type:
+                          type: string
+                          example: dpr
+                        amount:
+                          type: string
+                          example: '5000.00'
+                        running_balance:
+                          type: string
+                          example: '15000.00'
+                        date:
+                          type: string
+                          example: '2025-06-15'
+                        description:
+                          type: string
+                          example: 'DPR for June week 2'
+                        is_reversal:
+                          type: boolean
+                          example: false
+                        is_locked:
+                          type: boolean
+                          example: false
+                        machinery:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 3
+                            name:
+                              type: string
+                              example: 'Excavator EX-01'
+                  pagination:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                        description: 'Current page number. Example: 1'
+                      per_page:
+                        type: integer
+                        example: 50
+                        description: 'Records per page. Example: 50'
+                      total:
+                        type: integer
+                        example: 127
+                        description: 'Total matching records. Example: 127'
+                      last_page:
+                        type: integer
+                        example: 3
+                    description: 'Standard Laravel pagination meta data.'
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Unauthorized action.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                    description: 'Whether the request succeeded. Example: true'
+                  message:
+                    type: string
+                    example: 'Unauthorized action.'
+                    description: 'Response message. Example: Ledger entries fetched successfully.'
+      tags:
+        - 'Machinery Ledger'
+    parameters:
+      -
+        in: path
+        name: machinery_id
+        description: 'Optional parameter. optional Filter ledger entries to a specific machinery ID.'
+        required: true
+        schema:
+          type: integer
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 3
+      -
+        in: path
+        name: date_from
+        description: 'Optional parameter. date optional Filter entries from this date (YYYY-MM-DD).'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: '2025-01-01'
+      -
+        in: path
+        name: date_to
+        description: 'Optional parameter. date optional Filter entries up to this date (YYYY-MM-DD).'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: '2025-12-31'
+      -
+        in: path
+        name: entry_type
+        description: 'Optional parameter. optional Filter by entry type (e.g. `dpr`, `payment`, `advance`, `opening_balance`, `adjustment`).'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: dpr
+  '/api/ledger/{id}':
+    get:
+      summary: 'Show a single machinery ledger entry by ID.'
+      operationId: showASingleMachineryLedgerEntryByID
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Ledger entry fetched successfully.'
+                  data:
+                    id: 101
+                    machinery_id: 3
+                    entry_direction: credit
+                    entry_type: dpr
+                    amount: '5000.00'
+                    running_balance: '15000.00'
+                    date: '2025-06-15'
+                    description: 'DPR for June week 2'
+                    is_reversal: false
+                    is_locked: false
+                    machinery:
+                      id: 3
+                      name: 'Excavator EX-01'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: 'Whether the request succeeded. Example: true'
+                  message:
+                    type: string
+                    example: 'Ledger entry fetched successfully.'
+                    description: 'Response message. Example: Ledger entry fetched successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 101
+                      machinery_id:
+                        type: integer
+                        example: 3
+                      entry_direction:
+                        type: string
+                        example: credit
+                      entry_type:
+                        type: string
+                        example: dpr
+                      amount:
+                        type: string
+                        example: '5000.00'
+                      running_balance:
+                        type: string
+                        example: '15000.00'
+                      date:
+                        type: string
+                        example: '2025-06-15'
+                      description:
+                        type: string
+                        example: 'DPR for June week 2'
+                      is_reversal:
+                        type: boolean
+                        example: false
+                      is_locked:
+                        type: boolean
+                        example: false
+                      machinery:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 3
+                          name:
+                            type: string
+                            example: 'Excavator EX-01'
+                    description: 'The ledger entry record.'
+      tags:
+        - 'Machinery Ledger'
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the ledger entry.'
+        example: 101
+        required: true
+        schema:
+          type: integer
+  /api/ledger/balance:
+    get:
+      summary: 'Get the running balance summary for a specific machinery within a date range.'
+      operationId: getTheRunningBalanceSummaryForASpecificMachineryWithinADateRange
+      description: "Returns the opening balance (from the earliest entry before or on the start date)\nand the closing balance (last entry in the range)."
+      parameters:
+        -
+          in: query
+          name: machinery_id
+          description: 'The machinery ID.'
+          example: 3
+          required: true
+          schema:
+            type: integer
+            description: 'The machinery ID.'
+            example: 3
+        -
+          in: query
+          name: date_from
+          description: 'date optional Range start date (YYYY-MM-DD). Defaults to beginning of current month.'
+          example: '2025-06-01'
+          required: false
+          schema:
+            type: string
+            description: 'date optional Range start date (YYYY-MM-DD). Defaults to beginning of current month.'
+            example: '2025-06-01'
+        -
+          in: query
+          name: date_to
+          description: 'date optional Range end date (YYYY-MM-DD). Defaults to today.'
+          example: '2025-06-30'
+          required: false
+          schema:
+            type: string
+            description: 'date optional Range end date (YYYY-MM-DD). Defaults to today.'
+            example: '2025-06-30'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Ledger balance fetched successfully.'
+                  data:
+                    machinery_id: 3
+                    opening_balance: '10000.00'
+                    closing_balance: '15000.00'
+                    net_change: '5000.00'
+                    total_credits: '25000.00'
+                    total_debits: '10000.00'
+                    entry_count: 12
+                    date_range:
+                      from: '2025-06-01'
+                      to: '2025-06-30'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Ledger balance fetched successfully.'
+                  data:
+                    type: object
+                    properties:
+                      machinery_id:
+                        type: integer
+                        example: 3
+                      opening_balance:
+                        type: string
+                        example: '10000.00'
+                      closing_balance:
+                        type: string
+                        example: '15000.00'
+                      net_change:
+                        type: string
+                        example: '5000.00'
+                      total_credits:
+                        type: string
+                        example: '25000.00'
+                      total_debits:
+                        type: string
+                        example: '10000.00'
+                      entry_count:
+                        type: integer
+                        example: 12
+                      date_range:
+                        type: object
+                        properties:
+                          from:
+                            type: string
+                            example: '2025-06-01'
+                          to:
+                            type: string
+                            example: '2025-06-30'
+        403:
+          description: 'Permission denied'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+        404:
+          description: 'Machinery not found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - 'Machinery Ledger'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                machinery_id:
+                  type: integer
+                  description: 'The <code>id</code> of an existing record in the machineries table.'
+                  example: 16
+                date_from:
+                  type: string
+                  description: 'Must be a valid date.'
+                  example: '2026-05-20T11:46:46'
+                  nullable: true
+                date_to:
+                  type: string
+                  description: 'Must be a valid date. Must be a date after or equal to <code>date_from</code>.'
+                  example: '2052-06-12'
+                  nullable: true
+              required:
+                - machinery_id
+  /api/ledger/machinery/list:
+    get:
+      summary: 'List all machinery available for ledger filtering.'
+      operationId: listAllMachineryAvailableForLedgerFiltering
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Machinery list fetched successfully.'
+                  data:
+                    -
+                      id: 1
+                      name: 'Excavator EX-01'
+                    -
+                      id: 3
+                      name: 'Crane CR-02'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Machinery list fetched successfully.'
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: 'Excavator EX-01'
+                      -
+                        id: 3
+                        name: 'Crane CR-02'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: 'Excavator EX-01'
+      tags:
+        - 'Machinery Ledger'
   /api/manpower:
     get:
       summary: 'Display a listing of the resource.'
@@ -5052,11 +5696,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/manpower/16 could not be found.'
+                  message: 'The route api/manpower/1 could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/manpower/16 could not be found.'
+                    example: 'The route api/manpower/1 could not be found.'
       tags:
         - Manpower
     put:
@@ -5080,7 +5724,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the manpower.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -5354,7 +5998,7 @@ paths:
                 issue_to_type:
                   type: string
                   description: ''
-                  example: user
+                  example: supplier
                   enum:
                     - user
                     - supplier
@@ -5365,7 +6009,7 @@ paths:
                 issue_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-09T17:29:58'
+                  example: '2026-05-20T11:46:44'
                 remarks:
                   type: string
                   description: ''
@@ -5584,7 +6228,7 @@ paths:
                 return_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-09T17:29:58'
+                  example: '2026-05-20T11:46:44'
                 remarks:
                   type: string
                   description: ''
@@ -5791,7 +6435,7 @@ paths:
                 record_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-09T17:29:58'
+                  example: '2026-05-20T11:46:43'
                 from_site_id:
                   type: integer
                   description: ''
@@ -5890,38 +6534,278 @@ paths:
         - 'Material Transfer'
   /api/materials:
     get:
-      summary: ''
-      operationId: getApiMaterials
+      summary: 'List all materials. Supports optional filtering by search keyword and category.'
+      operationId: listAllMaterialsSupportsOptionalFilteringBySearchKeywordAndCategory
       description: ''
-      parameters: []
+      parameters:
+        -
+          in: query
+          name: q
+          description: 'optional Search keyword — matches material name and SKU.'
+          example: cement
+          required: false
+          schema:
+            type: string
+            description: 'optional Search keyword — matches material name and SKU.'
+            example: cement
+        -
+          in: query
+          name: category_id
+          description: 'optional Filter by material category ID.'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by material category ID.'
+            example: 5
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'The route api/materials could not be found.'
-                properties:
-                  message:
-                    type: string
-                    example: 'The route api/materials could not be found.'
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 1
+                      data:
+                        -
+                          id: 1
+                          name: Cement
+                          sku: MAT-00001
+                          price: '450.00'
+                          unit:
+                            id: 1
+                            name: Kilogram
+                            symbol: kg
+                          category:
+                            id: 5
+                            name: 'Raw Materials'
+                          gstMaster: null
+                    properties:
+                      status:
+                        type: integer
+                        example: 1
+                        description: '1 = success, 0 = failure'
+                      data:
+                        type: array
+                        example:
+                          -
+                            id: 1
+                            name: Cement
+                            sku: MAT-00001
+                            price: '450.00'
+                            unit:
+                              id: 1
+                              name: Kilogram
+                              symbol: kg
+                            category:
+                              id: 5
+                              name: 'Raw Materials'
+                            gstMaster: null
+                        description: 'List of Material resources'
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                              description: 'Material ID'
+                            name:
+                              type: string
+                              example: Cement
+                              description: 'Material name'
+                            sku:
+                              type: string
+                              example: MAT-00001
+                              description: 'Auto-generated SKU'
+                            price:
+                              type: string
+                              example: '450.00'
+                              description: 'Unit price'
+                            unit:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 1
+                                  description: 'Unit ID'
+                                name:
+                                  type: string
+                                  example: Kilogram
+                                  description: 'Unit name'
+                                symbol:
+                                  type: string
+                                  example: kg
+                                  description: 'Unit symbol'
+                              description: 'Nested unit relation'
+                            category:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 5
+                                  description: 'Category ID'
+                                name:
+                                  type: string
+                                  example: 'Raw Materials'
+                                  description: 'Category name'
+                              description: 'Nested category relation'
+                            gstMaster:
+                              type: string
+                              example: null
+                              description: 'Nested GST relation'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 0
+                      message: 'Permission denied'
+                      data: null
+                    properties:
+                      status:
+                        type: integer
+                        example: 0
+                        description: '1 = success, 0 = failure'
+                      message:
+                        type: string
+                        example: 'Permission denied'
+                        description: 'Status message'
+                      data:
+                        type: string
+                        example: null
+                        description: 'List of Material resources'
       tags:
         - Materials
     post:
-      summary: 'Create Material'
-      operationId: createMaterial
-      description: 'Create a new material in the system'
+      summary: 'Create a new material record.'
+      operationId: createANewMaterialRecord
+      description: ''
       parameters: []
       responses:
         200:
           description: ''
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-                example: '{"status": 1, "data": {...}, "message": "Material created successfully"}'
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 1
+                      data:
+                        id: 1
+                        name: Cement
+                        sku: MAT-00001
+                        hsn_sac: '2523'
+                        gst_master_id: 1
+                        category_id: 5
+                        unit_id: 3
+                        description: 'Portland cement'
+                        price: '450.00'
+                        reorder_level: 100
+                        status: active
+                        image: null
+                        created_by: 1
+                        created_at: '2024-01-15T10:00:00.000000Z'
+                        updated_at: '2024-01-15T10:00:00.000000Z'
+                      message: 'Material created successfully'
+                    properties:
+                      status:
+                        type: integer
+                        example: 1
+                        description: '1 = success, 0 = failure'
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                            description: 'Material ID'
+                          name:
+                            type: string
+                            example: Cement
+                            description: 'Material name'
+                          sku:
+                            type: string
+                            example: MAT-00001
+                            description: 'Auto-generated SKU'
+                          hsn_sac:
+                            type: string
+                            example: '2523'
+                            description: 'HSN/SAC code'
+                          gst_master_id:
+                            type: integer
+                            example: 1
+                            description: 'Foreign key to gst_masters'
+                          category_id:
+                            type: integer
+                            example: 5
+                            description: 'Foreign key to material_categories'
+                          unit_id:
+                            type: integer
+                            example: 3
+                            description: 'Foreign key to units'
+                          description:
+                            type: string
+                            example: 'Portland cement'
+                            description: 'Material description'
+                          price:
+                            type: string
+                            example: '450.00'
+                            description: 'Unit price'
+                          reorder_level:
+                            type: integer
+                            example: 100
+                            description: 'Reorder threshold'
+                          status:
+                            type: string
+                            example: active
+                            description: 'active or inactive'
+                          image:
+                            type: string
+                            example: null
+                            description: 'Stored image path'
+                          created_by:
+                            type: integer
+                            example: 1
+                            description: 'Creator user ID'
+                          created_at:
+                            type: string
+                            example: '2024-01-15T10:00:00.000000Z'
+                            description: 'Created-at timestamp'
+                          updated_at:
+                            type: string
+                            example: '2024-01-15T10:00:00.000000Z'
+                            description: 'Updated-at timestamp'
+                        description: 'Created Material resource'
+                      message:
+                        type: string
+                        example: 'Material created successfully'
+                        description: 'Status message'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 0
+                      message: 'The name field is required.'
+                      data: null
+                    properties:
+                      status:
+                        type: integer
+                        example: 0
+                        description: '1 = success, 0 = failure'
+                      message:
+                        type: string
+                        example: 'The name field is required.'
+                        description: 'Status message'
+                      data:
+                        type: string
+                        example: null
+                        description: 'Created Material resource'
       tags:
         - Materials
       requestBody:
@@ -5937,19 +6821,19 @@ paths:
                   example: Cement
                 hsn_sac:
                   type: string
-                  description: 'optional HSN/SAC code.'
+                  description: 'optional HSN / SAC code (max 20 chars).'
                   example: '2523'
                 gst_master_id:
                   type: integer
-                  description: 'optional GST master ID.'
+                  description: 'optional GST master ID — must exist in gst_masters table.'
                   example: 1
                 category_id:
                   type: integer
-                  description: 'Material category ID.'
+                  description: 'Material category ID — must exist in material_categories.'
                   example: 5
                 unit_id:
                   type: integer
-                  description: 'Unit ID.'
+                  description: 'Unit ID — must exist in units.'
                   example: 3
                 description:
                   type: string
@@ -5957,23 +6841,23 @@ paths:
                   example: 'Portland cement'
                 price:
                   type: number
-                  description: 'Material price.'
+                  description: 'Unit price.'
                   example: 450.0
                 reorder_level:
                   type: integer
-                  description: 'Reorder level.'
+                  description: 'Minimum stock before triggering a re-order alert.'
                   example: 100
                 status:
                   type: string
-                  description: 'Status (active/inactive).'
+                  description: 'Status value: active or inactive.'
                   example: active
                 image:
                   type: string
                   format: binary
-                  description: 'optional Material image (max 2MB).'
+                  description: 'optional Material image, max 2 MB, JPEG / PNG.'
                 created_by:
                   type: integer
-                  description: 'Creator user ID.'
+                  description: 'ID of the user creating this record.'
                   example: 1
               required:
                 - name
@@ -5985,99 +6869,501 @@ paths:
                 - created_by
   '/api/materials/{id}':
     get:
-      summary: ''
-      operationId: getApiMaterialsId
+      summary: 'Retrieve a single material by its ID.'
+      operationId: retrieveASingleMaterialByItsID
       description: ''
       parameters: []
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'The route api/materials/architecto could not be found.'
-                properties:
-                  message:
-                    type: string
-                    example: 'The route api/materials/architecto could not be found.'
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 1
+                      data:
+                        id: 1
+                        name: Cement
+                        sku: MAT-00001
+                        price: '450.00'
+                        unit:
+                          id: 1
+                          name: Kilogram
+                          symbol: kg
+                        category:
+                          id: 5
+                          name: 'Raw Materials'
+                        gstMaster:
+                          id: 1
+                          name: '5% GST'
+                          cgst: 2.5
+                          sgst: 2.5
+                          igst: 5
+                          total_gst: 5
+                    properties:
+                      status:
+                        type: integer
+                        example: 1
+                        description: '1 = success, 0 = failure'
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                            description: 'Material ID'
+                          name:
+                            type: string
+                            example: Cement
+                            description: 'Material name'
+                          sku:
+                            type: string
+                            example: MAT-00001
+                            description: 'Auto-generated SKU'
+                          price:
+                            type: string
+                            example: '450.00'
+                            description: 'Unit price'
+                          unit:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                                description: 'Unit ID'
+                              name:
+                                type: string
+                                example: Kilogram
+                                description: 'Unit name'
+                              symbol:
+                                type: string
+                                example: kg
+                                description: 'Unit symbol'
+                            description: 'Nested unit relation'
+                          category:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 5
+                                description: 'Category ID'
+                              name:
+                                type: string
+                                example: 'Raw Materials'
+                                description: 'Category name'
+                            description: 'Nested category relation'
+                          gstMaster:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                                description: 'GST master ID'
+                              name:
+                                type: string
+                                example: '5% GST'
+                                description: 'GST label'
+                              cgst:
+                                type: number
+                                example: 2.5
+                                description: 'CGST percentage'
+                              sgst:
+                                type: number
+                                example: 2.5
+                                description: 'SGST percentage'
+                              igst:
+                                type: integer
+                                example: 5
+                                description: 'IGST percentage'
+                              total_gst:
+                                type: integer
+                                example: 5
+                                description: 'Total GST percentage'
+                            description: 'Nested GST master relation'
+                        description: 'Material resource with nested relations'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 0
+                      message: 'Material not found'
+                      data: null
+                    properties:
+                      status:
+                        type: integer
+                        example: 0
+                        description: '1 = success, 0 = failure'
+                      message:
+                        type: string
+                        example: 'Material not found'
+                        description: 'Status message'
+                      data:
+                        type: string
+                        example: null
+                        description: 'Material resource with nested relations'
       tags:
         - Materials
     put:
-      summary: ''
-      operationId: putApiMaterialsId
+      summary: 'Update an existing material by its ID.'
+      operationId: updateAnExistingMaterialByItsID
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"status": 1, "data": {"id": 1, "name": "Portland Cement", "sku": "MAT-00001", ...}, "message": "Material updated successfully"}'
       tags:
         - Materials
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Material name.'
+                  example: 'Portland Cement'
+                hsn_sac:
+                  type: string
+                  description: 'optional HSN / SAC code.'
+                  example: '2523'
+                gst_master_id:
+                  type: integer
+                  description: 'optional GST master ID.'
+                  example: 2
+                category_id:
+                  type: integer
+                  description: 'Material category ID.'
+                  example: 5
+                unit_id:
+                  type: integer
+                  description: 'Unit ID.'
+                  example: 3
+                description:
+                  type: string
+                  description: 'optional Material description.'
+                  example: 'Eius et animi quos velit et.'
+                price:
+                  type: number
+                  description: 'Unit price.'
+                  example: 480.0
+                reorder_level:
+                  type: integer
+                  description: 'Reorder threshold.'
+                  example: 150
+                status:
+                  type: string
+                  description: 'Status value: active or inactive.'
+                  example: active
+                image:
+                  type: string
+                  format: binary
+                  description: 'optional Replacement material image, max 2 MB. Omit to keep current image.'
+                created_by:
+                  type: integer
+                  description: 'ID of the user making this edit.'
+                  example: 1
+              required:
+                - name
+                - category_id
+                - unit_id
+                - price
+                - reorder_level
+                - status
+                - created_by
     delete:
-      summary: ''
-      operationId: deleteApiMaterialsId
-      description: ''
+      summary: 'Soft / permanently delete a material by its ID.'
+      operationId: softPermanentlyDeleteAMaterialByItsID
+      description: "Deletion is blocked if the material is referenced by any existing\npurchase invoice items, asset / tool records, or consumption details."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 1
+                      message: 'Material deleted successfully'
+                    properties:
+                      status:
+                        type: integer
+                        example: 1
+                        description: '1 = success, 0 = failure'
+                      message:
+                        type: string
+                        example: 'Material deleted successfully'
+                        description: 'Status or error message'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 0
+                      message: 'Material not found'
+                    properties:
+                      status:
+                        type: integer
+                        example: 0
+                        description: '1 = success, 0 = failure'
+                      message:
+                        type: string
+                        example: 'Material not found'
+                        description: 'Status or error message'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 0
+                      message: 'Material cannot be deleted because it is used in Purchase Invoices.'
+                    properties:
+                      status:
+                        type: integer
+                        example: 0
+                        description: '1 = success, 0 = failure'
+                      message:
+                        type: string
+                        example: 'Material cannot be deleted because it is used in Purchase Invoices.'
+                        description: 'Status or error message'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 0
+                      message: 'Material cannot be deleted because it is used in Tools & Equipment records.'
+                    properties:
+                      status:
+                        type: integer
+                        example: 0
+                        description: '1 = success, 0 = failure'
+                      message:
+                        type: string
+                        example: 'Material cannot be deleted because it is used in Tools & Equipment records.'
+                        description: 'Status or error message'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 0
+                      message: 'Material cannot be deleted because it is used in Consumption Log records.'
+                    properties:
+                      status:
+                        type: integer
+                        example: 0
+                        description: '1 = success, 0 = failure'
+                      message:
+                        type: string
+                        example: 'Material cannot be deleted because it is used in Consumption Log records.'
+                        description: 'Status or error message'
       tags:
         - Materials
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the material.'
-        example: architecto
+        description: 'Material ID.'
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
   '/api/materials/{id}/unit':
     get:
-      summary: ''
-      operationId: getApiMaterialsIdUnit
+      summary: 'Return the unit name for a given material.'
+      operationId: returnTheUnitNameForAGivenMaterial
       description: ''
       parameters: []
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'The route api/materials/architecto/unit could not be found.'
-                properties:
-                  message:
-                    type: string
-                    example: 'The route api/materials/architecto/unit could not be found.'
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 1
+                      unit: Kilogram
+                    properties:
+                      status:
+                        type: integer
+                        example: 1
+                        description: '1 = success, 0 = failure'
+                      unit:
+                        type: string
+                        example: Kilogram
+                        description: 'Unit name or null if material / unit missing'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 0
+                      message: 'Material not found'
+                      unit: null
+                    properties:
+                      status:
+                        type: integer
+                        example: 0
+                        description: '1 = success, 0 = failure'
+                      message:
+                        type: string
+                        example: 'Material not found'
+                        description: 'Error message (omitted on success)'
+                      unit:
+                        type: string
+                        example: null
+                        description: 'Unit name or null if material / unit missing'
       tags:
         - Materials
+      security: []
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the material.'
-        example: architecto
+        description: 'Material ID.'
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
   '/api/materials/category/{categoryId}':
     get:
-      summary: ''
-      operationId: getApiMaterialsCategoryCategoryId
+      summary: 'Retrieve all materials that belong to a specific category.'
+      operationId: retrieveAllMaterialsThatBelongToASpecificCategory
       description: ''
       parameters: []
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  message: 'The route api/materials/category/architecto could not be found.'
-                properties:
-                  message:
-                    type: string
-                    example: 'The route api/materials/category/architecto could not be found.'
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 1
+                      data:
+                        -
+                          id: 1
+                          name: Cement
+                          sku: MAT-00001
+                          price: '450.00'
+                          unit:
+                            id: 1
+                            name: Kilogram
+                            symbol: kg
+                          category:
+                            id: 5
+                            name: 'Raw Materials'
+                          gstMaster: null
+                    properties:
+                      status:
+                        type: integer
+                        example: 1
+                        description: '1 = success, 0 = failure'
+                      data:
+                        type: array
+                        example:
+                          -
+                            id: 1
+                            name: Cement
+                            sku: MAT-00001
+                            price: '450.00'
+                            unit:
+                              id: 1
+                              name: Kilogram
+                              symbol: kg
+                            category:
+                              id: 5
+                              name: 'Raw Materials'
+                            gstMaster: null
+                        description: 'List of Material resources filtered by category'
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                              description: 'Material ID'
+                            name:
+                              type: string
+                              example: Cement
+                              description: 'Material name'
+                            sku:
+                              type: string
+                              example: MAT-00001
+                              description: 'Auto-generated SKU'
+                            price:
+                              type: string
+                              example: '450.00'
+                              description: 'Unit price'
+                            unit:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 1
+                                  description: 'Unit ID'
+                                name:
+                                  type: string
+                                  example: Kilogram
+                                  description: 'Unit name'
+                                symbol:
+                                  type: string
+                                  example: kg
+                                  description: 'Unit symbol'
+                              description: 'Nested unit relation'
+                            category:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 5
+                                  description: 'Category ID'
+                                name:
+                                  type: string
+                                  example: 'Raw Materials'
+                                  description: 'Category name'
+                              description: 'Nested category relation'
+                            gstMaster:
+                              type: string
+                              example: null
+                              description: 'Nested GST master relation'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 0
+                      message: 'No materials found for this category'
+                      data: null
+                    properties:
+                      status:
+                        type: integer
+                        example: 0
+                        description: '1 = success, 0 = failure'
+                      message:
+                        type: string
+                        example: 'No materials found for this category'
+                        description: 'Status message'
+                      data:
+                        type: string
+                        example: null
+                        description: 'List of Material resources filtered by category'
       tags:
         - Materials
     parameters:
@@ -6089,6 +7375,185 @@ paths:
         required: true
         schema:
           type: string
+      -
+        in: path
+        name: category_id
+        description: 'Material category ID.'
+        example: 5
+        required: true
+        schema:
+          type: integer
+  /api/materials/create-data:
+    post:
+      summary: 'Fetch reference/master data required to build the Create / Edit Material form.'
+      operationId: fetchReferencemasterDataRequiredToBuildTheCreateEditMaterialForm
+      description: 'Returns active GST masters, units, and categories scoped to the workspace.'
+      parameters:
+        -
+          in: query
+          name: workspace_id
+          description: 'optional Workspace ID to scope lookups.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Workspace ID to scope lookups.'
+            example: 1
+        -
+          in: query
+          name: site_id
+          description: 'optional Site / Project ID.'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'optional Site / Project ID.'
+            example: 5
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 1
+                      data:
+                        gst_masters:
+                          -
+                            id: 1
+                            name: '5% GST'
+                            cgst: 2.5
+                            sgst: 2.5
+                            igst: 5
+                            total_gst: 5
+                        units:
+                          -
+                            id: 1
+                            name: Kilogram
+                            symbol: kg
+                        categories:
+                          -
+                            id: 1
+                            name: 'Raw Materials'
+                      message: ''
+                    properties:
+                      status:
+                        type: integer
+                        example: 1
+                        description: '1 = success, 0 = failure'
+                      data:
+                        type: object
+                        properties:
+                          gst_masters:
+                            type: array
+                            example:
+                              -
+                                id: 1
+                                name: '5% GST'
+                                cgst: 2.5
+                                sgst: 2.5
+                                igst: 5
+                                total_gst: 5
+                            description: 'Active GST master records'
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 1
+                                  description: 'GST master ID'
+                                name:
+                                  type: string
+                                  example: '5% GST'
+                                  description: 'GST label'
+                                cgst:
+                                  type: number
+                                  example: 2.5
+                                  description: 'CGST percentage'
+                                sgst:
+                                  type: number
+                                  example: 2.5
+                                  description: 'SGST percentage'
+                                igst:
+                                  type: integer
+                                  example: 5
+                                  description: 'IGST percentage'
+                                total_gst:
+                                  type: integer
+                                  example: 5
+                                  description: 'Total GST percentage'
+                          units:
+                            type: array
+                            example:
+                              -
+                                id: 1
+                                name: Kilogram
+                                symbol: kg
+                            description: 'Unit records scoped to active workspace'
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 1
+                                  description: 'Unit ID'
+                                name:
+                                  type: string
+                                  example: Kilogram
+                                  description: 'Unit name'
+                                symbol:
+                                  type: string
+                                  example: kg
+                                  description: 'Unit symbol'
+                          categories:
+                            type: array
+                            example:
+                              -
+                                id: 1
+                                name: 'Raw Materials'
+                            description: 'Material category records'
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 1
+                                  description: 'Category ID'
+                                name:
+                                  type: string
+                                  example: 'Raw Materials'
+                                  description: 'Category name'
+                        description: 'Reference data for material form'
+                      message:
+                        type: string
+                        example: ''
+                        description: 'Status message'
+                  -
+                    description: ''
+                    type: object
+                    example:
+                      status: 0
+                      message: 'Permission denied'
+                      data: null
+                    properties:
+                      status:
+                        type: integer
+                        example: 0
+                        description: '1 = success, 0 = failure'
+                      message:
+                        type: string
+                        example: 'Permission denied'
+                        description: 'Status message'
+                      data:
+                        type: string
+                        example: null
+                        description: 'Reference data for material form'
+      tags:
+        - Materials
   /api/UserNotifications:
     get:
       summary: 'Get all notifications (paginated)'
@@ -8288,11 +9753,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/purchase-invoice/grn/16/invoice-preview could not be found.'
+                  message: 'The route api/purchase-invoice/grn/1/invoice-preview could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/purchase-invoice/grn/16/invoice-preview could not be found.'
+                    example: 'The route api/purchase-invoice/grn/1/invoice-preview could not be found.'
       tags:
         - 'Purchase Invoices'
     parameters:
@@ -8300,7 +9765,7 @@ paths:
         in: path
         name: grn_id
         description: 'The ID of the grn.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -8336,11 +9801,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/grn/16/invoice-preview could not be found.'
+                  message: 'The route api/grn/1/invoice-preview could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/grn/16/invoice-preview could not be found.'
+                    example: 'The route api/grn/1/invoice-preview could not be found.'
       tags:
         - 'Purchase Invoices'
     parameters:
@@ -8348,7 +9813,7 @@ paths:
         in: path
         name: grn_id
         description: 'The ID of the grn.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -8375,11 +9840,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/purchase-orders/16/indent-materials could not be found.'
+                  message: 'The route api/purchase-orders/1/indent-materials could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/purchase-orders/16/indent-materials could not be found.'
+                    example: 'The route api/purchase-orders/1/indent-materials could not be found.'
       tags:
         - 'Purchase Orders'
     parameters:
@@ -8387,7 +9852,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the purchase order.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -8405,11 +9870,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/purchase-orders/16/approve could not be found.'
+                  message: 'The route api/purchase-orders/1/approve could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/purchase-orders/16/approve could not be found.'
+                    example: 'The route api/purchase-orders/1/approve could not be found.'
       tags:
         - 'Purchase Orders'
     parameters:
@@ -8417,7 +9882,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the purchase order.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -8435,7 +9900,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the purchase order.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -8453,7 +9918,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the purchase order.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -8592,11 +10057,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/purchase-orders/16 could not be found.'
+                  message: 'The route api/purchase-orders/1 could not be found.'
                 properties:
                   message:
                     type: string
-                    example: 'The route api/purchase-orders/16 could not be found.'
+                    example: 'The route api/purchase-orders/1 could not be found.'
       tags:
         - 'Purchase Orders'
     put:
@@ -8620,7 +10085,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the purchase order.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -8717,6 +10182,340 @@ paths:
                     example: 'The route api/stock-reports-api could not be found.'
       tags:
         - 'Stock Report'
+  /api/reports/supplier-activity:
+    get:
+      summary: 'List supplier activity timeline.'
+      operationId: listSupplierActivityTimeline
+      description: "Builds a UNION ALL query across `purchase_orders`, `grns`, `purchase_invoices` and `payments_module`\nso that one endpoint returns the full PO → GRN → Invoice → Payment flow per supplier.\nA running balance is calculated ( Invoice debits increase; Payment/Advance credits decrease balance )."
+      parameters:
+        -
+          in: query
+          name: supplier_id
+          description: 'optional Filter by supplier ID. Use `all` for all suppliers. Default: all.'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by supplier ID. Use `all` for all suppliers. Default: all.'
+            example: 5
+        -
+          in: query
+          name: site_id
+          description: 'optional Filter by site/project ID. Use `all` for all sites. Default: all.'
+          example: 2
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by site/project ID. Use `all` for all sites. Default: all.'
+            example: 2
+        -
+          in: query
+          name: from_date
+          description: 'date optional Filter start date (YYYY-MM-DD). Defaults to first day of current month.'
+          example: '2025-06-01'
+          required: false
+          schema:
+            type: string
+            description: 'date optional Filter start date (YYYY-MM-DD). Defaults to first day of current month.'
+            example: '2025-06-01'
+        -
+          in: query
+          name: to_date
+          description: 'date optional Filter end date (YYYY-MM-DD). Defaults to today.'
+          example: '2025-06-30'
+          required: false
+          schema:
+            type: string
+            description: 'date optional Filter end date (YYYY-MM-DD). Defaults to today.'
+            example: '2025-06-30'
+        -
+          in: query
+          name: per_page
+          description: 'optional Number of records per page. Default: 50.'
+          example: 50
+          required: false
+          schema:
+            type: integer
+            description: 'optional Number of records per page. Default: 50.'
+            example: 50
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  -
+                    description: 'Success — with activity data'
+                    type: object
+                    example:
+                      success: true
+                      message: 'Supplier activity report fetched successfully.'
+                      summary:
+                        total_po: '100000.00'
+                        total_grn: '95000.00'
+                        total_invoice: '85000.00'
+                        total_payments: '60000.00'
+                        final_balance: '-25000.00'
+                        currency: INR
+                      transactions:
+                        -
+                          id: 1
+                          type: Invoice
+                          reference: INV-0012
+                          reference_id: 12
+                          supplier_name: 'ABC Materials Ltd'
+                          site_name: 'Main Site'
+                          reference_amount: '25000.00'
+                          debit: '25000.00'
+                          credit: '0.00'
+                          balance: '25000.00'
+                          date_time: '2025-06-15 10:30:00'
+                          description: 'Invoice Generated'
+                    properties:
+                      success:
+                        type: boolean
+                        example: true
+                        description: 'Whether the request succeeded. Example: true'
+                      message:
+                        type: string
+                        example: 'Supplier activity report fetched successfully.'
+                        description: 'Response message. Example: Supplier activity report fetched successfully.'
+                      summary:
+                        type: object
+                        properties:
+                          total_po:
+                            type: string
+                            example: '100000.00'
+                            description: 'Sum of all PO amounts in range. Example: "100000.00"'
+                          total_grn:
+                            type: string
+                            example: '95000.00'
+                            description: 'Sum of all GRN amounts in range. Example: "95000.00"'
+                          total_invoice:
+                            type: string
+                            example: '85000.00'
+                            description: 'Sum of all invoice amounts in range. Example: "85000.00"'
+                          total_payments:
+                            type: string
+                            example: '60000.00'
+                            description: 'Sum of all completed payment + advance amounts in range. Example: "60000.00"'
+                          final_balance:
+                            type: string
+                            example: '-25000.00'
+                            description: 'Running balance (only when activity data present). Example: "-25000.00"'
+                          currency:
+                            type: string
+                            example: INR
+                            description: 'Currency code. Example: INR'
+                        description: 'Financial summary totals.'
+                      transactions:
+                        type: array
+                        example:
+                          -
+                            id: 1
+                            type: Invoice
+                            reference: INV-0012
+                            reference_id: 12
+                            supplier_name: 'ABC Materials Ltd'
+                            site_name: 'Main Site'
+                            reference_amount: '25000.00'
+                            debit: '25000.00'
+                            credit: '0.00'
+                            balance: '25000.00'
+                            date_time: '2025-06-15 10:30:00'
+                            description: 'Invoice Generated'
+                        description: 'List of activity records (latest first).'
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            type:
+                              type: string
+                              example: Invoice
+                            reference:
+                              type: string
+                              example: INV-0012
+                            reference_id:
+                              type: integer
+                              example: 12
+                            supplier_name:
+                              type: string
+                              example: 'ABC Materials Ltd'
+                            site_name:
+                              type: string
+                              example: 'Main Site'
+                            reference_amount:
+                              type: string
+                              example: '25000.00'
+                            debit:
+                              type: string
+                              example: '25000.00'
+                            credit:
+                              type: string
+                              example: '0.00'
+                            balance:
+                              type: string
+                              example: '25000.00'
+                            date_time:
+                              type: string
+                              example: '2025-06-15 10:30:00'
+                            description:
+                              type: string
+                              example: 'Invoice Generated'
+                  -
+                    description: 'No activity data (only suppliers/sites returned)'
+                    type: object
+                    example:
+                      success: true
+                      message: 'Supplier activity report fetched successfully.'
+                      summary:
+                        total_po: '0.00'
+                        total_grn: '0.00'
+                        total_invoice: '0.00'
+                        total_payments: '0.00'
+                        final_balance: '0.00'
+                        currency: INR
+                      transactions: []
+                    properties:
+                      success:
+                        type: boolean
+                        example: true
+                        description: 'Whether the request succeeded. Example: true'
+                      message:
+                        type: string
+                        example: 'Supplier activity report fetched successfully.'
+                        description: 'Response message. Example: Supplier activity report fetched successfully.'
+                      summary:
+                        type: object
+                        properties:
+                          total_po:
+                            type: string
+                            example: '0.00'
+                            description: 'Sum of all PO amounts in range. Example: "100000.00"'
+                          total_grn:
+                            type: string
+                            example: '0.00'
+                            description: 'Sum of all GRN amounts in range. Example: "95000.00"'
+                          total_invoice:
+                            type: string
+                            example: '0.00'
+                            description: 'Sum of all invoice amounts in range. Example: "85000.00"'
+                          total_payments:
+                            type: string
+                            example: '0.00'
+                            description: 'Sum of all completed payment + advance amounts in range. Example: "60000.00"'
+                          final_balance:
+                            type: string
+                            example: '0.00'
+                            description: 'Running balance (only when activity data present). Example: "-25000.00"'
+                          currency:
+                            type: string
+                            example: INR
+                            description: 'Currency code. Example: INR'
+                        description: 'Financial summary totals.'
+                      transactions:
+                        type: array
+                        example: []
+                        description: 'List of activity records (latest first).'
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Unauthorized action.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                    description: 'Whether the request succeeded. Example: true'
+                  message:
+                    type: string
+                    example: 'Unauthorized action.'
+                    description: 'Response message. Example: Supplier activity report fetched successfully.'
+      tags:
+        - 'Supplier Activity Report'
+  /api/reports/supplier-activity/suppliers:
+    get:
+      summary: 'Get distinct suppliers with activity for the filter period.'
+      operationId: getDistinctSuppliersWithActivityForTheFilterPeriod
+      description: ''
+      parameters:
+        -
+          in: query
+          name: from_date
+          description: 'date optional Start date (YYYY-MM-DD). Defaults to start of current month.'
+          example: '2025-06-01'
+          required: false
+          schema:
+            type: string
+            description: 'date optional Start date (YYYY-MM-DD). Defaults to start of current month.'
+            example: '2025-06-01'
+        -
+          in: query
+          name: to_date
+          description: 'date optional End date (YYYY-MM-DD). Defaults to today.'
+          example: '2025-06-30'
+          required: false
+          schema:
+            type: string
+            description: 'date optional End date (YYYY-MM-DD). Defaults to today.'
+            example: '2025-06-30'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Suppliers with activity fetched successfully.'
+                  data:
+                    -
+                      id: 5
+                      name: 'ABC Materials Ltd'
+                      total_transactions: 15
+                      total_amount: '85000.00'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: 'Example: true'
+                  message:
+                    type: string
+                    example: 'Suppliers with activity fetched successfully.'
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 5
+                        name: 'ABC Materials Ltd'
+                        total_transactions: 15
+                        total_amount: '85000.00'
+                    description: 'List of suppliers with activity counts.'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 5
+                        name:
+                          type: string
+                          example: 'ABC Materials Ltd'
+                        total_transactions:
+                          type: integer
+                          example: 15
+                        total_amount:
+                          type: string
+                          example: '85000.00'
+      tags:
+        - 'Supplier Activity Report'
   '/api/suppliers/{supplierId}/advances':
     post:
       summary: 'Create advance for supplier.'
@@ -8745,7 +10544,7 @@ paths:
                 advance_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-09T17:29:57'
+                  example: '2026-05-20T11:46:43'
                 source:
                   type: string
                   description: ''
@@ -9035,6 +10834,466 @@ paths:
         required: true
         schema:
           type: string
+  /api/reports/supplier-ledger:
+    get:
+      summary: 'List supplier ledger transactions.'
+      operationId: listSupplierLedgerTransactions
+      description: "Returns transactions ordered by date (latest first) with a financial summary.\nTransactions include: Purchase Orders (`po`), Invoices (`invoice`), Payments (`payment`) and Advances (`advance`)."
+      parameters:
+        -
+          in: query
+          name: supplier_id
+          description: 'optional Filter by supplier ID. Use `all` for all suppliers. Default: all.'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by supplier ID. Use `all` for all suppliers. Default: all.'
+            example: 5
+        -
+          in: query
+          name: site_id
+          description: 'optional Filter by site/project ID. Use `all` for all sites. Default: all.'
+          example: 2
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by site/project ID. Use `all` for all sites. Default: all.'
+            example: 2
+        -
+          in: query
+          name: from_date
+          description: 'date optional Start date (YYYY-MM-DD). Defaults to first day of current month.'
+          example: '2025-01-01'
+          required: false
+          schema:
+            type: string
+            description: 'date optional Start date (YYYY-MM-DD). Defaults to first day of current month.'
+            example: '2025-01-01'
+        -
+          in: query
+          name: to_date
+          description: 'date optional End date (YYYY-MM-DD). Defaults to today.'
+          example: '2025-12-31'
+          required: false
+          schema:
+            type: string
+            description: 'date optional End date (YYYY-MM-DD). Defaults to today.'
+            example: '2025-12-31'
+        -
+          in: query
+          name: per_page
+          description: 'optional Number of records per page. Default: 50.'
+          example: 50
+          required: false
+          schema:
+            type: integer
+            description: 'optional Number of records per page. Default: 50.'
+            example: 50
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Supplier ledger fetched successfully.'
+                  summary:
+                    total_po: '100000.00'
+                    total_invoice: '85000.00'
+                    total_payments: '60000.00'
+                    total_advances: '10000.00'
+                    current_balance: '25000.00'
+                    currency: INR
+                  transactions:
+                    -
+                      id: 15
+                      supplier:
+                        id: 5
+                        name: 'ABC Materials Ltd'
+                      site:
+                        id: 2
+                        name: 'Main Site'
+                      reference_type: invoice
+                      reference_id: 12
+                      debit: '25000.00'
+                      credit: '0.00'
+                      balance: '25000.00'
+                      transaction_date: '2025-06-15'
+                  pagination:
+                    current_page: 1
+                    per_page: 50
+                    total: 85
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: 'Whether the request succeeded. Example: true'
+                  message:
+                    type: string
+                    example: 'Supplier ledger fetched successfully.'
+                    description: 'Response message. Example: Supplier ledger fetched successfully.'
+                  summary:
+                    type: object
+                    properties:
+                      total_po:
+                        type: string
+                        example: '100000.00'
+                        description: 'Total purchase order amount. Example: "100000.00"'
+                      total_invoice:
+                        type: string
+                        example: '85000.00'
+                        description: 'Total invoice (debit) amount. Example: "85000.00"'
+                      total_payments:
+                        type: string
+                        example: '60000.00'
+                        description: 'Total payments and advances credited. Example: "60000.00"'
+                      total_advances:
+                        type: string
+                        example: '10000.00'
+                        description: 'Total advance amount (subset of total_payments). Example: "10000.00"'
+                      current_balance:
+                        type: string
+                        example: '25000.00'
+                        description: 'Outstanding balance across suppliers. Example: "25000.00"'
+                      currency:
+                        type: string
+                        example: INR
+                        description: 'Currency code used. Example: INR'
+                    description: 'Financial summary for the filter range.'
+                  transactions:
+                    type: array
+                    example:
+                      -
+                        id: 15
+                        supplier:
+                          id: 5
+                          name: 'ABC Materials Ltd'
+                        site:
+                          id: 2
+                          name: 'Main Site'
+                        reference_type: invoice
+                        reference_id: 12
+                        debit: '25000.00'
+                        credit: '0.00'
+                        balance: '25000.00'
+                        transaction_date: '2025-06-15'
+                    description: 'List of transaction records.'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 15
+                        supplier:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 5
+                            name:
+                              type: string
+                              example: 'ABC Materials Ltd'
+                        site:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 2
+                            name:
+                              type: string
+                              example: 'Main Site'
+                        reference_type:
+                          type: string
+                          example: invoice
+                        reference_id:
+                          type: integer
+                          example: 12
+                        debit:
+                          type: string
+                          example: '25000.00'
+                        credit:
+                          type: string
+                          example: '0.00'
+                        balance:
+                          type: string
+                          example: '25000.00'
+                        transaction_date:
+                          type: string
+                          example: '2025-06-15'
+                  pagination:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      per_page:
+                        type: integer
+                        example: 50
+                      total:
+                        type: integer
+                        example: 85
+                    description: 'Laravel standard pagination meta.'
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Unauthorized action.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                    description: 'Whether the request succeeded. Example: true'
+                  message:
+                    type: string
+                    example: 'Unauthorized action.'
+                    description: 'Response message. Example: Supplier ledger fetched successfully.'
+      tags:
+        - 'Supplier Ledger Report'
+  '/api/reports/supplier-ledger/balance/{supplier_id}':
+    get:
+      summary: 'Fetch the current balance for a specific supplier.'
+      operationId: fetchTheCurrentBalanceForASpecificSupplier
+      description: ''
+      parameters:
+        -
+          in: query
+          name: site_id
+          description: 'optional Filter by site/project ID. Defaults to `null` (all sites).'
+          example: 2
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by site/project ID. Defaults to `null` (all sites).'
+            example: 2
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Supplier balance fetched successfully.'
+                  data:
+                    supplier_id: 5
+                    supplier_name: 'ABC Materials Ltd'
+                    current_balance: '25000.00'
+                    total_debit: '85000.00'
+                    total_credit: '60000.00'
+                    currency: INR
+                    transactions:
+                      -
+                        date: '2025-06-15'
+                        type: invoice
+                        reference: INV-001
+                        ref_amount: '25000.00'
+                        description: 'Advance received for site development project.'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Supplier balance fetched successfully.'
+                  data:
+                    type: object
+                    properties:
+                      supplier_id:
+                        type: integer
+                        example: 5
+                      supplier_name:
+                        type: string
+                        example: 'ABC Materials Ltd'
+                      current_balance:
+                        type: string
+                        example: '25000.00'
+                      total_debit:
+                        type: string
+                        example: '85000.00'
+                      total_credit:
+                        type: string
+                        example: '60000.00'
+                      currency:
+                        type: string
+                        example: INR
+                      transactions:
+                        type: array
+                        example:
+                          -
+                            date: '2025-06-15'
+                            type: invoice
+                            reference: INV-001
+                            ref_amount: '25000.00'
+                            description: 'Advance received for site development project.'
+                        items:
+                          type: object
+                          properties:
+                            date:
+                              type: string
+                              example: '2025-06-15'
+                            type:
+                              type: string
+                              example: invoice
+                            reference:
+                              type: string
+                              example: INV-001
+                            ref_amount:
+                              type: string
+                              example: '25000.00'
+                            description:
+                              type: string
+                              example: 'Advance received for site development project.'
+        404:
+          description: 'Supplier not found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - 'Supplier Ledger Report'
+    parameters:
+      -
+        in: path
+        name: supplier_id
+        description: 'The supplier ID.'
+        example: 5
+        required: true
+        schema:
+          type: integer
+  /api/reports/supplier-ledger/export-pdf:
+    get:
+      summary: 'Export supplier ledger report to PDF.'
+      operationId: exportSupplierLedgerReportToPDF
+      description: ''
+      parameters:
+        -
+          in: query
+          name: supplier_id
+          description: 'optional Filter by supplier ID. Use `all` for all suppliers.'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by supplier ID. Use `all` for all suppliers.'
+            example: 5
+        -
+          in: query
+          name: site_id
+          description: 'optional Filter by site/project ID. Use `all` for all sites.'
+          example: 2
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by site/project ID. Use `all` for all sites.'
+            example: 2
+        -
+          in: query
+          name: from_date
+          description: 'date optional Start date (YYYY-MM-DD). Defaults to first day of current month.'
+          example: '2025-01-01'
+          required: false
+          schema:
+            type: string
+            description: 'date optional Start date (YYYY-MM-DD). Defaults to first day of current month.'
+            example: '2025-01-01'
+        -
+          in: query
+          name: to_date
+          description: 'date optional End date (YYYY-MM-DD). Defaults to today.'
+          example: '2025-12-31'
+          required: false
+          schema:
+            type: string
+            description: 'date optional End date (YYYY-MM-DD). Defaults to today.'
+            example: '2025-12-31'
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Returns the PDF as a file download.'
+      tags:
+        - 'Supplier Ledger Report'
+  /api/reports/supplier-ledger/export-excel:
+    get:
+      summary: 'Export supplier ledger report to Excel.'
+      operationId: exportSupplierLedgerReportToExcel
+      description: ''
+      parameters:
+        -
+          in: query
+          name: supplier_id
+          description: 'optional Filter by supplier ID. Use `all` for all suppliers.'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by supplier ID. Use `all` for all suppliers.'
+            example: 5
+        -
+          in: query
+          name: site_id
+          description: 'optional Filter by site/project ID. Use `all` for all sites.'
+          example: 2
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by site/project ID. Use `all` for all sites.'
+            example: 2
+        -
+          in: query
+          name: from_date
+          description: 'date optional Start date (YYYY-MM-DD). Defaults to first day of current month.'
+          example: '2025-01-01'
+          required: false
+          schema:
+            type: string
+            description: 'date optional Start date (YYYY-MM-DD). Defaults to first day of current month.'
+            example: '2025-01-01'
+        -
+          in: query
+          name: to_date
+          description: 'date optional End date (YYYY-MM-DD). Defaults to today.'
+          example: '2025-12-31'
+          required: false
+          schema:
+            type: string
+            description: 'date optional End date (YYYY-MM-DD). Defaults to today.'
+            example: '2025-12-31'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  message: 'Export started'
+                  filename: supplier-ledger-report-2025-06-19.xlsx
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Export started'
+                  filename:
+                    type: string
+                    example: supplier-ledger-report-2025-06-19.xlsx
+      tags:
+        - 'Supplier Ledger Report'
   /api/suppliers:
     get:
       summary: ''
@@ -9673,380 +11932,1657 @@ paths:
           type: string
   /api/users:
     get:
-      summary: "GET /api/users\nList all users with optional filters"
-      operationId: gETapiusersListAllUsersWithOptionalFilters
-      description: "Query Params:\n- name: Filter by name\n- email: Filter by email\n- role: Filter by role ID\n- workspace_id: Filter by workspace\n- page: Page number (default 1)\n- per_page: Items per page (default 15)"
-      parameters: []
+      summary: 'List Users'
+      operationId: listUsers
+      description: "Returns a paginated list of users. Filters by name, email, role, and workspace.\nSuper admins see only company-type users. Regular admins see only their own workspace."
+      parameters:
+        -
+          in: query
+          name: name
+          description: 'optional Filter users by name (partial match).'
+          example: John
+          required: false
+          schema:
+            type: string
+            description: 'optional Filter users by name (partial match).'
+            example: John
+        -
+          in: query
+          name: email
+          description: 'optional Filter users by email (partial match).'
+          example: john@example.com
+          required: false
+          schema:
+            type: string
+            description: 'optional Filter users by email (partial match).'
+            example: john@example.com
+        -
+          in: query
+          name: role
+          description: 'optional Filter by role ID.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by role ID.'
+            example: 1
+        -
+          in: query
+          name: workspace_id
+          description: 'optional Filter by workspace ID.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by workspace ID.'
+            example: 1
+        -
+          in: query
+          name: per_page
+          description: 'optional Items per page. Defaults to 15.'
+          example: 15
+          required: false
+          schema:
+            type: integer
+            description: 'optional Items per page. Defaults to 15.'
+            example: 15
       responses:
-        404:
-          description: ''
+        200:
+          description: 'Users retrieved successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": true,\n  \"message\": \"Users retrieved successfully\",\n  \"data\": {\n    \"users\": [{ \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... }],\n    \"pagination\": {\n      \"current_page\": 1,\n      \"total_pages\": 5,\n      \"total_items\": 50,\n      \"per_page\": 15\n    }\n  }\n}"
+        403:
+          description: 'Permission denied'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/users could not be found.'
+                  status: false
+                  message: 'Permission denied'
                 properties:
+                  status:
+                    type: boolean
+                    example: false
                   message:
                     type: string
-                    example: 'The route api/users could not be found.'
+                    example: 'Permission denied'
       tags:
         - Users
     post:
-      summary: "POST /api/users\nCreate a new user"
-      operationId: pOSTapiusersCreateANewUser
-      description: "Form Data:\n- name (required): User name\n- email (required): User email\n- mobile_no (optional): Mobile number\n- password (required if login enabled): Password\n- password_switch (optional): 'on' to enable login\n- roles (required): Role ID\n- avatar (optional): Profile image file\n- workspace_id (optional): Workspace ID"
-      parameters: []
-      responses: {  }
-      tags:
-        - Users
-  '/api/users/{id}':
-    get:
-      summary: "GET /api/users/{id}\nShow a specific user"
-      operationId: gETapiusersidShowASpecificUser
-      description: ''
+      summary: 'Create User'
+      operationId: createUser
+      description: "Register a new user in the system. Sends a verification email if email\nverification is enabled in company settings. The user is assigned the\nrole specified by `roles`."
       parameters: []
       responses:
-        404:
-          description: ''
+        201:
+          description: 'User created successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": true,\n  \"message\": \"User created successfully\",\n  \"data\": { \"user\": { \"id\": 3, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... } }\n}"
+        403:
+          description: 'Permission denied or plan limit reached'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/users/1 could not be found.'
+                  status: false
+                  message: 'Permission denied'
                 properties:
+                  status:
+                    type: boolean
+                    example: false
                   message:
                     type: string
-                    example: 'The route api/users/1 could not be found.'
+                    example: 'Permission denied'
+        422:
+          description: 'Validation error'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{ "status": false, "message": "The name field is required.", "data": {...} }'
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'User full name.'
+                  example: 'John Doe'
+                email:
+                  type: string
+                  description: 'Unique email address.'
+                  example: john@example.com
+                mobile_no:
+                  type: string
+                  description: 'optional Mobile number.'
+                  example: '+1234567890'
+                password:
+                  type: string
+                  description: 'if password_switch=on User password (min 6 chars).'
+                  example: secret123
+                password_switch:
+                  type: string
+                  description: 'optional Enable password-based login. Accepts "on".'
+                  example: 'on'
+                roles:
+                  type: integer
+                  description: 'Role ID to assign.'
+                  example: 1
+                avatar:
+                  type: string
+                  format: binary
+                  description: 'optional Profile image (jpeg/png/jpg/gif, max 2 MB).'
+                workspace_id:
+                  type: integer
+                  description: 'optional Workspace ID.'
+                  example: 1
+              required:
+                - name
+                - email
+                - password
+                - roles
+  '/api/users/{id}':
+    get:
+      summary: 'Show User'
+      operationId: showUser
+      description: "Retrieve details of a specific user by ID, including their assigned role.\nSensitive fields (password, 2FA tokens, remember_token) are excluded."
+      parameters: []
+      responses:
+        200:
+          description: 'User retrieved successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": true,\n  \"message\": \"User retrieved successfully\",\n  \"data\": {\n    \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... },\n    \"role\": { \"id\": 1, \"name\": \"staff\" }\n  }\n}"
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+        404:
+          description: 'User not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'User not found'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'User not found'
       tags:
         - Users
     put:
-      summary: "PUT /api/users/{id}\nUpdate a user"
-      operationId: pUTapiusersidUpdateAUser
-      description: "Form Data:\n- name (required): User name\n- email (required): User email\n- mobile_no (optional): Mobile number\n- roles (optional): Role ID"
+      summary: 'Update User'
+      operationId: updateUser
+      description: "Update an existing user's name, email, mobile number, and optionally their role."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'User updated successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": true,\n  \"message\": \"User updated successfully\",\n  \"data\": { \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... } }\n}"
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+        404:
+          description: 'User not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'User not found'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'User not found'
       tags:
         - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Updated user name.'
+                  example: 'John Doe'
+                email:
+                  type: string
+                  description: 'Updated email address (unique within workspace).'
+                  example: john@example.com
+                mobile_no:
+                  type: string
+                  description: 'optional Updated mobile number.'
+                  example: '+1234567890'
+                roles:
+                  type: integer
+                  description: 'optional New role ID to assign.'
+                  example: 2
+              required:
+                - name
+                - email
     delete:
-      summary: "DELETE /api/users/{id}\nDelete a user"
-      operationId: dELETEapiusersidDeleteAUser
-      description: ''
+      summary: 'Delete a user. Deletes all records created by this user across all tables.'
+      operationId: deleteAUserDeletesAllRecordsCreatedByThisUserAcrossAllTables
+      description: 'Fails if the associated employee record has attendance history.'
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'User deleted successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'User deleted successfully'
+                  data: []
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'User deleted successfully'
+                  data:
+                    type: array
+                    example: []
+        400:
+          description: 'Employee has attendance records'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Cannot delete user. Employee has attendance records.'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Cannot delete user. Employee has attendance records.'
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+        404:
+          description: 'User not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'No query results for model'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'No query results for model'
       tags:
         - Users
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the user.'
+        description: 'User ID.'
         example: 1
         required: true
         schema:
           type: integer
   /api/users/create-data:
     get:
-      summary: "GET /api/users/create-data\nGet data needed for creating a user (roles list)"
-      operationId: gETapiuserscreateDataGetDataNeededForCreatingAUserrolesList
-      description: ''
+      summary: 'Get Create-User Form Data'
+      operationId: getCreateUserFormData
+      description: "Returns the list of available roles that can be assigned to a new user.\nUsed to populate the role selector on the user creation form."
       parameters: []
       responses:
-        404:
-          description: ''
+        200:
+          description: 'Roles retrieved successfully'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/users/create-data could not be found.'
+                  status: true
+                  message: 'Roles data retrieved successfully'
+                  data:
+                    roles:
+                      '1': staff
+                      '2': admin
                 properties:
+                  status:
+                    type: boolean
+                    example: true
                   message:
                     type: string
-                    example: 'The route api/users/create-data could not be found.'
+                    example: 'Roles data retrieved successfully'
+                  data:
+                    type: object
+                    properties:
+                      roles:
+                        type: object
+                        properties:
+                          1:
+                            type: string
+                            example: staff
+                          2:
+                            type: string
+                            example: admin
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
       tags:
         - Users
   /api/users/profile:
     get:
-      summary: "GET /api/users/profile\nGet current authenticated user's profile"
-      operationId: gETapiusersprofileGetCurrentAuthenticatedUsersProfile
-      description: ''
+      summary: 'Get User Profile'
+      operationId: getUserProfile
+      description: "Retrieve the authenticated user's profile data.\nSensitive fields (password, 2FA secrets, remember_token) are excluded."
       parameters: []
       responses:
-        404:
-          description: ''
+        200:
+          description: 'Profile retrieved successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": true,\n  \"message\": \"Profile retrieved successfully\",\n  \"data\": {\n    \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... }\n  }\n}"
+        403:
+          description: 'Permission denied'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/users/profile could not be found.'
+                  status: false
+                  message: 'Permission denied'
                 properties:
+                  status:
+                    type: boolean
+                    example: false
                   message:
                     type: string
-                    example: 'The route api/users/profile could not be found.'
+                    example: 'Permission denied'
       tags:
         - Users
     put:
-      summary: "PUT /api/users/profile\nUpdate current authenticated user's profile"
-      operationId: pUTapiusersprofileUpdateCurrentAuthenticatedUsersProfile
-      description: "Form Data:\n- name (required): User name\n- email (required): User email\n- mobile_no (optional): Mobile number\n- avatar (optional): Profile image file"
+      summary: 'Update Profile'
+      operationId: updateProfile
+      description: "Update the authenticated user's own name, email, mobile number, and optionally avatar."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'Profile updated successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": true,\n  \"message\": \"Profile updated successfully\",\n  \"data\": { \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... } }\n}"
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+        422:
+          description: 'Validation error'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{ "status": false, "message": "...", "data": {...} }'
       tags:
         - Users
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'User full name.'
+                  example: 'John Doe'
+                email:
+                  type: string
+                  description: 'Updated email address.'
+                  example: john@example.com
+                mobile_no:
+                  type: string
+                  description: 'optional Updated mobile number.'
+                  example: '+1234567890'
+                avatar:
+                  type: string
+                  format: binary
+                  description: 'optional Profile image (jpeg/png/jpg/gif, max 2 MB).'
+              required:
+                - name
+                - email
   /api/users/profile/avatar:
     post:
-      summary: "PUT /api/users/profile/avatar\nUpdate only user avatar"
-      operationId: pUTapiusersprofileavatarUpdateOnlyUserAvatar
-      description: "Form Data:\n- avatar (required): Profile image file"
+      summary: 'Update Avatar'
+      operationId: updateAvatar
+      description: "Replace the authenticated user's profile avatar image."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'Avatar updated successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Avatar updated successfully'
+                  data:
+                    avatar: 'https://...'
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Avatar updated successfully'
+                  data:
+                    type: object
+                    properties:
+                      avatar:
+                        type: string
+                        example: 'https://...'
+        400:
+          description: 'No avatar file provided'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'No avatar file provided'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'No avatar file provided'
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
       tags:
         - Users
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+                  description: 'Profile image (jpeg/png/jpg/gif, max 2 MB).'
+              required:
+                - avatar
   /api/users/password:
     put:
-      summary: "PUT /api/users/password\nUpdate current user's password"
-      operationId: pUTapiuserspasswordUpdateCurrentUsersPassword
-      description: "Form Data:\n- current_password (required): Current password\n- new_password (required): New password (min 6 chars)\n- confirm_password (required): Confirm new password"
-      parameters: []
-      responses: {  }
-      tags:
-        - Users
-  '/api/users/{id}/password':
-    get:
-      summary: "GET /api/users/{id}/password\nGet password reset form data"
-      operationId: gETapiusersidpasswordGetPasswordResetFormData
-      description: ''
+      summary: 'Change Own Password'
+      operationId: changeOwnPassword
+      description: "Update the authenticated user's password. Requires verification of the current password.\nThe new password must be at least 6 characters and must match the confirmation field."
       parameters: []
       responses:
-        404:
-          description: ''
+        200:
+          description: 'Password updated successfully'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/users/1/password could not be found.'
+                  status: true
+                  message: 'Password updated successfully'
+                  data: []
                 properties:
+                  status:
+                    type: boolean
+                    example: true
                   message:
                     type: string
-                    example: 'The route api/users/1/password could not be found.'
+                    example: 'Password updated successfully'
+                  data:
+                    type: array
+                    example: []
+        400:
+          description: 'Current password is incorrect'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Please enter correct current password'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Please enter correct current password'
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+        422:
+          description: 'Validation error'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: ...
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: ...
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_password:
+                  type: string
+                  description: 'Current password for verification.'
+                  example: oldpass123
+                new_password:
+                  type: string
+                  description: 'New password (min 6 characters).'
+                  example: newpass456
+                confirm_password:
+                  type: string
+                  description: 'Must match new_password.'
+                  example: newpass456
+              required:
+                - current_password
+                - new_password
+                - confirm_password
+  '/api/users/{id}/password':
+    get:
+      summary: 'Get Password Reset Form Data (Admin)'
+      operationId: getPasswordResetFormDataAdmin
+      description: "Retrieve a specific user's basic profile data to prepare for an admin-initiated password reset.\nThe `id` path parameter must be a Laravel-encrypted user ID (see `Crypt::decrypt`)."
+      parameters: []
+      responses:
+        200:
+          description: 'User data retrieved successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": true,\n  \"message\": \"User data retrieved successfully\",\n  \"data\": { \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... } }\n}"
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+        404:
+          description: 'User not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'User not found'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'User not found'
       tags:
         - Users
     put:
-      summary: "PUT /api/users/{id}/password\nReset user's password (Admin)"
-      operationId: pUTapiusersidpasswordResetUsersPasswordAdmin
-      description: "Form Data:\n- password (required): New password\n- password_confirmation (required): Confirm password\n- login_enable (optional): Enable login after reset"
+      summary: 'Reset User Password (Admin)'
+      operationId: resetUserPasswordAdmin
+      description: "Admin-initiated password reset for a specific user. Optionally enables the\nuser's login after the reset when `login_enable` is provided."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'Password reset successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Password reset successfully'
+                  data: []
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Password reset successfully'
+                  data:
+                    type: array
+                    example: []
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+        404:
+          description: 'User not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'User not found'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'User not found'
       tags:
         - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  description: 'New password (min 6 characters, must be confirmed).'
+                  example: newpass456
+                password_confirmation:
+                  type: string
+                  description: 'Must match the new password.'
+                  example: newpass456
+                login_enable:
+                  type: integer
+                  description: "optional Set to 1 to enable the user's account after reset."
+                  example: 1
+              required:
+                - password
+                - password_confirmation
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the user.'
-        example: 1
+        description: 'Encrypted user ID (Laravel Crypt).'
+        example: eyJpZCI6MX0=
         required: true
         schema:
-          type: integer
+          type: string
   '/api/users/{id}/login-manage':
     post:
-      summary: "POST /api/users/{id}/login-manage\nEnable/disable user login"
-      operationId: pOSTapiusersidloginManageEnabledisableUserLogin
-      description: ''
+      summary: 'Toggle User Login'
+      operationId: toggleUserLogin
+      description: "Enable or disable login access for a specific user.\nThe `id` path parameter must be a Laravel-encrypted user ID."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  -
+                    description: 'Login enabled'
+                    type: object
+                    example:
+                      status: true
+                      message: 'User login enabled successfully'
+                      data: []
+                    properties:
+                      status:
+                        type: boolean
+                        example: true
+                      message:
+                        type: string
+                        example: 'User login enabled successfully'
+                      data:
+                        type: array
+                        example: []
+                  -
+                    description: 'Login disabled'
+                    type: object
+                    example:
+                      status: true
+                      message: 'User login disabled successfully'
+                      data: []
+                    properties:
+                      status:
+                        type: boolean
+                        example: true
+                      message:
+                        type: string
+                        example: 'User login disabled successfully'
+                      data:
+                        type: array
+                        example: []
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+        404:
+          description: 'User not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'User not found'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'User not found'
       tags:
         - Users
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the user.'
-        example: 1
+        description: 'Encrypted user ID (Laravel Crypt).'
+        example: eyJpZCI6MX0=
         required: true
         schema:
-          type: integer
+          type: string
   /api/users/import:
     get:
-      summary: "GET /api/users/import\nGet import form data"
-      operationId: gETapiusersimportGetImportFormData
-      description: ''
+      summary: 'Get User Import Form Data'
+      operationId: getUserImportFormData
+      description: "Retrieve form configuration data for the user CSV import screen.\nNo additional data is returned — this endpoint confirms that the\nauthenticated user has permission to access the import feature."
       parameters: []
       responses:
-        404:
-          description: ''
+        200:
+          description: 'Import form data retrieved successfully'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/users/import could not be found.'
+                  status: true
+                  message: 'Import form data retrieved successfully'
+                  data: {  }
                 properties:
+                  status:
+                    type: boolean
+                    example: true
                   message:
                     type: string
-                    example: 'The route api/users/import could not be found.'
+                    example: 'Import form data retrieved successfully'
+                  data:
+                    type: object
+                    properties: {  }
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
       tags:
         - Users
     post:
-      summary: "POST /api/users/import\nImport users from CSV"
-      operationId: pOSTapiusersimportImportUsersFromCSV
-      description: "Form Data:\n- name (required, array): Name column index\n- email (required, array): Email column index\n- role (required, array): Role column index\n- file_data (required): CSV data"
+      summary: 'Import Users from CSV'
+      operationId: importUsersFromCSV
+      description: "Bulk-create users from previously validated CSV data.\n`file_data` should be a JSON-encoded array of row arrays as returned by the\nimport-preview step. Returns counts of successfully imported and failed rows."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'Import completed'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Import completed'
+                  data:
+                    total_imported: 5
+                    imported:
+                      -
+                        row: 1
+                        email: john@example.com
+                        name: 'John Doe'
+                    failed: []
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Import completed'
+                  data:
+                    type: object
+                    properties:
+                      total_imported:
+                        type: integer
+                        example: 5
+                      imported:
+                        type: array
+                        example:
+                          -
+                            row: 1
+                            email: john@example.com
+                            name: 'John Doe'
+                        items:
+                          type: object
+                          properties:
+                            row:
+                              type: integer
+                              example: 1
+                            email:
+                              type: string
+                              example: john@example.com
+                            name:
+                              type: string
+                              example: 'John Doe'
+                      failed:
+                        type: array
+                        example: []
+        400:
+          description: 'No data provided'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'No data provided'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'No data provided'
+        403:
+          description: 'Permission denied or plan limit reached'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
       tags:
         - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file_data:
+                  type: json
+                  description: 'CSV data as a JSON-encoded array of rows.'
+                  example: '[{"name":"John Doe","email":"john@example.com"}]'
+                name:
+                  type: array
+                  description: 'Column index mapping for name field.'
+                  example:
+                    - '0'
+                  items:
+                    type: string
+                email:
+                  type: array
+                  description: 'Column index mapping for email field.'
+                  example:
+                    - '1'
+                  items:
+                    type: string
+                role:
+                  type: array
+                  description: 'Column index mapping for role field.'
+                  example:
+                    - '2'
+                  items:
+                    type: string
+              required:
+                - file_data
+                - name
+                - email
+                - role
   /api/users/import-preview:
     post:
-      summary: "POST /api/users/import-preview\nPreview CSV import file"
-      operationId: pOSTapiusersimportPreviewPreviewCSVImportFile
-      description: "Form Data:\n- file (required): CSV file"
-      parameters: []
-      responses: {  }
-      tags:
-        - Users
-  /api/users/logs:
-    get:
-      summary: "GET /api/users/logs\nGet user login history"
-      operationId: gETapiuserslogsGetUserLoginHistory
-      description: "Query Params:\n- month (optional): Filter by month\n- users (optional): Filter by user ID"
+      summary: 'Preview CSV Import File'
+      operationId: previewCSVImportFile
+      description: "Validate and extract the header row and available roles from a user CSV import file.\nReturns column names extracted from the header row so the client can map them\nbefore submitting the actual import."
       parameters: []
       responses:
-        404:
-          description: ''
+        200:
+          description: 'File preview data returned'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/users/logs could not be found.'
+                  status: true
+                  message: 'File preview data'
+                  data:
+                    columns:
+                      - name
+                      - email
+                      - role
+                    roles:
+                      '1': staff
+                      '2': admin
                 properties:
+                  status:
+                    type: boolean
+                    example: true
                   message:
                     type: string
-                    example: 'The route api/users/logs could not be found.'
+                    example: 'File preview data'
+                  data:
+                    type: object
+                    properties:
+                      columns:
+                        type: array
+                        example:
+                          - name
+                          - email
+                          - role
+                        items:
+                          type: string
+                      roles:
+                        type: object
+                        properties:
+                          1:
+                            type: string
+                            example: staff
+                          2:
+                            type: string
+                            example: admin
+        400:
+          description: 'No file selected or not a CSV'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Please select a file'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Please select a file'
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 'CSV file to preview.'
+              required:
+                - file
+  /api/users/logs:
+    get:
+      summary: 'Get User Login History'
+      operationId: getUserLoginHistory
+      description: "Return a chronological list of login records. Super admins see all company\nlogins; `user login manage` permission holders see their workspace's logins;\nall others see only their own logins."
+      parameters:
+        -
+          in: query
+          name: month
+          description: 'optional Filter by month name. Defaults to current month.'
+          example: January
+          required: false
+          schema:
+            type: string
+            description: 'optional Filter by month name. Defaults to current month.'
+            example: January
+        -
+          in: query
+          name: users
+          description: 'optional Filter by specific user ID.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by specific user ID.'
+            example: 1
+      responses:
+        200:
+          description: 'Logs retrieved successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": true,\n  \"message\": \"User logs retrieved successfully\",\n  \"data\": {\n    \"logs\": [\n      { \"id\": 1, \"user_id\": 1, \"user_name\": \"John Doe\", \"date\": \"2025-01-01\", \"login_time\": \"09:00:00\", ... }\n    ],\n    \"filter_users\": { \"1\": \"John Doe\", \"2\": \"Jane\" }\n  }\n}"
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
       tags:
         - Users
   '/api/users/logs/{id}':
     get:
-      summary: "GET /api/users/logs/{id}\nView specific login log"
-      operationId: gETapiuserslogsidViewSpecificLoginLog
-      description: ''
+      summary: 'View Login Log'
+      operationId: viewLoginLog
+      description: 'Retrieve a single user login record by its ID.'
       parameters: []
       responses:
+        200:
+          description: 'Log retrieved successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": true,\n  \"message\": \"Log retrieved successfully\",\n  \"data\": { \"log\": { \"id\": 1, \"user_id\": 1, \"date\": \"2025-01-01\", ... } }\n}"
         404:
-          description: ''
+          description: 'Log not found'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/users/logs/architecto could not be found.'
+                  status: false
+                  message: 'Log not found'
                 properties:
+                  status:
+                    type: boolean
+                    example: false
                   message:
                     type: string
-                    example: 'The route api/users/logs/architecto could not be found.'
+                    example: 'Log not found'
       tags:
         - Users
     delete:
-      summary: "DELETE /api/users/logs/{id}\nDelete login log"
-      operationId: dELETEapiuserslogsidDeleteLoginLog
-      description: ''
+      summary: 'Delete Login Log'
+      operationId: deleteLoginLog
+      description: 'Permanently remove a specific login history record.'
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'Log deleted successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Log deleted successfully'
+                  data: []
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Log deleted successfully'
+                  data:
+                    type: array
+                    example: []
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
       tags:
         - Users
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the log.'
-        example: architecto
+        description: 'Login log record ID.'
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
   '/api/users/{id}/impersonate':
     post:
-      summary: "POST /api/users/{id}/impersonate\nImpersonate as another user"
-      operationId: pOSTapiusersidimpersonateImpersonateAsAnotherUser
-      description: ''
+      summary: 'Impersonate User'
+      operationId: impersonateUser
+      description: "Impersonate another user as the currently authenticated user.\nThe authenticated user's session will be temporarily replaced by the target user."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'Impersonation started'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Now impersonating user'
+                  data:
+                    impersonated_user: 2
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Now impersonating user'
+                  data:
+                    type: object
+                    properties:
+                      impersonated_user:
+                        type: integer
+                        example: 2
+        404:
+          description: 'Target user not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'User not found'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'User not found'
       tags:
         - Users
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the user.'
-        example: 1
+        description: 'Target user ID to impersonate.'
+        example: 2
         required: true
         schema:
           type: integer
   /api/users/impersonate-exit:
     post:
-      summary: "POST /api/users/impersonate-exit\nExit impersonation"
-      operationId: pOSTapiusersimpersonateExitExitImpersonation
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Users
-  '/api/users/{id}/company-info':
-    get:
-      summary: "GET /api/users/{id}/company-info\nGet company info with user/workspace counters"
-      operationId: gETapiusersidcompanyInfoGetCompanyInfoWithUserworkspaceCounters
-      description: ''
+      summary: 'Exit Impersonation'
+      operationId: exitImpersonation
+      description: "Stop impersonating and return to the original authenticated user's session."
       parameters: []
       responses:
-        404:
-          description: ''
+        200:
+          description: 'Impersonation exited'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/users/1/company-info could not be found.'
+                  status: true
+                  message: 'Impersonation exited'
+                  data: []
                 properties:
+                  status:
+                    type: boolean
+                    example: true
                   message:
                     type: string
-                    example: 'The route api/users/1/company-info could not be found.'
+                    example: 'Impersonation exited'
+                  data:
+                    type: array
+                    example: []
+      tags:
+        - Users
+  '/api/users/{id}/company-info':
+    get:
+      summary: 'Get Company Info'
+      operationId: getCompanyInfo
+      description: "Retrieve company-level aggregation data: user counts and workspace counters\nbroken down per workspace."
+      parameters: []
+      responses:
+        200:
+          description: 'Company info retrieved successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Company info retrieved successfully'
+                  data:
+                    users_data:
+                      'Workspace A':
+                        workspace_id: 1
+                        total_users: 10
+                        disable_users: 2
+                        active_users: 8
+                    workspce_data:
+                      total_workspace: 3
+                      disable_workspace: 0
+                      active_workspace: 3
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Company info retrieved successfully'
+                  data:
+                    type: object
+                    properties:
+                      users_data:
+                        type: object
+                        properties:
+                          'Workspace A':
+                            type: object
+                            properties:
+                              workspace_id:
+                                type: integer
+                                example: 1
+                              total_users:
+                                type: integer
+                                example: 10
+                              disable_users:
+                                type: integer
+                                example: 2
+                              active_users:
+                                type: integer
+                                example: 8
+                      workspce_data:
+                        type: object
+                        properties:
+                          total_workspace:
+                            type: integer
+                            example: 3
+                          disable_workspace:
+                            type: integer
+                            example: 0
+                          active_workspace:
+                            type: integer
+                            example: 3
+        404:
+          description: 'Company not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Company not found'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Company not found'
       tags:
         - Users
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the user.'
+        description: 'Company/User ID.'
         example: 1
         required: true
         schema:
           type: integer
   /api/users/enable-disable:
     post:
-      summary: "POST /api/users/enable-disable\nEnable/disable user or workspace"
-      operationId: pOSTapiusersenableDisableEnabledisableUserOrWorkspace
-      description: "Form Data:\n- id (required): User or Workspace ID\n- name (required): 'user' or 'workspace'\n- company_id (required): Company ID\n- is_disable (required): 0 or 1"
+      summary: 'Enable or Disable User / Workspace'
+      operationId: enableOrDisableUserWorkspace
+      description: "Toggle the `is_disable` status of a user or workspace.\nActive workspaces cannot be disabled."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                oneOf:
+                  -
+                    description: 'Enabled successfully'
+                    type: string
+                    example: "{\n  \"status\": \"User/Workspace enabled successfully\",\n  \"data\": { \"users_data\": {...}, \"workspce_data\": {...} }\n}"
+                  -
+                    description: 'Disabled successfully'
+                    type: string
+                    example: '{ "status": "User/Workspace disabled successfully", "data": {...} }'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  -
+                    description: 'Active workspace cannot be disabled or invalid request'
+                    type: object
+                    example:
+                      status: false
+                      message: 'Active Workspace cannot be disabled'
+                    properties:
+                      status:
+                        type: boolean
+                        example: false
+                      message:
+                        type: string
+                        example: 'Active Workspace cannot be disabled'
+                  -
+                    description: 'Operation failed'
+                    type: object
+                    example:
+                      status: false
+                      message: 'Operation failed'
+                    properties:
+                      status:
+                        type: boolean
+                        example: false
+                      message:
+                        type: string
+                        example: 'Operation failed'
       tags:
         - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: 'User or Workspace ID to toggle.'
+                  example: 1
+                name:
+                  type: string
+                  description: 'Target type: "user" or "workspace".'
+                  example: user
+                company_id:
+                  type: integer
+                  description: 'Company/owner user ID.'
+                  example: 1
+                is_disable:
+                  type: integer
+                  description: '0 to disable, 1 to enable.'
+                  example: 1
+              required:
+                - id
+                - name
+                - company_id
+                - is_disable
   '/api/users/{id}/verify':
     post:
-      summary: "POST /api/users/{id}/verify\nVerify user email"
-      operationId: pOSTapiusersidverifyVerifyUserEmail
-      description: ''
+      summary: 'Verify User Email'
+      operationId: verifyUserEmail
+      description: "Mark the user's email address as verified by setting `email_verified_at`."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'User verified successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'User verified successfully'
+                  data: []
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'User verified successfully'
+                  data:
+                    type: array
+                    example: []
+        404:
+          description: 'User not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'User not found'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'User not found'
       tags:
         - Users
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the user.'
+        description: 'User ID.'
         example: 1
         required: true
         schema:

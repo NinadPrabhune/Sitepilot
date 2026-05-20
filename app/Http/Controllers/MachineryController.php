@@ -69,6 +69,7 @@ class MachineryController extends Controller {
                 'remarks' => 'nullable|string',
                 'description' => 'nullable|string',
                 'vehicle_number' => 'required|string|max:255',
+                'registration_number' => 'nullable|string|max:255',
             'owned_by' => 'required|in:owned,rental',
             'supplier_id' => 'required_if:owned_by,rental|prohibited_unless:owned_by,rental|nullable|exists:suppliers,id',
                 'operational_status' => 'required|in:active,breakdown,scrap',
@@ -110,6 +111,7 @@ class MachineryController extends Controller {
             $machinery->remarks = $request->remarks;
             $machinery->description = $request->description;
             $machinery->vehicle_number = $request->vehicle_number;
+            $machinery->registration_number = $request->registration_number;
         $machinery->owned_by = $request->owned_by;
         $machinery->supplier_id = $request->owned_by === 'rental' ? $request->supplier_id : null;
             $machinery->operational_status = $request->operational_status;
@@ -224,6 +226,7 @@ class MachineryController extends Controller {
                 'remarks' => 'nullable|string',
                 'description' => 'nullable|string',
                 'vehicle_number' => 'required|string|max:255',
+                'registration_number' => 'nullable|string|max:255',
             'owned_by' => 'required|in:owned,rental',
             'supplier_id' => 'required_if:owned_by,rental|prohibited_unless:owned_by,rental|nullable|exists:suppliers,id',
                 'operational_status' => 'required|in:active,breakdown,scrap',
@@ -264,6 +267,7 @@ class MachineryController extends Controller {
             $machinery->remarks = $request->remarks;
             $machinery->description = $request->description;
             $machinery->vehicle_number = $request->vehicle_number;
+            $machinery->registration_number = $request->registration_number;
             $oldOwnedBy = $machinery->owned_by;
             $machinery->owned_by = $request->owned_by;
             $machinery->supplier_id = $request->owned_by === 'rental' ? $request->supplier_id : null;

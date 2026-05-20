@@ -139,6 +139,27 @@ class AuthApiController extends Controller implements \Illuminate\Routing\Contro
         }
     }
 
+    /**
+     * User Logout
+     *
+     * Invalidate the current API token by deleting it.
+     * The token will no longer be valid for subsequent requests.
+     *
+     * @authenticated
+     *
+     * @headerParam Authorization string required Bearer token. Example: Bearer 1|xxxx
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": 1,
+     *   "message": "Successfully logged out"
+     * }
+     * @response status=401 scenario="Unauthenticated"
+     * {
+     *   "status": 0,
+     *   "message": "Failed to logout, token invalid"
+     * }
+     */
     public function logout(Request $request)
     {
         try {
@@ -155,8 +176,36 @@ class AuthApiController extends Controller implements \Illuminate\Routing\Contro
         }
     }
 
-    
-  public function refresh(Request $request)
+    /**
+     * Refresh API Token
+     *
+     * Invalidate the current token and generate a new one.
+     * Returns the new token along with user profile, workspaces, and sites.
+     * The new token replaces the old one — the old token will no longer work.
+     *
+     * @authenticated
+     *
+     * @headerParam Authorization string required Bearer token. Example: Bearer 1|xxxx
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": 1,
+     *   "data": {
+     *     "token": "1|newtokensring...",
+     *     "refresh_expires_in": null,
+     *     "expires_unit": "none",
+     *     "user": { "id": 1, "name": "John Doe", "email": "john@example.com", ... },
+     *     "workspaces": [...],
+     *     "sites": [...]
+     *   }
+     * }
+     * @response status=401 scenario="Unauthenticated"
+     * {
+     *   "status": 0,
+     *   "message": "Token cannot be refreshed or something went wrong"
+     * }
+     */
+     public function refresh(Request $request)
     {
         try {
             $user = $request->user();
@@ -187,6 +236,31 @@ class AuthApiController extends Controller implements \Illuminate\Routing\Contro
     }
 
 
+    /**
+     * Edit User Profile
+     *
+     * Update the authenticated user's name, email, mobile number, and profile avatar.
+     * Pass the current user_id as a form field to edit another user's profile.
+     *
+     * @authenticated
+     *
+     * @bodyParam name string required User full name. Example: John Doe
+     * @bodyParam email string required Updated email address. Example: john@example.com
+     * @bodyParam mobile_no string required Updated mobile number. Example: +1234567890
+     * @bodyParam user_id integer optional User ID to edit (defaults to authenticated user). Example: 1
+     * @bodyParam profile file optional Profile avatar image. No-example
+     *
+     * @response status=200 scenario="Profile updated successfully"
+     * {
+     *   "status": 1,
+     *   "message": "profile updated successfully.",
+     *   "data": { "id": 1, "name": "John Doe", "email": "john@example.com", ... }
+     * }
+     * @response status=400 scenario="Validation error"
+     * { "status": 0, "message": "The name field is required." }
+     * @response status=404 scenario="User not found"
+     * { "status": 0, "message": "User Not Found!!!" }
+     */
     public function editProfile(Request $request)
     {
         try {
@@ -409,6 +483,32 @@ class AuthApiController extends Controller implements \Illuminate\Routing\Contro
 
     }
 
+    /**
+     * Change Password
+     *
+     * Update the authenticated user's password.
+     * Requires the current password for verification.
+     * The new password must be different from the current one.
+     *
+     * @authenticated
+     *
+     * @bodyParam current_password string required Current password for verification. Example: oldpass123
+     * @bodyParam password string required New password (must be confirmed). Example: newpass456
+     * @bodyParam password_confirmation string required Must match the new password. Example: newpass456
+     *
+     * @response status=200 scenario="Password updated successfully"
+     * {
+     *   "status": 1,
+     *   "message": "password updated successfully.",
+     *   "data": { "id": 1, "name": "John Doe", "email": "john@example.com", ... }
+     * }
+     * @response status=422 scenario="Current password mismatch"
+     * { "message": "The provided current password does not match our records." }
+     * @response status=422 scenario="New password same as old"
+     * { "message": "The provided password and old password are same." }
+     * @response status=400 scenario="Validation error"
+     * { "status": 0, "message": "The password field is required." }
+     */
     public function changePassword(Request $request)
     {
         try {
@@ -447,6 +547,23 @@ class AuthApiController extends Controller implements \Illuminate\Routing\Contro
 
     }
 
+    /**
+     * Delete Account
+     *
+     * Permanently delete the authenticated user's account and all related data.
+     * Also removes all records created by this user across all tables.
+     * Deletion will fail if the associated employee record has attendance history.
+     *
+     * @authenticated
+     *
+     * @response status=200 scenario="Account deleted successfully"
+     * {
+     *   "status": 1,
+     *   "message": "account deleted successfully."
+     * }
+     * @response status=400 scenario="Employee has attendance records"
+     * { "status": 0, "message": "Cannot delete account. Employee has attendance records." }
+     */
     public function deleteAccount(Request $request)
     {
         $user = Auth::user();
@@ -481,6 +598,29 @@ class AuthApiController extends Controller implements \Illuminate\Routing\Contro
     }
 
 
+    /**
+     * Get Workspace Users
+     *
+     * List users belonging to a specific workspace.
+     * Results are paginated via `page` and `limit` query parameters.
+     *
+     * @authenticated
+     *
+     * @queryParam workspace_id integer required Workspace ID. Example: 1
+     * @queryParam limit integer optional Number of users per page. Defaults to 10. Example: 10
+     * @queryParam page integer optional Page number. Defaults to 1. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": 1,
+     *   "data": [
+     *     { "id": 1, "name": "John Doe", "email": "john@example.com" },
+     *     { "id": 2, "name": "Jane Smith", "email": "jane@example.com" }
+     *   ]
+     * }
+     * @response status=403 scenario="Missing workspace_id"
+     * { "status": 0, "message": "The workspace_id field is required." }
+     */
     public function getWorkspaceUsers(Request $request)
     {
         try {
@@ -527,7 +667,20 @@ class AuthApiController extends Controller implements \Illuminate\Routing\Contro
     }
     
     /**
-     * Send reset link to user's email (forgot password).
+     * Send Password Reset Link
+     *
+     * Send a password reset link to the user's registered email address.
+     * The link is valid for the duration configured in Laravel's password broker.
+     *
+     * @bodyParam email string required User email address. Example: john@example.com
+     *
+     * @response status=200 scenario="Reset link sent"
+     * {
+     *   "status": 1,
+     *   "message": "Reset link sent to your email."
+     * }
+     * @response status=422 scenario="Invalid or missing email"
+     * { "status": 0, "message": "Unable to send reset link." }
      */
     public function sendResetLink(Request $request)
     {
@@ -543,7 +696,23 @@ class AuthApiController extends Controller implements \Illuminate\Routing\Contro
     }
 
     /**
-     * Reset password using token from email.
+     * Reset Password
+     *
+     * Reset the user's password using the token received via email.
+     * The token is sent when calling the forgot-password endpoint.
+     *
+     * @bodyParam email string required User email address. Example: john@example.com
+     * @bodyParam token string required Password reset token from email. Example: abc123...
+     * @bodyParam password string required New password (must be confirmed). Example: newpass456
+     * @bodyParam password_confirmation string required Must match the new password. Example: newpass456
+     *
+     * @response status=200 scenario="Password reset successful"
+     * {
+     *   "status": 1,
+     *   "message": "Password reset successful."
+     * }
+     * @response status=422 scenario="Invalid token or email"
+     * { "status": 0, "message": "Invalid token or email." }
      */
     public function resetPassword(Request $request)
     {

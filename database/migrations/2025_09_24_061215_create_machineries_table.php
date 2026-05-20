@@ -16,12 +16,13 @@ return new class extends Migration
             $table->string('model_number')->nullable();
             $table->string('manufacturer')->nullable();
             $table->date('purchase_date')->nullable();
-            
+
             $table->string('capacity')->nullable();
             $table->date('maintenance_schedule')->nullable();
             $table->text('remarks')->nullable();
             $table->text('description')->nullable();
             $table->string('vehicle_number')->nullable(); // e.g., MH12AB1234
+            $table->string('registration_number')->nullable();
 
             $table->enum('owned_by', ['self_company', 'rented_supplier'])->default('self_company');
             $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->onDelete('set null');

@@ -138,6 +138,11 @@ class MachineryLedger extends Model
     {
         return $this->belongsTo(\App\Models\User::class, 'locked_by');
     }
+
+    public function locker()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'locked_by');
+    }
     
     public function paymentRequest()
     {

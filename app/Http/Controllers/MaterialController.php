@@ -86,18 +86,13 @@ class MaterialController extends Controller {
             $material->status = $request->status;
             $material->created_by = creatorId();
 
+            // Handle image upload using upload_file helper
             if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '_' . preg_replace('/\s+/', '_', $image->getClientOriginalName());
-                $imagePath = public_path('images/material');
-
-                // Ensure the directory exists
-                if (!file_exists($imagePath)) {
-                    mkdir($imagePath, 0755, true);
+                $imageName = time() . '_' . preg_replace('/\s+/', '_', $request->file('image')->getClientOriginalName());
+                $upload = upload_file($request, 'image', $imageName, 'materials');
+                if ($upload['flag'] == 1) {
+                    $material->image = $upload['url'];
                 }
-
-                $image->move($imagePath, $imageName);
-                $material->image = 'images/material/' . $imageName;
             }
 
             $material->save();
@@ -155,27 +150,29 @@ class MaterialController extends Controller {
             $material->status = $request->status;
             $material->created_by = creatorId();
 
-            // Handle image upload
+            // Handle image upload using upload_file helper
             if ($request->hasFile('image')) {
-                // Delete old image if exists
+                // Delete old image if exists (handle both old and new storage paths)
                 if (!empty($material->image)) {
-                    $imagePath = public_path($material->image);
-                    if (file_exists($imagePath)) {
-                        unlink($imagePath);
+                    $oldImagePath = null;
+                    if (str_starts_with($material->image, 'images/material')) {
+                        // Old storage path (public/images/material)
+                        $oldImagePath = public_path($material->image);
+                    } elseif (check_file($material->image)) {
+                        // New storage path (uploads/materials)
+                        $oldImagePath = base_path($material->image);
+                    }
+                    
+                    if ($oldImagePath && file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
                     }
                 }
 
-
-                $image = $request->file('image');
-                $imageName = time() . '_' . preg_replace('/\s+/', '_', $image->getClientOriginalName());
-                $imagePath = public_path('images/material');
-
-                if (!file_exists($imagePath)) {
-                    mkdir($imagePath, 0755, true);
+                $imageName = time() . '_' . preg_replace('/\s+/', '_', $request->file('image')->getClientOriginalName());
+                $upload = upload_file($request, 'image', $imageName, 'materials');
+                if ($upload['flag'] == 1) {
+                    $material->image = $upload['url'];
                 }
-
-                $image->move($imagePath, $imageName);
-                $material->image = 'images/material/' . $imageName;
             }
 
             $material->save();

@@ -39,9 +39,9 @@ class Phase1Phase2SmokeTest extends TestCase
             'purchase_orders table should NOT have payment_flag column (deprecated)'
         );
 
-        $this->assertTrue(
+        $this->assertFalse(
             \Schema::hasColumn('purchase_orders', 'payment_flag_deprecated'),
-            'purchase_orders table should have payment_flag_deprecated column'
+            'purchase_orders table should NOT have payment_flag_deprecated column (dropped)'
         );
     }
 
@@ -189,10 +189,11 @@ class Phase1Phase2SmokeTest extends TestCase
             'workspace_id' => 1,
         ]);
 
-        // Deprecated method should still work
-        $po->updatePaymentFlag();
-        $po->refresh();
-
-        $this->assertNotNull($po->payment_flag_deprecated);
+         // Deprecated method should still work (backward compatibility)
+         $po->updatePaymentFlag();
+         $po->refresh();
+         
+         // Should fall back to invoiced status
+         $this->assertNotNull($po->invoiced_status);
     }
 }

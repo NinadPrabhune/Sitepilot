@@ -89,8 +89,8 @@ class GrnService
             // Update PO status
             $po->updateStatusFromGrn();
             
-            // Update payment flag
-            $po->updatePaymentFlag();
+            // Update invoicing status (replaces deprecated payment flag)
+            $po->updateInvoicedStatus();
 
             // Update stock immediately
             $this->stockService->addGrnStock($grn);

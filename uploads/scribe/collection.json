@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "SitePilot ERP API Documentation",
-        "_postman_id": "9a5638e0-5f4c-4fcb-bde7-fdc5f5c0b391",
+        "_postman_id": "f18c1de2-bbca-438a-a410-5d7b008ebab4",
         "description": "Complete API documentation for SitePilot ERP system including materials, suppliers, purchase orders, payments, and project management.",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -817,7 +817,7 @@
                     ]
                 },
                 {
-                    "name": "POST api\/auth\/refresh",
+                    "name": "Refresh API Token",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -837,12 +837,25 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Invalidate the current token and generate a new one.\nReturns the new token along with user profile, workspaces, and sites.\nThe new token replaces the old one \u2014 the old token will no longer work."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": 1,\n  \"data\": {\n    \"token\": \"1|newtokensring...\",\n    \"refresh_expires_in\": null,\n    \"expires_unit\": \"none\",\n    \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... },\n    \"workspaces\": [...],\n    \"sites\": [...]\n  }\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n  \"status\": 0,\n  \"message\": \"Token cannot be refreshed or something went wrong\"\n}",
+                            "name": "Unauthenticated"
+                        }
+                    ]
                 },
                 {
-                    "name": "POST api\/change-password",
+                    "name": "Change Password",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -861,13 +874,41 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": ""
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"current_password\":\"oldpass123\",\"password\":\"newpass456\",\"password_confirmation\":\"newpass456\"}"
+                        },
+                        "description": "Update the authenticated user's password.\nRequires the current password for verification.\nThe new password must be different from the current one."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": 1,\n  \"message\": \"password updated successfully.\",\n  \"data\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... }\n}",
+                            "name": "Password updated successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{ \"status\": 0, \"message\": \"The password field is required.\" }",
+                            "name": "Validation error"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{ \"message\": \"The provided current password does not match our records.\" }",
+                            "name": "Current password mismatch"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{ \"message\": \"The provided password and old password are same.\" }",
+                            "name": "New password same as old"
+                        }
+                    ]
                 },
                 {
-                    "name": "Send reset link to user's email (forgot password).",
+                    "name": "Send Password Reset Link",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -888,14 +929,27 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"gbailey@example.net\"}"
+                            "raw": "{\"email\":\"john@example.com\"}"
                         },
-                        "description": ""
+                        "description": "Send a password reset link to the user's registered email address.\nThe link is valid for the duration configured in Laravel's password broker."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": 1,\n  \"message\": \"Reset link sent to your email.\"\n}",
+                            "name": "Reset link sent"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{ \"status\": 0, \"message\": \"Unable to send reset link.\" }",
+                            "name": "Invalid or missing email"
+                        }
+                    ]
                 },
                 {
-                    "name": "Reset password using token from email.",
+                    "name": "Reset Password",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -916,11 +970,24 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"token\":\"architecto\",\"email\":\"zbailey@example.net\",\"password\":\"architecto\"}"
+                            "raw": "{\"token\":\"abc123...\",\"email\":\"john@example.com\",\"password\":\"newpass456\",\"password_confirmation\":\"newpass456\"}"
                         },
-                        "description": ""
+                        "description": "Reset the user's password using the token received via email.\nThe token is sent when calling the forgot-password endpoint."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": 1,\n  \"message\": \"Password reset successful.\"\n}",
+                            "name": "Password reset successful"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{ \"status\": 0, \"message\": \"Invalid token or email.\" }",
+                            "name": "Invalid token or email"
+                        }
+                    ]
                 }
             ]
         },
@@ -1010,7 +1077,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the daily consumption."
                                 }
                             ]
@@ -1046,7 +1113,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/daily-consumptions\/16 could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/daily-consumptions\/1 could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -1063,7 +1130,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the daily consumption."
                                 }
                             ]
@@ -1096,7 +1163,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the daily consumption."
                                 }
                             ]
@@ -1791,7 +1858,7 @@
                     ]
                 },
                 {
-                    "name": "Create payment request from ledger",
+                    "name": "Create payment request from ledger (API endpoint - actually creates the payment request)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -1872,7 +1939,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the payment request."
                                 }
                             ]
@@ -1908,7 +1975,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/machinery\/payment-requests\/16 could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/machinery\/payment-requests\/1 could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -1925,40 +1992,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
-                                    "description": "The ID of the payment request."
-                                }
-                            ]
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Verify payment request",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/machinery\/payment-requests\/:id\/verify",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/machinery\/payment-requests\/:id\/verify",
-                            "variable": [
-                                {
-                                    "id": "id",
-                                    "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the payment request."
                                 }
                             ]
@@ -1991,7 +2025,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the payment request."
                                 }
                             ]
@@ -2024,7 +2058,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the payment request."
                                 }
                             ]
@@ -2057,7 +2091,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the payment request."
                                 }
                             ]
@@ -2090,7 +2124,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the payment request."
                                 }
                             ]
@@ -2126,7 +2160,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the payment request."
                                 }
                             ]
@@ -2162,7 +2196,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/machinery\/payment-requests\/16\/debug could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/machinery\/payment-requests\/1\/debug could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -2179,7 +2213,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the payment request."
                                 }
                             ]
@@ -2215,7 +2249,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/machinery\/payment-requests\/16\/recalculate could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/machinery\/payment-requests\/1\/recalculate could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -2232,7 +2266,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the payment request."
                                 }
                             ]
@@ -2268,7 +2302,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the payment request."
                                 }
                             ]
@@ -2304,7 +2338,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the payment request."
                                 }
                             ]
@@ -2471,7 +2505,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"project_id\":16,\"material_id\":16,\"type\":\"opening\",\"start_date\":\"2026-05-09T17:30:01\",\"end_date\":\"2052-06-01\"}"
+                            "raw": "{\"project_id\":16,\"material_id\":16,\"type\":\"transfer_in\",\"start_date\":\"2026-05-20T11:46:46\",\"end_date\":\"2052-06-12\"}"
                         },
                         "description": "Returns a list of stock ledger transactions based on the provided filters."
                     },
@@ -2549,7 +2583,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"project_id\":16,\"material_id\":16,\"type\":\"adjustment\",\"start_date\":\"2026-05-09T17:30:01\",\"end_date\":\"2052-06-01\"}"
+                            "raw": "{\"project_id\":16,\"material_id\":16,\"type\":\"grn\",\"start_date\":\"2026-05-20T11:46:46\",\"end_date\":\"2052-06-12\"}"
                         },
                         "description": "Downloads an Excel file containing stock ledger transactions based on the provided filters."
                     },
@@ -4257,7 +4291,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the grn."
                                 }
                             ]
@@ -4293,7 +4327,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/grn\/16 could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/grn\/1 could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -4310,7 +4344,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the grn."
                                 }
                             ]
@@ -4346,7 +4380,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/grn\/16\/edit could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/grn\/1\/edit could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -4363,7 +4397,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the grn."
                                 }
                             ]
@@ -4396,7 +4430,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the grn."
                                 }
                             ]
@@ -5099,7 +5133,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"title\":\"architecto\",\"start_date\":\"2026-05-09T17:30:04\",\"end_date\":\"2052-06-01\",\"color\":\"architecto\",\"workspace_id\":\"architecto\",\"site_id\":\"architecto\",\"created_by\":\"architecto\"}"
+                            "raw": "{\"title\":\"architecto\",\"start_date\":\"2026-05-20T11:46:49\",\"end_date\":\"2052-06-12\",\"color\":\"architecto\",\"workspace_id\":\"architecto\",\"site_id\":\"architecto\",\"created_by\":\"architecto\"}"
                         },
                         "description": ""
                     },
@@ -6191,7 +6225,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the indent."
                                 }
                             ]
@@ -6227,7 +6261,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/indents\/16 could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/indents\/1 could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -6244,7 +6278,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the indent."
                                 }
                             ]
@@ -6277,7 +6311,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the indent."
                                 }
                             ]
@@ -6335,7 +6369,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the indent."
                                 }
                             ]
@@ -6371,7 +6405,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/indents\/16\/materials could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/indents\/1\/materials could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -6433,7 +6467,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the indent."
                                 }
                             ]
@@ -6572,7 +6606,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"workspace_id\":1,\"pipeline_id\":1,\"phone\":\"+91-9876543210\",\"subject\":\"Product Inquiry\",\"name\":\"John Doe\",\"email\":\"john@example.com\",\"follow_up_date\":\"2026-05-09\"}"
+                            "raw": "{\"workspace_id\":1,\"pipeline_id\":1,\"phone\":\"+91-9876543210\",\"subject\":\"Product Inquiry\",\"name\":\"John Doe\",\"email\":\"john@example.com\",\"follow_up_date\":\"2026-05-20\"}"
                         },
                         "description": ""
                     },
@@ -7155,7 +7189,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"category_id\":16,\"model_number\":\"n\",\"manufacturer\":\"g\",\"purchase_date\":\"2026-05-09T17:29:55\",\"capacity\":\"z\",\"maintenance_schedule\":\"2026-05-09T17:29:55\",\"remarks\":\"architecto\",\"description\":\"Eius et animi quos velit et.\",\"vehicle_number\":\"v\",\"operational_status\":\"active\",\"site_id\":16,\"status\":\"n\",\"created_by\":16,\"workspace_id\":16,\"owned_by\":\"rental\",\"rate\":39,\"rate_type\":\"daily\",\"minimum_billing_hours\":84,\"diesel_by_company\":true,\"operator_by_supplier\":true,\"number_of_operators\":66,\"purchase_value\":77,\"insurance_due_date\":\"2026-05-09T17:29:55\",\"puc_due_date\":\"2026-05-09T17:29:55\",\"fitness_due_date\":\"2026-05-09T17:29:55\",\"last_service_date\":\"2026-05-09T17:29:55\",\"rental_agreement_file\":\"i\",\"ownership_documents_file\":\"y\"}"
+                            "raw": "{\"category_id\":16,\"model_number\":\"n\",\"manufacturer\":\"g\",\"purchase_date\":\"2026-05-20T11:46:41\",\"capacity\":\"z\",\"maintenance_schedule\":\"2026-05-20T11:46:41\",\"remarks\":\"architecto\",\"description\":\"Eius et animi quos velit et.\",\"vehicle_number\":\"v\",\"operational_status\":\"scrap\",\"site_id\":16,\"status\":\"n\",\"created_by\":16,\"workspace_id\":16,\"owned_by\":\"owned\",\"rate\":39,\"rate_type\":\"daily\",\"minimum_billing_hours\":84,\"diesel_by_company\":false,\"operator_by_supplier\":true,\"number_of_operators\":66,\"purchase_value\":77,\"insurance_due_date\":\"2026-05-20T11:46:41\",\"puc_due_date\":\"2026-05-20T11:46:41\",\"fitness_due_date\":\"2026-05-20T11:46:41\",\"last_service_date\":\"2026-05-20T11:46:41\",\"rental_agreement_file\":\"i\",\"ownership_documents_file\":\"y\"}"
                         },
                         "description": ""
                     },
@@ -7427,6 +7461,221 @@
             ]
         },
         {
+            "name": "Machinery Ledger",
+            "description": "Endpoints for viewing and querying machinery ledger entries (immutable credit\/debit record for each machine)",
+            "item": [
+                {
+                    "name": "List machinery ledger entries.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/ledger",
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "50",
+                                    "description": "optional Number of records per page. Default: 50.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/ledger?per_page=50",
+                            "variable": [
+                                {
+                                    "id": "machinery_id",
+                                    "key": "machinery_id",
+                                    "value": "3",
+                                    "description": "optional Filter ledger entries to a specific machinery ID."
+                                },
+                                {
+                                    "id": "date_from",
+                                    "key": "date_from",
+                                    "value": "2025-01-01",
+                                    "description": "date optional Filter entries from this date (YYYY-MM-DD)."
+                                },
+                                {
+                                    "id": "date_to",
+                                    "key": "date_to",
+                                    "value": "2025-12-31",
+                                    "description": "date optional Filter entries up to this date (YYYY-MM-DD)."
+                                },
+                                {
+                                    "id": "entry_type",
+                                    "key": "entry_type",
+                                    "value": "dpr",
+                                    "description": "optional Filter by entry type (e.g. `dpr`, `payment`, `advance`, `opening_balance`, `adjustment`)."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns a paginated list of ledger entries for the authenticated user's workspace.\nLedger entries are always in descending date order (most recent first).\nReversal entries are excluded from default listing."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Ledger entries fetched successfully.\",\n  \"data\": [\n    {\n      \"id\": 101,\n      \"machinery_id\": 3,\n      \"entry_direction\": \"credit\",\n      \"entry_type\": \"dpr\",\n      \"amount\": \"5000.00\",\n      \"running_balance\": \"15000.00\",\n      \"date\": \"2025-06-15\",\n      \"description\": \"DPR for June week 2\",\n      \"is_reversal\": false,\n      \"is_locked\": false,\n      \"machinery\": {\n        \"id\": 3,\n        \"name\": \"Excavator EX-01\"\n      }\n    }\n  ],\n  \"pagination\": {\n    \"current_page\": 1,\n    \"per_page\": 50,\n    \"total\": 127,\n    \"last_page\": 3\n  }\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n  \"success\": false,\n  \"message\": \"Unauthorized action.\"\n}",
+                            "name": "Permission denied"
+                        }
+                    ]
+                },
+                {
+                    "name": "Show a single machinery ledger entry by ID.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/ledger\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/ledger\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "101",
+                                    "description": "The ID of the ledger entry."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Ledger entry fetched successfully.\",\n  \"data\": {\n    \"id\": 101,\n    \"machinery_id\": 3,\n    \"entry_direction\": \"credit\",\n    \"entry_type\": \"dpr\",\n    \"amount\": \"5000.00\",\n    \"running_balance\": \"15000.00\",\n    \"date\": \"2025-06-15\",\n    \"description\": \"DPR for June week 2\",\n    \"is_reversal\": false,\n    \"is_locked\": false,\n    \"machinery\": {\"id\": 3, \"name\": \"Excavator EX-01\"}\n  }\n}",
+                            "name": "Success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get the running balance summary for a specific machinery within a date range.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/ledger\/balance",
+                            "query": [
+                                {
+                                    "key": "machinery_id",
+                                    "value": "3",
+                                    "description": "The machinery ID.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "date_from",
+                                    "value": "2025-06-01",
+                                    "description": "date optional Range start date (YYYY-MM-DD). Defaults to beginning of current month.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "date_to",
+                                    "value": "2025-06-30",
+                                    "description": "date optional Range end date (YYYY-MM-DD). Defaults to today.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/ledger\/balance?machinery_id=3&date_from=2025-06-01&date_to=2025-06-30"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"machinery_id\":16,\"date_from\":\"2026-05-20T11:46:46\",\"date_to\":\"2052-06-12\"}"
+                        },
+                        "description": "Returns the opening balance (from the earliest entry before or on the start date)\nand the closing balance (last entry in the range)."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Ledger balance fetched successfully.\",\n  \"data\": {\n    \"machinery_id\": 3,\n    \"opening_balance\": \"10000.00\",\n    \"closing_balance\": \"15000.00\",\n    \"net_change\": \"5000.00\",\n    \"total_credits\": \"25000.00\",\n    \"total_debits\": \"10000.00\",\n    \"entry_count\": 12,\n    \"date_range\": {\n      \"from\": \"2025-06-01\",\n      \"to\": \"2025-06-30\"\n    }\n  }\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "",
+                            "name": "Machinery not found"
+                        }
+                    ]
+                },
+                {
+                    "name": "List all machinery available for ledger filtering.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/ledger\/machinery\/list",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/ledger\/machinery\/list"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Machinery list fetched successfully.\",\n  \"data\": [\n    {\"id\": 1, \"name\": \"Excavator EX-01\"},\n    {\"id\": 3, \"name\": \"Crane CR-02\"}\n  ]\n}",
+                            "name": "Success"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Manpower",
             "description": "Endpoints for manpower management including daily work records",
             "item": [
@@ -7570,7 +7819,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the manpower."
                                 }
                             ]
@@ -7606,7 +7855,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/manpower\/16 could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/manpower\/1 could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -7623,7 +7872,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the manpower."
                                 }
                             ]
@@ -7656,7 +7905,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the manpower."
                                 }
                             ]
@@ -8261,7 +8510,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"issue_to_type\":\"user\",\"issue_to_id\":16,\"issue_date\":\"2026-05-09T17:29:58\",\"remarks\":\"architecto\",\"items\":[{\"material_id\":\"architecto\",\"quantity\":39,\"rate\":84,\"remarks\":\"architecto\"}]}"
+                            "raw": "{\"issue_to_type\":\"supplier\",\"issue_to_id\":16,\"issue_date\":\"2026-05-20T11:46:44\",\"remarks\":\"architecto\",\"items\":[{\"material_id\":\"architecto\",\"quantity\":39,\"rate\":84,\"remarks\":\"architecto\"}]}"
                         },
                         "description": ""
                     },
@@ -8567,7 +8816,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"issue_id\":\"architecto\",\"return_date\":\"2026-05-09T17:29:58\",\"remarks\":\"architecto\",\"items\":[{\"issue_item_id\":\"architecto\",\"material_id\":\"architecto\",\"quantity\":39,\"remarks\":\"architecto\"}]}"
+                            "raw": "{\"issue_id\":\"architecto\",\"return_date\":\"2026-05-20T11:46:44\",\"remarks\":\"architecto\",\"items\":[{\"issue_item_id\":\"architecto\",\"material_id\":\"architecto\",\"quantity\":39,\"remarks\":\"architecto\"}]}"
                         },
                         "description": ""
                     },
@@ -8860,7 +9109,7 @@
                                 },
                                 {
                                     "key": "record_date",
-                                    "value": "2026-05-09T17:29:58",
+                                    "value": "2026-05-20T11:46:43",
                                     "type": "text",
                                     "description": "Must be a valid date."
                                 },
@@ -9023,375 +9272,580 @@
         },
         {
             "name": "Materials",
-            "description": "Endpoints for material management including CRUD operations and category-based filtering",
+            "description": "Endpoints for material management including CRUD operations, reference data, and category-based filtering",
             "item": [
                 {
-                    "name": "GET api\/materials",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/materials",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/materials"
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": [
+                    "name": "Listing",
+                    "description": "",
+                    "item": [
                         {
-                            "header": [
+                            "name": "List all materials. Supports optional filtering by search keyword and category.",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/materials",
+                                    "query": [
+                                        {
+                                            "key": "q",
+                                            "value": "cement",
+                                            "description": "optional Search keyword \u2014 matches material name and SKU.",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "category_id",
+                                            "value": "5",
+                                            "description": "optional Filter by material category ID.",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "raw": "{{baseUrl}}\/api\/materials?q=cement&category_id=5"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
                                 {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 1, \"data\": [{\"id\": 1, \"name\": \"Cement\", \"sku\": \"MAT-00001\", \"price\": \"450.00\", \"unit\": {\"id\": 1, \"name\": \"Kilogram\", \"symbol\": \"kg\"}, \"category\": {\"id\": 5, \"name\": \"Raw Materials\"}, \"gstMaster\": null}]}",
+                                    "name": ""
                                 },
                                 {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 0, \"message\": \"Permission denied\", \"data\": null}",
+                                    "name": ""
                                 }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/materials could not be found.\"\n}",
-                            "name": ""
+                            ]
                         }
                     ]
                 },
                 {
-                    "name": "Create Material",
+                    "name": "Creation",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Create a new material record.",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/materials",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/materials"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "multipart\/form-data"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "name",
+                                            "value": "Cement",
+                                            "type": "text",
+                                            "description": "Material name."
+                                        },
+                                        {
+                                            "key": "hsn_sac",
+                                            "value": "2523",
+                                            "type": "text",
+                                            "description": "optional HSN \/ SAC code (max 20 chars)."
+                                        },
+                                        {
+                                            "key": "gst_master_id",
+                                            "value": "1",
+                                            "type": "text",
+                                            "description": "optional GST master ID \u2014 must exist in gst_masters table."
+                                        },
+                                        {
+                                            "key": "category_id",
+                                            "value": "5",
+                                            "type": "text",
+                                            "description": "Material category ID \u2014 must exist in material_categories."
+                                        },
+                                        {
+                                            "key": "unit_id",
+                                            "value": "3",
+                                            "type": "text",
+                                            "description": "Unit ID \u2014 must exist in units."
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "Portland cement",
+                                            "type": "text",
+                                            "description": "optional Material description."
+                                        },
+                                        {
+                                            "key": "price",
+                                            "value": "450",
+                                            "type": "text",
+                                            "description": "Unit price."
+                                        },
+                                        {
+                                            "key": "reorder_level",
+                                            "value": "100",
+                                            "type": "text",
+                                            "description": "Minimum stock before triggering a re-order alert."
+                                        },
+                                        {
+                                            "key": "status",
+                                            "value": "active",
+                                            "type": "text",
+                                            "description": "Status value: active or inactive."
+                                        },
+                                        {
+                                            "key": "created_by",
+                                            "value": "1",
+                                            "type": "text",
+                                            "description": "ID of the user creating this record."
+                                        },
+                                        {
+                                            "key": "image",
+                                            "src": [],
+                                            "type": "file"
+                                        }
+                                    ]
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 1, \"data\": {\"id\": 1, \"name\": \"Cement\", \"sku\": \"MAT-00001\", \"hsn_sac\": \"2523\", \"gst_master_id\": 1, \"category_id\": 5, \"unit_id\": 3, \"description\": \"Portland cement\", \"price\": \"450.00\", \"reorder_level\": 100, \"status\": \"active\", \"image\": null, \"created_by\": 1, \"created_at\": \"2024-01-15T10:00:00.000000Z\", \"updated_at\": \"2024-01-15T10:00:00.000000Z\"}, \"message\": \"Material created successfully\"}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 0, \"message\": \"The name field is required.\", \"data\": null}",
+                                    "name": ""
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Retrieval",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Retrieve a single material by its ID.",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/materials\/:id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/materials\/:id",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "Material ID."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 1, \"data\": {\"id\": 1, \"name\": \"Cement\", \"sku\": \"MAT-00001\", \"price\": \"450.00\", \"unit\": {\"id\": 1, \"name\": \"Kilogram\", \"symbol\": \"kg\"}, \"category\": {\"id\": 5, \"name\": \"Raw Materials\"}, \"gstMaster\": {\"id\": 1, \"name\": \"5% GST\", \"cgst\": 2.5, \"sgst\": 2.5, \"igst\": 5, \"total_gst\": 5}}}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 0, \"message\": \"Material not found\", \"data\": null}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Retrieve all materials that belong to a specific category.",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/materials\/category\/:categoryId",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/materials\/category\/:categoryId",
+                                    "variable": [
+                                        {
+                                            "id": "categoryId",
+                                            "key": "categoryId",
+                                            "value": "architecto",
+                                            "description": ""
+                                        },
+                                        {
+                                            "id": "category_id",
+                                            "key": "category_id",
+                                            "value": "5",
+                                            "description": "Material category ID."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 1, \"data\": [{\"id\": 1, \"name\": \"Cement\", \"sku\": \"MAT-00001\", \"price\": \"450.00\", \"unit\": {\"id\": 1, \"name\": \"Kilogram\", \"symbol\": \"kg\"}, \"category\": {\"id\": 5, \"name\": \"Raw Materials\"}, \"gstMaster\": null}]}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 0, \"message\": \"No materials found for this category\", \"data\": null}",
+                                    "name": ""
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Update",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Update an existing material by its ID.",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/materials\/:id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/materials\/:id",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "Material ID."
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "multipart\/form-data"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "name",
+                                            "value": "Portland Cement",
+                                            "type": "text",
+                                            "description": "Material name."
+                                        },
+                                        {
+                                            "key": "hsn_sac",
+                                            "value": "2523",
+                                            "type": "text",
+                                            "description": "optional HSN \/ SAC code."
+                                        },
+                                        {
+                                            "key": "gst_master_id",
+                                            "value": "2",
+                                            "type": "text",
+                                            "description": "optional GST master ID."
+                                        },
+                                        {
+                                            "key": "category_id",
+                                            "value": "5",
+                                            "type": "text",
+                                            "description": "Material category ID."
+                                        },
+                                        {
+                                            "key": "unit_id",
+                                            "value": "3",
+                                            "type": "text",
+                                            "description": "Unit ID."
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "Eius et animi quos velit et.",
+                                            "type": "text",
+                                            "description": "optional Material description."
+                                        },
+                                        {
+                                            "key": "price",
+                                            "value": "480",
+                                            "type": "text",
+                                            "description": "Unit price."
+                                        },
+                                        {
+                                            "key": "reorder_level",
+                                            "value": "150",
+                                            "type": "text",
+                                            "description": "Reorder threshold."
+                                        },
+                                        {
+                                            "key": "status",
+                                            "value": "active",
+                                            "type": "text",
+                                            "description": "Status value: active or inactive."
+                                        },
+                                        {
+                                            "key": "created_by",
+                                            "value": "1",
+                                            "type": "text",
+                                            "description": "ID of the user making this edit."
+                                        },
+                                        {
+                                            "key": "image",
+                                            "src": [],
+                                            "type": "file"
+                                        },
+                                        {
+                                            "key": "_method",
+                                            "value": "PUT",
+                                            "type": "text"
+                                        }
+                                    ]
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 1, \"data\": {\"id\": 1, \"name\": \"Portland Cement\", \"sku\": \"MAT-00001\", ...}, \"message\": \"Material updated successfully\"}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 0, \"message\": \"Material not found\", \"data\": null}",
+                                    "name": ""
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Deletion",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Soft \/ permanently delete a material by its ID.",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/materials\/:id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/materials\/:id",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "Material ID to delete."
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": "Deletion is blocked if the material is referenced by any existing\npurchase invoice items, asset \/ tool records, or consumption details."
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 1, \"message\": \"Material deleted successfully\"}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 0, \"message\": \"Material not found\"}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 0, \"message\": \"Material cannot be deleted because it is used in Purchase Invoices.\"}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 0, \"message\": \"Material cannot be deleted because it is used in Tools & Equipment records.\"}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 0, \"message\": \"Material cannot be deleted because it is used in Consumption Log records.\"}",
+                                    "name": ""
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Helpers",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Return the unit name for a given material.",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/materials\/:id\/unit",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/materials\/:id\/unit",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "Material ID."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": "",
+                                "auth": {
+                                    "type": "noauth"
+                                }
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 1, \"unit\": \"Kilogram\"}",
+                                    "name": ""
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\"status\": 0, \"message\": \"Material not found\", \"unit\": null}",
+                                    "name": ""
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Fetch reference\/master data required to build the Create \/ Edit Material form.",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/materials",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/materials"
+                            "path": "api\/materials\/create-data",
+                            "query": [
+                                {
+                                    "key": "workspace_id",
+                                    "value": "1",
+                                    "description": "optional Workspace ID to scope lookups.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "site_id",
+                                    "value": "5",
+                                    "description": "optional Site \/ Project ID.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/materials\/create-data?workspace_id=1&site_id=5"
                         },
                         "method": "POST",
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "multipart\/form-data"
+                                "value": "application\/json"
                             },
                             {
                                 "key": "Accept",
                                 "value": "application\/json"
                             }
                         ],
-                        "body": {
-                            "mode": "formdata",
-                            "formdata": [
-                                {
-                                    "key": "name",
-                                    "value": "Cement",
-                                    "type": "text",
-                                    "description": "Material name."
-                                },
-                                {
-                                    "key": "hsn_sac",
-                                    "value": "2523",
-                                    "type": "text",
-                                    "description": "optional HSN\/SAC code."
-                                },
-                                {
-                                    "key": "gst_master_id",
-                                    "value": "1",
-                                    "type": "text",
-                                    "description": "optional GST master ID."
-                                },
-                                {
-                                    "key": "category_id",
-                                    "value": "5",
-                                    "type": "text",
-                                    "description": "Material category ID."
-                                },
-                                {
-                                    "key": "unit_id",
-                                    "value": "3",
-                                    "type": "text",
-                                    "description": "Unit ID."
-                                },
-                                {
-                                    "key": "description",
-                                    "value": "Portland cement",
-                                    "type": "text",
-                                    "description": "optional Material description."
-                                },
-                                {
-                                    "key": "price",
-                                    "value": "450",
-                                    "type": "text",
-                                    "description": "Material price."
-                                },
-                                {
-                                    "key": "reorder_level",
-                                    "value": "100",
-                                    "type": "text",
-                                    "description": "Reorder level."
-                                },
-                                {
-                                    "key": "status",
-                                    "value": "active",
-                                    "type": "text",
-                                    "description": "Status (active\/inactive)."
-                                },
-                                {
-                                    "key": "created_by",
-                                    "value": "1",
-                                    "type": "text",
-                                    "description": "Creator user ID."
-                                },
-                                {
-                                    "key": "image",
-                                    "src": [],
-                                    "type": "file"
-                                }
-                            ]
-                        },
-                        "description": "Create a new material in the system"
+                        "body": null,
+                        "description": "Returns active GST masters, units, and categories scoped to the workspace."
                     },
                     "response": [
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\"status\": 1, \"data\": {...}, \"message\": \"Material created successfully\"}",
+                            "body": "{\"status\": 1, \"data\": {\"gst_masters\": [{\"id\": 1, \"name\": \"5% GST\", \"cgst\": 2.5, \"sgst\": 2.5, \"igst\": 5, \"total_gst\": 5}], \"units\": [{\"id\": 1, \"name\": \"Kilogram\", \"symbol\": \"kg\"}], \"categories\": [{\"id\": 1, \"name\": \"Raw Materials\"}]}, \"message\": \"\"}",
                             "name": ""
-                        }
-                    ]
-                },
-                {
-                    "name": "GET api\/materials\/{id}",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/materials\/:id",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/materials\/:id",
-                            "variable": [
-                                {
-                                    "id": "id",
-                                    "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the material."
-                                }
-                            ]
                         },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/materials\/architecto could not be found.\"\n}",
-                            "name": ""
-                        }
-                    ]
-                },
-                {
-                    "name": "PUT api\/materials\/{id}",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/materials\/:id",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/materials\/:id",
-                            "variable": [
-                                {
-                                    "id": "id",
-                                    "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the material."
-                                }
-                            ]
-                        },
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "DELETE api\/materials\/{id}",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/materials\/:id",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/materials\/:id",
-                            "variable": [
-                                {
-                                    "id": "id",
-                                    "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the material."
-                                }
-                            ]
-                        },
-                        "method": "DELETE",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "GET api\/materials\/{id}\/unit",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/materials\/:id\/unit",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/materials\/:id\/unit",
-                            "variable": [
-                                {
-                                    "id": "id",
-                                    "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the material."
-                                }
-                            ]
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": [
-                        {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/materials\/architecto\/unit could not be found.\"\n}",
-                            "name": ""
-                        }
-                    ]
-                },
-                {
-                    "name": "GET api\/materials\/category\/{categoryId}",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/materials\/category\/:categoryId",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/materials\/category\/:categoryId",
-                            "variable": [
-                                {
-                                    "id": "categoryId",
-                                    "key": "categoryId",
-                                    "value": "architecto",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": [
-                        {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/materials\/category\/architecto could not be found.\"\n}",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"status\": 0, \"message\": \"Permission denied\", \"data\": null}",
                             "name": ""
                         }
                     ]
@@ -12446,7 +12900,7 @@
                                 {
                                     "id": "grn_id",
                                     "key": "grn_id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the grn."
                                 }
                             ]
@@ -12482,7 +12936,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/purchase-invoice\/grn\/16\/invoice-preview could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/purchase-invoice\/grn\/1\/invoice-preview could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -12549,7 +13003,7 @@
                                 {
                                     "id": "grn_id",
                                     "key": "grn_id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the grn."
                                 }
                             ]
@@ -12585,7 +13039,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/grn\/16\/invoice-preview could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/grn\/1\/invoice-preview could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -12633,7 +13087,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the purchase order."
                                 }
                             ]
@@ -12669,7 +13123,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/purchase-orders\/16\/indent-materials could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/purchase-orders\/1\/indent-materials could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -12686,7 +13140,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the purchase order."
                                 }
                             ]
@@ -12722,7 +13176,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/purchase-orders\/16\/approve could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/purchase-orders\/1\/approve could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -12739,7 +13193,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the purchase order."
                                 }
                             ]
@@ -12772,7 +13226,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the purchase order."
                                 }
                             ]
@@ -12981,7 +13435,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the purchase order."
                                 }
                             ]
@@ -13017,7 +13471,7 @@
                                 }
                             ],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/purchase-orders\/16 could not be found.\"\n}",
+                            "body": "{\n    \"message\": \"The route api\/purchase-orders\/1 could not be found.\"\n}",
                             "name": ""
                         }
                     ]
@@ -13034,7 +13488,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the purchase order."
                                 }
                             ]
@@ -13067,7 +13521,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the purchase order."
                                 }
                             ]
@@ -13314,6 +13768,132 @@
             ]
         },
         {
+            "name": "Supplier Activity Report",
+            "description": "Returns a unified activity timeline per supplier across Purchase Orders, GRNs, Invoices and Payments \u2014 exactly matching the web view.",
+            "item": [
+                {
+                    "name": "List supplier activity timeline.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/reports\/supplier-activity",
+                            "query": [
+                                {
+                                    "key": "supplier_id",
+                                    "value": "5",
+                                    "description": "optional Filter by supplier ID. Use `all` for all suppliers. Default: all.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "site_id",
+                                    "value": "2",
+                                    "description": "optional Filter by site\/project ID. Use `all` for all sites. Default: all.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "from_date",
+                                    "value": "2025-06-01",
+                                    "description": "date optional Filter start date (YYYY-MM-DD). Defaults to first day of current month.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2025-06-30",
+                                    "description": "date optional Filter end date (YYYY-MM-DD). Defaults to today.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "50",
+                                    "description": "optional Number of records per page. Default: 50.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/reports\/supplier-activity?supplier_id=5&site_id=2&from_date=2025-06-01&to_date=2025-06-30&per_page=50"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Builds a UNION ALL query across `purchase_orders`, `grns`, `purchase_invoices` and `payments_module`\nso that one endpoint returns the full PO \u2192 GRN \u2192 Invoice \u2192 Payment flow per supplier.\nA running balance is calculated ( Invoice debits increase; Payment\/Advance credits decrease balance )."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Supplier activity report fetched successfully.\",\n  \"summary\": {\n    \"total_po\": \"100000.00\",\n    \"total_grn\": \"95000.00\",\n    \"total_invoice\": \"85000.00\",\n    \"total_payments\": \"60000.00\",\n    \"final_balance\": \"-25000.00\",\n    \"currency\": \"INR\"\n  },\n  \"transactions\": [\n    {\n      \"id\": 1,\n      \"type\": \"Invoice\",\n      \"reference\": \"INV-0012\",\n      \"reference_id\": 12,\n      \"supplier_name\": \"ABC Materials Ltd\",\n      \"site_name\": \"Main Site\",\n      \"reference_amount\": \"25000.00\",\n      \"debit\": \"25000.00\",\n      \"credit\": \"0.00\",\n      \"balance\": \"25000.00\",\n      \"date_time\": \"2025-06-15 10:30:00\",\n      \"description\": \"Invoice Generated\"\n    }\n  ]\n}",
+                            "name": "Success \u2014 with activity data"
+                        },
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Supplier activity report fetched successfully.\",\n  \"summary\": {\n    \"total_po\": \"0.00\",\n    \"total_grn\": \"0.00\",\n    \"total_invoice\": \"0.00\",\n    \"total_payments\": \"0.00\",\n    \"final_balance\": \"0.00\",\n    \"currency\": \"INR\"\n  },\n  \"transactions\": []\n}",
+                            "name": "No activity data (only suppliers\/sites returned)"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n  \"success\": false,\n  \"message\": \"Unauthorized action.\"\n}",
+                            "name": "Permission denied"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get distinct suppliers with activity for the filter period.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/reports\/supplier-activity\/suppliers",
+                            "query": [
+                                {
+                                    "key": "from_date",
+                                    "value": "2025-06-01",
+                                    "description": "date optional Start date (YYYY-MM-DD). Defaults to start of current month.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2025-06-30",
+                                    "description": "date optional End date (YYYY-MM-DD). Defaults to today.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/reports\/supplier-activity\/suppliers?from_date=2025-06-01&to_date=2025-06-30"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Suppliers with activity fetched successfully.\",\n  \"data\": [\n    {\n      \"id\": 5,\n      \"name\": \"ABC Materials Ltd\",\n      \"total_transactions\": 15,\n      \"total_amount\": \"85000.00\"\n    }\n  ]\n}",
+                            "name": "Success"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Supplier Advance",
             "description": "Endpoints for supplier advance management including allocation and utilization",
             "item": [
@@ -13347,7 +13927,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"amount\":27,\"advance_date\":\"2026-05-09T17:29:57\",\"source\":\"po\",\"remarks\":\"architecto\"}"
+                            "raw": "{\"amount\":27,\"advance_date\":\"2026-05-20T11:46:43\",\"source\":\"po\",\"remarks\":\"architecto\"}"
                         },
                         "description": "API Rule 2: API-driven service\nAPI Rule 5: Idempotency support"
                     },
@@ -13768,6 +14348,248 @@
                         "description": ""
                     },
                     "response": []
+                }
+            ]
+        },
+        {
+            "name": "Supplier Ledger Report",
+            "description": "Endpoints for supplier ledger reconciliation \u2014 returns every PO, invoice, advance and payment transaction per supplier within a date range with running balance.",
+            "item": [
+                {
+                    "name": "List supplier ledger transactions.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/reports\/supplier-ledger",
+                            "query": [
+                                {
+                                    "key": "supplier_id",
+                                    "value": "5",
+                                    "description": "optional Filter by supplier ID. Use `all` for all suppliers. Default: all.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "site_id",
+                                    "value": "2",
+                                    "description": "optional Filter by site\/project ID. Use `all` for all sites. Default: all.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "from_date",
+                                    "value": "2025-01-01",
+                                    "description": "date optional Start date (YYYY-MM-DD). Defaults to first day of current month.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2025-12-31",
+                                    "description": "date optional End date (YYYY-MM-DD). Defaults to today.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "50",
+                                    "description": "optional Number of records per page. Default: 50.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/reports\/supplier-ledger?supplier_id=5&site_id=2&from_date=2025-01-01&to_date=2025-12-31&per_page=50"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns transactions ordered by date (latest first) with a financial summary.\nTransactions include: Purchase Orders (`po`), Invoices (`invoice`), Payments (`payment`) and Advances (`advance`)."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Supplier ledger fetched successfully.\",\n  \"summary\": {\n    \"total_po\": \"100000.00\",\n    \"total_invoice\": \"85000.00\",\n    \"total_payments\": \"60000.00\",\n    \"total_advances\": \"10000.00\",\n    \"current_balance\": \"25000.00\",\n    \"currency\": \"INR\"\n  },\n  \"transactions\": [\n    {\n      \"id\": 15,\n      \"supplier\": {\"id\": 5, \"name\": \"ABC Materials Ltd\"},\n      \"site\": {\"id\": 2, \"name\": \"Main Site\"},\n      \"reference_type\": \"invoice\",\n      \"reference_id\": 12,\n      \"debit\": \"25000.00\",\n      \"credit\": \"0.00\",\n      \"balance\": \"25000.00\",\n      \"transaction_date\": \"2025-06-15\"\n    }\n  ],\n  \"pagination\": {\n    \"current_page\": 1,\n    \"per_page\": 50,\n    \"total\": 85\n  }\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{\n  \"success\": false,\n  \"message\": \"Unauthorized action.\"\n}",
+                            "name": "Permission denied"
+                        }
+                    ]
+                },
+                {
+                    "name": "Fetch the current balance for a specific supplier.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/reports\/supplier-ledger\/balance\/:supplier_id",
+                            "query": [
+                                {
+                                    "key": "site_id",
+                                    "value": "2",
+                                    "description": "optional Filter by site\/project ID. Defaults to `null` (all sites).",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/reports\/supplier-ledger\/balance\/:supplier_id?site_id=2",
+                            "variable": [
+                                {
+                                    "id": "supplier_id",
+                                    "key": "supplier_id",
+                                    "value": "5",
+                                    "description": "The supplier ID."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Supplier balance fetched successfully.\",\n  \"data\": {\n    \"supplier_id\": 5,\n    \"supplier_name\": \"ABC Materials Ltd\",\n    \"current_balance\": \"25000.00\",\n    \"total_debit\": \"85000.00\",\n    \"total_credit\": \"60000.00\",\n    \"currency\": \"INR\",\n    \"transactions\": [\n      {\n        \"date\": \"2025-06-15\",\n        \"type\": \"invoice\",\n        \"reference\": \"INV-001\",\n        \"ref_amount\": \"25000.00\",\n        \"description\": \"Advance received for site development project.\"\n      }\n    ]\n  }\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "",
+                            "name": "Supplier not found"
+                        }
+                    ]
+                },
+                {
+                    "name": "Export supplier ledger report to PDF.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/reports\/supplier-ledger\/export-pdf",
+                            "query": [
+                                {
+                                    "key": "supplier_id",
+                                    "value": "5",
+                                    "description": "optional Filter by supplier ID. Use `all` for all suppliers.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "site_id",
+                                    "value": "2",
+                                    "description": "optional Filter by site\/project ID. Use `all` for all sites.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "from_date",
+                                    "value": "2025-01-01",
+                                    "description": "date optional Start date (YYYY-MM-DD). Defaults to first day of current month.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2025-12-31",
+                                    "description": "date optional End date (YYYY-MM-DD). Defaults to today.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/reports\/supplier-ledger\/export-pdf?supplier_id=5&site_id=2&from_date=2025-01-01&to_date=2025-12-31"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "Returns the PDF as a file download.",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Export supplier ledger report to Excel.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/reports\/supplier-ledger\/export-excel",
+                            "query": [
+                                {
+                                    "key": "supplier_id",
+                                    "value": "5",
+                                    "description": "optional Filter by supplier ID. Use `all` for all suppliers.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "site_id",
+                                    "value": "2",
+                                    "description": "optional Filter by site\/project ID. Use `all` for all sites.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "from_date",
+                                    "value": "2025-01-01",
+                                    "description": "date optional Start date (YYYY-MM-DD). Defaults to first day of current month.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2025-12-31",
+                                    "description": "date optional End date (YYYY-MM-DD). Defaults to today.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/reports\/supplier-ledger\/export-excel?supplier_id=5&site_id=2&from_date=2025-01-01&to_date=2025-12-31"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"status\": 1, \"message\": \"Export started\", \"filename\": \"supplier-ledger-report-2025-06-19.xlsx\"}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -14614,13 +15436,44 @@
             "description": "Endpoints for user management including CRUD operations, profile, and password management",
             "item": [
                 {
-                    "name": "GET \/api\/users\nList all users with optional filters",
+                    "name": "List Users",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "api\/users",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/users"
+                            "query": [
+                                {
+                                    "key": "name",
+                                    "value": "John",
+                                    "description": "optional Filter users by name (partial match).",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "john%40example.com",
+                                    "description": "optional Filter users by email (partial match).",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "role",
+                                    "value": "1",
+                                    "description": "optional Filter by role ID.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "workspace_id",
+                                    "value": "1",
+                                    "description": "optional Filter by workspace ID.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "optional Items per page. Defaults to 15.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/users?name=John&email=john%40example.com&role=1&workspace_id=1&per_page=15"
                         },
                         "method": "GET",
                         "header": [
@@ -14634,32 +15487,25 @@
                             }
                         ],
                         "body": null,
-                        "description": "Query Params:\n- name: Filter by name\n- email: Filter by email\n- role: Filter by role ID\n- workspace_id: Filter by workspace\n- page: Page number (default 1)\n- per_page: Items per page (default 15)"
+                        "description": "Returns a paginated list of users. Filters by name, email, role, and workspace.\nSuper admins see only company-type users. Regular admins see only their own workspace."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/users could not be found.\"\n}",
-                            "name": ""
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Users retrieved successfully\",\n  \"data\": {\n    \"users\": [{ \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... }],\n    \"pagination\": {\n      \"current_page\": 1,\n      \"total_pages\": 5,\n      \"total_items\": 50,\n      \"per_page\": 15\n    }\n  }\n}",
+                            "name": "Users retrieved successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
                         }
                     ]
                 },
                 {
-                    "name": "POST \/api\/users\nCreate a new user",
+                    "name": "Create User",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -14678,13 +15524,35 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "Form Data:\n- name (required): User name\n- email (required): User email\n- mobile_no (optional): Mobile number\n- password (required if login enabled): Password\n- password_switch (optional): 'on' to enable login\n- roles (required): Role ID\n- avatar (optional): Profile image file\n- workspace_id (optional): Workspace ID"
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"John Doe\",\"email\":\"john@example.com\",\"mobile_no\":\"+1234567890\",\"password\":\"secret123\",\"password_switch\":\"on\",\"roles\":1,\"workspace_id\":1}"
+                        },
+                        "description": "Register a new user in the system. Sends a verification email if email\nverification is enabled in company settings. The user is assigned the\nrole specified by `roles`."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"User created successfully\",\n  \"data\": { \"user\": { \"id\": 3, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... } }\n}",
+                            "name": "User created successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied or plan limit reached"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{ \"status\": false, \"message\": \"The name field is required.\", \"data\": {...} }",
+                            "name": "Validation error"
+                        }
+                    ]
                 },
                 {
-                    "name": "GET \/api\/users\/{id}\nShow a specific user",
+                    "name": "Show User",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -14696,7 +15564,7 @@
                                     "id": "id",
                                     "key": "id",
                                     "value": "1",
-                                    "description": "The ID of the user."
+                                    "description": "User ID."
                                 }
                             ]
                         },
@@ -14712,32 +15580,31 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Retrieve details of a specific user by ID, including their assigned role.\nSensitive fields (password, 2FA tokens, remember_token) are excluded."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"User retrieved successfully\",\n  \"data\": {\n    \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... },\n    \"role\": { \"id\": 1, \"name\": \"staff\" }\n  }\n}",
+                            "name": "User retrieved successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/users\/1 could not be found.\"\n}",
-                            "name": ""
+                            "body": "{ \"status\": false, \"message\": \"User not found\" }",
+                            "name": "User not found"
                         }
                     ]
                 },
                 {
-                    "name": "PUT \/api\/users\/{id}\nUpdate a user",
+                    "name": "Update User",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -14749,7 +15616,7 @@
                                     "id": "id",
                                     "key": "id",
                                     "value": "1",
-                                    "description": "The ID of the user."
+                                    "description": "User ID."
                                 }
                             ]
                         },
@@ -14764,13 +15631,35 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "Form Data:\n- name (required): User name\n- email (required): User email\n- mobile_no (optional): Mobile number\n- roles (optional): Role ID"
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"John Doe\",\"email\":\"john@example.com\",\"mobile_no\":\"+1234567890\",\"roles\":2}"
+                        },
+                        "description": "Update an existing user's name, email, mobile number, and optionally their role."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"User updated successfully\",\n  \"data\": { \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... } }\n}",
+                            "name": "User updated successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{ \"status\": false, \"message\": \"User not found\" }",
+                            "name": "User not found"
+                        }
+                    ]
                 },
                 {
-                    "name": "DELETE \/api\/users\/{id}\nDelete a user",
+                    "name": "Delete a user. Deletes all records created by this user across all tables.",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -14782,7 +15671,7 @@
                                     "id": "id",
                                     "key": "id",
                                     "value": "1",
-                                    "description": "The ID of the user."
+                                    "description": "User ID."
                                 }
                             ]
                         },
@@ -14798,12 +15687,37 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Fails if the associated employee record has attendance history."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"User deleted successfully\",\n  \"data\": []\n}",
+                            "name": "User deleted successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{ \"status\": false, \"message\": \"Cannot delete user. Employee has attendance records.\" }",
+                            "name": "Employee has attendance records"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{ \"status\": false, \"message\": \"No query results for model\" }",
+                            "name": "User not found"
+                        }
+                    ]
                 },
                 {
-                    "name": "GET \/api\/users\/create-data\nGet data needed for creating a user (roles list)",
+                    "name": "Get Create-User Form Data",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -14823,32 +15737,25 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Returns the list of available roles that can be assigned to a new user.\nUsed to populate the role selector on the user creation form."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/users\/create-data could not be found.\"\n}",
-                            "name": ""
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Roles data retrieved successfully\",\n  \"data\": { \"roles\": { \"1\": \"staff\", \"2\": \"admin\" } }\n}",
+                            "name": "Roles retrieved successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
                         }
                     ]
                 },
                 {
-                    "name": "GET \/api\/users\/profile\nGet current authenticated user's profile",
+                    "name": "Get User Profile",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -14868,32 +15775,25 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Retrieve the authenticated user's profile data.\nSensitive fields (password, 2FA secrets, remember_token) are excluded."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/users\/profile could not be found.\"\n}",
-                            "name": ""
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Profile retrieved successfully\",\n  \"data\": {\n    \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... }\n  }\n}",
+                            "name": "Profile retrieved successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
                         }
                     ]
                 },
                 {
-                    "name": "PUT \/api\/users\/profile\nUpdate current authenticated user's profile",
+                    "name": "Update Profile",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -14912,13 +15812,35 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "Form Data:\n- name (required): User name\n- email (required): User email\n- mobile_no (optional): Mobile number\n- avatar (optional): Profile image file"
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"John Doe\",\"email\":\"john@example.com\",\"mobile_no\":\"+1234567890\"}"
+                        },
+                        "description": "Update the authenticated user's own name, email, mobile number, and optionally avatar."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Profile updated successfully\",\n  \"data\": { \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... } }\n}",
+                            "name": "Profile updated successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{ \"status\": false, \"message\": \"...\", \"data\": {...} }",
+                            "name": "Validation error"
+                        }
+                    ]
                 },
                 {
-                    "name": "PUT \/api\/users\/profile\/avatar\nUpdate only user avatar",
+                    "name": "Update Avatar",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -14930,20 +15852,48 @@
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "application\/json"
+                                "value": "multipart\/form-data"
                             },
                             {
                                 "key": "Accept",
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "Form Data:\n- avatar (required): Profile image file"
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "avatar",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "Replace the authenticated user's profile avatar image."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Avatar updated successfully\",\n  \"data\": { \"avatar\": \"https:\/\/...\" }\n}",
+                            "name": "Avatar updated successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{ \"status\": false, \"message\": \"No avatar file provided\" }",
+                            "name": "No avatar file provided"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        }
+                    ]
                 },
                 {
-                    "name": "PUT \/api\/users\/password\nUpdate current user's password",
+                    "name": "Change Own Password",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -14962,13 +15912,41 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "Form Data:\n- current_password (required): Current password\n- new_password (required): New password (min 6 chars)\n- confirm_password (required): Confirm new password"
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"current_password\":\"oldpass123\",\"new_password\":\"newpass456\",\"confirm_password\":\"newpass456\"}"
+                        },
+                        "description": "Update the authenticated user's password. Requires verification of the current password.\nThe new password must be at least 6 characters and must match the confirmation field."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Password updated successfully\",\n  \"data\": []\n}",
+                            "name": "Password updated successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{ \"status\": false, \"message\": \"Please enter correct current password\" }",
+                            "name": "Current password is incorrect"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{ \"status\": false, \"message\": \"...\" }",
+                            "name": "Validation error"
+                        }
+                    ]
                 },
                 {
-                    "name": "GET \/api\/users\/{id}\/password\nGet password reset form data",
+                    "name": "Get Password Reset Form Data (Admin)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -14979,8 +15957,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "1",
-                                    "description": "The ID of the user."
+                                    "value": "eyJpZCI6MX0%3D",
+                                    "description": "Encrypted user ID (Laravel Crypt)."
                                 }
                             ]
                         },
@@ -14996,32 +15974,31 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Retrieve a specific user's basic profile data to prepare for an admin-initiated password reset.\nThe `id` path parameter must be a Laravel-encrypted user ID (see `Crypt::decrypt`)."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"User data retrieved successfully\",\n  \"data\": { \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... } }\n}",
+                            "name": "User data retrieved successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/users\/1\/password could not be found.\"\n}",
-                            "name": ""
+                            "body": "{ \"status\": false, \"message\": \"User not found\" }",
+                            "name": "User not found"
                         }
                     ]
                 },
                 {
-                    "name": "PUT \/api\/users\/{id}\/password\nReset user's password (Admin)",
+                    "name": "Reset User Password (Admin)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15033,7 +16010,7 @@
                                     "id": "id",
                                     "key": "id",
                                     "value": "1",
-                                    "description": "The ID of the user."
+                                    "description": "User ID."
                                 }
                             ]
                         },
@@ -15048,13 +16025,35 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "Form Data:\n- password (required): New password\n- password_confirmation (required): Confirm password\n- login_enable (optional): Enable login after reset"
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"password\":\"newpass456\",\"password_confirmation\":\"newpass456\",\"login_enable\":1}"
+                        },
+                        "description": "Admin-initiated password reset for a specific user. Optionally enables the\nuser's login after the reset when `login_enable` is provided."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Password reset successfully\",\n  \"data\": []\n}",
+                            "name": "Password reset successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{ \"status\": false, \"message\": \"User not found\" }",
+                            "name": "User not found"
+                        }
+                    ]
                 },
                 {
-                    "name": "POST \/api\/users\/{id}\/login-manage\nEnable\/disable user login",
+                    "name": "Toggle User Login",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15065,8 +16064,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "1",
-                                    "description": "The ID of the user."
+                                    "value": "eyJpZCI6MX0%3D",
+                                    "description": "Encrypted user ID (Laravel Crypt)."
                                 }
                             ]
                         },
@@ -15082,12 +16081,37 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Enable or disable login access for a specific user.\nThe `id` path parameter must be a Laravel-encrypted user ID."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{ \"status\": true, \"message\": \"User login enabled successfully\", \"data\": [] }",
+                            "name": "Login enabled"
+                        },
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{ \"status\": true, \"message\": \"User login disabled successfully\", \"data\": [] }",
+                            "name": "Login disabled"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{ \"status\": false, \"message\": \"User not found\" }",
+                            "name": "User not found"
+                        }
+                    ]
                 },
                 {
-                    "name": "GET \/api\/users\/import\nGet import form data",
+                    "name": "Get User Import Form Data",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15107,32 +16131,25 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Retrieve form configuration data for the user CSV import screen.\nNo additional data is returned \u2014 this endpoint confirms that the\nauthenticated user has permission to access the import feature."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/users\/import could not be found.\"\n}",
-                            "name": ""
+                            "header": [],
+                            "code": 200,
+                            "body": "{ \"status\": true, \"message\": \"Import form data retrieved successfully\", \"data\": {} }",
+                            "name": "Import form data retrieved successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
                         }
                     ]
                 },
                 {
-                    "name": "POST \/api\/users\/import-preview\nPreview CSV import file",
+                    "name": "Preview CSV Import File",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15144,20 +16161,48 @@
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "application\/json"
+                                "value": "multipart\/form-data"
                             },
                             {
                                 "key": "Accept",
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "Form Data:\n- file (required): CSV file"
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "Validate and extract the header row and available roles from a user CSV import file.\nReturns column names extracted from the header row so the client can map them\nbefore submitting the actual import."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"File preview data\",\n  \"data\": {\n    \"columns\": [\"name\", \"email\", \"role\"],\n    \"roles\": { \"1\": \"staff\", \"2\": \"admin\" }\n  }\n}",
+                            "name": "File preview data returned"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{ \"status\": false, \"message\": \"Please select a file\" }",
+                            "name": "No file selected or not a CSV"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        }
+                    ]
                 },
                 {
-                    "name": "POST \/api\/users\/import\nImport users from CSV",
+                    "name": "Import Users from CSV",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15176,19 +16221,54 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "Form Data:\n- name (required, array): Name column index\n- email (required, array): Email column index\n- role (required, array): Role column index\n- file_data (required): CSV data"
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"file_data\":\"[{\\\"name\\\":\\\"John Doe\\\",\\\"email\\\":\\\"john@example.com\\\"}]\",\"name\":[\"0\"],\"email\":[\"1\"],\"role\":[\"2\"]}"
+                        },
+                        "description": "Bulk-create users from previously validated CSV data.\n`file_data` should be a JSON-encoded array of row arrays as returned by the\nimport-preview step. Returns counts of successfully imported and failed rows."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Import completed\",\n  \"data\": {\n    \"total_imported\": 5,\n    \"imported\": [{ \"row\": 1, \"email\": \"john@example.com\", \"name\": \"John Doe\" }],\n    \"failed\": []\n  }\n}",
+                            "name": "Import completed"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{ \"status\": false, \"message\": \"No data provided\" }",
+                            "name": "No data provided"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied or plan limit reached"
+                        }
+                    ]
                 },
                 {
-                    "name": "GET \/api\/users\/logs\nGet user login history",
+                    "name": "Get User Login History",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "api\/users\/logs",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/users\/logs"
+                            "query": [
+                                {
+                                    "key": "month",
+                                    "value": "January",
+                                    "description": "optional Filter by month name. Defaults to current month.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "users",
+                                    "value": "1",
+                                    "description": "optional Filter by specific user ID.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/users\/logs?month=January&users=1"
                         },
                         "method": "GET",
                         "header": [
@@ -15202,32 +16282,25 @@
                             }
                         ],
                         "body": null,
-                        "description": "Query Params:\n- month (optional): Filter by month\n- users (optional): Filter by user ID"
+                        "description": "Return a chronological list of login records. Super admins see all company\nlogins; `user login manage` permission holders see their workspace's logins;\nall others see only their own logins."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/users\/logs could not be found.\"\n}",
-                            "name": ""
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"User logs retrieved successfully\",\n  \"data\": {\n    \"logs\": [\n      { \"id\": 1, \"user_id\": 1, \"user_name\": \"John Doe\", \"date\": \"2025-01-01\", \"login_time\": \"09:00:00\", ... }\n    ],\n    \"filter_users\": { \"1\": \"John Doe\", \"2\": \"Jane\" }\n  }\n}",
+                            "name": "Logs retrieved successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
                         }
                     ]
                 },
                 {
-                    "name": "GET \/api\/users\/logs\/{id}\nView specific login log",
+                    "name": "View Login Log",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15238,8 +16311,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the log."
+                                    "value": "1",
+                                    "description": "Login log record ID."
                                 }
                             ]
                         },
@@ -15255,32 +16328,25 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Retrieve a single user login record by its ID."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Log retrieved successfully\",\n  \"data\": { \"log\": { \"id\": 1, \"user_id\": 1, \"date\": \"2025-01-01\", ... } }\n}",
+                            "name": "Log retrieved successfully"
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/users\/logs\/architecto could not be found.\"\n}",
-                            "name": ""
+                            "body": "{ \"status\": false, \"message\": \"Log not found\" }",
+                            "name": "Log not found"
                         }
                     ]
                 },
                 {
-                    "name": "DELETE \/api\/users\/logs\/{id}\nDelete login log",
+                    "name": "Delete Login Log",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15291,8 +16357,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the log."
+                                    "value": "1",
+                                    "description": "Login log record ID."
                                 }
                             ]
                         },
@@ -15308,12 +16374,25 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Permanently remove a specific login history record."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{ \"status\": true, \"message\": \"Log deleted successfully\", \"data\": [] }",
+                            "name": "Log deleted successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        }
+                    ]
                 },
                 {
-                    "name": "POST \/api\/users\/{id}\/impersonate\nImpersonate as another user",
+                    "name": "Impersonate User",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15324,8 +16403,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "1",
-                                    "description": "The ID of the user."
+                                    "value": "2",
+                                    "description": "Target user ID to impersonate."
                                 }
                             ]
                         },
@@ -15341,12 +16420,25 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Impersonate another user as the currently authenticated user.\nThe authenticated user's session will be temporarily replaced by the target user."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Now impersonating user\",\n  \"data\": { \"impersonated_user\": 2 }\n}",
+                            "name": "Impersonation started"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{ \"status\": false, \"message\": \"User not found\" }",
+                            "name": "Target user not found"
+                        }
+                    ]
                 },
                 {
-                    "name": "POST \/api\/users\/impersonate-exit\nExit impersonation",
+                    "name": "Exit Impersonation",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15366,12 +16458,19 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Stop impersonating and return to the original authenticated user's session."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{ \"status\": true, \"message\": \"Impersonation exited\", \"data\": [] }",
+                            "name": "Impersonation exited"
+                        }
+                    ]
                 },
                 {
-                    "name": "GET \/api\/users\/{id}\/company-info\nGet company info with user\/workspace counters",
+                    "name": "Get Company Info",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15383,7 +16482,7 @@
                                     "id": "id",
                                     "key": "id",
                                     "value": "1",
-                                    "description": "The ID of the user."
+                                    "description": "Company\/User ID."
                                 }
                             ]
                         },
@@ -15399,32 +16498,25 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Retrieve company-level aggregation data: user counts and workspace counters\nbroken down per workspace."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Company info retrieved successfully\",\n  \"data\": {\n    \"users_data\": {\n      \"Workspace A\": { \"workspace_id\": 1, \"total_users\": 10, \"disable_users\": 2, \"active_users\": 8 }\n    },\n    \"workspce_data\": { \"total_workspace\": 3, \"disable_workspace\": 0, \"active_workspace\": 3 }\n  }\n}",
+                            "name": "Company info retrieved successfully"
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/users\/1\/company-info could not be found.\"\n}",
-                            "name": ""
+                            "body": "{ \"status\": false, \"message\": \"Company not found\" }",
+                            "name": "Company not found"
                         }
                     ]
                 },
                 {
-                    "name": "POST \/api\/users\/enable-disable\nEnable\/disable user or workspace",
+                    "name": "Enable or Disable User \/ Workspace",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15443,13 +16535,41 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": "Form Data:\n- id (required): User or Workspace ID\n- name (required): 'user' or 'workspace'\n- company_id (required): Company ID\n- is_disable (required): 0 or 1"
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"id\":1,\"name\":\"user\",\"company_id\":1,\"is_disable\":1}"
+                        },
+                        "description": "Toggle the `is_disable` status of a user or workspace.\nActive workspaces cannot be disabled."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": \"User\/Workspace enabled successfully\",\n  \"data\": { \"users_data\": {...}, \"workspce_data\": {...} }\n}",
+                            "name": "Enabled successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{ \"status\": \"User\/Workspace disabled successfully\", \"data\": {...} }",
+                            "name": "Disabled successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{ \"status\": false, \"message\": \"Active Workspace cannot be disabled\" }",
+                            "name": "Active workspace cannot be disabled or invalid request"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{ \"status\": false, \"message\": \"Operation failed\" }",
+                            "name": "Operation failed"
+                        }
+                    ]
                 },
                 {
-                    "name": "POST \/api\/users\/{id}\/verify\nVerify user email",
+                    "name": "Verify User Email",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -15461,7 +16581,7 @@
                                     "id": "id",
                                     "key": "id",
                                     "value": "1",
-                                    "description": "The ID of the user."
+                                    "description": "User ID."
                                 }
                             ]
                         },
@@ -15477,9 +16597,22 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Mark the user's email address as verified by setting `email_verified_at`."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{ \"status\": true, \"message\": \"User verified successfully\", \"data\": [] }",
+                            "name": "User verified successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{ \"status\": false, \"message\": \"User not found\" }",
+                            "name": "User not found"
+                        }
+                    ]
                 }
             ]
         },

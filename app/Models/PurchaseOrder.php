@@ -46,7 +46,7 @@ class PurchaseOrder extends Model
         'short_close_reason',
         'short_closed_at',
         'short_closed_by',
-        'payment_flag_deprecated', // DEPRECATED: Will be removed after Phase 8
+        // 'payment_flag_deprecated', // REMOVED: Use invoiced_status instead
         'invoiced_amount',
         'invoiced_status',
         'assign_to',
@@ -546,15 +546,16 @@ class PurchaseOrder extends Model
         $grandTotal = (float) $this->grand_total;
 
         if ($grandTotal <= 0) {
-            $this->payment_flag_deprecated = self::PAYMENT_FLAG_PENDING;
+            $this->invoiced_status = 'not_invoiced';
         } elseif ($totalPaid >= $grandTotal) {
-            $this->payment_flag_deprecated = self::PAYMENT_FLAG_FULLY_RECEIVED;
+            $this->invoiced_status = 'fully_invoiced';
         } elseif ($totalPaid > 0) {
-            $this->payment_flag_deprecated = self::PAYMENT_FLAG_PARTIAL_RECEIVED;
+            $this->invoiced_status = 'partially_invoiced';
         } else {
-            $this->payment_flag_deprecated = self::PAYMENT_FLAG_PENDING;
+            $this->invoiced_status = 'not_invoiced';
         }
 
+        $this->invoiced_amount = $totalPaid;
         $this->save();
     }
 
@@ -587,20 +588,18 @@ class PurchaseOrder extends Model
         ]);
     }
 
-    /**
-     * @deprecated Use scopeInvoicingEligible() instead
-     */
-    public function scopePaymentEligible($query)
-    {
-        \Log::channel('payment_audit')->warning('scopePaymentEligible() is deprecated', [
-            'context' => 'Query scope using deprecated payment_flag',
-        ]);
+     /**
+      * @deprecated Use scopeInvoicingEligible() instead
+      */
+     public function scopePaymentEligible($query)
+     {
+         \Log::channel('payment_audit')->warning('scopePaymentEligible() is deprecated', [
+             'context' => 'Query scope using deprecated payment_flag',
+         ]);
 
-        return $query->whereIn('payment_flag_deprecated', [
-            self::PAYMENT_FLAG_PENDING,
-            self::PAYMENT_FLAG_PARTIAL_RECEIVED
-        ]);
-    }
+         // Redirect to invoicing eligible scope
+         return $this->scopeInvoicingEligible($query);
+     }
 
     /**
      * Scope for POs that can still receive invoices
@@ -619,7 +618,19 @@ class PurchaseOrder extends Model
      */
     public function getPaymentFlagDisplay(): array
     {
-        $flag = $this->payment_flag_deprecated ?? self::PAYMENT_FLAG_PENDING;
+        \Log::channel('payment_audit')->warning('getPaymentFlagDisplay() is deprecated, use getInvoicedStatusDisplay()', [
+            'po_id' => $this->id,
+            'po_number' => $this->po_number,
+        ]);
+
+        // Map invoiced status to legacy payment flag display for backward compatibility
+        $statusMap = [
+            'not_invoiced' => self::PAYMENT_FLAG_PENDING,
+            'partially_invoiced' => self::PAYMENT_FLAG_PARTIAL_RECEIVED,
+            'fully_invoiced' => self::PAYMENT_FLAG_FULLY_RECEIVED,
+        ];
+
+        $mappedFlag = $statusMap[$this->invoiced_status ?? 'not_invoiced'] ?? self::PAYMENT_FLAG_PENDING;
         
         $colors = [
             self::PAYMENT_FLAG_PENDING => ['text' => 'text-muted', 'bg' => 'bg-secondary', 'label' => 'Pending'],
@@ -627,7 +638,7 @@ class PurchaseOrder extends Model
             self::PAYMENT_FLAG_FULLY_RECEIVED => ['text' => 'text-success', 'bg' => 'bg-success', 'label' => 'Fully Received'],
         ];
 
-        return $colors[$flag] ?? $colors[self::PAYMENT_FLAG_PENDING];
+        return $colors[$mappedFlag] ?? $colors[self::PAYMENT_FLAG_PENDING];
     }
 
     /**

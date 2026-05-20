@@ -100,15 +100,15 @@ class POCalculationService
         $invoicedAmount = $this->getInvoicedAmount($poId);
         $po->invoiced_amount = $invoicedAmount;
         $po->save();
-
+ 
         $this->updatePOStatus($po);
-        
-        // Update payment flag when invoice amounts change
-        $po->updatePaymentFlag();
+         
+        // Update invoicing status when invoice amounts change
+        $po->updateInvoicedStatus();
     }
 
     /**
-     * Update payment flag after a payment is made.
+     * Update invoicing status after a payment is made.
      * 
      * @param int $poId
      * @return void
@@ -116,7 +116,7 @@ class POCalculationService
     public function updatePaymentFlag(int $poId): void
     {
         $po = PurchaseOrder::findOrFail($poId);
-        $po->updatePaymentFlag();
+        $po->updateInvoicedStatus();
     }
 
     /**

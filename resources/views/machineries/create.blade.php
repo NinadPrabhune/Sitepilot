@@ -43,6 +43,13 @@
             @error('vehicle_number') <small class="text-danger">{{ $message }}</small> @enderror
         </div>
 
+        {{-- Registration Number --}}
+        <div class="form-group col-md-4">
+            {{ Form::label('registration_number', __('Registration Number'), ['class' => 'form-label']) }}
+            {{ Form::text('registration_number', '', ['class' => 'form-control', 'placeholder' => __('Enter Registration Number')]) }}
+            @error('registration_number') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
+
         {{-- Model Number --}}
         <div class="form-group col-md-4">
             {{ Form::label('model_number', __('Model Number'), ['class' => 'form-label']) }}

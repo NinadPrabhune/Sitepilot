@@ -12,6 +12,8 @@ use Workdo\Hrm\Entities\LeaveType;
 use Workdo\Hrm\Entities\Attendance;
 use Workdo\Hrm\Entities\LeaveRequestDate;
 use App\Models\User;
+use Workdo\Hrm\Events\LeaveStatus;
+use App\Models\EmailTemplate;
 
 /**
  * @group HRM Leaves
@@ -55,12 +57,45 @@ class LeaveApiController extends Controller
 
     /**
      * Get all leave records
+     *
+     * List all leave requests for the authenticated user. If the user is an admin or company, all leave records are returned.
+     *
+     * @authenticated
+     * @response {
+     *  "status": 1,
+     *  "message": "",
+     *  "data": [
+     *    {
+     *      "id": 1,
+     *      "employee_id": 5,
+     *      "user_id": 2,
+     *      "leave_type_id": 1,
+     *      "leave_type": {"id": 1, "title": "Casual Leave", "days": 10},
+     *      "applied_on": "2024-01-10",
+     *      "start_date": "2024-01-15",
+     *      "end_date": "2024-01-16",
+     *      "total_leave_days": 2,
+     *      "approved_days": 0,
+     *      "leave_reason": "Family function",
+     *      "remark": "Urgent",
+     *      "status": "Pending",
+     *      "status_reason": null,
+     *      "workspace": 1,
+     *      "site_id": 1,
+     *      "created_by": 1
+     *    }
+     *  ]
+     * }
+     * @response 500 {
+     *  "status": 0,
+     *  "message": "Something went wrong: [Error Message]"
+     * }
      */
     public function index(Request $request)
     {
         try {
             $user = Auth::user();
-            
+
             // If admin/company, get all leaves; otherwise get user's own leaves
             if ($this->isAdminOrCompany($user)) {
                 $leaves = Leave::with('leaveType')
@@ -114,13 +149,39 @@ class LeaveApiController extends Controller
     /**
      * Create a new leave record
      *
-     * @bodyParam leave_type_id integer required Leave type ID. Example: 1
-     * @bodyParam start_date date required Start date (must be after yesterday). Example: 2024-01-15
-     * @bodyParam end_date date required End date. Example: 2024-01-20
-     * @bodyParam leave_reason string required Reason for leave. Example: Medical appointment
-     * @bodyParam remark string required Remarks. Example: Urgent
-     * @bodyParam employee_id integer optional Employee ID (for admin/company only). Example: 5
-     * @response {"status": 1, "data": {...}, "message": "Leave request created successfully"}
+     * Submit a new leave request. Eligibility is checked against remaining leave balance.
+     *
+     * @authenticated
+     * @bodyParam leave_type_id integer required The ID of the leave type. Example: 1
+     * @bodyParam start_date date required The start date of the leave (YYYY-MM-DD). Must be today or later. Example: 2024-01-15
+     * @bodyParam end_date date required The end date of the leave (YYYY-MM-DD). Example: 2024-01-20
+     * @bodyParam leave_reason string required The reason for requesting leave. Example: Medical appointment
+     * @bodyParam remark string required Additional remarks for the leave. Example: Urgent
+     * @bodyParam employee_id integer optional The ID of the employee (required if an admin/company is creating leave for someone else). Example: 5
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": {
+     *      "id": 1,
+     *      "employee_id": 5,
+     *      "user_id": 2,
+     *      "leave_type_id": 1,
+     *      "applied_on": "2024-01-10",
+     *      "start_date": "2024-01-15",
+     *      "end_date": "2024-01-20",
+     *      "total_leave_days": 6,
+     *      "status": "Pending"
+     *  },
+     *  "message": "Leave successfully created."
+     * }
+     * @response 403 {
+     *  "status": 0,
+     *  "message": "You are not eligible for this leave. Maximum days remaining: 2"
+     * }
+     * @response 404 {
+     *  "status": 0,
+     *  "message": "Leave type not found"
+     * }
      */
     public function store(Request $request)
     {
@@ -149,7 +210,7 @@ class LeaveApiController extends Controller
             $endDate->add(new \DateInterval('P1D'));
 
             $leave = new Leave();
-            
+
             // If admin/company creating leave for another employee
             if ($this->isAdminOrCompany($user) && $request->has('employee_id')) {
                 $employee = Employee::where('id', '=', $request->employee_id)->first();
@@ -212,7 +273,7 @@ class LeaveApiController extends Controller
                 // Create leave request date records
                 $currentDate = new \DateTime($request->start_date);
                 $endDate = new \DateTime($request->end_date);
-                
+
                 while ($currentDate <= $endDate) {
                     LeaveRequestDate::create([
                         'leave_request_id' => $leave->id,
@@ -240,6 +301,35 @@ class LeaveApiController extends Controller
 
     /**
      * Get a single leave record
+     *
+     * Retrieve details of a specific leave request.
+     *
+     * @authenticated
+     * @urlParam id integer required The ID of the leave record. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": {
+     *      "id": 1,
+     *      "employee_id": 5,
+     *      "user_id": 2,
+     *      "leave_type_id": 1,
+     *      "leave_type": {"id": 1, "title": "Casual Leave", "days": 10},
+     *      "applied_on": "2024-01-10",
+     *      "start_date": "2024-01-15",
+     *      "end_date": "2024-01-16",
+     *      "total_leave_days": 2,
+     *      "status": "Pending"
+     *  }
+     * }
+     * @response 403 {
+     *  "status": 0,
+     *  "message": "Permission denied"
+     * }
+     * @response 404 {
+     *  "status": 0,
+     *  "message": "Leave not found"
+     * }
      */
     public function show($id)
     {
@@ -264,6 +354,33 @@ class LeaveApiController extends Controller
 
     /**
      * Update an existing leave record
+     *
+     * Update an existing leave request. Only requests with 'Pending' status can be modified.
+     *
+     * @authenticated
+     * @urlParam id integer required The ID of the leave record to update. Example: 1
+     * @bodyParam leave_type_id integer required The ID of the leave type. Example: 1
+     * @bodyParam start_date date required The start date of the leave (YYYY-MM-DD). Example: 2024-01-15
+     * @bodyParam end_date date required The end date of the leave (YYYY-MM-DD). Example: 2024-01-20
+     * @bodyParam leave_reason string required The reason for requesting leave. Example: Medical appointment
+     * @bodyParam remark string required Additional remarks for the leave. Example: Updated remarks
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": {
+     *      "id": 1,
+     *      "status": "Pending",
+     *      "message": "Leave successfully updated."
+     *  }
+     * }
+     * @response 403 {
+     *  "status": 0,
+     *  "message": "Only pending leave requests can be updated"
+     * }
+     * @response 404 {
+     *  "status": 0,
+     *  "message": "Leave not found"
+     * }
      */
     public function update(Request $request, $id)
     {
@@ -316,6 +433,24 @@ class LeaveApiController extends Controller
 
     /**
      * Delete a leave record
+     *
+     * Remove a leave request from the system. Only requests with 'Pending' status can be deleted.
+     *
+     * @authenticated
+     * @urlParam id integer required The ID of the leave record to delete. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "message": "Leave successfully deleted."
+     * }
+     * @response 403 {
+     *  "status": 0,
+     *  "message": "Only pending leave requests can be deleted"
+     * }
+     * @response 404 {
+     *  "status": 0,
+     *  "message": "Leave not found"
+     * }
      */
     public function destroy($id)
     {
@@ -346,14 +481,43 @@ class LeaveApiController extends Controller
     }
 
     /**
-     * Get leave details with employee, leave type, used days, remaining days, sundays worked
-     * Equivalent to Web controller's action() method
+     * Get leave details for approval
+     *
+     * Retrieve detailed information about a leave request for approval purposes. Includes used/remaining days and date-wise status.
+     * Equivalent to Web controller's action() method.
+     *
+     * @authenticated
+     * @urlParam id integer required The ID of the leave record. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": {
+     *      "leave": {
+     *          "id": 1,
+     *          "start_date": "2024-01-15",
+     *          "end_date": "2024-01-16",
+     *          "status": "Pending"
+     *      },
+     *      "employee": {"id": 2, "name": "John Doe"},
+     *      "leave_type": {"id": 1, "title": "Casual Leave", "days": 10},
+     *      "used_days": 2,
+     *      "remaining_days": 8,
+     *      "sundays_worked": 0,
+     *      "allow_partial": true,
+     *      "existing_dates": {"2024-01-15": "pending", "2024-01-16": "pending"}
+     *  },
+     *  "message": ""
+     * }
+     * @response 403 {
+     *  "status": 0,
+     *  "message": "Permission denied. Approver access required."
+     * }
      */
     public function action($id)
     {
         try {
             $user = Auth::user();
-            
+
             // Only approvers can access this
             if (!$this->canManageLeave($user)) {
                 return response()->json(['status' => 0, 'message' => 'Permission denied. Approver access required.'], 403);
@@ -383,6 +547,19 @@ class LeaveApiController extends Controller
             $sundaysWorked = Attendance::where('employee_id', $leave->employee_id)
                 ->whereRaw('DAYOFWEEK(date) = 1')
                 ->count();
+
+            // Check if any previous leave for this employee in the same type has a 'Reject' status
+            $hasRejectedLeave = Leave::where('employee_id', $leave->employee_id)
+                ->where('leave_type_id', $leave->leave_type_id)
+                ->where('id', '!=', $leave->id)
+                ->where('status', 'Reject')
+                ->exists();
+
+            $allow_partial = !$hasRejectedLeave;
+
+            // Load existing date-wise approvals
+            $existingDates = LeaveRequestDate::where('leave_request_id', $leave->id)
+                ->pluck('status', 'leave_date');
 
             $remainingDays = $leavetype->days - $usedDays + $sundaysWorked;
 
@@ -414,6 +591,8 @@ class LeaveApiController extends Controller
                 'used_days' => $usedDays,
                 'remaining_days' => $remainingDays,
                 'sundays_worked' => $sundaysWorked,
+                'allow_partial' => $allow_partial,
+                'existing_dates' => $existingDates,
             ];
 
             return response()->json(['status' => 1, 'data' => $data, 'message' => ''], 200);
@@ -423,14 +602,46 @@ class LeaveApiController extends Controller
     }
 
     /**
-     * Change leave status (Approve/Reject/Partially Approve)
-     * Equivalent to Web controller's changeaction() method
-     */
+    * Change leave status
+    *
+    * Approve, Reject, or Partially Approve a leave request. Supports date-wise approval.
+    * Equivalent to the Web controller's changeaction() method.
+    *
+    * @authenticated
+    *
+    * @bodyParam leave_id integer required The ID of the leave record. Example: 1
+    * @bodyParam status string required The new status. Allowed values: Approved, Reject, Partially Approved. Example: Approved
+    * @bodyParam status_reason string optional Reason for the status change. Example: Approved for urgent work.
+    * @bodyParam approved_dates object optional Map of date-wise statuses for 'Partially Approved'. Example: {"2024-01-15": {"status": "approved", "remarks": "OK"}, "2024-01-16": {"status": "rejected", "remarks": "Busy"}}
+    * @bodyParam approved_days integer optional Number of days to approve (legacy support for 'Partially Approved'). Example: 1
+    *
+    * @response 200 {
+    *   "status": 1,
+    *   "data": {
+    *     "id": 1,
+    *     "status": "Approved",
+    *     "approved_days": 3,
+    *     "rejected_days": 0,
+    *     "pending_days": 0
+    *   },
+    *   "message": "Leave status successfully updated."
+    * }
+    *
+    * @response 403 {
+    *   "status": 0,
+    *   "message": "Partially Approved is not allowed because a previous leave for this employee in the same leave type has been rejected."
+    * }
+    *
+    * @response 404 {
+    *   "status": 0,
+    *   "message": "Leave not found"
+    * }
+    */
     public function changeStatus(Request $request)
     {
         try {
             $user = Auth::user();
-            
+
             // Only approvers can change status
             if (!$this->canManageLeave($user)) {
                 return response()->json(['status' => 0, 'message' => 'Permission denied. Approver access required.'], 403);
@@ -483,17 +694,33 @@ class LeaveApiController extends Controller
                     $leave->rejected_days = $totalDays;
                     $leave->pending_days = 0;
                 } elseif ($request->status === 'Partially Approved') {
+                    // Verify previous leaves are all approved for this employee+type
+                    $hasRejectedLeave = Leave::where('employee_id', $leave->employee_id)
+                        ->where('leave_type_id', $leave->leave_type_id)
+                        ->where('id', '!=', $leave->id)
+                        ->where('status', 'Reject')
+                        ->exists();
+
+                    if ($hasRejectedLeave) {
+                        DB::rollBack();
+                        return response()->json(['status' => 0, 'message' => 'Partially Approved is not allowed because a previous leave for this employee in the same leave type has been rejected.'], 403);
+                    }
+
                     // Check if new date-level approval payload exists
-                    if ($request->has('approved_dates') && is_array($request->approved_dates)) {
+                    if ($request->has('approved_dates') && (is_array($request->approved_dates) || is_object($request->approved_dates))) {
                         // New date-level approval
-                        foreach ($request->approved_dates as $date => $data) {
+                        foreach ($request->approved_dates as $key => $data) {
+                            $date = (is_array($data) && isset($data['date'])) ? $data['date'] : $key;
+                            $status = is_array($data) ? ($data['status'] ?? 'approved') : $data;
+                            $remarks = is_array($data) ? ($data['remarks'] ?? null) : null;
+
                             LeaveRequestDate::where('leave_request_id', $leave->id)
                                 ->where('leave_date', $date)
                                 ->update([
-                                    'status' => $data['status'],
+                                    'status' => $status,
                                     'approved_by' => $user->id,
                                     'approved_at' => now(),
-                                    'remarks' => $data['remarks'] ?? null,
+                                    'remarks' => $remarks,
                                 ]);
                         }
                         $leave->recalculateDays();
@@ -503,11 +730,12 @@ class LeaveApiController extends Controller
                         $validator2 = \Validator::make($request->all(), [
                             'approved_days' => 'required|integer|min:1|max:' . $totalDays,
                         ]);
-                        
+
                         if ($validator2->fails()) {
+                            DB::rollBack();
                             return response()->json(['status' => 0, 'message' => $validator2->errors()->first()], 403);
                         }
-                        
+
                         // Approve first N days (legacy behavior)
                         $dateRecords = LeaveRequestDate::where('leave_request_id', $leave->id)
                             ->orderBy('leave_date')
@@ -529,14 +757,45 @@ class LeaveApiController extends Controller
                         $leave->status = 'Partially Approved';
                     }
                 }
-                
+
                 $leave->status_reason = $request->status_reason;
                 $leave->save();
-                
+
+                // Sync attendance with approved dates
+                $this->syncAttendanceWithLeave($leave->id);
+
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollBack();
                 return response()->json(['status' => 0, 'message' => 'Error updating leave status: ' . $e->getMessage()], 500);
+            }
+
+            // Fire event
+            event(new LeaveStatus($leave));
+
+            // Email notification logic
+            $company_settings = getCompanyAllSetting();
+            if (!empty($company_settings['Leave Status']) && $company_settings['Leave Status'] == true) {
+                $User = User::where('id', $leave->user_id)
+                    ->where('workspace_id', $leave->workspace)
+                    ->first();
+
+                $uArr = [
+                    'leave_email'       => $User->email,
+                    'leave_status_name' => $User->name,
+                    'leave_status'      => $leave->status,
+                    'leave_reason'      => $leave->leave_reason,
+                    'leave_start_date'  => $leave->start_date,
+                    'leave_end_date'    => $leave->end_date,
+                    'total_leave_days'  => $leave->total_leave_days,
+                    'approved_days'     => $leave->approved_days,
+                ];
+
+                try {
+                    EmailTemplate::sendEmailTemplate('Leave Status', [$User->email], $uArr);
+                } catch (\Exception $e) {
+                    // Log error or ignore
+                }
             }
 
             return response()->json([
@@ -550,8 +809,72 @@ class LeaveApiController extends Controller
     }
 
     /**
-     * Get leave summary for an employee grouped by leave type
-     * Equivalent to Web controller's jsoncount() method
+     * Sync attendance with approved leave dates
+     */
+    private function syncAttendanceWithLeave($leaveId)
+    {
+        $leave = Leave::find($leaveId);
+        if (!$leave) {
+            return;
+        }
+
+        // Get approved dates
+        $approvedDates = LeaveRequestDate::where('leave_request_id', $leaveId)
+            ->where('status', 'approved')
+            ->get();
+
+        // Mark approved dates as leave in attendance
+        foreach ($approvedDates as $dateRecord) {
+            Attendance::updateOrCreate(
+                [
+                    'employee_id' => $leave->employee_id,
+                    'date' => $dateRecord->leave_date
+                ],
+                [
+                    'status' => 'leave',
+                    'leave_request_id' => $leaveId,
+                    'leave_request_date_id' => $dateRecord->id,
+                    'workspace' => $leave->workspace,
+                    'created_by' => $leave->created_by,
+                ]
+            );
+        }
+
+        // Remove attendance for rejected dates (if they were previously marked)
+        $rejectedDates = LeaveRequestDate::where('leave_request_id', $leaveId)
+            ->where('status', 'rejected')
+            ->get();
+
+        foreach ($rejectedDates as $dateRecord) {
+            Attendance::where('employee_id', $leave->employee_id)
+                ->where('date', $dateRecord->leave_date)
+                ->where('leave_request_id', $leaveId)
+                ->delete();
+        }
+    }
+
+    /**
+     * Get leave summary
+     *
+     * Get summary of used and remaining leave days for an employee, grouped by leave type.
+     * Equivalent to Web controller's jsoncount() method.
+     *
+     * @authenticated
+     * @bodyParam employee_id integer required The ID of the employee. Example: 5
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": [
+     *    {
+     *      "id": 1,
+     *      "title": "Casual Leave",
+     *      "allowed_days": 10,
+     *      "used_days": 2,
+     *      "remaining_days": 8
+     *    }
+     *  ],
+     *  "message": ""
+     * }
      */
     public function leaveSummary(Request $request)
     {
@@ -604,8 +927,22 @@ class LeaveApiController extends Controller
     }
 
     /**
-     * Get leave description (leave_reason + remark)
-     * Equivalent to Web controller's description() method
+     * Get leave description
+     *
+     * Get the reason and remark for a specific leave request.
+     * Equivalent to Web controller's description() method.
+     *
+     * @authenticated
+     * @urlParam id integer required The ID of the leave record. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": {
+     *      "leave_reason": "Medical appointment",
+     *      "remark": "Urgent"
+     *  },
+     *  "message": ""
+     * }
      */
     public function description($id)
     {
@@ -634,8 +971,22 @@ class LeaveApiController extends Controller
     }
 
     /**
-     * Get leave status and status_reason
-     * Equivalent to Web controller's status_reason() method
+     * Get leave status reason
+     *
+     * Get the current status and the reason provided for that status.
+     * Equivalent to Web controller's status_reason() method.
+     *
+     * @authenticated
+     * @urlParam id integer required The ID of the leave record. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": {
+     *      "status": "Approved",
+     *      "status_reason": "Approved for urgent work."
+     *  },
+     *  "message": ""
+     * }
      */
     public function status_reason($id)
     {

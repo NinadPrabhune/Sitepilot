@@ -36,12 +36,12 @@ class AttendanceApiController extends Controller {
                     'workspace_id' => 'required',
                 ]);
 
-                if ($validator->fails()) {
-                    return response()->json([
-                                'status' => 0,
-                                'message' => $validator->getMessageBag()->first()
-                                    ], 403);
-                }
+if ($validator->fails()) {
+        return response()->json([
+            'status' => 0,
+            'message' => $validator->getMessageBag()->first()
+        ], 422);
+    }
 
 
 
@@ -65,9 +65,9 @@ class AttendanceApiController extends Controller {
         }
     }
 
-    
-    
-    
+
+
+
     /**
      * Insert attendance record (admin)
      *
@@ -225,16 +225,35 @@ public function show($id)
         // ✅ Catch unexpected errors
         return response()->json([
             'status' => 'error',
-            'message' => 'Something went wrong while fetching attendance.',
+'message' => 'Something went wrong while fetching attendance.',
             'error' => $e->getMessage()
         ], 500);
     }
 }
 
 
-
+    /**
+     * Clock in or clock out an employee.
+     *
+     * @group HRM Attendance
+     *
+     * @bodyParam type string required Type of action (clockin/clockout). Example: clockout
+     * @bodyParam latitude string required Latitude coordinate. Example: 18.5204
+     * @bodyParam longitude string required Longitude coordinate. Example: 73.8567
+     * @bodyParam user_id integer required User ID. Example: 5
+     * @bodyParam employee_id integer required Employee ID. Example: 5
+     * @bodyParam site_id integer required Site ID. Example: 1
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam attendence_id integer required Attendance ID (for clockout). Example: 10
+     * @bodyParam clock_out_image file required Image for clock out. Example: image.jpg
+     * @bodyParam clock_in_image file required Image for clock in. Example: image.jpg
+     *
+     * @response {"status": 1, "message": "Employee Successfully Clock Out.", "data": {...}}
+     * @response 422 {"status": 0, "message": "Validation error"}
+     * @response 500 {"status": 0, "message": "Something went wrong!"}
+     */
     public function clockInOut(Request $request) {
-     
+
     // Base validation
     $rules = [
         'type' => 'required|in:clockin,clockout',
@@ -260,7 +279,7 @@ public function show($id)
         return response()->json([
             'status' => 0,
             'message' => $validator->getMessageBag()->first()
-        ], 403);
+        ], 422);
     }
 
 
@@ -334,9 +353,11 @@ public function show($id)
                         ->orderBy('id', 'desc')
                         ->first();
 
-                if ($lastClockOut) {
-                    $lateSeconds = strtotime("$date $time") - strtotime("$date {$lastClockOut->clock_out}");
-                } else {
+if ($lastClockOut) {
+                     $timeRegex = '/(\d{2}:\d{2}:\d{2})$/';
+                     $lastClockOutTime = preg_match($timeRegex, $lastClockOut->clock_out, $matches) ? $matches[1] : $lastClockOut->clock_out;
+                     $lateSeconds = strtotime("$date $time") - strtotime("$date $lastClockOutTime");
+                 } else {
                     $lateSeconds = strtotime("$date $time") - strtotime("$date $startTime");
                 }
 
@@ -390,12 +411,16 @@ public function show($id)
                         ->whereNotNull('clock_in')
                         ->where('status', 'Present')
                         ->get()
-                        ->sum(function ($entry) {
-                            $clockIn = \Carbon\Carbon::parse($entry->date . ' ' . $entry->clock_in);
-                            $clockOut = $entry->clock_out === '00:00:00' ? \Carbon\Carbon::now() : \Carbon\Carbon::parse($entry->date . ' ' . $entry->clock_out);
+->sum(function ($entry) {
+                             $timeRegex = '/(\d{2}:\d{2}:\d{2})$/';
+                             $clockInTime = preg_match($timeRegex, $entry->clock_in, $matches) ? $matches[1] : $entry->clock_in;
+                             $clockOutTime = preg_match($timeRegex, $entry->clock_out, $matches) ? $matches[1] : $entry->clock_out;
 
-                            return $clockOut->diffInMinutes($clockIn);
-                        });
+                             $clockIn = \Carbon\Carbon::parse($entry->date->toDateString() . ' ' . $clockInTime);
+                             $clockOut = $entry->clock_out === '00:00:00' || $clockOutTime === '00:00:00' ? \Carbon\Carbon::now() : \Carbon\Carbon::parse($entry->date->toDateString() . ' ' . $clockOutTime);
+
+                             return $clockOut->diffInMinutes($clockIn);
+                         });
 
                 $totalHours = floor($totalMinutes / 60);
                 $totalMins = $totalMinutes % 60;
@@ -416,7 +441,7 @@ public function show($id)
                             'status' => 0,
                             'message' => 'Something went wrong!',
                             'error' => $e->getMessage()
-                ]);
+                        ], 500);
             }
         }
 
@@ -429,17 +454,17 @@ public function show($id)
 
             if ($validator->fails()) {
                 return response()->json([
-                            'status' => 0,
-                            'message' => $validator->getMessageBag()->first()
-                                ], 403);
+                    'status' => 0,
+                    'message' => $validator->getMessageBag()->first()
+                ], 422);
             }
 
             try {
-               
+
                 $user_id = $request->user_id;
                 $activeWorkspace = $request->workspace_id;
                 $companySettings = getCompanyAllSetting($user_id, $activeWorkspace);
-                
+
                 $employeeId = $request->employee_id;
 
                 $startTime = $companySettings['company_start_time'] ?? '09:00';
@@ -452,12 +477,12 @@ public function show($id)
                 $date = date("Y-m-d");
                 $time = date("H:i:s");
 
-                // Early leaving
-                $earlyLeavingSeconds = strtotime("$date $endTime") - time();
+                // Early leaving (if clocking out before end time)
+                $earlyLeavingSeconds = strtotime("$date $endTime") - strtotime("$date $time");
                 $earlyLeaving = $earlyLeavingSeconds > 0 ? gmdate("H:i:s", $earlyLeavingSeconds) : "00:00:00";
 
                 // Overtime
-                $overtime = time() > strtotime("$date $endTime") ? gmdate("H:i:s", time() - strtotime("$date $endTime")) : "00:00:00";
+                $overtime = strtotime("$date $time") > strtotime("$date $endTime") ? gmdate("H:i:s", strtotime("$date $time") - strtotime("$date $endTime")) : "00:00:00";
 
                 // clock_in_image upload
                 $clock_out_imagePath = null;
@@ -480,11 +505,11 @@ public function show($id)
 
                 // Update attendance
                 $attendance = Attendance::find($request->attendence_id);
-                
+
                 if (!$attendance) {
                     return response()->json(['status' => 0, 'message' => 'Attendance record not found'], 404);
                 }
-                
+
                 $attendance->clock_out = $time;
                 $attendance->early_leaving = $earlyLeaving;
                 $attendance->overtime = $overtime;
@@ -493,9 +518,12 @@ public function show($id)
                 $attendance->clock_out_image = $clock_out_imagePath;
                 $attendance->save();
 
-                // Format times
-                $clockInFormatted = \Carbon\Carbon::createFromFormat('H:i:s', $attendance->clock_in)->format('h:i A');
-                $clockOutFormatted = \Carbon\Carbon::createFromFormat('H:i:s', $attendance->clock_out)->format('h:i A');
+// Format times
+                 $timeRegex = '/(\d{2}:\d{2}:\d{2})$/';
+                 $clockInTime = preg_match($timeRegex, $attendance->clock_in, $matches) ? $matches[1] : $attendance->clock_in;
+                 $clockOutTime = preg_match($timeRegex, $attendance->clock_out, $matches) ? $matches[1] : $attendance->clock_out;
+                 $clockInFormatted = \Carbon\Carbon::createFromFormat('H:i:s', $clockInTime)->format('h:i A');
+                 $clockOutFormatted = \Carbon\Carbon::createFromFormat('H:i:s', $clockOutTime)->format('h:i A');
 
                 // Total hours today
                 $currentDate = \Carbon\Carbon::today();
@@ -505,11 +533,21 @@ public function show($id)
                         ->whereNotNull('clock_out')
                         ->where('status', 'Present')
                         ->get()
-                        ->sum(function ($entry) {
-                            $clockIn = \Carbon\Carbon::parse($entry->date . ' ' . $entry->clock_in);
-                            $clockOut = \Carbon\Carbon::parse($entry->date . ' ' . $entry->clock_out);
-                            return $clockOut->diffInMinutes($clockIn);
-                        });
+->sum(function ($entry) {
+                              $timeRegex = '/(\d{2}:\d{2}:\d{2})$/';
+                              $clockInTime = preg_match($timeRegex, $entry->clock_in, $matches) ? $matches[1] : $entry->clock_in;
+                              $clockOutTime = preg_match($timeRegex, $entry->clock_out, $matches) ? $matches[1] : $entry->clock_out;
+
+                              try {
+                                  $clockIn = \Carbon\Carbon::parse($entry->date . ' ' . $clockInTime);
+                                  $clockOut = $entry->clock_out == '00:00:00' || $clockOutTime == '00:00:00'
+                                      ? \Carbon\Carbon::now()
+                                      : \Carbon\Carbon::parse($entry->date . ' ' . $clockOutTime);
+                                  return $clockOut->diffInMinutes($clockIn);
+                              } catch (\Exception $e) {
+                                  return 0;
+                              }
+                          });
 
                 $totalHours = floor($totalMinutes / 60);
                 $totalMins = $totalMinutes % 60;
@@ -531,7 +569,7 @@ public function show($id)
                             'status' => 0,
                             'message' => 'Something went wrong!',
                             'error' => $e->getMessage()
-                ]);
+                        ], 500);
             }
         }
     }
@@ -541,19 +579,19 @@ public function show($id)
     try {
         // DEBUG: Log user type and permissions for diagnosis
         $currentUser = Auth::user();
-        
+
         // Get user type
         $userType = $currentUser->type;
-        
+
         // Check if user type is company
         $isCompany = ($userType === 'company');
-        
+
         // Check if user type is Admin (case-insensitive check)
         $isAdmin = (strtolower($userType) === 'admin');
-        
+
         // Current user ID
         $currentUserId = $currentUser->id;
-        
+
         // // Debug log to validate assumptions
         // \Log::error('[AttendanceApiController][attendenceHistory] User role-based access debug', [
         //     'user_id' => $currentUserId,
@@ -561,7 +599,7 @@ public function show($id)
         //     'is_company' => $isCompany,
         //     'is_admin' => $isAdmin,
         // ]);
-        
+
         $workspaceId = $request->input('workspace_id');
         $siteId      = $request->input('site_id');
         $employee_id = $request->input('employee_id');
@@ -570,12 +608,12 @@ public function show($id)
             ->select('date', 'id', 'status', 'clock_in', 'clock_out', 'site_id', 'employee_id', 'created_by', 'clock_in_latitude', 'clock_in_longitude', 'clock_out_latitude', 'clock_out_longitude', 'clock_in_image', 'clock_out_image');
 
         // Role-based filtering: 'company' and 'Admin' see all, others see only their own records
-        // If user type is NOT 'company' and NOT 'Admin', filter by employee_id (their own attendance)
+        $effectiveEmployeeId = $employee_id;
         if (!$isCompany && !$isAdmin) {
             // Non-admin users can only see their own attendance records
             // If employee_id is not provided in request, get it from the current user's employee record
             $filterEmployeeId = $employee_id;
-            
+
             if (empty($filterEmployeeId) || $filterEmployeeId == 0) {
                 // Get the employee's ID from the Employee table using user_id
                 $employee = \Workdo\Hrm\Entities\Employee::where('user_id', $currentUserId)->first();
@@ -583,11 +621,13 @@ public function show($id)
                     $filterEmployeeId = $employee->id;
                 }
             }
-            
+
+            $effectiveEmployeeId = $filterEmployeeId;
+
             if (!empty($filterEmployeeId) && $filterEmployeeId != 0) {
                 $attendances->where('employee_id', $filterEmployeeId);
             }
-            
+
             // Debug log for non-admin filtering
             // \Log::error('[AttendanceApiController][attendenceHistory] Non-admin user - filtering by employee_id', [
             //     'user_id' => $currentUserId,
@@ -597,8 +637,9 @@ public function show($id)
             // Admin or company users see all attendance (apply standard filters)
             if (!empty($employee_id) && $employee_id != 0) {
                 $attendances->where('employee_id', $employee_id);
+                $effectiveEmployeeId = $employee_id;
             }
-            
+
             // // Debug log for admin/company
             // \Log::error('[AttendanceApiController][attendenceHistory] Admin/Company user - showing all attendance', [
             //     'user_id' => $currentUserId,
@@ -633,16 +674,21 @@ public function show($id)
         $formattedData = [];
 
         foreach ($attendances->get() as $attendance) {
-            $date = $attendance->date;
+             $date = $attendance->date;
+             $dateKey = $date->toDateString();
 
-            if (!empty($company_settings['defult_timezone'])) {
-                date_default_timezone_set($company_settings['defult_timezone']);
-            }
+if (!empty($company_settings['defult_timezone'])) {
+                 date_default_timezone_set($company_settings['defult_timezone']);
+             }
 
-            $clockIn = new DateTime($attendance->clock_in);
-            $clockOut = ($attendance->clock_out == '00:00:00')
-                ? new DateTime()
-                : new DateTime($attendance->clock_out);
+$timeRegex = '/(\d{2}:\d{2}:\d{2})$/';
+             $clockInTime = preg_match($timeRegex, $attendance->clock_in, $matches) ? $matches[1] : $attendance->clock_in;
+             $clockOutTime = preg_match($timeRegex, $attendance->clock_out, $matches) ? $matches[1] : $attendance->clock_out;
+
+             $clockIn = new DateTime($clockInTime);
+             $clockOut = ($attendance->clock_out == '00:00:00' || $clockOutTime == '00:00:00')
+                 ? new DateTime()
+                 : new DateTime($clockOutTime);
 
             $interval = $clockIn->diff($clockOut);
             $totalTimeString = $interval->format('%H:%I hours');
@@ -660,7 +706,7 @@ public function show($id)
                 'clock_in_image'        =>$attendance->clock_in_image,
                 'clock_out_image'       =>$attendance->clock_out_image,
 
-                
+
 
                 // ✅ Added employee info
                 'employee_id'   => $attendance->employee_id,
@@ -669,34 +715,38 @@ public function show($id)
                 // ✅ Added site info
                 'site_id'       => $attendance->site_id,
                 'site_name'     => optional($attendance->site)->name,
-            ];
+             ];
 
-            if (!isset($formattedData[$date])) {
-                $formattedData[$date] = [
-                    'total_time' => '00:00 hours',
-                    'date'       => $date,
+             if (!isset($formattedData[$dateKey])) {
+                 $formattedData[$dateKey] = [
+                     'total_time' => '00:00 hours',
+                     'date'       => $date,
                     'history'    => [],
                 ];
-            }
+             }
 
-            $formattedData[$date]['history'][] = $attendanceDetail;
-        }
+             $formattedData[$dateKey]['history'][] = $attendanceDetail;
+         }
 
         // Calculate daily totals
         foreach ($formattedData as $key => $data) {
-            $totalTime = Attendance::where('employee_id', $request->user_id)
+            $totalTime = Attendance::where('employee_id', $effectiveEmployeeId)
                 ->whereDate('date', $data['date'])
                 ->whereNotNull('clock_in')
                 ->where('status', 'Present')
                 ->get()
-                ->sum(function ($entry) {
-                    $clockOut = ($entry->clock_out == '00:00:00')
-                        ? Carbon::now()
-                        : Carbon::parse($entry->date . ' ' . $entry->clock_out);
+->sum(function ($entry) {
+                     $timeRegex = '/(\d{2}:\d{2}:\d{2})$/';
+                     $clockInTime = preg_match($timeRegex, $entry->clock_in, $matches) ? $matches[1] : $entry->clock_in;
+                     $clockOutTime = preg_match($timeRegex, $entry->clock_out, $matches) ? $matches[1] : $entry->clock_out;
 
-                    $clockIn = Carbon::parse($entry->date . ' ' . $entry->clock_in);
-                    return $clockOut->diffInMinutes($clockIn);
-                });
+                     $clockOut = ($entry->clock_out == '00:00:00' || $clockOutTime == '00:00:00')
+                         ? Carbon::now()
+                         : Carbon::parse($entry->date->toDateString() . ' ' . $clockOutTime);
+
+                     $clockIn = Carbon::parse($entry->date->toDateString() . ' ' . $clockInTime);
+                     return $clockOut->diffInMinutes($clockIn);
+                 });
 
             $totalHours = floor($totalTime / 60);
             $totalMinutes = $totalTime % 60;
@@ -723,8 +773,8 @@ public function show($id)
     }
 }
 
-    
-    
+
+
 //    public function attendenceHistory(Request $request)
 //    {
 //        try {
@@ -898,13 +948,13 @@ public function show($id)
     //         return response()->json(['status'=>0,'message'=>'something went wrong!!!']);
     //     }
     // }
-    
-    
-    
+
+
+
     public function AdminAttendenceUpdate(Request $request, $id)
     {
         try {
-            
+
             // ✅ Permission check
         if (!Auth::user()->isAbleTo('attendance edit')) {
             return response()->json([
@@ -934,9 +984,9 @@ public function show($id)
                 'message' => $validator->errors()->first()
             ], 422);
         }
-            
-            
-            
+
+
+
             // ✅ Determine employee ID
             $employeeId = !empty($request->employee_id) ? $request->employee_id : Auth::user()->id;
 
@@ -954,7 +1004,7 @@ public function show($id)
             }
 
 //            dd($request->clock_in);
-            
+
 //            // ✅ Branch based on employee type
 //            if (!in_array(Auth::user()->type, Auth::user()->not_emp_type)) {
 //                // Employee clock-out flow
@@ -994,8 +1044,8 @@ public function show($id)
 //                ], 200);
 //
 //            } else {
-                
-                
+
+
                 // Admin/manual update flow
                 $date = date("Y-m-d");
 
@@ -1020,8 +1070,8 @@ public function show($id)
                     )
                     : '00:00:00';
 
-                
-                
+
+
                 $attendance->employee_id   = $request->employee_id;
                 $attendance->date          = $request->date;
                 $attendance->clock_in      = $request->clock_in. ':00';
@@ -1033,7 +1083,7 @@ public function show($id)
                 $attendance->created_by = $request->user_id;
                 $attendance->workspace = $request->workspace_id;
                 $attendance->site_id = $request->site_id;
-                
+
                 $attendance->save();
 
                 $attendance->load('employees');
@@ -1057,10 +1107,10 @@ public function show($id)
             ], 500);
         }
     }
-    
-    
-    
-    
+
+
+
+
 public function AdminAttendenceDelete($id)
 {
     $attendance = Attendance::find($id);
@@ -1074,10 +1124,10 @@ public function AdminAttendenceDelete($id)
     return response()->json(['message' => 'Attendance record deleted successfully']);
 }
 
-    
-    
-    
-    
-    
+
+
+
+
+
 
 }

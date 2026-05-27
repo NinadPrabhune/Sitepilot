@@ -243,25 +243,29 @@ class SupplierTransaction extends Model
     }
 
     /**
-     * Get current balance for a supplier.
+     * Get current balance for a supplier as of a given date.
+     * If toDate is provided, returns balance up to that date.
+     * If no date is provided, returns the overall latest balance.
      */
-    public static function getCurrentBalance($supplierId, ?int $siteId = null, ?string $fromDate = null, ?string $toDate = null)
+    public static function getCurrentBalance($supplierId, ?int $siteId = null, ?string $toDate = null, ?int $workspaceId = null)
     {
         $query = self::where('supplier_id', $supplierId);
+
+        if ($workspaceId) {
+            $query->where('workspace_id', $workspaceId);
+        }
 
         if ($siteId) {
             $query->where('site_id', $siteId);
         }
 
-        if ($fromDate) {
-            $query->whereDate('transaction_date', '>=', $fromDate);
-        }
-
+        // Only apply toDate filter - we need all historical transactions up to toDate
+        // to calculate the correct cumulative balance
         if ($toDate) {
             $query->whereDate('transaction_date', '<=', $toDate);
         }
 
-        $lastTransaction = $query->orderBy('transaction_date', 'desc')
+        $lastTransaction = $query->orderBy('created_at', 'desc')
             ->orderBy('id', 'desc')
             ->first();
 

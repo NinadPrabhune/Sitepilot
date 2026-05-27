@@ -11,7 +11,9 @@ class Department extends Model
 
     protected $fillable = [
         'branch_id',
-        'name'
+        'name',
+        'workspace',
+        'created_by'
     ];
     
     protected static function newFactory()

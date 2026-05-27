@@ -6,12 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class SupplierLedgerSnapshot extends Model
 {
+    public $timestamps = false;
+
     protected $fillable = [
         'supplier_id',
         'site_id',
         'balance',
         'snapshot_date',
         'last_transaction_id',
+        'created_at',
     ];
 
     protected $casts = [

@@ -19,8 +19,8 @@
             </div>
             <div class="col-md-12">
                 <div class="form-group">
-                    {{Form::label('email',__('Email'),['class'=>'form-label'])}}<x-required></x-required>
-                    {{Form::email('email',null,array('class'=>'form-control','placeholder'=>__('Enter '.($name).' Email'),'required'=>'required'))}}
+                    {{Form::label('email',__('Email'),['class'=>'form-label'])}}
+                    {{Form::email('email',null,array('class'=>'form-control','placeholder'=>__('Enter '.($name).' Email'),'readonly'=>'readonly'))}}
                 </div>
             </div>
             

@@ -105,23 +105,19 @@ class SupplierLedgerReportController extends Controller
                 $currentBalance = SupplierTransaction::getCurrentBalance(
                     $request->supplier_id,
                     null,
-                    $request->from_date,
-                    $request->to_date
+                    $request->to_date,
+                    $workspaceId
                 );
             } else {
-                // For all suppliers, calculate sum of all current balances within the filter range
-                $supplierIds = SupplierTransaction::where('workspace_id', $workspaceId)
-                    ->when($request->filled('from_date'), fn($q) => $q->whereDate('transaction_date', '>=', $request->from_date))
-                    ->when($request->filled('to_date'), fn($q) => $q->whereDate('transaction_date', '<=', $request->to_date))
-                    ->distinct()
-                    ->pluck('supplier_id');
+                // For all suppliers, calculate sum of all current balances up to to_date
+                $supplierIds = SupplierTransaction::where('workspace_id', $workspaceId)->distinct()->pluck('supplier_id');
                 $currentBalance = 0;
                 foreach ($supplierIds as $supplierId) {
                     $currentBalance += SupplierTransaction::getCurrentBalance(
                         $supplierId,
                         null,
-                        $request->from_date,
-                        $request->to_date
+                        $request->to_date,
+                        $workspaceId
                     );
                 }
             }
@@ -203,22 +199,18 @@ class SupplierLedgerReportController extends Controller
                 $currentBalance = SupplierTransaction::getCurrentBalance(
                     (int) $request->supplier_id,
                     null,
-                    $request->from_date ?? \Carbon\Carbon::now()->startOfMonth()->toDateString(),
-                    $request->to_date ?? \Carbon\Carbon::now()->toDateString()
+                    $request->to_date,
+                    $workspaceId
                 );
             } else {
-                $supplierIds = SupplierTransaction::where('workspace_id', $workspaceId)
-                    ->when($request->filled('from_date'), fn($q) => $q->whereDate('transaction_date', '>=', $request->from_date))
-                    ->when($request->filled('to_date'), fn($q) => $q->whereDate('transaction_date', '<=', $request->to_date))
-                    ->distinct()
-                    ->pluck('supplier_id');
+                $supplierIds = SupplierTransaction::where('workspace_id', $workspaceId)->distinct()->pluck('supplier_id');
                 $currentBalance = 0;
                 foreach ($supplierIds as $sid) {
                     $currentBalance += SupplierTransaction::getCurrentBalance(
                         $sid,
                         null,
-                        $request->from_date ?? \Carbon\Carbon::now()->startOfMonth()->toDateString(),
-                        $request->to_date ?? \Carbon\Carbon::now()->toDateString()
+                        $request->to_date,
+                        $workspaceId
                     );
                 }
             }
@@ -310,13 +302,14 @@ class SupplierLedgerReportController extends Controller
     public function getSupplierBalance(Request $request)
     {
         try {
+            $workspaceId = getActiveWorkSpace();
             $supplierId = $request->supplier_id;
 
             if (!$supplierId) {
                 return response()->json(['balance' => 0]);
             }
 
-            $balance = LedgerHelper::getSupplierSummary($supplierId);
+            $balance = LedgerHelper::getSupplierSummary($supplierId, null, $workspaceId);
 
             return response()->json($balance);
         } catch (\Exception $e) {

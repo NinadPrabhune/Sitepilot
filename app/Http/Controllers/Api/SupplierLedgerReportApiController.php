@@ -148,29 +148,25 @@ class SupplierLedgerReportApiController extends Controller
             $totalInvoiceAmount = $transactions->where('reference_type', SupplierTransaction::TYPE_INVOICE)->sum('debit');
             $totalAdvances = $transactions->where('reference_type', SupplierTransaction::TYPE_ADVANCE)->sum('credit');
 
-            if ($request->filled('supplier_id') && $request->supplier_id !== 'all') {
-                $currentBalance = SupplierTransaction::getCurrentBalance(
-                    (int) $request->supplier_id,
-                    null,
-                    $request->from_date ?? Carbon::now()->startOfMonth()->toDateString(),
-                    $request->to_date ?? Carbon::now()->toDateString()
-                );
-            } else {
-                $supplierIds = SupplierTransaction::where('workspace_id', $workspaceId)
-                    ->when($request->filled('from_date'), fn($q) => $q->whereDate('transaction_date', '>=', $request->from_date))
-                    ->when($request->filled('to_date'), fn($q) => $q->whereDate('transaction_date', '<=', $request->to_date))
-                    ->distinct()
-                    ->pluck('supplier_id');
-                $currentBalance = 0;
-                foreach ($supplierIds as $sid) {
-                    $currentBalance += SupplierTransaction::getCurrentBalance(
-                        $sid,
-                        null,
-                        $request->from_date ?? Carbon::now()->startOfMonth()->toDateString(),
-                        $request->to_date ?? Carbon::now()->toDateString()
-                    );
-                }
-            }
+if ($request->filled('supplier_id') && $request->supplier_id !== 'all') {
+                 $currentBalance = SupplierTransaction::getCurrentBalance(
+                     (int) $request->supplier_id,
+                     null,
+                     $request->to_date,
+                     $workspaceId
+                 );
+             } else {
+                 $supplierIds = SupplierTransaction::where('workspace_id', $workspaceId)->distinct()->pluck('supplier_id');
+                 $currentBalance = 0;
+                 foreach ($supplierIds as $sid) {
+                     $currentBalance += SupplierTransaction::getCurrentBalance(
+                         $sid,
+                         null,
+                         $request->to_date,
+                         $workspaceId
+                     );
+                 }
+             }
 
             $summary = [
                 'total_po' => (string) round($totalPO, 2),
@@ -271,28 +267,32 @@ class SupplierLedgerReportApiController extends Controller
       * }
       * @response status=404 scenario="Supplier not found"
       */
-     public function balance($supplierId)
-     {
-         if (! Auth::user()->isAbleTo('supplier-ledger report')) {
-             return response()->json(['success' => false, 'message' => 'Unauthorized action.'], 403);
-         }
+public function balance($supplierId)
+      {
+          if (! Auth::user()->isAbleTo('supplier-ledger report')) {
+              return response()->json(['success' => false, 'message' => 'Unauthorized action.'], 403);
+          }
 
-         try {
-             $supplier = Supplier::findOrFail($supplierId);
+          try {
+              $workspaceId = getActiveWorkSpace();
+              $supplier = Supplier::findOrFail($supplierId);
 
-             $totalCredits = SupplierTransaction::where('supplier_id', $supplierId)
-                 ->whereIn('reference_type', [SupplierTransaction::TYPE_PAYMENT, SupplierTransaction::TYPE_ADVANCE])
-                 ->sum('credit');
+              $totalCredits = SupplierTransaction::where('supplier_id', $supplierId)
+                  ->where('workspace_id', $workspaceId)
+                  ->whereIn('reference_type', [SupplierTransaction::TYPE_PAYMENT, SupplierTransaction::TYPE_ADVANCE])
+                  ->sum('credit');
 
-             $totalDebits = SupplierTransaction::where('supplier_id', $supplierId)
-                 ->sum('debit');
+              $totalDebits = SupplierTransaction::where('supplier_id', $supplierId)
+                  ->where('workspace_id', $workspaceId)
+                  ->sum('debit');
 
-             $currentBalance = SupplierTransaction::getCurrentBalance($supplierId);
+              $currentBalance = SupplierTransaction::getCurrentBalance($supplierId, null, null, $workspaceId);
 
-             $transactions = SupplierTransaction::with(['supplier:id,name', 'site:id,name'])
-                 ->where('supplier_id', $supplierId)
-                 ->orderedByDate()
-                 ->get()
+$transactions = SupplierTransaction::with(['supplier:id,name', 'site:id,name'])
+                  ->where('supplier_id', $supplierId)
+                  ->where('workspace_id', $workspaceId)
+                  ->orderedByDate()
+                  ->get()
                  ->map(function (SupplierTransaction $t) {
                      return [
                          'date' => $t->transaction_date ? $t->transaction_date->format('Y-m-d') : null,
@@ -457,29 +457,25 @@ class SupplierLedgerReportApiController extends Controller
             $totalInvoiceAmount = $transactions->where('reference_type', SupplierTransaction::TYPE_INVOICE)->sum('debit');
             $totalAdvances = $transactions->where('reference_type', SupplierTransaction::TYPE_ADVANCE)->sum('credit');
 
-            if ($request->filled('supplier_id') && $request->supplier_id !== 'all') {
-                $currentBalance = SupplierTransaction::getCurrentBalance(
-                    (int) $request->supplier_id,
-                    null,
-                    $request->from_date ?? Carbon::now()->startOfMonth()->toDateString(),
-                    $request->to_date ?? Carbon::now()->toDateString()
-                );
-            } else {
-                $supplierIds = SupplierTransaction::where('workspace_id', $workspaceId)
-                    ->when($request->filled('from_date'), fn($q) => $q->whereDate('transaction_date', '>=', $request->from_date))
-                    ->when($request->filled('to_date'), fn($q) => $q->whereDate('transaction_date', '<=', $request->to_date))
-                    ->distinct()
-                    ->pluck('supplier_id');
-                $currentBalance = 0;
-                foreach ($supplierIds as $sid) {
-                    $currentBalance += SupplierTransaction::getCurrentBalance(
-                        $sid,
-                        null,
-                        $request->from_date ?? Carbon::now()->startOfMonth()->toDateString(),
-                        $request->to_date ?? Carbon::now()->toDateString()
-                    );
-                }
-            }
+if ($request->filled('supplier_id') && $request->supplier_id !== 'all') {
+                 $currentBalance = SupplierTransaction::getCurrentBalance(
+                     (int) $request->supplier_id,
+                     null,
+                     $request->to_date,
+                     $workspaceId
+                 );
+             } else {
+                 $supplierIds = SupplierTransaction::where('workspace_id', $workspaceId)->distinct()->pluck('supplier_id');
+                 $currentBalance = 0;
+                 foreach ($supplierIds as $sid) {
+                     $currentBalance += SupplierTransaction::getCurrentBalance(
+                         $sid,
+                         null,
+                         $request->to_date,
+                         $workspaceId
+                     );
+                 }
+             }
 
             $summary = [
                 'total_po' => (string) round($totalPO, 2),

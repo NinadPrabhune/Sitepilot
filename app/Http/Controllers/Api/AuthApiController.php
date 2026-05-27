@@ -239,13 +239,12 @@ class AuthApiController extends Controller implements \Illuminate\Routing\Contro
     /**
      * Edit User Profile
      *
-     * Update the authenticated user's name, email, mobile number, and profile avatar.
+     * Update the authenticated user's name and mobile number (email is not editable).
      * Pass the current user_id as a form field to edit another user's profile.
      *
      * @authenticated
      *
      * @bodyParam name string required User full name. Example: John Doe
-     * @bodyParam email string required Updated email address. Example: john@example.com
      * @bodyParam mobile_no string required Updated mobile number. Example: +1234567890
      * @bodyParam user_id integer optional User ID to edit (defaults to authenticated user). Example: 1
      * @bodyParam profile file optional Profile avatar image. No-example
@@ -279,12 +278,6 @@ class AuthApiController extends Controller implements \Illuminate\Routing\Contro
                 [
                     'name' => 'required|string',
                     'mobile_no' => 'required|string',
-                    'email' => [
-                            'required',
-                            Rule::unique('users')->where(function ($query) use ($user) {
-                                return $query->whereNotIn('id', [$user->id])->where('created_by', $user->created_by)->where('workspace_id', $user->workspace_id);
-                            })
-                        ],
                 ]
             );
 
@@ -322,7 +315,6 @@ class AuthApiController extends Controller implements \Illuminate\Routing\Contro
 
 
                 $user->name = $request->name;
-                $user->email = $request->email;
                 $user->mobile_no = $request->mobile_no;
                 $user->save();
 
@@ -330,7 +322,6 @@ class AuthApiController extends Controller implements \Illuminate\Routing\Contro
                 if ($employee) {
                     $employee->phone = $request->mobile_no;
                     $employee->name = $request->name;
-                    $employee->email = $request->email;
                     $employee->save();
                 }
 

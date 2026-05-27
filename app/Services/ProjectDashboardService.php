@@ -95,7 +95,18 @@ class ProjectDashboardService
         // 💰 Budget Calculation
         $totalSpent = PurchaseInvoice::where('site_id', $this->project->id)
             ->where('workspace_id', $this->workspaceId)
+            ->where('status', 'Approved')
             ->sum('grand_total');
+
+        // Add machinery payment requests
+        $machinerySpent = \App\Domain\Machinery\Models\MachineryPaymentRequest::whereHas('machinery', function($query) {
+                $query->where('site_id', $this->project->id);
+            })
+            ->where('workspace_id', $this->workspaceId)
+            ->whereIn('status', ['approved', 'locked', 'paid'])
+            ->sum('net_payable');
+
+        $totalSpent += $machinerySpent;
 
         // Add spent.amount from Spent model
         $spentAmount = Spent::where('project_id', $this->project->id)
@@ -107,8 +118,8 @@ class ProjectDashboardService
         $budget = (float) $this->project->budget;
         $remainingBudget = $budget - $totalSpent;
 
-        $spentPercent = $budget > 0 
-            ? round(($totalSpent / $budget) * 100, 2) 
+        $spentPercent = $budget > 0
+            ? round(($totalSpent / $budget) * 100, 2)
             : 0;
 
         // 📊 Activity Progress
@@ -121,14 +132,14 @@ class ProjectDashboardService
             ->where('status', 'completed')
             ->count();
 
-        $activityProgress = $totalActivities > 0 
-            ? round(($completedActivities / $totalActivities) * 100, 2) 
+        $activityProgress = $totalActivities > 0
+            ? round(($completedActivities / $totalActivities) * 100, 2)
             : 0;
 
         // 🧠 OVERALL PROGRESS (Weighted)
         $overallProgress = round(
-            ($activityProgress * 0.6) + 
-            ($timeProgress * 0.2) + 
+            ($activityProgress * 0.6) +
+            ($timeProgress * 0.2) +
             ($spentPercent * 0.2),
             2
         );
@@ -160,8 +171,8 @@ class ProjectDashboardService
 
         // 📊 Health Score (out of 100)
         $healthScore = round(
-            (100 - abs($activityProgress - $timeProgress)) * 0.4 + 
-            (100 - max(0, $spentPercent - 100)) * 0.3 + 
+            (100 - abs($activityProgress - $timeProgress)) * 0.4 +
+            (100 - max(0, $spentPercent - 100)) * 0.3 +
             $activityProgress * 0.3,
             2
         );
@@ -290,7 +301,7 @@ class ProjectDashboardService
         $paidInvoice = (clone $baseQuery)->whereRaw('LOWER(payment_status) = ?', ['paid'])->count();
         $unpaidInvoice = (clone $baseQuery)->whereRaw('LOWER(payment_status) = ?', ['unpaid'])->count();
         $partiallyPaidInvoice = (clone $baseQuery)->whereRaw('LOWER(payment_status) = ?', ['partially paid'])->count();
-        
+
         // Overdue invoices (due date < today and unpaid)
         $overdueInvoice = (clone $baseQuery)
             ->whereRaw('LOWER(payment_status) = ?', ['unpaid'])
@@ -298,7 +309,7 @@ class ProjectDashboardService
             ->count();
 
         $todayInvoice = (clone $baseQuery)->whereDate('created_at', $today)->count();
-        
+
         $totalInvoiceAmount = (clone $baseQuery)->sum('grand_total');
 
         return [
@@ -324,8 +335,8 @@ class ProjectDashboardService
         $completedActivities = (clone $baseQuery)->where('status', 'completed')->count();
         $pendingActivities = (clone $baseQuery)->whereIn('status', ['pending', 'in_progress'])->count();
 
-        $overallActivityProgress = $totalActivities > 0 
-            ? round(($completedActivities / $totalActivities) * 100, 2) 
+        $overallActivityProgress = $totalActivities > 0
+            ? round(($completedActivities / $totalActivities) * 100, 2)
             : 0;
 
         return [

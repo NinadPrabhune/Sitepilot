@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Workdo\Taskly\Entities\Project;
-use Workdo\Taskly\Entities\WorkSpace;
+use App\Models\WorkSpace;
 
 class Spent extends Model
 {

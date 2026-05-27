@@ -1050,13 +1050,13 @@ class EmployeeApiController extends Controller {
                 }
             }
 
-            // Fill other fields
+            // Fill other fields (excluding email to prevent email updates)
             $employee->organisation_switch = $request->get('organisation_switch');
             $employee->provident_fund_no = $request->get('provident_fund_no');
             $employee->emergency_contact_no = $request->get('emergency_contact_no');
             $employee->emergency_address = $request->get('emergency_address');
 
-            $employee->fill($request->except(['avatar']));
+            $employee->fill($request->except(['avatar', 'email']));
             $employee->save();
 
 //        // Custom fields

@@ -197,7 +197,7 @@ class AttendanceController extends Controller
                 date_default_timezone_set($company_settings['defult_timezone']);
             }
             $date = date("Y-m-d");
-            $time = date("H:i");
+            $time = date("H:i:s");
             //early Leaving
             $totalEarlyLeavingSeconds = strtotime($date . $endTime) - time();
             if ($totalEarlyLeavingSeconds < 0) {

@@ -339,13 +339,8 @@ class UserController extends Controller
     {
         if(Auth::user()->isAbleTo('user edit'))
         {
-            $validatorArray = [
+$validatorArray = [
                 'name' => 'required|max:120',
-                'email' => ['required',
-                                Rule::unique('users')->where(function ($query)  use ($id) {
-                                return $query->whereNotIn('id',[$id])->where('created_by', creatorId())->where('workspace_id',getActiveWorkSpace());
-                            })
-                ],
             ];
 
             $validator = Validator::make(
@@ -376,7 +371,6 @@ class UserController extends Controller
                     }
                 }
                 $user->name         = $this->toCamelCase($request->name);
-                $user->email        = $request->email;
                 $user->mobile_no    = $request->mobile_no;                
                 $user->type         = $roles->name;
                 $user->save();
@@ -486,12 +480,6 @@ class UserController extends Controller
                 [
                     'name' => 'required|max:120',
                     'mobile_no' => 'nullable|regex:/^\+\d{1,3}\d{9,13}$/',
-                    'email' => [
-                        'required',
-                        Rule::unique('users')->where(function ($query) use ($user) {
-                            return $query->whereNotIn('id', [$user->id])->where('created_by', $user->created_by)->where('workspace_id', $user->workspace_id);
-                        })
-                    ],
                 ]
             );
 
@@ -521,7 +509,6 @@ class UserController extends Controller
             }
 
             $user->name = $this->toCamelCase($request['name']);
-            $user->email = $request['email'];
             $user->mobile_no = $request['mobile_no'];
             $user->save();
             // Update the student's profile if the user is a student

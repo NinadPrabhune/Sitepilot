@@ -28,10 +28,10 @@ class AttendanceController extends Controller
     {
         if (Auth::user()->isAbleTo('attendance manage')) {
             $currentWorkspace = getActiveWorkSpace();
-            $branch = Branch::where('created_by', '=', creatorId())->where('workspace', getActiveWorkSpace())->get()->pluck('name', 'id');
+            $branch = Branch::query()->get()->pluck('name', 'id');
             $branch->prepend('All', '');
 
-            $department = Department::where('created_by', '=', creatorId())->where('workspace', getActiveWorkSpace())->get()->pluck('name', 'id');
+            $department = Department::query()->get()->pluck('name', 'id');
             $department->prepend('All', '');
             
             $employees = Employee::pluck('name', 'id');
@@ -197,7 +197,7 @@ class AttendanceController extends Controller
                 date_default_timezone_set($company_settings['defult_timezone']);
             }
             $date = date("Y-m-d");
-            $time = date("H:i");
+            $time = date("H:i:s");
             //early Leaving
             $totalEarlyLeavingSeconds = strtotime($date . $endTime) - time();
             if ($totalEarlyLeavingSeconds < 0) {
@@ -307,9 +307,9 @@ class AttendanceController extends Controller
     public function BulkAttendance(Request $request)
     {
         if (Auth::user()->isAbleTo('bulk attendance manage')) {
-            $branch = Branch::where('created_by', '=', creatorId())->where('workspace', getActiveWorkSpace())->get()->pluck('name', 'id');
+            $branch = Branch::query()->get()->pluck('name', 'id');
 
-            $department = Department::where('created_by', '=', creatorId())->where('workspace', getActiveWorkSpace())->get()->pluck('name', 'id');
+            $department = Department::query()->get()->pluck('name', 'id');
             $employees = [];
             if (!empty($request->branch) && !empty($request->department)) {
                 $employees = User::where('workspace_id', getActiveWorkSpace())

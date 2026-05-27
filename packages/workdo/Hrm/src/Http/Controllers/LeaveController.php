@@ -18,6 +18,7 @@ use Workdo\Hrm\Events\LeaveStatus;
 use Workdo\Hrm\Events\UpdateLeave;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Notification;
 
 use Workdo\Hrm\Entities\Attendance;
 use Workdo\Hrm\Entities\LeaveRequestDate;
@@ -52,40 +53,40 @@ class LeaveController extends Controller
             $notEmpType = $currentUser->not_emp_type ?? [];
             $isNotEmp = in_array($currentUserType, $notEmpType);
             $activeWorkspace = getActiveWorkSpace();
-            
-            
+
+
             if (!$isNotEmp) {
                 $employees = Employee::where('user_id', '=', $currentUser->id)->where('workspace', $activeWorkspace)->first();
-                
+
                 // DEBUG: Log employee query results
-                
-                
+
+
                 if (is_null($employees)) {
                     // DEBUG: Log detailed info when employee is null
-                    
+
                 }
             } else {
                 $employees = Employee::where('workspace', $activeWorkspace)->where('created_by', '=', creatorId())->get()->pluck('name', 'id');
-                
+
                 // DEBUG: For manager/admin, log collection type
-                
+
             }
 
             // DEBUG: Log the final state before foreach loop
-            
+
 
             $leavetypes = LeaveType::all();
 
-    
+
             // Only calculate leave balance for regular employees with valid Employee records
             // For managers/admins, they select employee from dropdown so balance is calculated differently
             if (!$isNotEmp && is_object($employees)) {
                 foreach ($leavetypes as $lt) {
                     // DEBUG: Log before accessing employee_id
-                    
-                    
+
+
                     $employeeIdForQuery = $employees->employee_id;
-                    
+
                     // Updated: Calculate from approved dates instead of approved_days field
                     $usedDays = LeaveRequestDate::join('leaves', 'leave_request_dates.leave_request_id', '=', 'leaves.id')
                         ->where('leaves.employee_id', $employeeIdForQuery)
@@ -111,7 +112,7 @@ class LeaveController extends Controller
             }
 
 
-            
+
 //            dd($leavetypes);
 
             return view('hrm::leave.create', compact('employees', 'leavetypes'));
@@ -198,7 +199,7 @@ class LeaveController extends Controller
                 // Create leave request date records
                 $currentDate = new \DateTime($request->start_date);
                 $endDate = new \DateTime($request->end_date);
-                
+
                 while ($currentDate <= $endDate) {
                     LeaveRequestDate::create([
                         'leave_request_id' => $leave->id,
@@ -254,12 +255,12 @@ class LeaveController extends Controller
             ->leftJoin('work_spaces', 'work_spaces.id', '=', 'leaves.workspace')
             ->leftJoin('projects', 'projects.id', '=', 'leaves.site_id')
             ->select('leaves.*', 'work_spaces.name as workspace_name', 'projects.name as site_name');
-        
+
         if (!$isAdminOrCompany) {
             $leave->where('leaves.workspace', getActiveWorkSpace())
                 ->where('leaves.site_id', getActiveProject());
         }
-        
+
         $leave = $leave->findOrFail($id);
 
     $employee  = $leave->EmployeeName;
@@ -285,7 +286,7 @@ class LeaveController extends Controller
                     $employees = Employee::where('workspace', getActiveWorkSpace())->where('created_by', '=', creatorId())->get()->pluck('name', 'id');
                 }
 //                $leavetypes      = LeaveType::where('workspace', getActiveWorkSpace())->where('created_by', '=', creatorId())->get();
-                
+
                 $leavetypes      = LeaveType::all();
 
                 return view('hrm::leave.edit', compact('leave', 'employees', 'leavetypes'));
@@ -416,7 +417,7 @@ class LeaveController extends Controller
 
 public function action($id)
 {
-    
+
 
     if (Auth::user()->isAbleTo('leave approver manage')) {
         $leave     = Leave::find($id);
@@ -460,7 +461,7 @@ public function action($id)
         $leave->sundays_worked = $sundaysWorked;
         $leave->days = $leavetype->days; // entitlement
 
-       
+
 
         return view('hrm::leave.action', compact('employee', 'leavetype', 'leave', 'allow_partial', 'existingDates'));
     } else {
@@ -522,16 +523,20 @@ public function changeaction(Request $request)
                 return redirect()->back()->with('error', __('Partially Approved is not allowed because a previous leave for this employee in the same leave type has been rejected.'));
             }
             // Check if new date-level approval payload exists
-            if ($request->has('approved_dates') && is_array($request->approved_dates)) {
+            if ($request->has('approved_dates') && (is_array($request->approved_dates) || is_object($request->approved_dates))) {
                 // New date-level approval
-                foreach ($request->approved_dates as $date => $data) {
+                foreach ($request->approved_dates as $key => $data) {
+                    $date = (is_array($data) && isset($data['date'])) ? $data['date'] : $key;
+                    $status = is_array($data) ? ($data['status'] ?? 'approved') : $data;
+                    $remarks = is_array($data) ? ($data['remarks'] ?? null) : null;
+
                     LeaveRequestDate::where('leave_request_id', $leave->id)
                         ->where('leave_date', $date)
                         ->update([
-                            'status' => $data['status'],
+                            'status' => $status,
                             'approved_by' => Auth::id(),
                             'approved_at' => now(),
-                            'remarks' => $data['remarks'] ?? null,
+                            'remarks' => $remarks,
                         ]);
                 }
                 $leave->recalculateDays();
@@ -563,13 +568,13 @@ public function changeaction(Request $request)
                 $leave->status = 'Partially Approved';
             }
         }
-        
+
         $leave->status_reason = $request->status_reason;
         $leave->save();
-        
+
         // Sync attendance with approved dates
         $this->syncAttendanceWithLeave($leave->id);
-        
+
         DB::commit();
     } catch (ValidationException $e) {
         DB::rollBack();
@@ -641,7 +646,7 @@ public function changeaction(Request $request)
                     'leave_request_id' => $leaveId,
                     'leave_request_date_id' => $dateRecord->id,
                     'workspace' => $leave->workspace,
-                    'created_by' => creatorId(),
+                    'created_by' => $leave->created_by,
                 ]
             );
         }
@@ -658,7 +663,7 @@ public function changeaction(Request $request)
                 ->delete();
         }
     }
-    
+
     public function status_reason($id)
     {
         $leaves = Leave::find($id);

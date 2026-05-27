@@ -11,6 +11,7 @@ use Workdo\Hrm\Http\Controllers\Api\EventApiController;
 
 use Workdo\Hrm\Http\Controllers\Api\AnnouncementApiController;
 use Workdo\Hrm\Http\Controllers\Api\HolidayApiController;
+use Workdo\Hrm\Http\Controllers\Api\MonthlyAttendanceReportApiController;
 
 
 /*
@@ -103,5 +104,13 @@ Route::prefix('Hrm')->group(function () {
         Route::get('/holidays/{id}', [HolidayApiController::class, 'show']);
         Route::put('/holidays/{id}', [HolidayApiController::class, 'update']);
         Route::delete('/holidays/{id}', [HolidayApiController::class, 'destroy']);
+
+        // Monthly Attendance Report API
+        Route::get('monthly-attendance', [MonthlyAttendanceReportApiController::class, 'index']);
+        Route::get('monthly-attendance/branches', [MonthlyAttendanceReportApiController::class, 'getBranches']);
+        Route::get('monthly-attendance/departments', [MonthlyAttendanceReportApiController::class, 'getDepartments']);
+        Route::get('monthly-attendance/employees', [MonthlyAttendanceReportApiController::class, 'getEmployees']);
+        Route::get('monthly-attendance/details', [MonthlyAttendanceReportApiController::class, 'getAttendanceDetails']);
+        Route::get('monthly-attendance/leave-details', [MonthlyAttendanceReportApiController::class, 'getLeaveDetails']);
     });
 });

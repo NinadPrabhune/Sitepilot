@@ -29,7 +29,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="rejection_reason">{{ __('Rejection Reason') }} <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="rejection_reason" rows="4" 
+                    <textarea class="form-control" id="rejection_reason" rows="4"
                               placeholder="{{ __('Please provide a reason for rejection...') }}" required></textarea>
                 </div>
             </div>
@@ -56,18 +56,18 @@
             <div class="modal-body">
                 <form id="paymentProofUploadModalForm" enctype="multipart/form-data">
                     <input type="hidden" id="payment_id" name="payment_id">
-                    
+
                     <div class="mb-3">
                         <label class="form-label">{{ __('Payment Proof File') }} <span class="text-danger">*</span></label>
                         <input type="file" class="form-control" id="modal_payment_proof_file" name="payment_proof_file" accept=".pdf,.jpg,.jpeg,.png" required>
                         <small class="text-muted">{{ __('PDF, JPG, PNG up to 5MB') }}</small>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label">{{ __('Reference Number') }}</label>
                         <input type="text" class="form-control" id="modal_reference_number" name="reference_number" placeholder="{{ __('Enter reference number if any') }}">
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label">{{ __('Remarks') }}</label>
                         <textarea class="form-control" id="modal_remarks" name="remarks" rows="2" placeholder="{{ __('Enter any additional remarks') }}"></textarea>
@@ -93,13 +93,13 @@
         font-weight: 600 !important;
         margin-bottom: 0 !important;
     }
-    
+
     .amount-card h4 {
         font-size: 1.25rem !important;
         font-weight: 700 !important;
         margin-bottom: 0 !important;
     }
-    
+
     .status-timeline {
         position: relative;
         padding-left: 1.5rem;
@@ -137,7 +137,7 @@
         background: #198754;
         box-shadow: 0 0 0 2px #198754;
     }
-    
+
     /* Consistent font sizes for status timeline */
     .status-item small {
         font-size: 0.75rem !important;
@@ -147,7 +147,7 @@
         font-size: 0.875rem !important;
         font-weight: 600 !important;
     }
-    
+
     /* Amount cards consistency */
     .amount-card {
         border-left: 4px solid #0d6efd;
@@ -172,7 +172,7 @@
         text-transform: uppercase !important;
         letter-spacing: 0.5px !important;
     }
-    
+
     /* Card consistency */
     .card {
         border: 1px solid #e9ecef;
@@ -189,7 +189,7 @@
         font-weight: 600;
         padding: 1rem 1.25rem !important;
     }
-    
+
     /* Form labels consistency */
     .form-label {
         font-size: 0.875rem !important;
@@ -197,7 +197,7 @@
         color: #495057 !important;
         margin-bottom: 0.5rem !important;
     }
-    
+
     /* Button consistency */
     .btn {
         border-radius: 6px;
@@ -212,7 +212,7 @@
         font-size: 0.75rem !important;
         font-weight: 500 !important;
     }
-    
+
     /* Table consistency */
     .table th {
         background-color: #f8f9fa;
@@ -227,13 +227,13 @@
         padding: 0.75rem !important;
         vertical-align: middle !important;
     }
-    
+
     /* Badge consistency */
     .badge {
         font-size: 0.75rem !important;
         font-weight: 500 !important;
     }
-    
+
     /* Payment summary consistency */
     .payment-summary .text-muted {
         font-size: 0.75rem !important;
@@ -245,7 +245,7 @@
         font-size: 0.875rem !important;
         font-weight: 700 !important;
     }
-    
+
     /* Modal consistency */
     .modal-header h5 {
         font-size: 1.125rem !important;
@@ -255,13 +255,13 @@
         font-size: 0.875rem !important;
         font-weight: 600 !important;
     }
-    
+
     /* Small text consistency */
     small.text-muted {
         font-size: 0.75rem !important;
         font-weight: 400 !important;
     }
-    
+
     /* Payment info section */
     .payment-info .fw-bold {
         font-size: 0.875rem !important;
@@ -297,7 +297,7 @@
                     <small class="text-muted">{{ __('Locked on') }}: {{ $paymentRequest->approved_at ? $paymentRequest->approved_at->format('d M Y H:i') : '-' }}</small>
                 </div>
                 @endif
-                
+
                 <div class="row g-3 payment-info">
                     <div class="col-md-6">
                         <div class="mb-3">
@@ -330,7 +330,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 {{-- Action Buttons --}}
                 <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
                     <div>
@@ -339,7 +339,7 @@
                                 <i class="ti ti-send"></i> {{ __('Submit') }}
                             </button>
                         @endif
-                        
+
                         @if($paymentRequest->status === 'submitted')
                             <button type="button" class="btn btn-success" onclick="approvePaymentRequest({{ $paymentRequest->id }})">
                                 <i class="ti ti-check"></i> {{ __('Approve') }}
@@ -348,7 +348,7 @@
                                 <i class="ti ti-x"></i> {{ __('Reject') }}
                             </button>
                         @endif
-                        
+
                         @if($paymentRequest->status === 'approved')
                             <button type="button" class="btn btn-info" onclick="markAsPaid({{ $paymentRequest->id }})">
                                 <i class="ti ti-cash"></i> {{ __('Mark as Paid') }}
@@ -463,18 +463,18 @@
                         </tbody>
                     </table>
                 </div>
-                
+
                 {{-- Diesel Details --}}
                 @if($paymentRequest->diesel_breakdown && $paymentRequest->diesel_deduction > 0)
                 <div class="alert alert-warning mt-3">
                     <h6><i class="ti ti-gas-pump"></i> {{ __('Diesel Recovery Details') }}</h6>
                     <div class="row">
                         <div class="col-md-6">
-                            <strong>{{ __('Total Liters') }}:</strong> 
+                            <strong>{{ __('Total Liters') }}:</strong>
                             {{ $paymentRequest->diesel_breakdown['total_liters'] ?? 0 }} L
                         </div>
                         <div class="col-md-6">
-                            <strong>{{ __('Average Rate') }}:</strong> 
+                            <strong>{{ __('Average Rate') }}:</strong>
                             ₹{{ number_format($paymentRequest->diesel_breakdown['average_rate'] ?? 90, 2) }}/L
                         </div>
                     </div>
@@ -775,7 +775,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     {{-- Enhanced Payment Summary --}}
                     <div class="row mt-4 payment-summary">
                         <div class="col-md-2">
@@ -981,9 +981,9 @@ async function submitRequest() {
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, submit it!'
     });
-    
+
     if (!result.isConfirmed) return;
-    
+
     fetch(`/machinery/payment-requests/${paymentRequestId}/submit`, {
         method: 'POST',
         headers: {
@@ -1020,9 +1020,9 @@ async function verifyRequest() {
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, verify it!'
     });
-    
+
     if (!result.isConfirmed) return;
-    
+
     fetch(`/machinery/payment-requests/${paymentRequestId}/verify`, {
         method: 'POST',
         headers: {
@@ -1059,9 +1059,9 @@ async function approveRequest() {
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, approve it!'
     });
-    
+
     if (!result.isConfirmed) return;
-    
+
     fetch(`/machinery/payment-requests/${paymentRequestId}/approve`, {
         method: 'POST',
         headers: {
@@ -1096,7 +1096,7 @@ async function lockRequest() {
         },
         buttonsStyling: false
     });
-    
+
     swalWithBootstrapButtons.fire({
         title: 'Lock Payment Request?',
         text: 'This will freeze the payment period and lock all linked ledger entries to prevent any modifications. The payment amounts will become final and ready for processing. Do you want to lock this payment request?',
@@ -1149,7 +1149,7 @@ async function markAsPaid() {
         },
         buttonsStyling: false
     });
-    
+
     swalWithBootstrapButtons.fire({
         title: 'Mark as Paid?',
         text: 'Do you want to mark this payment request as paid?',
@@ -1197,7 +1197,7 @@ async function markAsPaid() {
 function rejectRequest() {
     const reason = prompt('Enter rejection reason:');
     if (reason === null) return;
-    
+
     fetch(`/machinery/payment-requests/${paymentRequestId}/reject`, {
         method: 'POST',
         headers: {
@@ -1239,11 +1239,11 @@ function recalculate() {
             const diff = data.data.diff;
             const hasMismatch = data.data.has_mismatch;
             const canApprove = data.data.can_approve;
-            
+
             let message = `Original: ${data.data.original.net_payable.toFixed(2)}\n`;
             message += `Current: ${data.data.current.net_payable.toFixed(2)}\n`;
             message += `Diff: ${diff.net_payable.toFixed(2)}\n\n`;
-            
+
             if (hasMismatch) {
                 message += '⚠️ Calculation mismatch detected!\n';
                 message += 'Approval would be blocked.';
@@ -1251,7 +1251,7 @@ function recalculate() {
                 message += '✅ Calculation matches.\n';
                 message += 'Approval allowed.';
             }
-            
+
             Swal.fire({
                 icon: 'info',
                 title: 'Calculation Results',
@@ -1296,7 +1296,7 @@ function showEntryIds() {
 async function forceReject() {
     const reason = prompt('Enter override reason for force reject:');
     if (!reason) return;
-    
+
     const result = await Swal.fire({
         title: '⚠️ Force Reject?',
         text: 'This will force reject the payment request regardless of current status. This action is logged and cannot be undone. Continue?',
@@ -1307,9 +1307,9 @@ async function forceReject() {
         confirmButtonText: 'Yes, force reject!',
         cancelButtonText: 'Cancel'
     });
-    
+
     if (!result.isConfirmed) return;
-    
+
     fetch(`/machinery/payment-requests/${paymentRequestId}/force-reject`, {
         method: 'POST',
         headers: {
@@ -1348,7 +1348,7 @@ async function forceReject() {
 async function forceUnlock() {
     const reason = prompt('Enter override reason for force unlock:');
     if (!reason) return;
-    
+
     const result = await Swal.fire({
         title: '⚠️ Force Unlock?',
         text: 'This will unlock the period and unlink all ledger entries. This action is logged and cannot be undone. Continue?',
@@ -1359,9 +1359,9 @@ async function forceUnlock() {
         confirmButtonText: 'Yes, force unlock!',
         cancelButtonText: 'Cancel'
     });
-    
+
     if (!result.isConfirmed) return;
-    
+
     fetch(`/machinery/payment-requests/${paymentRequestId}/force-unlock`, {
         method: 'POST',
         headers: {
@@ -1400,7 +1400,7 @@ async function forceUnlock() {
 function addOverrideNote() {
     const note = prompt('Enter override note:');
     if (!note) return;
-    
+
     fetch(`/machinery/payment-requests/${paymentRequestId}/override-note`, {
         method: 'POST',
         headers: {
@@ -1439,7 +1439,7 @@ function addOverrideNote() {
 function uploadInvoice() {
     const fileInput = document.getElementById('invoice_file');
     const file = fileInput.files[0];
-    
+
     if (!file) {
         Swal.fire({
             icon: 'warning',
@@ -1448,10 +1448,10 @@ function uploadInvoice() {
         });
         return;
     }
-    
+
     const formData = new FormData();
     formData.append('invoice_file', file);
-    
+
     fetch(`/machinery/payment-requests/${paymentRequestId}/upload-invoice`, {
         method: 'POST',
         headers: {
@@ -1494,9 +1494,9 @@ async function createErpPayment() {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             }
         });
-        
+
         const modalHtml = await response.text();
-        
+
         // Create and show modal
         const modalContainer = document.createElement('div');
         modalContainer.innerHTML = `
@@ -1514,18 +1514,18 @@ async function createErpPayment() {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(modalContainer);
-        
+
         // Initialize and show modal
         const modal = new bootstrap.Modal(document.getElementById('machineryPaymentModal'));
         modal.show();
-        
+
         // Clean up modal after hidden
         document.getElementById('machineryPaymentModal').addEventListener('hidden.bs.modal', function () {
             document.body.removeChild(modalContainer);
         });
-        
+
     } catch (error) {
         Swal.fire({
             icon: 'error',
@@ -1539,10 +1539,10 @@ async function createErpPayment() {
 function showPaymentProofUploadModal(paymentId) {
     // Set the payment ID in the hidden field
     document.getElementById('payment_id').value = paymentId;
-    
+
     // Reset form
     document.getElementById('paymentProofUploadModalForm').reset();
-    
+
     // Show the modal
     const modal = new bootstrap.Modal(document.getElementById('paymentProofUploadModal'));
     modal.show();
@@ -1551,11 +1551,11 @@ function showPaymentProofUploadModal(paymentId) {
 function uploadPaymentProofForPayment() {
     const form = document.getElementById('paymentProofUploadModalForm');
     const formData = new FormData(form);
-    
+
     // Validate required fields
     const fileInput = document.getElementById('modal_payment_proof_file');
     const file = fileInput.files[0];
-    
+
     if (!file) {
         Swal.fire({
             icon: 'warning',
@@ -1564,7 +1564,7 @@ function uploadPaymentProofForPayment() {
         });
         return;
     }
-    
+
     // Validate file size
     if (file.size > 5 * 1024 * 1024) { // 5MB limit
         Swal.fire({
@@ -1574,7 +1574,7 @@ function uploadPaymentProofForPayment() {
         });
         return;
     }
-    
+
     // Validate file type
     const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
     if (!allowedTypes.includes(file.type)) {
@@ -1585,7 +1585,7 @@ function uploadPaymentProofForPayment() {
         });
         return;
     }
-    
+
     // Show loading
     Swal.fire({
         title: 'Uploading...',
@@ -1595,7 +1595,7 @@ function uploadPaymentProofForPayment() {
             Swal.showLoading();
         }
     });
-    
+
     fetch(`/machinery/payments/${formData.get('payment_id')}/upload-proof`, {
         method: 'POST',
         headers: {
@@ -1606,12 +1606,12 @@ function uploadPaymentProofForPayment() {
     .then(response => response.json())
     .then(data => {
         Swal.close();
-        
+
         if (data.success) {
             // Close modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('paymentProofUploadModal'));
             modal.hide();
-            
+
             // Show success message
             Swal.fire({
                 icon: 'success',
@@ -1647,7 +1647,7 @@ function showRejectionModal(paymentRequestId) {
 
 function rejectPaymentRequest() {
     const reason = document.getElementById('rejection_reason').value.trim();
-    
+
     if (!reason) {
         Swal.fire({
             icon: 'warning',
@@ -1656,7 +1656,7 @@ function rejectPaymentRequest() {
         });
         return;
     }
-    
+
     Swal.fire({
         title: 'Rejecting...',
         text: 'Please wait while we process the rejection',
@@ -1665,8 +1665,8 @@ function rejectPaymentRequest() {
             Swal.showLoading();
         }
     });
-    
-    fetch(`/machinery-payment/${currentPaymentRequestId}/reject`, {
+
+    fetch(`/machinery/payment-requests/${currentPaymentRequestId}/reject`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -1717,8 +1717,8 @@ function submitPaymentRequest(paymentRequestId) {
             Swal.showLoading();
         }
     });
-    
-    fetch(`/machinery-payment/${paymentRequestId}/submit`, {
+
+    fetch(`/machinery/payment-requests/${paymentRequestId}/submit`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -1766,8 +1766,8 @@ function approvePaymentRequest(paymentRequestId) {
             Swal.showLoading();
         }
     });
-    
-    fetch(`/machinery-payment/${paymentRequestId}/approve`, {
+
+    fetch(`/machinery/payment-requests/${paymentRequestId}/approve`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -1815,8 +1815,8 @@ function markAsPaid(paymentRequestId) {
             Swal.showLoading();
         }
     });
-    
-    fetch(`/machinery-payment/${paymentRequestId}/paid`, {
+
+    fetch(`/machinery/payment-requests/${paymentRequestId}/pay`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

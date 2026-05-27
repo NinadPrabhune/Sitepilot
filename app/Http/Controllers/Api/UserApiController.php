@@ -456,14 +456,6 @@ class UserApiController extends Controller
             // Validation rules
             $rules = [
                 'name' => 'required|max:120',
-                'email' => [
-                    'required',
-                    Rule::unique('users')->where(function ($query) use ($id) {
-                        return $query->whereNotIn('id', [$id])
-                            ->where('created_by', creatorId())
-                            ->where('workspace_id', getActiveWorkSpace());
-                    })
-                ],
             ];
 
             if ($request->mobile_no) {
@@ -482,9 +474,8 @@ class UserApiController extends Controller
                 return $this->jsonResponse(false, 'User not found', [], 404);
             }
 
-            // Update user fields
+            // Update user fields (email is not allowed to be updated)
             $user->name = $this->toCamelCase($request->name);
-            $user->email = $request->email;
             $user->mobile_no = $request->mobile_no;
 
             // Update role if provided
@@ -657,14 +648,6 @@ class UserApiController extends Controller
             // Validation rules
             $rules = [
                 'name' => 'required|max:120',
-                'email' => [
-                    'required',
-                    Rule::unique('users')->where(function ($query) use ($user) {
-                        return $query->whereNotIn('id', [$user->id])
-                            ->where('created_by', $user->created_by)
-                            ->where('workspace_id', $user->workspace_id);
-                    })
-                ],
             ];
 
             if ($request->mobile_no) {
@@ -709,7 +692,6 @@ class UserApiController extends Controller
             }
 
             $user->name = $this->toCamelCase($request->name);
-            $user->email = $request->email;
             $user->mobile_no = $request->mobile_no;
             $user->save();
 

@@ -585,26 +585,31 @@ class LedgerHelper
      *
      * @param int $supplierId
      * @param int|null $siteId Optional site filter
+     * @param int|null $workspaceId Optional workspace filter
      * @return array
      */
-    public static function getSupplierSummary(int $supplierId, ?int $siteId = null)
+    public static function getSupplierSummary(int $supplierId, ?int $siteId = null, ?int $workspaceId = null)
     {
         $query = SupplierTransaction::where('supplier_id', $supplierId);
-        
+
+        if ($workspaceId) {
+            $query->where('workspace_id', $workspaceId);
+        }
+
         if ($siteId) {
             $query->where('site_id', $siteId);
         }
-        
+
         $transactions = $query->get();
 
         $totalPO = $transactions->where('reference_type', SupplierTransaction::TYPE_PO)->sum('reference_amount');
         $totalPayments = $transactions->where('reference_type', SupplierTransaction::TYPE_PAYMENT)->sum('credit');
         $totalAdvances = $transactions->where('reference_type', SupplierTransaction::TYPE_ADVANCE)->sum('credit');
-        
+
         // Invoice total uses debit column (financial impact)
         $totalInvoiceAmount = $transactions->where('reference_type', SupplierTransaction::TYPE_INVOICE)->sum('debit');
-        
-        $currentBalance = self::getCurrentBalanceBySite($supplierId, $siteId);
+
+        $currentBalance = self::getCurrentBalanceBySite($supplierId, $siteId, $workspaceId);
 
         return [
             'total_po' => $totalPO,
@@ -929,12 +934,18 @@ class LedgerHelper
      *
      * @param int $supplierId
      * @param int|null $siteId
+     * @param int|null $workspaceId
      * @return float
      */
-    public static function getCurrentBalanceBySite(int $supplierId, ?int $siteId = null): float
+    public static function getCurrentBalanceBySite(int $supplierId, ?int $siteId = null, ?int $workspaceId = null): float
     {
-        $query = SupplierTransaction::where('supplier_id', $supplierId)
-            ->orderedByDate();
+        $query = SupplierTransaction::where('supplier_id', $supplierId);
+
+        if ($workspaceId) {
+            $query->where('workspace_id', $workspaceId);
+        }
+
+        $query->orderedByDate();
 
         if ($siteId) {
             $query->where('site_id', $siteId);

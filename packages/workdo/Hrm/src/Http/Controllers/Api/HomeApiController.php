@@ -53,25 +53,26 @@ class HomeApiController extends Controller
 			$currentDate = Carbon::today(); // Get current date
 
 			$totalTime = Attendance::where('employee_id', $user_id)
-				->whereDate('date', $currentDate) // Filter by current date
-				->whereNotNull('clock_in') // Make sure clock_in is not null
-				->where('status', 'Present') // Filter by status 'Present'
+				->whereDate('date', $currentDate)
+				->whereNotNull('clock_in')
+				->where('status', 'Present')
 				->get()
 				->sum(function ($entry) {
-					// Check if clock_out is zero
-					if ($entry->clock_out == '00:00:00') {
-						// If clock_out is zero, use current time
-						$clockOut = Carbon::now();
-					} else {
-						// If clock_out is not zero, parse the clock_out time
-						$clockOut = Carbon::parse($entry->date . ' ' . $entry->clock_out);
+					$timeRegex = '/(\d{2}:\d{2}:\d{2})$/';
+					$clockInTime = preg_match($timeRegex, $entry->clock_in, $matches) ? $matches[1] : ($entry->clock_in ?? '00:00:00');
+					$clockOutTime = preg_match($timeRegex, $entry->clock_out, $matches) ? $matches[1] : ($entry->clock_out ?? '00:00:00');
+
+					try {
+						if ($entry->clock_out == '00:00:00' || $clockOutTime == '00:00:00') {
+							$clockOut = Carbon::now();
+						} else {
+							$clockOut = Carbon::parse($entry->date->toDateString() . ' ' . $clockOutTime);
+						}
+						$clockIn = Carbon::parse($entry->date->toDateString() . ' ' . $clockInTime);
+						return $clockOut->diffInMinutes($clockIn);
+					} catch (\Exception $e) {
+						return 0;
 					}
-
-					// Parse clock_in time
-					$clockIn = Carbon::parse($entry->date . ' ' . $entry->clock_in);
-
-					// Calculate the time difference in minutes between clock_in and clock_out
-					return $clockOut->diffInMinutes($clockIn);
 				});
 
 

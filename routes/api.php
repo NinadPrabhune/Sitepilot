@@ -49,7 +49,7 @@ use App\Http\Controllers\Api\NotificationPageApiController;
 use App\Http\Controllers\Api\UserApiController;
 use App\Http\Controllers\Api\PaymentRequestApiController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\MachineryPaymentRequestController;
+use App\Http\Controllers\Api\MachineryPaymentRequestApiController;
 use App\Http\Controllers\MachineryPaymentLogController;
 use App\Http\Controllers\Api\MachineryApiControllerLegacy;
 
@@ -91,9 +91,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('machinery-categories', MachineryCategoryApiController::class)->names('api.machinery-categories');
     Route::post('/machineries/create-data', [MachineryApiController::class, 'createData']);
     Route::apiResource('tools', AssetsToolsAndEquipmentApiController::class)->names('api.tools');
-    
+
     Route::post('/tools/create-data', [AssetsToolsAndEquipmentApiController::class, 'createData']);
-    
+
     Route::apiResource('manpower-types', ManPowerTypeApiController::class)->names('api.manpower-types');
 
     // Workspaces & Projects
@@ -108,7 +108,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/ajax/get-purchase-invoice-by-supplier-id', [PurchaseInvoiceApiController::class, 'getPurchaseInvoiceBySupplierId']);
     Route::get('/ajax/get-purchase-invoice-by-supplier-id-edit', [PurchaseInvoiceApiController::class, 'getPurchaseInvoiceBySupplierIdEdit']);
     Route::get('/ajax/get-purchase-invoice-remaining-amount-by-purchase-invoice-id', [PurchaseInvoiceApiController::class, 'getPurchaseInvoiceRemainingAmountByPurchaseInvoiceId']);
-    
+
     // GRN Invoice Routes
     Route::get('/purchase-invoice/grn/{grn_id}/invoice-preview', [PurchaseInvoiceApiController::class, 'getGrnDetailsForInvoice']);
     Route::post('/purchase-invoice/from-grn', [PurchaseInvoiceApiController::class, 'createInvoiceFromGrn']);
@@ -142,10 +142,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/grn/{id}/edit', [GrnApiController::class, 'edit']);
     Route::put('/grn/{id}', [GrnApiController::class, 'update']);
     Route::delete('/grn/{id}', [GrnApiController::class, 'destroy']);
-    
+
     // GRN Invoice Preview Route (also accessible via /api/grn/{id}/invoice-preview)
     Route::get('/grn/{grn_id}/invoice-preview', [PurchaseInvoiceApiController::class, 'getGrnDetailsForInvoice']);
-    
+
     // Legacy route for createData
     Route::post('/grn/create-data', [GrnApiController::class, 'createData']);
 
@@ -179,7 +179,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/indents/{id}/materials', [IndentApiController::class, 'getIndentMaterials']);
     Route::get('/indents/available/list', [IndentApiController::class, 'getAvailableIndents']);
     Route::patch('/indents/{id}/status', [IndentApiController::class, 'updateStatus']);
-        
+
 
      // Payments - TEMPORARILY DISABLED DUE TO SYNTAX ERROR
      Route::apiResource('payments', PaymentsModuleApiController::class)->names('api.payments');
@@ -210,23 +210,28 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Machinery Payment Requests (Ledger-based payment system)
     Route::prefix('machinery/payment-requests')->group(function () {
-        Route::post('/', [MachineryPaymentRequestController::class, 'store']);
-        Route::get('/', [MachineryPaymentRequestController::class, 'apiIndex']);
-        Route::get('/{id}', [MachineryPaymentRequestController::class, 'apiShow']);
-        Route::post('/{id}/submit', [MachineryPaymentRequestController::class, 'submit']);
-        Route::post('/{id}/approve', [MachineryPaymentRequestController::class, 'approve']);
-        Route::post('/{id}/lock', [MachineryPaymentRequestController::class, 'lock']);
-        Route::post('/{id}/pay', [MachineryPaymentRequestController::class, 'pay']);
-        Route::post('/{id}/reject', [MachineryPaymentRequestController::class, 'reject']);
-        Route::get('/{id}/debug', [MachineryPaymentRequestController::class, 'debug']);
-        Route::get('/{id}/recalculate', [MachineryPaymentRequestController::class, 'recalculate']);
-        
+        Route::get('/', [MachineryPaymentRequestApiController::class, 'index']);
+        Route::post('/', [MachineryPaymentRequestApiController::class, 'store']);
+        Route::get('/available-machinery', [MachineryPaymentRequestApiController::class, 'getAvailableMachinery']);
+        Route::post('/preview-calculation', [MachineryPaymentRequestApiController::class, 'previewCalculation']);
+
+        Route::get('/{id}', [MachineryPaymentRequestApiController::class, 'show']);
+        Route::post('/{id}/submit', [MachineryPaymentRequestApiController::class, 'submit']);
+        Route::post('/{id}/approve', [MachineryPaymentRequestApiController::class, 'approve']);
+        Route::post('/{id}/lock', [MachineryPaymentRequestApiController::class, 'lock']);
+        Route::post('/{id}/pay', [MachineryPaymentRequestApiController::class, 'pay']);
+        Route::post('/{id}/reject', [MachineryPaymentRequestApiController::class, 'reject']);
+
+        // ERP Payment Integration
+        Route::post('/{id}/create-erp-payment', [MachineryPaymentRequestApiController::class, 'createErpPayment']);
+        Route::post('/{id}/upload-invoice', [MachineryPaymentRequestApiController::class, 'uploadInvoice']);
+
         // Admin controls
-        Route::post('/{id}/force-reject', [MachineryPaymentRequestController::class, 'forceReject']);
-        Route::post('/{id}/force-unlock', [MachineryPaymentRequestController::class, 'forceUnlock']);
-        Route::post('/{id}/override-note', [MachineryPaymentRequestController::class, 'addOverrideNote']);
+        Route::post('/{id}/force-reject', [MachineryPaymentRequestApiController::class, 'forceReject']);
+        Route::post('/{id}/force-unlock', [MachineryPaymentRequestApiController::class, 'forceUnlock']);
+        Route::post('/{id}/override-note', [MachineryPaymentRequestApiController::class, 'addOverrideNote']);
     });
-    
+
     // Machinery Payment Logs
     Route::prefix('machinery/payment-logs')->group(function () {
         Route::get('/', [MachineryPaymentLogController::class, 'index']);
@@ -331,7 +336,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/search', [ProjectFileApiController::class, 'search'])->name('search');
         Route::post('/', [ProjectFileApiController::class, 'store'])->name('store');
         Route::post('/folder', [ProjectFileApiController::class, 'createFolder'])->name('folder.create');
-        
+
         Route::get('{id}', [ProjectFileApiController::class, 'show'])->name('show');
         Route::put('{id}', [ProjectFileApiController::class, 'update'])->name('update');
         Route::delete('{id}', [ProjectFileApiController::class, 'destroy'])->name('destroy');
@@ -345,14 +350,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::prefix('{projectId}/documents')->name('documents.')->group(function () {
             Route::get('/', [ProjectDocumentApiController::class, 'index'])->name('index');
             Route::get('/structure', [ProjectDocumentApiController::class, 'getFolderStructure'])->name('structure');
-            
-            // Nested structure 
+
+            // Nested structure
             Route::get('/structure-nested', [ProjectDocumentApiController::class, 'getProjectFolderStructureNested']) ->name('structure.nested');
-            
+
             Route::get('/stats', [ProjectDocumentApiController::class, 'getStats'])->name('stats');
             Route::post('/upload', [ProjectDocumentApiController::class, 'upload'])->name('upload');
             Route::post('/folders', [ProjectDocumentApiController::class, 'createFolder'])->name('folder.create');
-            
+
             Route::get('{documentId}', [ProjectDocumentApiController::class, 'show'])->name('show');
             Route::put('{documentId}', [ProjectDocumentApiController::class, 'update'])->name('update');
             Route::delete('{documentId}', [ProjectDocumentApiController::class, 'delete'])->name('delete');
@@ -365,42 +370,42 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // User CRUD
     Route::apiResource('users', UserApiController::class)->names('api.users');
-    
+
     // User creation data (roles)
     Route::get('users/create-data', [UserApiController::class, 'createData']);
-    
+
     // User Profile
     Route::get('users/profile', [UserApiController::class, 'profile']);
     Route::put('users/profile', [UserApiController::class, 'editprofile']);
     Route::post('users/profile/avatar', [UserApiController::class, 'updateAvatar']);
     Route::put('users/password', [UserApiController::class, 'updatePassword']);
-    
+
     // Admin Password Reset
     Route::get('users/{id}/password', [UserApiController::class, 'UserPassword']);
     Route::put('users/{id}/password', [UserApiController::class, 'UserPasswordReset']);
     Route::post('users/{id}/login-manage', [UserApiController::class, 'LoginManage']);
-    
+
     // User Import
     Route::get('users/import', [UserApiController::class, 'fileImportExport']);
     Route::post('users/import-preview', [UserApiController::class, 'fileImport']);
     Route::post('users/import', [UserApiController::class, 'UserImportdata']);
-    
+
     // User Logs
     Route::get('users/logs', [UserApiController::class, 'UserLogHistory']);
     Route::get('users/logs/{id}', [UserApiController::class, 'UserLogView']);
     Route::delete('users/logs/{id}', [UserApiController::class, 'UserLogDestroy']);
-    
+
     // Impersonation
     Route::post('users/{id}/impersonate', [UserApiController::class, 'LoginWithCompany']);
     Route::post('users/impersonate-exit', [UserApiController::class, 'ExitCompany']);
-    
+
     // Company Info
     Route::get('users/{id}/company-info', [UserApiController::class, 'CompnayInfo']);
     Route::post('users/enable-disable', [UserApiController::class, 'UserUnable']);
-    
+
     // Email Verification
     Route::post('users/{id}/verify', [UserApiController::class, 'verifeduser']);
-    
+
     // App Info
     Route::apiResource('app-info', AppInfoApiController::class)->names('api.app-info');
 });

@@ -71,15 +71,15 @@
                                         </span>
                                         @enderror
                                     </div>
-                                    <div class="form-group">
-                                        <label for="email" class="form-label">{{ __('Email') }}</label>
-                                        <input class="form-control @error('email') is-invalid @enderror" name="email" type="text" id="email" placeholder="{{ __('Enter Your Email Address') }}" value="{{ $userDetail->email }}" required autocomplete="email">
-                                        @error('email')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
+<div class="form-group">
+                                         <label for="email" class="form-label">{{ __('Email') }}</label>
+                                         <input class="form-control @error('email') is-invalid @enderror" name="email" type="text" id="email" placeholder="{{ __('Enter Your Email Address') }}" value="{{ $userDetail->email }}" readonly autocomplete="email">
+                                         @error('email')
+                                         <span class="invalid-feedback" role="alert">
+                                             <strong>{{ $message }}</strong>
+                                         </span>
+                                         @enderror
+                                     </div>
                                     <div class="form-group">
                                         <label for="mobile_no" class="form-label">{{ __('Mobile No') }}</label>
                                         <input class="form-control @error('mobile_no') is-invalid @enderror" name="mobile_no" type="text" id="mobile_no" placeholder="{{ __('Enter Your Mobile No') }}" value="{{ $userDetail->mobile_no }}">

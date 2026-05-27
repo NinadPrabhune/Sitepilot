@@ -114,12 +114,22 @@ class PaymentsModule extends Model
     protected static function booted()
     {
         static::creating(function ($model) {
+            // SAFEGUARD: Validate source_type if provided
+            if (!empty($model->source_type) && !\App\Support\PaymentSources::isValid($model->source_type)) {
+                Log::channel('payment_audit')->error('Invalid source_type provided', [
+                    'source_type' => $model->source_type,
+                    'attempted_by' => auth()->id() ?? 1,
+                ]);
+                throw new \InvalidArgumentException("Invalid payment source type: {$model->source_type}");
+            }
+
             // Allow PO-based payments only when coming through payment request workflow
             // This ensures the new approval-driven workflow works while blocking legacy direct PO payments
             $isPaymentRequestWorkflow = !empty($model->payment_request_id);
+            $isMachineryPayment = $model->source_type === \App\Support\PaymentSources::MACHINERY_PAYMENT_REQUEST;
 
-            // HARD FREEZE: Prevent PO-based payment creation (unless via payment request workflow)
-            if (in_array($model->payment_type, ['against_po', 'advance_against_po']) && !$isPaymentRequestWorkflow) {
+            // HARD FREEZE: Prevent PO-based payment creation (unless via payment request workflow or machinery flow)
+            if (in_array($model->payment_type, ['against_po', 'advance_against_po']) && !$isPaymentRequestWorkflow && !$isMachineryPayment) {
                 Log::channel('payment_audit')->error('HARD FREEZE: Model validation - Attempted to create PO-based payment without payment request', [
                     'payment_type' => $model->payment_type,
                     'purchase_order_id' => $model->purchase_order_id ?? null,
@@ -136,7 +146,6 @@ class PaymentsModule extends Model
 
             // For PO advance payments via payment request workflow, purchase_invoice_id can be null
             // For machinery payment request payments, purchase_invoice_id is not applicable
-            $isMachineryPayment = $model->source_type === \App\Support\PaymentSources::MACHINERY_PAYMENT_REQUEST;
             if (($isPaymentRequestWorkflow && in_array($model->payment_type, ['against_po', 'advance_against_po'])) || $isMachineryPayment) {
                 // PO advance and machinery payments don't require purchase_invoice_id
             } elseif (empty($model->purchase_invoice_id)) {
@@ -147,7 +156,7 @@ class PaymentsModule extends Model
                 ]);
 
                 throw new \InvalidArgumentException(
-                    'HARD FREEZE: All payments must have a purchase_invoice_id (unless PO advance via payment request). ' .
+                    'HARD FREEZE: All payments must have a purchase_invoice_id (unless PO advance via payment request or machinery payment). ' .
                     'Use Payment Request workflow for PO advance payments.'
                 );
             }

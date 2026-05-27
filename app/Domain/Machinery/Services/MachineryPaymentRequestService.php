@@ -986,4 +986,28 @@ class MachineryPaymentRequestService
             ]);
         }
     }
+
+    /**
+     * Upload invoice file for payment request
+     */
+    public function uploadInvoice(int $paymentRequestId, $file): string
+    {
+        $paymentRequest = MachineryPaymentRequest::findOrFail($paymentRequestId);
+        
+        $filename = $paymentRequest->id . '_invoice_' . time() . '.' . $file->getClientOriginalExtension();
+        $uploadPath = public_path('uploads/payment_invoices');
+        
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0755, true);
+        }
+
+        $file->move($uploadPath, $filename);
+        $path = 'payment_invoices/' . $filename;
+
+        $paymentRequest->update([
+            'invoice_file' => $path,
+        ]);
+
+        return $path;
+    }
 }

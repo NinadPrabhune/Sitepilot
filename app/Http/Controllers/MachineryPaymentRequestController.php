@@ -463,28 +463,20 @@ class MachineryPaymentRequestController extends Controller
             'invoice_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 
-        $paymentRequest = MachineryPaymentRequest::findOrFail($id);
-
         if ($request->hasFile('invoice_file')) {
-            $file = $request->file('invoice_file');
-            $filename = $paymentRequest->id . '_invoice_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $this->service->uploadInvoice($id, $request->file('invoice_file'));
 
-            $uploadPath = public_path('uploads/payment_invoices');
-            if (!is_dir($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
-            }
-
-            $file->move($uploadPath, $filename);
-
-            $paymentRequest->update([
-                'invoice_file' => 'payment_invoices/' . $filename,
+            return response()->json([
+                'success' => true,
+                'message' => 'Invoice uploaded successfully',
+                'path' => $path
             ]);
         }
 
         return response()->json([
-            'success' => true,
-            'message' => 'Invoice uploaded successfully'
-        ]);
+            'success' => false,
+            'message' => 'No file uploaded'
+        ], 400);
     }
 
     /**

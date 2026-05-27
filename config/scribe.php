@@ -33,7 +33,7 @@ return [
         [
             'match' => [
                 // Match only routes whose paths match this pattern (use * as a wildcard to match any characters). Example: 'users/*'.
-                'prefixes' => ['api/*'],
+                'prefixes' => ['api/*', 'Hrm/*'],
 
                 // Match only routes whose domains match this pattern (use * as a wildcard to match any characters). Example: 'api.*'.
                 'domains' => ['*'],
@@ -170,9 +170,11 @@ return [
             // 'info.version' => '2.0.0',
         ],
 
-        // Additional generators to use when generating the OpenAPI spec.
-        // Should extend `Knuckles\Scribe\Writing\OpenApiSpecGenerators\OpenApiGenerator`.
-        'generators' => [],
+// Additional generators to use when generating the OpenAPI spec.
+         // Should extend `Knuckles\Scribe\Writing\OpenApiSpecGenerators\OpenApiGenerator`.
+         'generators' => [
+            Knuckles\Scribe\Writing\OpenApiSpecGenerators\ApidogFixGenerator::class,
+         ],
     ],
 
     'groups' => [

@@ -27,11 +27,11 @@
                             <label for="employee_id">Employee</label>
                             <select class="form-select" id="employee_id" name="employee_id">
                                 <option value="all" {{ ($employeeId ?? '') === 'all' ? 'selected' : '' }}>All Employees</option>
-                                @if(isset($employees))
+                               
                                     @foreach($employees as $employee)
                                         <option value="{{ $employee->id }}" {{ ($employeeId ?? '') == $employee->id ? 'selected' : '' }}>{{ $employee->name }}</option>
                                     @endforeach
-                                @endif
+                               
                             </select>
                         </div>
                         <div class="col-md-4">

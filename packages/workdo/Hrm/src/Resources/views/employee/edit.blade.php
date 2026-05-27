@@ -145,11 +145,11 @@ $company_settings = getCompanyAllSetting();
 
                                     <!-- Email -->
                                     <div class="form-group col-md-6">
-                                        {!! Form::label('email', __('Email'), ['class' => 'form-label']) !!}<x-required></x-required>
+                                        {!! Form::label('email', __('Email'), ['class' => 'form-label']) !!}
                                         {!! Form::email('email', $employee->email ?? old('email'), [
                                         'class' => 'form-control',
-                                        'required' => 'required',
                                         'placeholder' => __('Enter Employee Email'),
+                                        'readonly' => 'readonly'
                                         ]) !!}
                                     </div>
 

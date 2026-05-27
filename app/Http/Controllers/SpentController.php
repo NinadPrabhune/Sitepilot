@@ -20,9 +20,6 @@ class SpentController extends Controller
         }
 
         $projects = Project::projectonly()
-            ->when(getActiveProject(), function ($q) {
-                $q->where('id', getActiveProject());
-            })
             ->pluck('name', 'id');
 
         return $dataTable->render('spent.index', compact('projects'));
@@ -58,7 +55,7 @@ class SpentController extends Controller
                 'spent_ledger_id' => $request->spent_ledger_id,
                 'amount' => $request->amount,
                 'project_id' => getActiveProject(),
-                'workspace_id' => Auth::user()->workspace_id,
+                'workspace_id' => getActiveWorkSpace(),
                 'created_by' => Auth::id(),
             ]);
 

@@ -10,7 +10,9 @@ class Branch extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name'
+        'name',
+        'workspace',
+        'created_by'
     ];
     
     protected static function newFactory()

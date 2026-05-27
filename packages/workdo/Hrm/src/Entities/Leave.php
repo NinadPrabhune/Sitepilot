@@ -14,7 +14,7 @@ class Leave extends Model
     protected $fillable = [
         'employee_id',
         'user_id',
-        'Leave_type_id',
+        'leave_type_id',
         'applied_on',
         'start_date',
         'end_date',
@@ -57,13 +57,13 @@ class Leave extends Model
     {
         return $this->hasOne('Workdo\Hrm\Entities\Employee', 'user_id', 'user_id');
     }
-    
+
     public function workspace()
     {
         return $this->belongsTo(WorkSpace::class, 'workspace');
     }
 
-   
+
     public function site()
     {
         return $this->belongsTo(Project::class, 'site_id', 'id');
@@ -106,10 +106,30 @@ class Leave extends Model
      */
     public function recalculateDays()
     {
-        $this->total_leave_days = $this->leaveDates()->count();
-        $this->approved_days = $this->leaveDates()->where('status', 'approved')->count();
-        $this->rejected_days = $this->leaveDates()->where('status', 'rejected')->count();
-        $this->pending_days = $this->leaveDates()->where('status', 'pending')->count();
+        $dates = $this->leaveDates()->get();
+
+        $total = 0;
+        $approved = 0;
+        $rejected = 0;
+        $pending = 0;
+
+        foreach ($dates as $date) {
+            $count = $date->getDayCount();
+            $total += $count;
+
+            if ($date->status === 'approved') {
+                $approved += $count;
+            } elseif ($date->status === 'rejected') {
+                $rejected += $count;
+            } else {
+                $pending += $count;
+            }
+        }
+
+        $this->total_leave_days = $total;
+        $this->approved_days = $approved;
+        $this->rejected_days = $rejected;
+        $this->pending_days = $pending;
         $this->save();
     }
 

@@ -34,7 +34,7 @@
                             {{ Form::date(
                             'start_date',
                             request('start_date') ?? \Carbon\Carbon::now()->startOfMonth()->toDateString(),
-                            ['class' => 'form-control', 'placeholder' => 'Select Date']
+                            ['class' => 'form-control', 'placeholder' => 'Select Date', 'id' => 'start_date']
                             ) }}
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                             {{ Form::date(
                             'end_date',
                             request('end_date') ?? \Carbon\Carbon::now()->toDateString(),
-                            ['class' => 'form-control', 'placeholder' => 'Select Date']
+                            ['class' => 'form-control', 'placeholder' => 'Select Date', 'id' => 'end_date']
                             ) }}
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                             <select id="project_filter" class="form-select" name="project_filter">
                                 <option value="">{{ __('All Projects') }}</option>
                                 @foreach($projects as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
+                                <option value="{{ $id }}" {{ (request('project_id') == $id || getActiveProject() == $id) ? 'selected' : '' }}>{{ $name }}</option>
                                 @endforeach
                             </select>
                         </div>

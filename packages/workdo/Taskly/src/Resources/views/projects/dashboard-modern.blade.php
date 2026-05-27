@@ -51,7 +51,7 @@ $overallProgress = $dashboardData['project']['overall_progress'] ?? 0;
 
     <!-- Spent Card -->
     <div class="col-xl-3 col-md-6">
-        <a href="{{ route('spent.index') }}" class="text-decoration-none">
+        <a href="{{ route('spent.index', ['project_id' => $project->id]) }}" class="text-decoration-none">
             <div class="card border-0 h-100" style="border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-start mb-3">

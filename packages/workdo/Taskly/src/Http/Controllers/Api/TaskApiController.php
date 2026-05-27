@@ -6,12 +6,13 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Workdo\Taskly\Entities\ClientProject;
 use Workdo\Taskly\Entities\Stage;
 use Workdo\Taskly\Entities\Task;
 use Workdo\Taskly\Entities\Project;
 use Workdo\Taskly\Entities\UserProject;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Notification;
 use App\Models\User;
 use Workdo\Taskly\Entities\ActivityLog;
@@ -131,7 +132,133 @@ class TaskApiController extends Controller
                                             ];
                                 });
 
-                return response()->json(['status' => 1,'data'  => $tasks]);
+                 return response()->json(['status' => 1,'data'  => $tasks]);
+
+         } catch (\Exception $e) {
+             return response()->json(['status'=>0,'message'=>'something went wrong!!!']);
+         }
+     }
+
+     /**
+      * Get task reminders
+     *
+     * Get tasks that need reminders based on due dates.
+     *
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam project_id integer optional Project ID. Example: 5
+     * @bodyParam days_ahead integer optional Number of days ahead to look for reminders. Example: 3
+     * @bodyParam assign_to integer optional Filter by assignee user ID. Example: 10
+     * @response {"status": 1, "data": [...]}
+     */
+    public function taskReminder(Request $request)
+    {
+        try {
+            $validator = \Validator::make(
+                $request->all(), [
+                    'workspace_id' => 'required',
+                    'project_id' => 'sometimes',
+                    'days_ahead' => 'sometimes|integer|min:1|max:30',
+                    'assign_to' => 'sometimes|exists:users,id',
+                ]
+            );
+
+            if($validator->fails())
+            {
+                $messages = $validator->getMessageBag();
+
+                return response()->json(['status'=>0, 'message'=>$messages->first()],403);
+            }
+
+            $objUser            = Auth::user();
+            $currentWorkspace   = $request->workspace_id;
+            $projectID          = $request->project_id;
+            $daysAhead          = $request->days_ahead ?? 3; // Default to 3 days ahead
+            $assignTo           = $request->assign_to;
+
+            $tasks = Task::query();
+
+            // Filter by workspace_id
+            $tasks->where('workspace', '=', $currentWorkspace);
+
+            // Filter by project_id if provided
+            if ($projectID) {
+                // Validate project access based on user role
+                if (Auth::user()->hasRole('client')) {
+                    $project = Project::select('projects.*')->join('user_projects', 'projects.id', '=', 'user_projects.project_id')->where('projects.workspace', '=', $currentWorkspace)->where('projects.id', '=', $projectID)->first();
+                } else {
+                    $project = Project::select('projects.*')->join('user_projects', 'projects.id', '=', 'user_projects.project_id')->where('user_projects.user_id', '=', $objUser->id)->where('projects.workspace', '=', $currentWorkspace)->where('projects.id', '=', $projectID)->first();
+                }
+
+                if (!$project) {
+                    return response()->json(['status'=>0,'message'=>'Project not found or access denied']);
+                }
+
+                $tasks->where('project_id', '=', $project->id);
+            } else {
+                // If no project_id filter, get tasks from all accessible projects
+                if (Auth::user()->hasRole('client')) {
+                    $accessibleProjectIds = Project::join('user_projects', 'projects.id', '=', 'user_projects.project_id')
+                        ->where('projects.workspace', '=', $currentWorkspace)
+                        ->pluck('projects.id');
+                } else {
+                    $accessibleProjectIds = Project::join('user_projects', 'projects.id', '=', 'user_projects.project_id')
+                        ->where('user_projects.user_id', '=', $objUser->id)
+                        ->where('projects.workspace', '=', $currentWorkspace)
+                        ->pluck('projects.id');
+                }
+
+                if ($accessibleProjectIds->isNotEmpty()) {
+                    $tasks->whereIn('project_id', $accessibleProjectIds);
+                }
+            }
+
+            // Filter by assignee if provided
+            if ($assignTo) {
+                $tasks->whereRaw("find_in_set('" . $assignTo . "',assign_to)");
+            }
+
+            // Only get tasks that are not finished (exclude completed stages)
+            // Based on default stages: 0=Todo, 1=In Progress, 2=Review, 3=Done
+            // We exclude status 3 (Done/Finished) as those don't need reminders
+            $tasks->where('status', '!=', 3);
+
+            // Filter tasks with due dates within the specified days ahead
+            $tasks->whereNotNull('due_date')
+                ->where('due_date', '>=', \Carbon\Carbon::today()->toDateString())
+                ->where('due_date', '<=', \Carbon\Carbon::today()->addDays($daysAhead)->toDateString());
+
+            // Order by due date (soonest first)
+            $tasks->orderBy('due_date', 'asc');
+
+            $limit = $request->limit ?? 10;
+            $page = $request->page ?? 1;
+            $tasks->limit($limit);
+            $tasks->offset(($page - 1) * $limit);
+
+            $tasks =  $tasks->get()->map(function($task){
+                                             return [
+                                                 'id'                => $task->id,
+                                                 'title'             => $task->title,
+                                                 'priority'          => $task->priority,
+                                                 'description'       => $task->description,
+                                                 'start_date'        => $task->start_date,
+                                                 'due_date'          => $task->due_date,
+                                                 'project_id'        => $task->project_id,
+                                                 'milestone_id'      => (int) $task->milestone_id,
+                                                 'order'             => $task->order,
+                                                 'status'            => $task->status,
+                                                 'assign_to'         => $task->users()->map(function($user){
+                                                                                 return [
+                                                                                     'id'        => $user->id,
+                                                                                     'name'      => $user->name,
+                                                                                     'email'     => $user->email,
+                                                                                     'avatar'    => check_file($user->avatar) ? get_file($user->avatar) : get_file('uploads/users-avatar/avatar.png'),
+                                                                                 ];
+                                                                             }),
+                                             ];
+                                         });
+
+            return response()->json(['status' => 1,'data'  => $tasks]);
 
         } catch (\Exception $e) {
             return response()->json(['status'=>0,'message'=>'something went wrong!!!']);

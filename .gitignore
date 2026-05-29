@@ -33,3 +33,5 @@ yarn-error.log
 /name}
 node_modules
 node_modules
+storage/app/firebase-service-account.json
+documentation/sitepilot-a003c-firebase-adminsdk-fbsvc-1d574d2d08.json

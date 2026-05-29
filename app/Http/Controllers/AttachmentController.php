@@ -10,8 +10,8 @@ class AttachmentController extends Controller {
     /**
      * Download an attachment by filename.
      *
-     * @param  string  $file
-     * @return \Illuminate\Http\Response
+     * @urlParam file string required The filename to download.
+     * @response A file download response.
      */
     public function download($file) {
         try {

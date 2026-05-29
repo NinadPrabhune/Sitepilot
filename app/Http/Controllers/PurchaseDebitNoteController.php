@@ -12,8 +12,10 @@ use App\Models\PurchaseDebitNote;
 class PurchaseDebitNoteController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     * @return Renderable
+     * Display a listing of debit notes.
+     *
+     * @authenticated
+     * @response view="purchases.index"
      */
     public function index()
     {
@@ -22,8 +24,11 @@ class PurchaseDebitNoteController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     * @return Renderable
+     * Show the form for creating a new debit note.
+     *
+     * @authenticated
+     * @urlParam purchase_id int required Purchase ID.
+     * @response view="debitNote.create"
      */
     public function create($purchase_id)
     {
@@ -40,9 +45,14 @@ class PurchaseDebitNoteController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
+     * Store a newly created debit note.
+     *
+     * @authenticated
+     * @urlParam purchase_id int required Purchase ID.
+     * @bodyParam date string required Date of debit note.
+     * @bodyParam amount numeric required Debit note amount.
+     * @bodyParam description string nullable Description.
+     * @response redirect
      */
     public function store(Request $request, $purchase_id)
     {
@@ -84,9 +94,10 @@ class PurchaseDebitNoteController extends Controller
     }
 
     /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
+     * Show the specified debit note.
+     *
+     * @authenticated
+     * @urlParam id int required Debit note ID.
      */
     public function show($id)
     {
@@ -95,9 +106,12 @@ class PurchaseDebitNoteController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
+     * Show the form for editing the specified debit note.
+     *
+     * @authenticated
+     * @urlParam purchase_id int required Purchase ID.
+     * @urlParam debitNote_id int required Debit note ID.
+     * @response view="debitNote.edit"
      */
     public function edit($purchase_id, $debitNote_id)
     {
@@ -114,10 +128,15 @@ class PurchaseDebitNoteController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
+     * Update the specified debit note.
+     *
+     * @authenticated
+     * @urlParam purchase_id int required Purchase ID.
+     * @urlParam debitNote_id int required Debit note ID.
+     * @bodyParam date string required Date.
+     * @bodyParam amount numeric required Amount.
+     * @bodyParam description string nullable Description.
+     * @response redirect
      */
     public function update(Request $request, $purchase_id, $debitNote_id)
     {
@@ -158,9 +177,12 @@ class PurchaseDebitNoteController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
+     * Remove the specified debit note.
+     *
+     * @authenticated
+     * @urlParam purchase_id int required Purchase ID.
+     * @urlParam debitNote_id int required Debit note ID.
+     * @response redirect
      */
     public function destroy($purchase_id, $debitNote_id)
     {

@@ -20,6 +20,10 @@ class MachineryDprController extends Controller
     
     /**
      * List DPRs for a machinery (Direct flow only)
+     *
+     * @authenticated
+     * @urlParam machinery int required The machinery ID.
+     * @response view="machinery.dpr.index"
      */
     public function index(Machinery $machinery)
     {
@@ -34,6 +38,10 @@ class MachineryDprController extends Controller
     
     /**
      * Show create form for direct machinery DPR
+     *
+     * @authenticated
+     * @urlParam machinery int required The machinery ID.
+     * @response view="machinery.dpr.create"
      */
     public function create(Machinery $machinery)
     {
@@ -42,6 +50,19 @@ class MachineryDprController extends Controller
     
     /**
      * Store direct machinery DPR
+     *
+     * @authenticated
+     * @urlParam machinery int required The machinery ID.
+     * @bodyParam date date required DPR date.
+     * @bodyParam site_id int required Site/project ID.
+     * @bodyParam machine_start_reading numeric required Machine start reading.
+     * @bodyParam machine_end_reading numeric required Machine end reading. Must be >= start reading.
+     * @bodyParam machine_idle_reading numeric optional Machine idle reading.
+     * @bodyParam diesel_consumption numeric optional Diesel consumption.
+     * @bodyParam number_of_operators int optional Number of operators.
+     * @bodyParam work_details string optional Work details.
+     * @bodyParam maintenance_notes string optional Maintenance notes.
+     * @response redirect to machinery.dpr.show
      */
     public function store(Request $request, Machinery $machinery)
     {
@@ -118,6 +139,11 @@ class MachineryDprController extends Controller
     
     /**
      * Show DPR details
+     *
+     * @authenticated
+     * @urlParam machinery int required The machinery ID.
+     * @urlParam dpr int required The DPR ID.
+     * @response view="machinery.dpr.show"
      */
     public function show(Machinery $machinery, DailyProgressReport $dpr)
     {
@@ -126,7 +152,12 @@ class MachineryDprController extends Controller
     }
     
     /**
-     * Show edit form
+     * Show edit form for DPR
+     *
+     * @authenticated
+     * @urlParam machinery int required The machinery ID.
+     * @urlParam dpr int required The DPR ID.
+     * @response view="machinery.dpr.edit"
      */
     public function edit(Machinery $machinery, DailyProgressReport $dpr)
     {
@@ -135,6 +166,18 @@ class MachineryDprController extends Controller
     
     /**
      * Update DPR
+     *
+     * @authenticated
+     * @urlParam machinery int required The machinery ID.
+     * @urlParam dpr int required The DPR ID.
+     * @bodyParam machine_start_reading numeric required Machine start reading.
+     * @bodyParam machine_end_reading numeric required Machine end reading.
+     * @bodyParam machine_idle_reading numeric optional Machine idle reading.
+     * @bodyParam diesel_consumption numeric optional Diesel consumption.
+     * @bodyParam number_of_operators int optional Number of operators.
+     * @bodyParam work_details string optional Work details.
+     * @bodyParam maintenance_notes string optional Maintenance notes.
+     * @response redirect to machinery.dpr.show
      */
     public function update(Request $request, Machinery $machinery, DailyProgressReport $dpr)
     {

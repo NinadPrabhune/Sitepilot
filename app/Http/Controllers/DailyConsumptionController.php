@@ -22,6 +22,12 @@ use App\Services\StockService;
 
 class DailyConsumptionController extends Controller
 {
+    /**
+     * List all daily consumption logs.
+     *
+     * @authenticated
+     * @response view="daily-consumption.index"
+     */
     public function index(DailyConsumptionDataTable $dataTable)
     {
         if (!Auth::user()->isAbleTo('consumption-log manage')) {
@@ -35,6 +41,14 @@ class DailyConsumptionController extends Controller
         }
     }
 
+    /**
+     * Show the form for creating a new daily consumption log.
+     *
+     * @authenticated
+     * @queryParam activity_id integer Filter by activity ID. Example: 5
+     * @queryParam activity_completed_id integer Filter by completed activity ID. Example: 3
+     * @response view="daily-consumption.create"
+     */
     public function create(Request $request)
     {
         // Check if user is authenticated
@@ -113,6 +127,22 @@ class DailyConsumptionController extends Controller
         }
     }
 
+    /**
+     * Store a newly created daily consumption log.
+     *
+     * @authenticated
+     * @bodyParam consumption_date string required Date of consumption. Example: 2026-05-29
+     * @bodyParam site_id integer required Site ID. Example: 1
+     * @bodyParam consumption_type string required Type: all or fuel. Example: fuel
+     * @bodyParam machinery_type string nullable Machinery type: own or rental. Example: own
+     * @bodyParam machinery_id integer nullable Machinery ID. Example: 2
+     * @bodyParam items array required Array of consumption items.
+     * @bodyParam items.*.material_id integer required Material ID. Example: 10
+     * @bodyParam items.*.quantity numeric required Quantity consumed. Example: 5.5
+     * @bodyParam items.*.unit string required Unit of measurement. Example: litres
+     * @bodyParam items.*.remarks string nullable Remarks for the item. Example: For generator
+     * @response view="daily-consumption.index" (redirect back)
+     */
     public function store(Request $request)
     {
         // DEBUG: Log method entry
@@ -361,6 +391,13 @@ class DailyConsumptionController extends Controller
          }
     }
 
+    /**
+     * Display a specific daily consumption log.
+     *
+     * @authenticated
+     * @urlParam daily_consumption integer required The consumption ID. Example: 1
+     * @response view="daily-consumption.show"
+     */
     public function show(DailyConsumptionMaster $daily_consumption)
     {
         if (!Auth::user()->isAbleTo('consumption-log show')) {
@@ -375,6 +412,13 @@ class DailyConsumptionController extends Controller
         }
     }
     
+    /**
+     * Show the form for editing a daily consumption log.
+     *
+     * @authenticated
+     * @urlParam daily_consumption integer required The consumption ID. Example: 1
+     * @response view="daily-consumption.edit"
+     */
     public function edit(DailyConsumptionMaster $daily_consumption)
     {
         // Debug: Log method entry
@@ -455,6 +499,23 @@ class DailyConsumptionController extends Controller
         }
     }
 
+    /**
+     * Update a daily consumption log.
+     *
+     * @authenticated
+     * @urlParam daily_consumption integer required The consumption ID. Example: 1
+     * @bodyParam consumption_date string required Date of consumption. Example: 2026-05-29
+     * @bodyParam site_id integer required Site ID. Example: 1
+     * @bodyParam consumption_type string required Type: all or fuel. Example: fuel
+     * @bodyParam machinery_type string nullable Machinery type: own or rental. Example: own
+     * @bodyParam machinery_id integer nullable Machinery ID. Example: 2
+     * @bodyParam items array required Array of consumption items.
+     * @bodyParam items.*.material_id integer required Material ID. Example: 10
+     * @bodyParam items.*.quantity numeric required Quantity consumed. Example: 5.5
+     * @bodyParam items.*.unit string required Unit of measurement. Example: litres
+     * @bodyParam items.*.remarks string nullable Remarks for the item. Example: For generator
+     * @response view="daily-consumption.index" (redirect back)
+     */
     public function update(Request $request, DailyConsumptionMaster $daily_consumption)
     {
         if (!Auth::user()->isAbleTo('consumption-log edit')) {
@@ -677,6 +738,13 @@ class DailyConsumptionController extends Controller
         }
     }
 
+    /**
+     * Delete a daily consumption log.
+     *
+     * @authenticated
+     * @urlParam daily_consumption integer required The consumption ID. Example: 1
+     * @response view="daily-consumption.index" (redirect)
+     */
     public function destroy(DailyConsumptionMaster $daily_consumption)
     {
         if (!Auth::user()->isAbleTo('consumption-log delete')) {
@@ -709,6 +777,13 @@ class DailyConsumptionController extends Controller
         }
     }
 
+    /**
+     * Get stock by site for the daily consumption form (AJAX).
+     *
+     * @authenticated
+     * @bodyParam site_id integer required Site ID to fetch stock for. Example: 1
+     * @response view="json"
+     */
     public function getStockBySiteForDailyConsumption(Request $request)
     {
         try {
@@ -732,6 +807,14 @@ class DailyConsumptionController extends Controller
         }
     }
 
+    /**
+     * Get stock by site for the daily consumption edit form (AJAX).
+     *
+     * @authenticated
+     * @bodyParam site_id integer required Site ID to fetch stock for. Example: 1
+     * @bodyParam daily_consumption_masters_id integer required Consumption master ID to exclude from stock calculation. Example: 5
+     * @response view="json"
+     */
     public function getStockBySiteForDailyConsumptionEdit(Request $request)
     {
         try {

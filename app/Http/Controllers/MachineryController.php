@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\Storage;
 class MachineryController extends Controller {
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of machinery
+     *
+     * @authenticated
+     * @response view="machineries.index"
      */
     public function index(MachineryDataTable $dataTable) {
         if (\Auth::user()->isAbleTo('machinery manage')) {
@@ -28,7 +31,10 @@ class MachineryController extends Controller {
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new machinery
+     *
+     * @authenticated
+     * @response view="machineries.create"
      */
     public function create() {
         if (\Auth::user()->isAbleTo('machinery manage')) {
@@ -53,7 +59,35 @@ class MachineryController extends Controller {
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created machinery
+     *
+     * @authenticated
+     * @bodyParam name string required Machinery name. Max 255 chars. Example: JCB 3DX
+     * @bodyParam category_id int required Machinery category ID. Must exist in machinery_categories.
+     * @bodyParam model_number string optional Model number. Max 255 chars.
+     * @bodyParam manufacturer string optional Manufacturer name. Max 255 chars.
+     * @bodyParam purchase_date date optional Purchase date.
+     * @bodyParam capacity string optional Capacity. Max 255 chars.
+     * @bodyParam vehicle_number string required Vehicle number. Max 255 chars.
+     * @bodyParam registration_number string optional Registration number. Max 255 chars.
+     * @bodyParam owned_by string required Ownership type. Must be "owned" or "rental".
+     * @bodyParam supplier_id int required_if owned_by=rental. Supplier ID.
+     * @bodyParam operational_status string required Operational status. Must be active, breakdown, or scrap.
+     * @bodyParam site_id int optional Site ID.
+     * @bodyParam rate_type string required_if owned_by=rental. Rate type.
+     * @bodyParam rate numeric required_if owned_by=rental. Rate amount.
+     * @bodyParam minimum_billing_hours numeric required_if owned_by=rental. Minimum billing hours.
+     * @bodyParam diesel_by_company boolean optional Whether diesel is covered by company.
+     * @bodyParam operator_by_supplier boolean optional Whether operator is provided by supplier.
+     * @bodyParam number_of_operators int required_if operator_by_supplier=1. Number of operators.
+     * @bodyParam rental_agreement_file file optional Rental agreement file. mimes:pdf,doc,docx. Max 10MB.
+     * @bodyParam purchase_value numeric required_if owned_by=owned. Purchase value.
+     * @bodyParam insurance_due_date date required_if owned_by=owned. Insurance due date.
+     * @bodyParam puc_due_date date required_if owned_by=owned. PUC due date.
+     * @bodyParam fitness_due_date date required_if owned_by=owned. Fitness due date.
+     * @bodyParam last_service_date date required_if owned_by=owned. Last service date.
+     * @bodyParam ownership_documents_file file optional Ownership documents. mimes:pdf,doc,docx,jpg,jpeg,png. Max 10MB.
+     * @response redirect to machineries.index
      */
     public function store(Request $request) {
 
@@ -174,7 +208,11 @@ class MachineryController extends Controller {
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified machinery
+     *
+     * @authenticated
+     * @urlParam machinery int required The machinery ID.
+     * @response view="machineries.show"
      */
     public function show(Machinery $machinery) {
 
@@ -187,7 +225,11 @@ class MachineryController extends Controller {
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show edit machinery form
+     *
+     * @authenticated
+     * @urlParam machinery int required The machinery ID.
+     * @response view="machineries.edit"
      */
     public function edit(Machinery $machinery) {
         // If you're using Blade views:
@@ -211,7 +253,28 @@ class MachineryController extends Controller {
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified machinery
+     *
+     * @authenticated
+     * @urlParam machinery int required The machinery ID.
+     * @bodyParam name string required Machinery name. Max 255 chars. Must be unique. Example: JCB 3DX
+     * @bodyParam category_id int required Machinery category ID.
+     * @bodyParam model_number string optional Model number.
+     * @bodyParam vehicle_number string required Vehicle number.
+     * @bodyParam owned_by string required Ownership type (owned/rental).
+     * @bodyParam supplier_id int required_if owned_by=rental. Supplier ID.
+     * @bodyParam operational_status string required Operational status (active/breakdown/scrap).
+     * @bodyParam site_id int optional Site ID.
+     * @bodyParam rate_type string required_if owned_by=rental. Rate type.
+     * @bodyParam rate numeric required_if owned_by=rental. Rate amount.
+     * @bodyParam minimum_billing_hours numeric required_if owned_by=rental. Min billing hours.
+     * @bodyParam number_of_operators int required_if operator_by_supplier=1. Number of operators.
+     * @bodyParam purchase_value numeric required_if owned_by=owned. Purchase value.
+     * @bodyParam insurance_due_date date required_if owned_by=owned. Insurance due date.
+     * @bodyParam puc_due_date date required_if owned_by=owned. PUC due date.
+     * @bodyParam fitness_due_date date required_if owned_by=owned. Fitness due date.
+     * @bodyParam last_service_date date required_if owned_by=owned. Last service date.
+     * @response redirect to machineries.index
      */
     public function update(Request $request, Machinery $machinery) {
         if (\Auth::user()->isAbleTo('machinery edit')) {
@@ -400,7 +463,11 @@ class MachineryController extends Controller {
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified machinery
+     *
+     * @authenticated
+     * @urlParam machinery int required The machinery ID.
+     * @response redirect to machineries.index
      */
     public function destroy(Machinery $machinery) {
         if (\Auth::user()->isAbleTo('machinery delete')) {

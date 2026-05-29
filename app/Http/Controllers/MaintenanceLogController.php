@@ -13,6 +13,12 @@ use Workdo\Taskly\Entities\Project;
 
 class MaintenanceLogController extends Controller
 {
+    /**
+     * List maintenance logs
+     *
+     * @authenticated
+     * @response view="maintenance.index"
+     */
     public function index()
     {
         if (!Auth::user()->isAbleTo('maintenance-logs manage')) {
@@ -26,6 +32,12 @@ class MaintenanceLogController extends Controller
         return view('maintenance.index', compact('maintenanceLogs'));
     }
 
+    /**
+     * Show create maintenance log form
+     *
+     * @authenticated
+     * @response view="maintenance.create"
+     */
     public function create()
     {
         if (!Auth::user()->isAbleTo('maintenance-logs create')) {
@@ -39,6 +51,20 @@ class MaintenanceLogController extends Controller
         return view('maintenance.create', compact('machineries', 'vendors', 'sites'));
     }
 
+    /**
+     * Store a new maintenance log
+     *
+     * @authenticated
+     * @bodyParam machinery_id int required Machinery ID. Must exist in machineries table.
+     * @bodyParam vendor_id int optional Vendor/supplier ID. Must exist in suppliers table.
+     * @bodyParam maintenance_date date required Maintenance date.
+     * @bodyParam cost numeric required Maintenance cost. Min 0.
+     * @bodyParam paid_by string required Who paid. Must be company or supplier.
+     * @bodyParam description string optional Description.
+     * @bodyParam site_id int required Site/project ID. Must exist in projects table.
+     * @bodyParam attachment file optional Attachment file. mimes:pdf,jpg,jpeg,png. Max 5MB.
+     * @response redirect to maintenance.index
+     */
     public function store(Request $request)
     {
         if (!Auth::user()->isAbleTo('maintenance-logs create')) {
@@ -109,6 +135,13 @@ class MaintenanceLogController extends Controller
         }
     }
 
+    /**
+     * Show maintenance log details
+     *
+     * @authenticated
+     * @urlParam maintenance_log int required The maintenance log ID.
+     * @response view="maintenance.show"
+     */
     public function show(MaintenanceLog $maintenanceLog)
     {
         if (!Auth::user()->isAbleTo('maintenance-logs show')) {
@@ -120,6 +153,13 @@ class MaintenanceLogController extends Controller
         return view('maintenance.show', compact('maintenanceLog'));
     }
 
+    /**
+     * Show edit maintenance log form
+     *
+     * @authenticated
+     * @urlParam maintenance_log int required The maintenance log ID.
+     * @response view="maintenance.edit"
+     */
     public function edit(MaintenanceLog $maintenanceLog)
     {
         if (!Auth::user()->isAbleTo('maintenance-logs edit')) {
@@ -133,6 +173,21 @@ class MaintenanceLogController extends Controller
         return view('maintenance.edit', compact('maintenanceLog', 'machineries', 'vendors', 'sites'));
     }
 
+    /**
+     * Update maintenance log
+     *
+     * @authenticated
+     * @urlParam maintenance_log int required The maintenance log ID.
+     * @bodyParam machinery_id int required Machinery ID.
+     * @bodyParam vendor_id int optional Vendor ID.
+     * @bodyParam maintenance_date date required Maintenance date.
+     * @bodyParam cost numeric required Maintenance cost. Min 0.
+     * @bodyParam paid_by string required Paid by (company/supplier).
+     * @bodyParam description string optional Description.
+     * @bodyParam site_id int required Site ID.
+     * @bodyParam attachment file optional Attachment file.
+     * @response redirect to maintenance.index
+     */
     public function update(Request $request, MaintenanceLog $maintenanceLog)
     {
         if (!Auth::user()->isAbleTo('maintenance-logs edit')) {
@@ -209,6 +264,13 @@ class MaintenanceLogController extends Controller
         }
     }
 
+    /**
+     * Delete maintenance log
+     *
+     * @authenticated
+     * @urlParam maintenance_log int required The maintenance log ID.
+     * @response redirect to maintenance.index
+     */
     public function destroy(MaintenanceLog $maintenanceLog)
     {
         if (!Auth::user()->isAbleTo('maintenance-logs delete')) {

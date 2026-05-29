@@ -20,6 +20,26 @@ class DocumentApiController extends Controller
 {
     /**
      * List all documents
+     *
+     * @authenticated
+     * @group HRM Documents
+     *
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by site ID. Example: 5
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": [
+     *    {
+     *      "id": 1,
+     *      "name": "Employee Handbook",
+     *      "document": "http://example.com/document.pdf",
+     *      "description": "Company policies",
+     *      "workspace": 1,
+     *      "site_id": 5
+     *    }
+     *  ]
+     * }
      */
     public function index(Request $request)
     {
@@ -122,6 +142,24 @@ class DocumentApiController extends Controller
 
     /**
      * Show a single document
+     *
+     * @group HRM Documents
+     *
+     * @urlParam id integer required The ID of the document. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": {
+     *    "id": 1,
+     *    "name": "Employee Handbook",
+     *    "document": "http://example.com/document.pdf",
+     *    "description": "Company policies"
+     *  }
+     * }
+     * @response 404 {
+     *  "status": 0,
+     *  "message": "Document not found"
+     * }
      */
     public function show($id)
     {
@@ -135,6 +173,21 @@ class DocumentApiController extends Controller
 
     /**
      * Update a document
+     *
+     * @authenticated
+     * @group HRM Documents
+     *
+     * @urlParam id integer required The ID of the document. Example: 1
+     *
+     * @bodyParam name string required Document name. Example: Updated Handbook
+     * @bodyParam documents file optional Document file.
+     * @bodyParam description string optional Description. Example: Updated company policies
+     *
+     * @response {
+     *  "status": 1,
+     *  "message": "Document updated successfully",
+     *  "data": {...}
+     * }
      */
     public function update(Request $request, $id)
     {
@@ -186,6 +239,16 @@ class DocumentApiController extends Controller
 
     /**
      * Delete a document
+     *
+     * @authenticated
+     * @group HRM Documents
+     *
+     * @urlParam id integer required The ID of the document. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "message": "Document deleted successfully"
+     * }
      */
     public function destroy($id)
     {

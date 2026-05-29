@@ -12,6 +12,12 @@ use App\Events\DestroyAssetsToolsAndEquipment;
 
 class AssetsToolsAndEquipmentController extends Controller {
 
+    /**
+     * List all tools and equipment
+     *
+     * @authenticated
+     * @response view="assets_tools_and_equipment.index"
+     */
     public function index(AssetsToolsAndEquipmentDataTable $dataTable) {
         if (\Auth::user()->isAbleTo('tools-and-equipment manage')) {
             return $dataTable->render('assets_tools_and_equipment.index');
@@ -20,6 +26,12 @@ class AssetsToolsAndEquipmentController extends Controller {
         }
     }
 
+    /**
+     * Show create tool/equipment form
+     *
+     * @authenticated
+     * @response view="assets_tools_and_equipment.create"
+     */
     public function create() {
         if (\Auth::user()->isAbleTo('tools-and-equipment create')) {
             $materials = Material::where('category_id', 3)->pluck('name', 'id');
@@ -35,6 +47,16 @@ class AssetsToolsAndEquipmentController extends Controller {
         }
     }
 
+    /**
+     * Store a new tool/equipment
+     *
+     * @authenticated
+     * @bodyParam material_id int required The material ID. Must exist in materials table.
+     * @bodyParam quantity int required The quantity. Minimum 1.
+     * @bodyParam operational_status string required The operational status. Must be one of: active, breakdown, scrap.
+     * @bodyParam site_id int The site ID.
+     * @response redirect="assets_tools_and_equipment.index"
+     */
     public function store(Request $request) {
         if (\Auth::user()->isAbleTo('tools-and-equipment create')) {
             $validator = \Validator::make($request->all(), [
@@ -120,6 +142,13 @@ class AssetsToolsAndEquipmentController extends Controller {
 //        }
 //    }
 
+    /**
+     * Show a tool/equipment
+     *
+     * @authenticated
+     * @urlParam assetsToolsAndEquipment int required The tool/equipment ID.
+     * @response {"id":1,"material_id":1,"quantity":10,"operational_status":"active"}
+     */
     public function show(AssetsToolsAndEquipment $assetsToolsAndEquipment) {
         if (\Auth::user()->isAbleTo('tools-and-equipment show')) {
             return response()->json($assetsToolsAndEquipment);
@@ -128,6 +157,13 @@ class AssetsToolsAndEquipmentController extends Controller {
         }
     }
 
+    /**
+     * Show edit tool/equipment form
+     *
+     * @authenticated
+     * @urlParam assetsToolsAndEquipment int required The tool/equipment ID.
+     * @response view="assets_tools_and_equipment.edit"
+     */
     public function edit(AssetsToolsAndEquipment $assetsToolsAndEquipment) {
         if (\Auth::user()->isAbleTo('tools-and-equipment edit')) {
             $materials = Material::where('category_id', 3)->pluck('name', 'id');
@@ -141,6 +177,17 @@ class AssetsToolsAndEquipmentController extends Controller {
         }
     }
 
+    /**
+     * Update a tool/equipment
+     *
+     * @authenticated
+     * @urlParam assetsToolsAndEquipment int required The tool/equipment ID.
+     * @bodyParam material_id int required The material ID. Must exist in materials table.
+     * @bodyParam quantity int required The quantity. Minimum 1.
+     * @bodyParam operational_status string required The operational status. Must be one of: active, breakdown, scrap.
+     * @bodyParam site_id int The site ID.
+     * @response redirect="assets_tools_and_equipment.index"
+     */
     public function update(Request $request, AssetsToolsAndEquipment $assetsToolsAndEquipment) {
         if (\Auth::user()->isAbleTo('tools-and-equipment edit')) {
             $validator = \Validator::make($request->all(), [
@@ -196,6 +243,13 @@ class AssetsToolsAndEquipmentController extends Controller {
         }
     }
 
+    /**
+     * Delete a tool/equipment
+     *
+     * @authenticated
+     * @urlParam assetsToolsAndEquipment int required The tool/equipment ID.
+     * @response redirect="assets_tools_and_equipment.index"
+     */
     public function destroy(AssetsToolsAndEquipment $assetsToolsAndEquipment) {
         if (\Auth::user()->isAbleTo('tools-and-equipment delete')) {
             $assetsToolsAndEquipment->delete();

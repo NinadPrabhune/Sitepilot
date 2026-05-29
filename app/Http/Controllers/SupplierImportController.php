@@ -12,6 +12,9 @@ class SupplierImportController extends Controller
 {
     /**
      * Download the supplier import template Excel file.
+     *
+     * @authenticated
+     * @response file="supplier_import_template.xlsx"
      */
     public function downloadTemplate()
     {
@@ -30,6 +33,9 @@ class SupplierImportController extends Controller
 
     /**
      * Show the dedicated supplier import page.
+     *
+     * @authenticated
+     * @response view="suppliers.import-page"
      */
     public function showImportPage()
     {
@@ -42,6 +48,10 @@ class SupplierImportController extends Controller
 
     /**
      * Import suppliers from Excel file - dedicated page handler.
+     *
+     * @authenticated
+     * @bodyParam file file required The Excel file (xlsx, xls, csv).
+     * @response redirect to="suppliers.import.page"
      */
     public function processImport(Request $request)
     {
@@ -138,7 +148,11 @@ class SupplierImportController extends Controller
     }
 
     /**
-     * Import suppliers from Excel file.
+     * Import suppliers from Excel file (legacy handler).
+     *
+     * @authenticated
+     * @bodyParam file file required The Excel file (xlsx, csv).
+     * @response redirect to="supplier.index"
      */
     public function import(Request $request)
     {
@@ -203,6 +217,9 @@ class SupplierImportController extends Controller
 
     /**
      * Show the import form using AJAX modal.
+     *
+     * @authenticated
+     * @response view="suppliers.import"
      */
     public function showImportForm()
     {

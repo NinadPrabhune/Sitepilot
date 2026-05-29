@@ -14,7 +14,10 @@ use App\Domain\Machinery\Services\MachineryLedgerService;
 class GeneralTransferController extends Controller {
 
     /**
-     * Display a listing of the general transfers.
+     * List all general transfers.
+     *
+     * @authenticated
+     * @response view="general_transfer.index"
      */
     public function index(\App\DataTables\GeneralTransferDataTable $dataTable) {
         if (\Auth::user()->isAbleTo('general-transfer manage')) {
@@ -26,6 +29,13 @@ class GeneralTransferController extends Controller {
 
     /**
      * Show the form for creating a new general transfer.
+     *
+     * @authenticated
+     * @queryParam transfer_type string Filter by transfer type: machinery, tools_and_equipment, employee. Example: machinery
+     * @queryParam machinery_id integer Pre-select a machinery. Example: 2
+     * @queryParam tools_and_equipment_id integer Pre-select a tool/equipment. Example: 3
+     * @queryParam employee_id integer Pre-select an employee. Example: 5
+     * @response view="general_transfer.create"
      */
     public function create(Request $request) {
         try {
@@ -104,7 +114,20 @@ class GeneralTransferController extends Controller {
     }
 
     /**
-     * Store a newly created general transfer in storage.
+     * Store a newly created general transfer.
+     *
+     * @authenticated
+     * @bodyParam transfer_type string required Transfer type: machinery, tools_and_equipment, employee. Example: machinery
+     * @bodyParam machinery_id integer nullable Machinery ID (required for machinery transfers). Example: 2
+     * @bodyParam tools_and_equipment_id integer nullable Tool/Equipment ID. Example: 3
+     * @bodyParam employee_id integer nullable Employee user ID. Example: 5
+     * @bodyParam transfer_date string required Transfer date. Example: 2026-05-29
+     * @bodyParam transfer_qty integer nullable Quantity to transfer (for tools). Example: 5
+     * @bodyParam from_site_id integer required Source site ID. Example: 1
+     * @bodyParam to_site_id integer required Destination site ID. Example: 2
+     * @bodyParam transport_cost numeric nullable Transport cost. Example: 1500
+     * @bodyParam operational_status string nullable Status: pending, active, completed, cancelled. Example: active
+     * @response view="general_transfer.index" (redirect)
      */
     public function store(Request $request)
 {
@@ -242,6 +265,13 @@ class GeneralTransferController extends Controller {
 }
 
 
+    /**
+     * Display a specific general transfer.
+     *
+     * @authenticated
+     * @urlParam id string required Transfer ID. Example: 1
+     * @response view="general_transfer.show"
+     */
     public function show(string $id) {
         try {
             // ✅ Load transfer with relationships
@@ -282,6 +312,21 @@ class GeneralTransferController extends Controller {
         }
     }
 
+    /**
+     * Update a general transfer.
+     *
+     * @authenticated
+     * @urlParam id string required Transfer ID. Example: 1
+     * @bodyParam transfer_type string required Transfer type: machinery, tools_and_equipment, employee. Example: machinery
+     * @bodyParam machinery_id integer nullable Machinery ID. Example: 2
+     * @bodyParam tools_and_equipment_id integer nullable Tool/Equipment ID. Example: 3
+     * @bodyParam employee_id integer nullable Employee user ID. Example: 5
+     * @bodyParam transfer_date string required Transfer date. Example: 2026-05-29
+     * @bodyParam from_site_id integer required Source site ID. Example: 1
+     * @bodyParam to_site_id integer required Destination site ID. Example: 2
+     * @bodyParam operational_status string nullable Status: pending, active, completed, cancelled. Example: active
+     * @response view="general_transfer.index" (redirect)
+     */
     public function update(Request $request, string $id) {
         try {
             // ✅ Validate request
@@ -379,6 +424,13 @@ class GeneralTransferController extends Controller {
         }
     }
 
+    /**
+     * Delete a general transfer.
+     *
+     * @authenticated
+     * @urlParam id string required Transfer ID. Example: 1
+     * @response view="general_transfer.index" (redirect)
+     */
     public function destroy($id) {
         try {
             $transfer = GeneralTransfer::findOrFail($id);

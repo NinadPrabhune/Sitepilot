@@ -17,6 +17,12 @@ use Illuminate\Support\Str;
 
 class SupplierController extends Controller {
 
+    /**
+     * Display a listing of suppliers.
+     *
+     * @authenticated
+     * @response view="suppliers.index"
+     */
     public function index(SupplierDataTable $dataTable) {
 
 
@@ -27,6 +33,12 @@ class SupplierController extends Controller {
         }
     }
 
+    /**
+     * Show the form for creating a new supplier.
+     *
+     * @authenticated
+     * @response view="suppliers.create"
+     */
     public function create() {
         if (\Auth::user()->isAbleTo('supplier create')) {
             $categories = \App\Models\SupplierCategory::pluck('name', 'id');
@@ -37,6 +49,33 @@ class SupplierController extends Controller {
         }
     }
 
+    /**
+     * Store a newly created supplier.
+     *
+     * @authenticated
+     * @bodyParam name string required The supplier name. Maximum: 255. Example: ABC Corp
+     * @bodyParam category_id integer required The supplier category ID. Example: 1
+     * @bodyParam type string Supplier type (company, individual). Example: company
+     * @bodyParam contact_person string Contact person name. Example: John Doe
+     * @bodyParam phone string Phone number. Maximum: 20. Example: +911234567890
+     * @bodyParam email string Email address. Example: john@example.com
+     * @bodyParam address string Address.
+     * @bodyParam city string City. Maximum: 100.
+     * @bodyParam state string State. Maximum: 100.
+     * @bodyParam pincode string Pincode. Maximum: 10.
+     * @bodyParam country string Country. Maximum: 100.
+     * @bodyParam gst_number string GST number. Maximum: 20.
+     * @bodyParam pan_number string PAN number. Maximum: 20.
+     * @bodyParam registration_number string Registration number. Maximum: 50.
+     * @bodyParam bank_name string Bank name. Maximum: 100.
+     * @bodyParam account_number string Account number. Maximum: 30.
+     * @bodyParam ifsc_code string IFSC code. Maximum: 20.
+     * @bodyParam payment_terms string Payment terms. Maximum: 50.
+     * @bodyParam upi_screenshot_1 file UPI screenshot 1 (image, max 2MB).
+     * @bodyParam upi_screenshot_2 file UPI screenshot 2 (image, max 2MB).
+     * @bodyParam insert_from string Source identifier for modal submission. Example: modal
+     * @response redirect to="supplier.index"
+     */
     public function store(Request $request) {
         // Log session state before processing
         \Log::info('Supplier store - Session check', [
@@ -149,6 +188,13 @@ class SupplierController extends Controller {
         }
     }
 
+    /**
+     * Show the form for editing a supplier.
+     *
+     * @authenticated
+     * @urlParam supplier integer required The supplier ID. Example: 1
+     * @response view="suppliers.edit"
+     */
     public function edit(Supplier $supplier) {
         if (\Auth::user()->isAbleTo('supplier create')) {
             $categories = \App\Models\SupplierCategory::pluck('name', 'id');
@@ -159,6 +205,33 @@ class SupplierController extends Controller {
         }
     }
 
+    /**
+     * Update the specified supplier.
+     *
+     * @authenticated
+     * @urlParam supplier integer required The supplier ID. Example: 1
+     * @bodyParam name string required The supplier name. Maximum: 255. Example: ABC Corp
+     * @bodyParam category_id integer required The supplier category ID. Example: 1
+     * @bodyParam type string Supplier type (company, individual). Example: company
+     * @bodyParam contact_person string Contact person name.
+     * @bodyParam phone string Phone number. Maximum: 20.
+     * @bodyParam email string Email address.
+     * @bodyParam address string Address.
+     * @bodyParam city string City. Maximum: 100.
+     * @bodyParam state string State. Maximum: 100.
+     * @bodyParam pincode string Pincode. Maximum: 10.
+     * @bodyParam country string Country. Maximum: 100.
+     * @bodyParam gst_number string GST number. Maximum: 20.
+     * @bodyParam pan_number string PAN number. Maximum: 20.
+     * @bodyParam registration_number string Registration number. Maximum: 50.
+     * @bodyParam bank_name string Bank name. Maximum: 100.
+     * @bodyParam account_number string Account number. Maximum: 30.
+     * @bodyParam ifsc_code string IFSC code. Maximum: 20.
+     * @bodyParam payment_terms string Payment terms. Maximum: 50.
+     * @bodyParam upi_screenshot_1 file UPI screenshot 1 (image, max 2MB).
+     * @bodyParam upi_screenshot_2 file UPI screenshot 2 (image, max 2MB).
+     * @response redirect to="supplier.index"
+     */
     public function update(Request $request, Supplier $supplier) {
 
 
@@ -250,6 +323,13 @@ class SupplierController extends Controller {
         }
     }
 
+    /**
+     * Remove the specified supplier.
+     *
+     * @authenticated
+     * @urlParam supplier integer required The supplier ID. Example: 1
+     * @response redirect to="supplier.index"
+     */
     public function destroy(Supplier $supplier) {
         if (!\Auth::user()->isAbleTo('supplier delete')) {
             return redirect()->back()->with('error', __('Permission denied.'));
@@ -293,7 +373,11 @@ class SupplierController extends Controller {
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified supplier.
+     *
+     * @authenticated
+     * @urlParam supplier integer required The supplier ID. Example: 1
+     * @response view="suppliers.show"
      */
     public function show(Supplier $supplier) {
 
@@ -304,6 +388,13 @@ class SupplierController extends Controller {
         }
     }
 
+    /**
+     * Get suppliers list as JSON for AJAX requests.
+     *
+     * @authenticated
+     * @bodyParam site_id integer Site ID (currently unused, returns all suppliers).
+     * @response status=200 scenario="success" {"1": "ABC Corp", "2": "XYZ Ltd"}
+     */
     public function getSuppliersBySiteId(Request $request) {
         try {
 //            $suppliers = Supplier::where('site_id', $request->site_id)->pluck('name', 'id');

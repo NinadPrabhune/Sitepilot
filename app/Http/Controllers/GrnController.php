@@ -34,6 +34,14 @@ class GrnController extends Controller
         $this->grnService = $grnService;
     }
 
+    /**
+     * Log GRN debug actions (AJAX).
+     *
+     * @authenticated
+     * @bodyParam action string required Debug action name. Example: export_grn
+     * @bodyParam ids array required Array of GRN IDs. Example: [1, 2, 3]
+     * @response view="json"
+     */
     public function debugLog(Request $request) {
         if ($request->action == 'export_grn') {
             Log::info("Export GRN", ['ids' => $request->ids]);
@@ -42,7 +50,10 @@ class GrnController extends Controller
     }
 
     /**
-     * Display a listing of the GRNs.
+     * List all Goods Receipt Notes (GRNs).
+     *
+     * @authenticated
+     * @response view="grn.index"
      */
     public function index(GrnDataTable $dataTable) {
         $suppliers = Supplier::pluck('name', 'id');
@@ -51,6 +62,10 @@ class GrnController extends Controller
 
     /**
      * Show the form for creating a new GRN.
+     *
+     * @authenticated
+     * @queryParam po_id integer Pre-select a purchase order. Example: 3
+     * @response view="grn.create"
      */
     public function create(Request $request)
     {
@@ -93,7 +108,11 @@ class GrnController extends Controller
     }
 
     /**
-     * Fetch PO details via AJAX.
+     * Fetch purchase order details for GRN creation (AJAX).
+     *
+     * @authenticated
+     * @bodyParam po_id integer required Purchase Order ID. Example: 3
+     * @response view="json"
      */
     public function getPoDetails(Request $request)
     {
@@ -160,8 +179,25 @@ class GrnController extends Controller
     }
 
     /**
-     * Store a newly created GRN in storage.
-     * Supports both PO-based and Direct GRN.
+     * Store a newly created GRN (supports PO-based and Direct).
+     *
+     * @authenticated
+     * @bodyParam grn_type string required GRN type: against_po or direct. Example: against_po
+     * @bodyParam grn_date string required GRN date. Example: 2026-05-29
+     * @bodyParam po_id integer nullable Purchase Order ID (required for against_po). Example: 3
+     * @bodyParam direct_supplier_id integer nullable Supplier ID (required for direct). Example: 2
+     * @bodyParam direct_site_id integer nullable Site ID (required for direct). Example: 1
+     * @bodyParam delivery_challan_number string nullable Delivery challan number. Example: DC-001
+     * @bodyParam gate_entry_number string nullable Gate entry number. Example: GE-100
+     * @bodyParam items array required Array of received items.
+     * @bodyParam items.*.material_id integer required Material ID. Example: 10
+     * @bodyParam items.*.received_qty numeric required Received quantity. Example: 100
+     * @bodyParam items.*.accepted_qty numeric required Accepted quantity. Example: 95
+     * @bodyParam items.*.rejected_qty numeric required Rejected quantity. Example: 5
+     * @bodyParam items.*.price numeric required Unit price. Example: 250
+     * @bodyParam items.*.po_item_id integer nullable PO item ID (required for against_po). Example: 15
+     * @bodyParam assign_to array nullable Array of user IDs assigned. Example: [1, 2]
+     * @response view="json"
      */
     public function store(Request $request)
     {
@@ -373,7 +409,11 @@ class GrnController extends Controller
     }
 
     /**
-     * Display the specified GRN.
+     * Display a specific GRN.
+     *
+     * @authenticated
+     * @urlParam grn integer required GRN ID. Example: 1
+     * @response view="grn.show"
      */
     public function show(Grn $grn)
     {
@@ -403,7 +443,11 @@ class GrnController extends Controller
     }
 
     /**
-     * Remove the specified GRN from storage.
+     * Delete a GRN (AJAX).
+     *
+     * @authenticated
+     * @urlParam grn integer required GRN ID. Example: 1
+     * @response view="json"
      */
     public function destroy(Grn $grn)
     {
@@ -516,7 +560,11 @@ class GrnController extends Controller
     }
 
     /**
-     * Show the form for editing the specified GRN.
+     * Show the form for editing a GRN.
+     *
+     * @authenticated
+     * @urlParam grn integer required GRN ID. Example: 1
+     * @response view="grn.edit"
      */
     public function edit(Grn $grn)
     {
@@ -547,7 +595,16 @@ class GrnController extends Controller
     }
 
     /**
-     * Update the specified GRN in storage.
+     * Update a GRN (AJAX).
+     *
+     * @authenticated
+     * @urlParam grn integer required GRN ID. Example: 1
+     * @bodyParam grn_type string required GRN type: against_po or direct. Example: against_po
+     * @bodyParam grn_date string required GRN date. Example: 2026-05-29
+     * @bodyParam delivery_challan_number string nullable Delivery challan number. Example: DC-001
+     * @bodyParam gate_entry_number string nullable Gate entry number. Example: GE-100
+     * @bodyParam assign_to array nullable Array of user IDs assigned. Example: [1, 2]
+     * @response view="json"
      */
     public function update(Request $request, Grn $grn)
     {
@@ -686,8 +743,11 @@ class GrnController extends Controller
     }
 
     /**
-     * Get GRN details for printing/viewing.
-     * Regenerates PDF every time to ensure latest data is reflected.
+     * Print/view a GRN with regenerated PDF.
+     *
+     * @authenticated
+     * @urlParam grn integer required GRN ID. Example: 1
+     * @response view="grn.print"
      */
     public function print(Grn $grn)
     {
@@ -732,7 +792,11 @@ class GrnController extends Controller
     }
 
     /**
-     * Check if invoice exists for a GRN.
+     * Check if an invoice exists for a GRN (AJAX).
+     *
+     * @authenticated
+     * @bodyParam grn_id integer required GRN ID. Example: 1
+     * @response view="json"
      */
     public function checkInvoice(Request $request)
     {
@@ -844,7 +908,11 @@ class GrnController extends Controller
     }
 
     /**
-     * Get invoice data for a GRN (for creating invoice).
+     * Get invoice data for a GRN to create an invoice (AJAX).
+     *
+     * @authenticated
+     * @urlParam grn integer required GRN ID. Example: 1
+     * @response view="json"
      */
     public function getInvoiceData(Grn $grn)
     {
@@ -1009,8 +1077,10 @@ class GrnController extends Controller
     }
 
     /**
-     * Correct PurchaseOrderItem.received_qty based on actual GRN items.
-     * This fixes historical data where received_qty may have been double-counted.
+     * Correct PurchaseOrderItem.received_qty based on actual GRN items (AJAX).
+     *
+     * @authenticated
+     * @response view="json"
      */
     public function correctReceivedQty(Request $request)
     {

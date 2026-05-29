@@ -16,9 +16,12 @@ use ZipArchive;
 class LanguageController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display language management page
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam lang string required Language code. Example: en
+     * @urlParam module string required Module name. Example: general
+     * @response view="lang.index"
      */
     public function index($lang = 'en',$module='general')
     {
@@ -84,9 +87,10 @@ class LanguageController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show create language form
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @response view="lang.create"
      */
     public function create()
     {
@@ -102,10 +106,12 @@ class LanguageController extends Controller
 
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created language
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @bodyParam code string required Language code (e.g., fr). Example: fr
+     * @bodyParam fullname string required Full language name. Example: French
+     * @response redirect back to lang.index with success message
      */
     public function store(Request $request)
     {
@@ -198,10 +204,10 @@ class LanguageController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display language (not implemented)
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id int required Language ID
      */
     public function show($id)
     {
@@ -209,10 +215,10 @@ class LanguageController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Edit language (not implemented)
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id int required Language ID
      */
     public function edit($id)
     {
@@ -220,11 +226,10 @@ class LanguageController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update language (not implemented)
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id int required Language ID
      */
     public function update(Request $request, $id)
     {
@@ -232,10 +237,11 @@ class LanguageController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a language
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam lang string required Language code to delete. Example: fr
+     * @response view="lang.index"
      */
     public function destroy($lang)
     {
@@ -294,6 +300,16 @@ class LanguageController extends Controller
         }
     }
 
+    /**
+     * Save language translation data
+     *
+     * @authenticated
+     * @urlParam lang string required Language code. Example: fr
+     * @urlParam module string required Module name. Example: general
+     * @bodyParam label object required JSON object of labels
+     * @bodyParam message object optional JSON object of message files
+     * @response redirect back to lang.index
+     */
     public function storeData(Request $request, $lang,$module ='general' )
     {
         $user = \Auth::user();
@@ -350,6 +366,12 @@ class LanguageController extends Controller
         }
     }
 
+    /**
+     * Build PHP array string from translation data
+     *
+     * @param array $fileData Translation data array
+     * @return string
+     */
     public function buildArray($fileData)
     {
         $content = "";
@@ -368,6 +390,13 @@ class LanguageController extends Controller
         return $content;
     }
 
+    /**
+     * Change the current user's language
+     *
+     * @authenticated
+     * @urlParam lang string required Language code. Example: fr
+     * @response redirect back with success message
+     */
     public function changeLang($lang)
     {
         // Define the data to be updated or inserted
@@ -396,6 +425,14 @@ class LanguageController extends Controller
         return redirect()->back()->with('success', __('Language Change Successfully!'));
     }
 
+    /**
+     * Enable or disable a language
+     *
+     * @authenticated
+     * @bodyParam mode int required 1 to enable, 0 to disable. Example: 1
+     * @bodyParam lang string required Language code. Example: fr
+     * @response status=200, message="Language Enabled Successfully"
+     */
     public function disableLang(Request $request)
     {
         if(\Auth::user()->isAbleTo('language manage'))
@@ -419,6 +456,12 @@ class LanguageController extends Controller
         }
     }
 
+    /**
+     * Export all language JSON files as a ZIP archive
+     *
+     * @authenticated
+     * @response A ZIP file download containing all language JSON files
+     */
     public function exportLangJson()
     {
         $tempDirectory = storage_path('temp-lang-files');
@@ -467,11 +510,24 @@ class LanguageController extends Controller
         return response()->download($zipFilePath)->deleteFileAfterSend(true);
     }
 
+    /**
+     * Show import language JSON form
+     *
+     * @authenticated
+     * @response view="lang.import"
+     */
     public function importLangJsonUpload()
     {
         return view('lang.import');
     }
 
+    /**
+     * Import language JSON from a ZIP file
+     *
+     * @authenticated
+     * @bodyParam file file required The ZIP file containing language JSON files. Must be a zip file.
+     * @response redirect back with success message
+     */
     public function importLangJson(Request $request)
     {
         $validator = \Validator::make(

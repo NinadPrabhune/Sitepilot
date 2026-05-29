@@ -16,6 +16,12 @@ class NotificationPageController extends Controller
         $this->notificationService = $notificationService;
     }
 
+    /**
+     * Display user notifications page.
+     *
+     * @authenticated
+     * @response view="notifications.index"
+     */
     public function index(Request $request)
     {
         $notifications = ChNotificationUser::with('notification')
@@ -26,6 +32,16 @@ class NotificationPageController extends Controller
         return view('notifications.index', compact('notifications'));
     }
 
+    /**
+     * Mark a single notification as read.
+     *
+     * @authenticated
+     * @urlParam notificationUser int required Notification user ID.
+     * @response {
+     *   "success": true,
+     *   "unread_count": 5
+     * }
+     */
     public function markAsRead(ChNotificationUser $notificationUser, Request $request)
     {
         abort_unless($notificationUser->user_id === $request->user()->id, 403);
@@ -40,6 +56,15 @@ class NotificationPageController extends Controller
         ]);
     }
 
+    /**
+     * Mark all notifications as read.
+     *
+     * @authenticated
+     * @response {
+     *   "success": true,
+     *   "unread_count": 0
+     * }
+     */
     public function markAllAsRead(Request $request)
     {
         $this->notificationService->markAllAsRead($request->user()->id);
@@ -50,6 +75,17 @@ class NotificationPageController extends Controller
         ]);
     }
 
+    /**
+     * Get unread notifications (AJAX).
+     *
+     * @authenticated
+     * @queryParam limit integer Number of notifications to fetch. Default: 10.
+     * @response {
+     *   "success": true,
+     *   "notifications": [],
+     *   "unread_count": 5
+     * }
+     */
     public function unread(Request $request)
     {
         $limit = $request->get('limit', 10);
@@ -70,6 +106,16 @@ class NotificationPageController extends Controller
     }
 
 
+    /**
+     * Delete a single notification.
+     *
+     * @authenticated
+     * @urlParam notificationUser int required Notification user ID.
+     * @response {
+     *   "success": true,
+     *   "unread_count": 5
+     * }
+     */
     public function delete(ChNotificationUser $notificationUser, Request $request)
     {
         abort_unless($notificationUser->user_id === $request->user()->id, 403);
@@ -83,6 +129,15 @@ class NotificationPageController extends Controller
         ]);
     }
 
+    /**
+     * Delete all notifications for the authenticated user.
+     *
+     * @authenticated
+     * @response {
+     *   "success": true,
+     *   "unread_count": 0
+     * }
+     */
     public function deleteAll(Request $request)
     {
         $this->notificationService->deleteAllNotifications($request->user()->id);
@@ -93,6 +148,15 @@ class NotificationPageController extends Controller
         ]);
     }
 
+    /**
+     * Get unread notification count (AJAX).
+     *
+     * @authenticated
+     * @response {
+     *   "success": true,
+     *   "unread_count": 5
+     * }
+     */
     public function getCount(Request $request)
     {
         $unreadCount = $this->notificationService->countUnreadNotifications($request->user()->id);

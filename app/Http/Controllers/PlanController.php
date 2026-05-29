@@ -22,9 +22,13 @@ use PDO;
 class PlanController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of plans.
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * @queryParam type string Filter by plan type (subscription). Example: subscription
+     *
+     * @response view="plans.index"
      */
     public function index(Request $request)
     {
@@ -72,6 +76,13 @@ class PlanController extends Controller
         }
     }
 
+    /**
+     * Display list of available plans.
+     *
+     * @authenticated
+     *
+     * @response view="plans.planslist"
+     */
     public function PlanList()
     {
         if (Auth::user()->isAbleTo('plan manage')) {
@@ -87,9 +98,11 @@ class PlanController extends Controller
         }
     }
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new plan.
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * @response view="plans.create"
      */
     public function create()
     {
@@ -105,10 +118,18 @@ class PlanController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store custom plan pricing details.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * @bodyParam package_price_monthly numeric required Monthly package price. Example: 99.99
+     * @bodyParam package_price_yearly numeric required Yearly package price. Example: 999.99
+     * @bodyParam price_per_user_monthly numeric required Monthly price per user. Example: 9.99
+     * @bodyParam price_per_user_yearly numeric required Yearly price per user. Example: 99.99
+     * @bodyParam price_per_workspace_monthly numeric required Monthly price per workspace. Example: 19.99
+     * @bodyParam price_per_workspace_yearly numeric required Yearly price per workspace. Example: 199.99
+     *
+     * @response view="plans.index"
      */
     public function store(Request $request)
     {
@@ -147,10 +168,13 @@ class PlanController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified plan.
      *
-     * @param  \App\Models\Plan  $plan
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * @urlParam plan int required The plan ID. Example: 1
+     *
+     * @response view="plans.index"
      */
     public function show(Plan $plan)
     {
@@ -158,10 +182,13 @@ class PlanController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing a plan.
      *
-     * @param  \App\Models\Plan  $plan
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * @urlParam plan int required The plan ID. Example: 1
+     *
+     * @response view="plans.edit"
      */
     public function edit(Plan $plan)
     {
@@ -175,11 +202,22 @@ class PlanController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified plan.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Plan  $plan
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * @urlParam plan int required The plan ID. Example: 1
+     * @bodyParam name string required The plan name. Example: Business Pro
+     * @bodyParam number_of_user int required Number of users. Example: 10
+     * @bodyParam number_of_workspace int required Number of workspaces. Example: 3
+     * @bodyParam modules array required Selected module IDs. Example: 1,2,3
+     * @bodyParam is_free_plan boolean Whether this is a free plan. Example: false
+     * @bodyParam trial boolean Whether trial is enabled. Example: true
+     * @bodyParam trial_days int Trial duration in days. Example: 14
+     * @bodyParam package_price_monthly numeric Monthly package price. Example: 49.99
+     * @bodyParam package_price_yearly numeric Yearly package price. Example: 499.99
+     *
+     * @response view="plans.index"
      */
     public function update(Request $request, Plan $plan)
     {
@@ -234,10 +272,13 @@ class PlanController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified plan.
      *
-     * @param  \App\Models\Plan  $plan
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * @urlParam id int required The plan ID. Example: 1
+     *
+     * @response view="plans.index"
      */
     public function destroy($id)
     {
@@ -264,6 +305,23 @@ class PlanController extends Controller
         }
     }
 
+    /**
+     * Store a newly created plan.
+     *
+     * @authenticated
+     *
+     * @bodyParam name string required The plan name. Example: Starter
+     * @bodyParam number_of_user int required Number of users. Example: 5
+     * @bodyParam number_of_workspace int required Number of workspaces. Example: 2
+     * @bodyParam modules array required Selected module IDs. Example: 1,2
+     * @bodyParam is_free_plan boolean Whether this is a free plan. Example: false
+     * @bodyParam package_price_monthly numeric Monthly package price. Example: 29.99
+     * @bodyParam package_price_yearly numeric Yearly package price. Example: 299.99
+     * @bodyParam trial boolean Whether trial is enabled. Example: true
+     * @bodyParam trial_days int Trial duration in days. Example: 14
+     *
+     * @response view="plans.index"
+     */
     public function PlanStore(Request $request)
     {
         if (Auth::user()->isAbleTo('plan create')) {
@@ -303,6 +361,13 @@ class PlanController extends Controller
         }
     }
 
+    /**
+     * Display plan orders listing.
+     *
+     * @authenticated
+     *
+     * @response view="plan_order.index"
+     */
     public function orders(OrderDataTable $dataTable)
     {
         if (Auth::user()->isAbleTo('plan orders')) {
@@ -312,6 +377,15 @@ class PlanController extends Controller
         }
     }
 
+    /**
+     * Show add-on module detail.
+     *
+     * @authenticated
+     *
+     * @urlParam module string required The module name. Example: accounting
+     *
+     * @response view="plans.module_detail"
+     */
     public function AddOneDetail($module = null)
     {
         if (Auth::user()->isAbleTo('module edit') && !empty($module)) {
@@ -326,6 +400,19 @@ class PlanController extends Controller
         }
     }
 
+    /**
+     * Save add-on module details.
+     *
+     * @authenticated
+     *
+     * @urlParam id int required The add-on ID. Example: 1
+     * @bodyParam name string required Add-on name. Example: Advanced Accounting
+     * @bodyParam monthly_price numeric required Monthly price. Example: 14.99
+     * @bodyParam yearly_price numeric required Yearly price. Example: 149.99
+     * @bodyParam module_logo file Module logo image (jpg,jpeg,png). Example: null
+     *
+     * @response view="plans.index"
+     */
     public function AddOneDetailSave(Request $request, $id = null)
     {
         if (Auth::user()->isAbleTo('module edit') && !empty($id)) {
@@ -364,6 +451,16 @@ class PlanController extends Controller
         }
     }
 
+    /**
+     * Update package settings (plan/custom package toggle).
+     *
+     * @authenticated
+     *
+     * @bodyParam plan_package string Toggle plan package (on/off/off). Example: on
+     * @bodyParam custome_package string Toggle custom package (on/off). Example: off
+     *
+     * @response {"plan_package":"on"}
+     */
     public function PackageData(Request $request)
     {
         if ($request->has('plan_package')  && $request->plan_package != null && ($request->plan_package == "on" || admin_setting('custome_package') == "on")) {
@@ -391,6 +488,13 @@ class PlanController extends Controller
         }
     }
 
+    /**
+     * Display active plans for non-admin users.
+     *
+     * @authenticated
+     *
+     * @response view="plans.activeplans"
+     */
     public function ActivePlans(Request $request)
     {
         if (Auth::user()->isAbleTo('plan manage') && Auth::user()->type != 'super admin') {
@@ -403,6 +507,15 @@ class PlanController extends Controller
         }
     }
 
+    /**
+     * Show plan purchase/payment page.
+     *
+     * @authenticated
+     *
+     * @urlParam id string required Encrypted plan ID. Example: eyJpdiI6Ik1...
+     *
+     * @response view="plans.planpayment"
+     */
     public function PlanBuy(Request $request, $id)
     {
         if (Auth::user()->isAbleTo('plan manage') && Auth::user()->type != 'super admin') {
@@ -434,6 +547,15 @@ class PlanController extends Controller
         }
     }
 
+    /**
+     * Start trial for a plan.
+     *
+     * @authenticated
+     *
+     * @urlParam id string required Encrypted plan ID. Example: eyJpdiI6Ik1...
+     *
+     * @response view="plans.index"
+     */
     public function PlanTrial($id)
     {
         if (Auth::user()->isAbleTo('plan manage') && Auth::user()->type != 'super admin') {
@@ -460,6 +582,15 @@ class PlanController extends Controller
         }
     }
 
+    /**
+     * Toggle plan status (enable/disable).
+     *
+     * @authenticated
+     *
+     * @bodyParam plan_id int required The plan ID. Example: 1
+     *
+     * @response {"status":"success","message":"Plan successfully enable."}
+     */
     public function updateStatus(Request $request)
     {
         $plan = Plan::find($request->plan_id);
@@ -489,6 +620,16 @@ class PlanController extends Controller
         }
     }
 
+    /**
+     * Process refund for an order and assign free plan to user.
+     *
+     * @authenticated
+     *
+     * @urlParam id int required The order ID. Example: 1
+     * @urlParam user_id int required The user ID. Example: 5
+     *
+     * @response view="plans.index"
+     */
     public function refund($id, $user_id)
     {
         Order::where('id', $id)->update(['is_refund' => 1]);
@@ -502,6 +643,15 @@ class PlanController extends Controller
         return redirect()->back()->with('success', __('We successfully planned a refund and assigned a free plan.'));
     }
 
+    /**
+     * Show plan upgrade form for a user.
+     *
+     * @authenticated
+     *
+     * @urlParam id int required The user ID. Example: 1
+     *
+     * @response view="users.upgrade"
+     */
     public function upgradePlan($id)
     {
         if (Auth::user()->type == 'super admin') {
@@ -514,6 +664,16 @@ class PlanController extends Controller
         }
     }
 
+    /**
+     * Show plan detail page for user assignment.
+     *
+     * @authenticated
+     *
+     * @urlParam planId string required Encrypted plan ID. Example: eyJpdiI6Ik1...
+     * @urlParam userId string required Encrypted user ID. Example: eyJpdiI6Ik1...
+     *
+     * @response view="users.plan-detail"
+     */
     public function planDetail($planId, $userId)
     {
         try {
@@ -540,6 +700,15 @@ class PlanController extends Controller
         }
     }
 
+    /**
+     * Show module purchase page for a user.
+     *
+     * @authenticated
+     *
+     * @urlParam userId string required Encrypted user ID. Example: eyJpdiI6Ik1...
+     *
+     * @response view="users.modules"
+     */
     public function moduleBuy($userId)
     {
         try {
@@ -576,6 +745,20 @@ class PlanController extends Controller
         return view('users.modules', compact('modules', 'user', 'active_module', 'purchaseds', 'plan'));
     }
 
+    /**
+     * Directly assign a plan to a user.
+     *
+     * @authenticated
+     *
+     * @urlParam planId string required Encrypted plan ID. Example: eyJpdiI6Ik1...
+     * @urlParam userId string required Encrypted user ID. Example: eyJpdiI6Ik1...
+     * @bodyParam time_period string Billing period (Month/Year). Example: Month
+     * @bodyParam user_counter_input int Number of users for custom plan. Example: 5
+     * @bodyParam workspace_counter_input int Number of workspaces for custom plan. Example: 2
+     * @bodyParam user_module_input string Module IDs for custom plan. Example: 1,2,3
+     *
+     * @response view="users.index"
+     */
     public function directAssignPlanToUser(Request $request, $planId, $userId)
     {
         try {

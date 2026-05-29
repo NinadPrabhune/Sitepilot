@@ -60,6 +60,12 @@ use Illuminate\Support\Facades\Validator;
 
 class InvoiceController extends Controller
 {
+    /**
+     * List invoices
+     *
+     * @authenticated
+     * @response view="invoice.index"
+     */
     public function index(InvoiceDataTable $dataTable)
     {
         if (Auth::user()->isAbleTo('invoice manage')) {
@@ -72,6 +78,16 @@ class InvoiceController extends Controller
             return redirect()->back()->with('error', __('Permission Denied.'));
         }
     }
+    /**
+     * Display invoices in grid view
+     *
+     * @authenticated
+     * @queryParam customer int Filter by customer/user ID.
+     * @queryParam issue_date string Filter by issue date range (e.g., "2024-01-01to2024-12-31").
+     * @queryParam status string Filter by invoice status.
+     * @queryParam account_type string Filter by account type module.
+     * @response view="invoice.grid"
+     */
     public function Grid(Request $request)
     {
         if (Auth::user()->isAbleTo('invoice manage')) {
@@ -117,6 +133,13 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Show create invoice form
+     *
+     * @authenticated
+     * @urlParam customerId int optional Customer ID or encrypted quotation ID.
+     * @response view="invoice.create"
+     */
     public function create($customerId = 0)
     {
 
@@ -244,6 +267,13 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Store a new invoice
+     *
+     * @authenticated
+     * @bodyParam invoice_type string required Type of invoice (product, project, parts, rent, course, case, sales, newspaper, childcare, mobileservice, vehicleinspection, machinerepair, cardealership, musicinstitute, restaurantmenu, fleet). Example: product
+     * @response redirect back with success or error
+     */
     public function store(Request $request)
     {
 
@@ -305,6 +335,13 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Show invoice details
+     *
+     * @authenticated
+     * @urlParam e_id string required Encrypted invoice ID.
+     * @response view="invoice.view"
+     */
     public function show($e_id)
     {
         if (Auth::user()->isAbleTo('invoice show')) {
@@ -388,6 +425,13 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Show edit invoice form
+     *
+     * @authenticated
+     * @urlParam e_id string required Encrypted invoice ID.
+     * @response view="invoice.edit"
+     */
     public function edit($e_id)
     {
 
@@ -492,6 +536,17 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Get course pricing details (AJAX)
+     *
+     * @authenticated
+     * @bodyParam course int required Course ID.
+     * @response {
+     *   "price": 1000,
+     *   "discount": "100",
+     *   "amount": 900
+     * }
+     */
     public function course(Request $request)
     {
         if (!empty($request->course)) {
@@ -503,6 +558,14 @@ class InvoiceController extends Controller
         return response()->json($course);
     }
 
+    /**
+     * Update invoice
+     *
+     * @authenticated
+     * @urlParam invoice int required The invoice ID.
+     * @bodyParam invoice_type string required Invoice type.
+     * @response redirect to invoice.index
+     */
     public function update(Request $request, Invoice $invoice)
     {
 
@@ -571,6 +634,13 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Duplicate an invoice
+     *
+     * @authenticated
+     * @urlParam invoice_id int required The invoice ID to duplicate.
+     * @response redirect back with success message
+     */
     public function duplicate($invoice_id)
     {
         if (Auth::user()->isAbleTo('invoice duplicate')) {
@@ -626,6 +696,13 @@ class InvoiceController extends Controller
 
     //
 
+    /**
+     * Mark invoice as sent
+     *
+     * @authenticated
+     * @urlParam id int required The invoice ID.
+     * @response redirect back with success message
+     */
     public function sent($id)
     {
         if (Auth::user()->isAbleTo('invoice send')) {
@@ -676,6 +753,13 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Resend invoice to customer
+     *
+     * @authenticated
+     * @urlParam id int required The invoice ID.
+     * @response redirect back with success message
+     */
     public function resent($id)
     {
         if (Auth::user()->isAbleTo('invoice send')) {
@@ -719,6 +803,12 @@ class InvoiceController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Send payment reminder for an invoice
+     *
+     * @urlParam invoice_id int required The invoice ID.
+     * @response redirect back with success message
+     */
     public function paymentReminder($invoice_id)
     {
         $invoice            = Invoice::find($invoice_id);
@@ -762,6 +852,12 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * View invoice PDF
+     *
+     * @urlParam invoice_id string required Encrypted invoice ID.
+     * @response view="invoice.templates.*"
+     */
     public function invoice($invoice_id)
     {
         try {
@@ -924,6 +1020,19 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Get product details for invoice (AJAX)
+     *
+     * @authenticated
+     * @bodyParam product_id int required Product/service ID.
+     * @response {
+     *   "product": {},
+     *   "unit": "",
+     *   "taxRate": 0,
+     *   "taxes": 0,
+     *   "totalAmount": 0
+     * }
+     */
     public function product(Request $request)
     {
         $data['product']     = $product = \Workdo\ProductService\Entities\ProductService::find($request->product_id);
@@ -938,6 +1047,15 @@ class InvoiceController extends Controller
         return json_encode($data);
     }
 
+    /**
+     * Remove a product from an invoice (AJAX)
+     *
+     * @authenticated
+     * @bodyParam id int required The invoice product ID to delete.
+     * @response {
+     *   "success": "The invoice has been deleted"
+     * }
+     */
     public function productDestroy(Request $request)
     {
 
@@ -976,6 +1094,18 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Save invoice template settings
+     *
+     * @authenticated
+     * @bodyParam invoice_logo file optional Invoice logo image.
+     * @bodyParam invoice_footer_notes string optional Footer notes (single line).
+     * @bodyParam invoice_template string optional Template name.
+     * @bodyParam invoice_color string optional Template color hex.
+     * @bodyParam invoice_shipping_display string optional Shipping display toggle.
+     * @bodyParam invoice_qr_display string optional QR code display toggle.
+     * @response redirect back with success message
+     */
     public function saveTemplateSettings(Request $request)
     {
         $user = Auth::user();
@@ -1036,6 +1166,13 @@ class InvoiceController extends Controller
         return redirect()->back()->with('success', __('Invoice Print setting save sucessfully.'));
     }
 
+    /**
+     * Preview invoice template
+     *
+     * @urlParam template string required The template name. Example: template1
+     * @urlParam color string required The template color hex (without #).
+     * @response view="invoice.templates.*"
+     */
     public function previewInvoice($template, $color)
     {
         $invoice  = new Invoice();
@@ -1158,6 +1295,14 @@ class InvoiceController extends Controller
         return view('invoice.templates.' . $template, compact('invoice', 'preview', 'color', 'img', 'settings', 'customer', 'font_color', 'customFields', 'bank_details'));
     }
 
+    /**
+     * Get invoice item details (AJAX)
+     *
+     * @authenticated
+     * @bodyParam invoice_id int required The invoice ID.
+     * @bodyParam product_id int required The product ID.
+     * @response JSON with item, product, unit, tax, amount details
+     */
     public function items(Request $request)
     {
 
@@ -1174,6 +1319,14 @@ class InvoiceController extends Controller
         return json_encode($data);
     }
 
+    /**
+     * Get customer details (AJAX)
+     *
+     * @authenticated
+     * @bodyParam type string required Customer type (childcare, mobileservice, vehicleinspection, machinerepair, course, restaurantmenu, etc.).
+     * @bodyParam id int required Customer/record ID.
+     * @response JSON or view with customer details
+     */
     public function customer(Request $request)
     {
         $type = $request->type;
@@ -1232,6 +1385,12 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Get child details for childcare invoice
+     *
+     * @param Request $request The request containing child ID and optional childfee_id.
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getChildDetail($request)
     {
         $child = Child::find($request->id);
@@ -1353,6 +1512,12 @@ class InvoiceController extends Controller
             return response()->json(['status' => 'success' ,'html' => $html]);
         }
     }
+    /**
+     * Show invoice payment page (public)
+     *
+     * @urlParam invoice_id string required Encrypted invoice ID.
+     * @response view="invoice.invoicepay"
+     */
     public function payinvoice($invoice_id)
     {
         if (!empty($invoice_id)) {
@@ -1492,6 +1657,13 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Show payment form for an invoice
+     *
+     * @authenticated
+     * @urlParam invoice_id int required The invoice ID.
+     * @response view="invoice.payment"
+     */
     public function payment($invoice_id)
     {
 
@@ -1516,6 +1688,19 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Create a payment for an invoice
+     *
+     * @authenticated
+     * @urlParam invoice_id int required The invoice ID.
+     * @bodyParam date date required Payment date.
+     * @bodyParam amount numeric required Payment amount.
+     * @bodyParam account_id int required Bank account ID (when Account module active).
+     * @bodyParam reference string optional Payment reference.
+     * @bodyParam description string optional Payment description.
+     * @bodyParam add_receipt file optional Payment receipt file.
+     * @response redirect back with success message
+     */
     public function createPayment(Request $request, $invoice_id)
     {
         if (Auth::user()->isAbleTo('invoice payment create')) {
@@ -1633,6 +1818,14 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Delete an invoice payment
+     *
+     * @authenticated
+     * @urlParam invoice_id int required The invoice ID.
+     * @urlParam payment_id int required The payment ID.
+     * @response redirect back with success message
+     */
     public function paymentDestroy($invoice_id, $payment_id)
     {
         if (Auth::user()->isAbleTo('invoice payment delete')) {
@@ -1681,6 +1874,11 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Get the next invoice number
+     *
+     * @return int
+     */
     function invoiceNumber()
     {
         $latest = company_setting('invoice_starting_number');
@@ -1691,6 +1889,13 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Delete an invoice
+     *
+     * @authenticated
+     * @urlParam invoice int required The invoice ID.
+     * @response redirect to invoice.index
+     */
     public function destroy(Invoice $invoice)
     {
         if (Auth::user()->isAbleTo('invoice delete')) {
@@ -1773,6 +1978,15 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Get invoice section HTML for a given type (AJAX)
+     *
+     * @authenticated
+     * @bodyParam type string required Section type (product, project, parts, rent, course, case, sales, newspaper, childcare, mobileservice, vehicleinspection, machinerepair, cardealership, musicinstitute, restaurantmenu, fleet).
+     * @bodyParam acction string required Action context (create/edit).
+     * @bodyParam invoice_id int optional Invoice ID (for edit action).
+     * @response JSON with html content
+     */
     public function InvoiceSectionGet(Request $request)
     {
         $type = $request->type;
@@ -2060,6 +2274,12 @@ class InvoiceController extends Controller
             return [];
         }
     }
+    /**
+     * Generate invoice PDF
+     *
+     * @urlParam id string required Encrypted invoice ID.
+     * @response view="invoice.pdf"
+     */
     public function pdf($id)
     {
         try {
@@ -2080,6 +2300,14 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Upload invoice attachment (AJAX)
+     *
+     * @authenticated
+     * @urlParam id int required The invoice ID.
+     * @bodyParam file file required The attachment file.
+     * @response JSON with is_success flag
+     */
     public function invoiceAttechment(Request $request, $id)
     {
         $invoice = Invoice::find($id);
@@ -2122,6 +2350,13 @@ class InvoiceController extends Controller
         }
     }
 
+    /**
+     * Delete invoice attachment
+     *
+     * @authenticated
+     * @urlParam id int required The attachment ID.
+     * @response redirect back with success message
+     */
     public function invoiceAttechmentDestroy($id)
     {
         $file = InvoiceAttechment::find($id);
@@ -2134,6 +2369,13 @@ class InvoiceController extends Controller
     }
 
 
+    /**
+     * Get invoice customers based on type (AJAX)
+     *
+     * @authenticated
+     * @bodyParam type string required Customer type (SalesAgent, Taskly, Account, LMS, etc.).
+     * @response JSON with customers list and label
+     */
     public function getInvoiceCustomers(Request $request)
     {
         $customers = [];

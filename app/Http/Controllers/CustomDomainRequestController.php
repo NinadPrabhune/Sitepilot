@@ -14,6 +14,12 @@ class CustomDomainRequestController extends Controller
 {
 
 
+    /**
+     * List all custom domain requests.
+     *
+     * @authenticated
+     * @response view="custom_domain_request.index"
+     */
     public function index(CustomDomainRequestDataTable $dataTable)
     {
         if (Auth::user()->isAbleTo('plan orders'))
@@ -29,6 +35,14 @@ class CustomDomainRequestController extends Controller
     }
 
 
+    /**
+     * Accept or reject a custom domain request.
+     *
+     * @authenticated
+     * @urlParam id integer required The ID of the custom domain request. Example: 1
+     * @urlParam response integer required 1 to accept, 2 to reject. Example: 1
+     * @response view="custom_domain_request.index" (redirect back)
+     */
     public function acceptRequest($id, $response)
     {
         if (Auth::user()->isAbleTo('plan orders'))
@@ -72,6 +86,13 @@ class CustomDomainRequestController extends Controller
         }
     }
 
+    /**
+     * Delete a custom domain request.
+     *
+     * @authenticated
+     * @urlParam id integer required The ID of the custom domain request to delete. Example: 1
+     * @response view="custom_domain_request.index" (redirect)
+     */
     public function destroy($id)
     {
 

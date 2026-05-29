@@ -6,6 +6,12 @@ use App\DataTables\StockReportDataTable;
 
 class StockReportController extends Controller
 {
+    /**
+     * Display the stock report data table.
+     *
+     * @authenticated
+     * @response view="stock-reports.index"
+     */
     public function index(StockReportDataTable $dataTable)
     {
         

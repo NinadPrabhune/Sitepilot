@@ -16,6 +16,24 @@ use Illuminate\Support\Facades\Auth;
 
 class SupplierCategoryApiController extends Controller
 {
+    /**
+     * List Supplier Categories
+     *
+     * Returns all active supplier categories.
+     *
+     * @authenticated
+     * @requiredPermission supplier-category manage
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": 1,
+     *   "data": [
+     *     {"id": 1, "name": "Subcontractors", "description": null, "is_active": true, ...}
+     *   ]
+     * }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     // GET /api/supplier-categories
     public function index()
     {
@@ -67,6 +85,26 @@ class SupplierCategoryApiController extends Controller
         return response()->json(['status' => 1, 'data' => $category->toArray(), 'message' => 'Category created successfully']);
     }
 
+    /**
+     * Show Supplier Category
+     *
+     * Retrieve a specific supplier category by ID.
+     *
+     * @authenticated
+     * @requiredPermission supplier-category show
+     *
+     * @urlParam id integer required Category ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": 1,
+     *   "data": {"id": 1, "name": "Subcontractors", "description": null, ...}
+     * }
+     * @response status=404 scenario="Not found"
+     * { "status": 0, "message": "Category not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     // GET /api/supplier-categories/{id}
     public function show($id)
     {
@@ -125,6 +163,25 @@ class SupplierCategoryApiController extends Controller
         return response()->json(['status' => 1, 'data' => $category->toArray(), 'message' => 'Category updated successfully']);
     }
 
+    /**
+     * Delete Supplier Category
+     *
+     * Permanently delete a supplier category. Category ID 1 (Subcontractors) is protected from deletion. Categories used in suppliers cannot be deleted.
+     *
+     * @authenticated
+     * @requiredPermission supplier-category delete
+     *
+     * @urlParam id integer required Category ID. Example: 1
+     *
+     * @response status=200 scenario="Deleted successfully"
+     * { "status": 1, "message": "Category deleted successfully" }
+     * @response status=400 scenario="In use by suppliers"
+     * { "status": 0, "message": "Supplier Category cannot be deleted because it is used in the Suppliers Master." }
+     * @response status=403 scenario="Permission denied or system category"
+     * { "status": 0, "message": "This category cannot be deleted as it is a system category used by the application." }
+     * @response status=404 scenario="Not found"
+     * { "status": 0, "message": "Category not found" }
+     */
     // DELETE /api/supplier-categories/{id}
     public function destroy($id)
     {

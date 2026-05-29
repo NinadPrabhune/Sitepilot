@@ -19,13 +19,24 @@ use Workdo\Taskly\Entities\WorkSpace;
 class IndentController extends Controller
 {
     /**
-     * Display a listing of the indents.
+     * List all indents.
+     *
+     * @authenticated
+     * @response view="indent.index"
      */
     public function index(IndentDataTable $dataTable) {
         $suppliers = Supplier::pluck('name', 'id');
         return $dataTable->render('indent.index', compact('suppliers'));
     }
 
+    /**
+     * Log indent debug actions (AJAX).
+     *
+     * @authenticated
+     * @bodyParam action string required Debug action name. Example: export_indent
+     * @bodyParam ids array required Array of indent IDs. Example: [1, 2, 3]
+     * @response view="json"
+     */
     public function debugLog(Request $request) {
         if ($request->action == 'export_indent') {
             Log::info("Export Indent", ['ids' => $request->ids]);
@@ -35,6 +46,9 @@ class IndentController extends Controller
 
     /**
      * Show the form for creating a new indent.
+     *
+     * @authenticated
+     * @response view="indent.create"
      */
     public function create(Request $request) {
         $workspaceId = getActiveWorkSpace();
@@ -57,7 +71,24 @@ class IndentController extends Controller
     }
 
     /**
-     * Store a newly created indent in storage.
+     * Store a newly created indent.
+     *
+     * @authenticated
+     * @bodyParam indent_date string required Indent date. Example: 2026-05-29
+     * @bodyParam supplier_id integer nullable Supplier ID. Example: 2
+     * @bodyParam site_id integer required Site/Project ID. Example: 1
+     * @bodyParam description string nullable Description. Example: Urgent material requirement
+     * @bodyParam delivery_date string nullable Expected delivery date. Example: 2026-06-15
+     * @bodyParam remark string nullable Additional remarks. Example: Please expedite
+     * @bodyParam assign_to array nullable Array of user IDs. Example: [1, 3]
+     * @bodyParam items array required Array of indent items.
+     * @bodyParam items.*.material_id integer required Material ID. Example: 10
+     * @bodyParam items.*.quantity numeric required Quantity. Example: 50
+     * @bodyParam items.*.unit string required Unit. Example: PCS
+     * @bodyParam items.*.price numeric required Unit price. Example: 250
+     * @bodyParam items.*.remarks string nullable Item remarks. Example: High quality
+     * @bodyParam reference_file file nullable Reference file attachment.
+     * @response view="indent.index" (redirect)
      */
     public function store(Request $request)
     {
@@ -210,7 +241,11 @@ class IndentController extends Controller
     }
 
     /**
-     * Display the specified indent.
+     * Display a specific indent.
+     *
+     * @authenticated
+     * @urlParam indent integer required Indent ID. Example: 1
+     * @response view="indent.show"
      */
     public function show(Indent $indent)
     {
@@ -220,7 +255,11 @@ class IndentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified indent.
+     * Show the form for editing an indent.
+     *
+     * @authenticated
+     * @urlParam indent integer required Indent ID. Example: 1
+     * @response view="indent.edit"
      */
     public function edit(Indent $indent)
     {
@@ -248,7 +287,25 @@ class IndentController extends Controller
     }
 
     /**
-     * Update the specified indent in storage.
+     * Update an indent.
+     *
+     * @authenticated
+     * @urlParam indent integer required Indent ID. Example: 1
+     * @bodyParam indent_date string required Indent date. Example: 2026-05-29
+     * @bodyParam supplier_id integer nullable Supplier ID. Example: 2
+     * @bodyParam site_id integer nullable Site/Project ID. Example: 1
+     * @bodyParam description string nullable Description. Example: Updated material request
+     * @bodyParam delivery_date string nullable Expected delivery date. Example: 2026-06-20
+     * @bodyParam remark string nullable Additional remarks. Example: Priority
+     * @bodyParam assign_to array nullable Array of user IDs. Example: [1, 3]
+     * @bodyParam items array required Array of indent items.
+     * @bodyParam items.*.material_id integer required Material ID. Example: 10
+     * @bodyParam items.*.quantity numeric required Quantity. Example: 75
+     * @bodyParam items.*.unit string required Unit. Example: PCS
+     * @bodyParam items.*.price numeric required Unit price. Example: 250
+     * @bodyParam items.*.remarks string nullable Item remarks. Example: Updated quantity
+     * @bodyParam reference_file file nullable Reference file attachment.
+     * @response view="indent.index" (redirect)
      */
     public function update(Request $request, Indent $indent)
     {
@@ -427,7 +484,11 @@ class IndentController extends Controller
     }
 
     /**
-     * Remove the specified indent from storage.
+     * Delete an indent.
+     *
+     * @authenticated
+     * @urlParam indent integer required Indent ID. Example: 1
+     * @response view="indent.index" (redirect)
      */
     public function destroy(Indent $indent)
     {
@@ -445,7 +506,11 @@ class IndentController extends Controller
     }
 
     /**
-     * Get materials for a specific indent (for Purchase Order selection)
+     * Get materials for a specific indent for PO selection (AJAX).
+     *
+     * @authenticated
+     * @bodyParam indent_id integer required Indent ID. Example: 1
+     * @response view="json"
      */
     public function getIndentMaterials(Request $request)
     {
@@ -478,7 +543,10 @@ class IndentController extends Controller
     }
 
     /**
-     * Get available indents (not closed) for dropdown
+     * Get available indents (open/partially closed) for dropdown (AJAX).
+     *
+     * @authenticated
+     * @response view="json"
      */
     public function getAvailableIndents()
     {

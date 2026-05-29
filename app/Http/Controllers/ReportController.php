@@ -14,6 +14,11 @@ use Carbon\Carbon;
 
 class ReportController extends Controller
 {
+    /**
+     * Get month names list.
+     *
+     * @response array List of month names
+     */
     public function yearMonth()
     {
 
@@ -32,6 +37,11 @@ class ReportController extends Controller
 
         return $month;
     }
+    /**
+     * Get year list (past 5 years).
+     *
+     * @response array Year list
+     */
     public function yearList()
     {
         $starting_year = date('Y', strtotime('-5 year'));
@@ -45,6 +55,12 @@ class ReportController extends Controller
         return $years;
     }
 
+    /**
+     * Warehouse report page.
+     *
+     * @authenticated
+     * @response view="report.warehouse"
+     */
     public function warehouseReport()
     {
         if(\Auth::user()->isAbleTo('report warehouse'))
@@ -73,6 +89,16 @@ class ReportController extends Controller
         }
     }
 
+    /**
+     * Daily purchase report.
+     *
+     * @authenticated
+     * @queryParam warehouse integer Warehouse ID filter.
+     * @queryParam vendor integer Vendor ID filter.
+     * @queryParam start_date string Start date for report range.
+     * @queryParam end_date string End date for report range.
+     * @response view="report.daily_purchase"
+     */
     public function purchaseDailyReport(Request $request)
     {
 
@@ -181,6 +207,15 @@ class ReportController extends Controller
     }
 
 
+    /**
+     * Monthly purchase report.
+     *
+     * @authenticated
+     * @queryParam warehouse integer Warehouse ID filter.
+     * @queryParam vendor integer Vendor ID filter.
+     * @queryParam year integer Year for report. Example: 2026
+     * @response view="report.monthly_purchase"
+     */
     public function purchaseMonthlyReport(Request $request)
     {
         if(\Auth::user()->isAbleTo('report purchase'))

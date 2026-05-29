@@ -17,7 +17,10 @@ use App\Events\UpdateMaterialCategory;
 class MaterialCategoryController extends Controller {
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of material categories
+     *
+     * @authenticated
+     * @response view="material-categories.index"
      */
     public function index(MaterialCategoryDataTable $dataTable) {
         if (\Auth::user()->isAbleTo('material-category manage')) {
@@ -32,7 +35,10 @@ class MaterialCategoryController extends Controller {
      */
 
     /**
-     * Show the form for creating a new resource.
+     * Show create material category form
+     *
+     * @authenticated
+     * @response view="material-categories.create"
      */
     public function create() {
         if (\Auth::user()->isAbleTo('material-category create')) {
@@ -46,7 +52,12 @@ class MaterialCategoryController extends Controller {
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created material category
+     *
+     * @authenticated
+     * @bodyParam name string required Category name. Max 255 chars. Example: Cement
+     * @bodyParam site_id int optional Site ID.
+     * @response redirect to material-categories.index
      */
     public function store(Request $request) {
 
@@ -82,7 +93,14 @@ class MaterialCategoryController extends Controller {
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified material category (JSON)
+     *
+     * @authenticated
+     * @urlParam material_category int required The material category ID.
+     * @response {
+     *   "id": 1,
+     *   "name": "Cement"
+     * }
      */
     public function show(MaterialCategory $MaterialCategory) {
 
@@ -94,7 +112,11 @@ class MaterialCategoryController extends Controller {
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show edit material category form
+     *
+     * @authenticated
+     * @urlParam material_category int required The material category ID.
+     * @response view="material-categories.edit"
      */
     public function edit(MaterialCategory $MaterialCategory) {
         if (\Auth::user()->isAbleTo('material-category edit')) {
@@ -111,7 +133,12 @@ class MaterialCategoryController extends Controller {
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified material category
+     *
+     * @authenticated
+     * @urlParam material_category int required The material category ID.
+     * @bodyParam name string required Category name. Max 255 chars. Must be unique.
+     * @response redirect to material-categories.index
      */
     public function update(Request $request, MaterialCategory $MaterialCategory) {
 
@@ -144,7 +171,11 @@ class MaterialCategoryController extends Controller {
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified material category
+     *
+     * @authenticated
+     * @urlParam material_category int required The material category ID.
+     * @response redirect to material-categories.index
      */
     public function destroy(MaterialCategory $MaterialCategory) {
         if (\Auth::user()->isAbleTo('material-category delete')) {
@@ -173,7 +204,14 @@ class MaterialCategoryController extends Controller {
     }
 
     /**
-     * AJAX endpoint for material categories
+     * AJAX endpoint for material categories (typeahead)
+     *
+     * @authenticated
+     * @queryParam q string Search query to filter categories by name.
+     * @response {
+     *   "status": 1,
+     *   "data": [{"id": 1, "name": "Cement"}]
+     * }
      */
     public function getCategoriesAjax(Request $request) {
         $query = MaterialCategory::query();

@@ -11,6 +11,13 @@ class LedgerController extends Controller
 {
     /**
      * Display ledger entries list
+     *
+     * @authenticated
+     * @queryParam machinery_id int Filter by machinery ID
+     * @queryParam date_from date Filter entries from this date. Example: 2024-01-01
+     * @queryParam date_to date Filter entries to this date. Example: 2024-12-31
+     * @queryParam entry_type string Filter by entry type (credit/debit)
+     * @response view="ledger.index"
      */
     public function index(Request $request)
     {

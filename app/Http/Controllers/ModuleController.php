@@ -20,6 +20,12 @@ use ZipArchive;
 
 class ModuleController extends Controller
 {
+    /**
+     * List all modules (enabled and available)
+     *
+     * @authenticated
+     * @response view="module.index"
+     */
     public function index()
     {
         if (Auth::user()->isAbleTo('module manage')) {
@@ -73,6 +79,12 @@ class ModuleController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Show add module form
+     *
+     * @authenticated
+     * @response view="module.add"
+     */
     public function add()
     {
         if (Auth::user()->isAbleTo('module add')) {
@@ -81,6 +93,13 @@ class ModuleController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Enable or disable a module
+     *
+     * @authenticated
+     * @bodyParam name string required Module name to toggle. Example: Taskly
+     * @response redirect back with success message
+     */
     public function enable(Request $request)
     {
         $module = Module::find($request->name);
@@ -171,6 +190,16 @@ class ModuleController extends Controller
         }
     }
 
+    /**
+     * Install a module from a ZIP file
+     *
+     * @authenticated
+     * @bodyParam file file required The module ZIP file.
+     * @response {
+     *   "status": "success",
+     *   "message": "Install successfully."
+     * }
+     */
     public function install(Request $request)
     {
         $zip = new ZipArchive;
@@ -271,6 +300,12 @@ class ModuleController extends Controller
         return error_res('oops something wren wrong');
     }
 
+    /**
+     * Check if parent modules are active
+     *
+     * @param object $module The module instance
+     * @return array Status and message
+     */
     public function Check_Parent_Module($module)
     {
         $path = $module->getPath() . '/module.json';
@@ -298,6 +333,12 @@ class ModuleController extends Controller
             return $data;
         }
     }
+    /**
+     * Check and disable child modules
+     *
+     * @param object $module The module instance
+     * @return bool
+     */
     public function Check_Child_Module($module)
     {
         $path = $module->getPath() . '/module.json';
@@ -319,6 +360,12 @@ class ModuleController extends Controller
             return true;
         }
     }
+    /**
+     * Store guest module selection in session
+     *
+     * @param Request $request
+     * @return bool
+     */
     public function GuestModuleSelection(Request $request)
     {
         try {
@@ -330,6 +377,12 @@ class ModuleController extends Controller
         }
         return true;
     }
+    /**
+     * Reset guest module selection from session
+     *
+     * @authenticated
+     * @response redirect to plans.index
+     */
     public function ModuleReset(Request $request)
     {
         $value = Session::get('user-module-selection');
@@ -338,6 +391,14 @@ class ModuleController extends Controller
         }
         return redirect()->route('plans.index');
     }
+    /**
+     * Cancel a module subscription for a user
+     *
+     * @authenticated
+     * @urlParam name string required Encrypted module name.
+     * @urlParam user_id int optional User ID. Defaults to current user.
+     * @response redirect back with success message
+     */
     public function CancelAddOn($name = null,$user_id=null)
     {
         if (!empty($name)) {

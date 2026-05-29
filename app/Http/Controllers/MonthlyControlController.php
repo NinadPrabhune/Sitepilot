@@ -29,6 +29,9 @@ class MonthlyControlController extends Controller
 
     /**
      * Monthly control dashboard
+     *
+     * @authenticated
+     * @response view="machinery.monthly-control.index"
      */
     public function index()
     {
@@ -62,6 +65,11 @@ class MonthlyControlController extends Controller
 
     /**
      * Lock month confirmation
+     *
+     * @authenticated
+     * @bodyParam month integer required Month number (1-12). Example: 3
+     * @bodyParam year integer required Year (2020-2030). Example: 2026
+     * @response view="machinery.monthly-control.lock-confirm"
      */
     public function lockConfirm(Request $request)
     {
@@ -93,6 +101,12 @@ class MonthlyControlController extends Controller
 
     /**
      * Lock month
+     *
+     * @authenticated
+     * @bodyParam month integer required Month number (1-12). Example: 3
+     * @bodyParam year integer required Year (2020-2030). Example: 2026
+     * @bodyParam remarks string nullable Remarks for the lock (max 500 chars).
+     * @response redirect to="monthly-control.index"
      */
     public function lock(Request $request)
     {
@@ -119,6 +133,11 @@ class MonthlyControlController extends Controller
 
     /**
      * Generate billing for locked month
+     *
+     * @authenticated
+     * @bodyParam month integer required Month number (1-12). Example: 3
+     * @bodyParam year integer required Year (2020-2030). Example: 2026
+     * @response redirect to="monthly-control.index"
      */
     public function generateBilling(Request $request)
     {
@@ -153,6 +172,11 @@ class MonthlyControlController extends Controller
 
     /**
      * Group billing items into bills
+     *
+     * @authenticated
+     * @bodyParam month integer required Month number (1-12). Example: 3
+     * @bodyParam year integer required Year (2020-2030). Example: 2026
+     * @response redirect to="monthly-control.index"
      */
     public function groupBills(Request $request)
     {
@@ -198,6 +222,20 @@ class MonthlyControlController extends Controller
 
     /**
      * Check month status (AJAX)
+     *
+     * @authenticated
+     * @bodyParam month integer required Month number (1-12). Example: 3
+     * @bodyParam year integer required Year (2020-2030). Example: 2026
+     * @response {
+     *   "is_locked": true,
+     *   "has_billing_items": false,
+     *   "has_unbilled_items": false,
+     *   "actions": {
+     *     "can_lock": false,
+     *     "can_generate_billing": false,
+     *     "can_group_bills": false
+     *   }
+     * }
      */
     public function checkStatus(Request $request)
     {

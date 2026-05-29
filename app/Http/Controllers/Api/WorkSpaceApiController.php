@@ -22,6 +22,23 @@ use Workdo\Taskly\Entities\Project;
 
 class WorkSpaceApiController extends Controller {
     
+    /**
+     * List Workspaces
+     *
+     * Returns all active workspaces. Users with 'workspace manage' permission see all workspaces; others see workspaces they are assigned to via projects.
+     *
+     * @authenticated
+     * @requiredPermission workspace manage
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "workspaces": [
+     *     {"id": 1, "name": "Main Office", "slug": "main-office", "status": "active", ...}
+     *   ]
+     * }
+     * @response status=403 scenario="Permission denied"
+     * { "error": "Permission denied" }
+     */
     public function index()
     {
         if (!Auth::user()->isAbleTo('workspace manage')) {
@@ -75,6 +92,39 @@ class WorkSpaceApiController extends Controller {
 //        }
 //    }
 
+    /**
+     * Create Workspace
+     *
+     * Create a new workspace/site. Optionally upload a logo image. Seeds global master data on creation.
+     *
+     * @authenticated
+     * @requiredPermission workspace create
+     *
+     * @bodyParam name string required Workspace name. Example: Main Office
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     * @bodyParam email string optional Workspace email. Example: office@example.com
+     * @bodyParam phone string optional Phone number. Example: +1234567890
+     * @bodyParam pincode string optional Pincode/ZIP code. Example: 100001
+     * @bodyParam gst_number string optional GST number. Example: 27AAECS1234F1Z5
+     * @bodyParam pan_number string optional PAN number. Example: ABCDE1234F
+     * @bodyParam ifsc_code string optional IFSC code. Example: SBIN0001234
+     * @bodyParam bank_name string optional Bank name. Example: State Bank of India
+     * @bodyParam account_number string optional Bank account number. Example: 1234567890
+     * @bodyParam logo file optional Workspace logo image (jpeg,jpg,png,gif,svg, max 2 MB). No-example
+     * @bodyParam domain_switch string optional Domain switch setting. Example: on
+     * @bodyParam domains string optional Custom domain name. Example: example.com
+     * @bodyParam subdomain string optional Subdomain. Example: mysite
+     *
+     * @response status=201 scenario="Created successfully"
+     * {
+     *   "success": "Workspace created successfully.",
+     *   "workspace": {"id": 1, "name": "Main Office", "slug": "main-office", ...}
+     * }
+     * @response status=422 scenario="Validation error"
+     * { "error": "Validation failed message", "details": {...} }
+     * @response status=403 scenario="Permission denied"
+     * { "error": "Permission denied" }
+     */
     public function store(Request $request) {
         if (!Auth::user()->isAbleTo('workspace create')) {
             return response()->json(['error' => 'Permission denied'], 403);
@@ -204,6 +254,25 @@ class WorkSpaceApiController extends Controller {
         }
     }
 
+    /**
+     * Show Workspace
+     *
+     * Retrieve a specific workspace by ID.
+     *
+     * @authenticated
+     * @requiredPermission workspace show
+     *
+     * @urlParam id integer required Workspace ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "workspace": {"id": 1, "name": "Main Office", "slug": "main-office", "status": "active", ...}
+     * }
+     * @response status=404 scenario="Not found"
+     * { "error": "Workspace not found." }
+     * @response status=403 scenario="Permission denied"
+     * { "error": "Permission denied" }
+     */
     public function show($id) {
         if (!Auth::user()->isAbleTo('workspace show')) {
             return response()->json(['error' => 'Permission denied'], 403);
@@ -223,6 +292,41 @@ class WorkSpaceApiController extends Controller {
         }
     }
 
+    /**
+     * Update Workspace
+     *
+     * Update an existing workspace's details including logo. Seeds global master data on completion.
+     *
+     * @authenticated
+     * @requiredPermission workspace edit
+     *
+     * @urlParam id integer required Workspace ID. Example: 1
+     *
+     * @bodyParam name string required Workspace name. Example: Main Office
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     * @bodyParam email string optional Workspace email. Example: office@example.com
+     * @bodyParam phone string optional Phone number. Example: +1234567890
+     * @bodyParam pincode string optional Pincode/ZIP code. Example: 100001
+     * @bodyParam gst_number string optional GST number. Example: 27AAECS1234F1Z5
+     * @bodyParam pan_number string optional PAN number. Example: ABCDE1234F
+     * @bodyParam ifsc_code string optional IFSC code. Example: SBIN0001234
+     * @bodyParam bank_name string optional Bank name. Example: State Bank of India
+     * @bodyParam account_number string optional Bank account number. Example: 1234567890
+     * @bodyParam logo file optional Workspace logo image (jpeg,jpg,png,gif,svg, max 2 MB). No-example
+     * @bodyParam status string optional Workspace status. Example: active
+     *
+     * @response status=200 scenario="Updated successfully"
+     * {
+     *   "success": "Workspace updated successfully.",
+     *   "workspace": {"id": 1, "name": "Main Office", "slug": "main-office", ...}
+     * }
+     * @response status=422 scenario="Validation error"
+     * { "error": "Validation failed message", "details": {...} }
+     * @response status=404 scenario="Not found"
+     * { "error": "Workspace not found." }
+     * @response status=403 scenario="Permission denied"
+     * { "error": "Permission denied" }
+     */
     public function update(Request $request, $id) {
         if (!Auth::user()->isAbleTo('workspace edit')) {
             return response()->json(['error' => 'Permission denied'], 403);
@@ -334,6 +438,25 @@ class WorkSpaceApiController extends Controller {
         }
     }
 
+    /**
+     * Delete Workspace
+     *
+     * Permanently delete a workspace. Workspaces used in projects cannot be deleted.
+     *
+     * @authenticated
+     * @requiredPermission workspace delete
+     *
+     * @urlParam id integer required Workspace ID. Example: 1
+     *
+     * @response status=200 scenario="Deleted successfully"
+     * { "success": "Workspace deleted successfully." }
+     * @response status=400 scenario="In use by projects"
+     * { "status": 0, "message": "Site cannot be deleted because it is used in Projects." }
+     * @response status=404 scenario="Not found"
+     * { "error": "Workspace not found." }
+     * @response status=403 scenario="Permission denied"
+     * { "status": "error", "message": "Permission denied." }
+     */
     public function destroy($id) {
         
         

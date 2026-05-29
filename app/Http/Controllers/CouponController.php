@@ -11,6 +11,12 @@ use Illuminate\Http\Request;
 class CouponController extends Controller
 {
 
+    /**
+     * List all coupons
+     *
+     * @authenticated
+     * @response view="coupon.index"
+     */
     public function index(CouponDataTable $dataTable)
     {
         if(\Auth::user()->isAbleTo('coupon manage'))
@@ -24,6 +30,12 @@ class CouponController extends Controller
     }
 
 
+    /**
+     * Show create coupon form
+     *
+     * @authenticated
+     * @response view="coupon.create"
+     */
     public function create()
     {
         if(\Auth::user()->isAbleTo('coupon create'))
@@ -39,6 +51,25 @@ class CouponController extends Controller
     }
 
 
+    /**
+     * Store a new coupon
+     *
+     * @authenticated
+     * @bodyParam name string required Coupon name. Max 255 chars.
+     * @bodyParam type string required Coupon type. Must be one of: percentage, flat, fixed.
+     * @bodyParam minimum_spend numeric required Minimum spend amount. Must be greater than 0.
+     * @bodyParam maximum_spend numeric required Maximum spend amount. Must be greater than 0.
+     * @bodyParam discount numeric required Discount amount. Must be greater than 0.
+     * @bodyParam usage_limit_per_coupon numeric required Usage limit per coupon. Must be greater than 0.
+     * @bodyParam usage_limit_per_user numeric required Usage limit per user. Must be greater than 0.
+     * @bodyParam coupon_type string required Coupon generation type. Must be auto or manual.
+     * @bodyParam expiry_date string required Expiry date. Format: Y-m-d.
+     * @bodyParam autoCode string Coupon code for auto-generated coupons. Required if coupon_type is auto. Must be unique.
+     * @bodyParam manualCode string Coupon code for manual coupons. Required if coupon_type is manual. Must be unique.
+     * @bodyParam included_module array Included module IDs for fixed type coupons.
+     * @bodyParam excluded_module array Excluded module IDs for fixed type coupons.
+     * @response redirect="coupons.index"
+     */
     public function store(Request $request)
     {
         if(\Auth::user()->isAbleTo('coupon create'))
@@ -111,6 +142,13 @@ class CouponController extends Controller
     }
 
 
+    /**
+     * Show coupon details
+     *
+     * @authenticated
+     * @urlParam coupon int required The coupon ID.
+     * @response view="coupon.view"
+     */
     public function show(Coupon $coupon)
     {
         $userCoupons = UserCoupon::where('coupon', $coupon->id)->get();
@@ -119,6 +157,13 @@ class CouponController extends Controller
     }
 
 
+    /**
+     * Show edit coupon form
+     *
+     * @authenticated
+     * @urlParam coupon int required The coupon ID.
+     * @response view="coupon.edit"
+     */
     public function edit(Coupon $coupon)
     {
         if(\Auth::user()->isAbleTo('coupon edit'))
@@ -134,6 +179,24 @@ class CouponController extends Controller
     }
 
 
+    /**
+     * Update a coupon
+     *
+     * @authenticated
+     * @urlParam coupon int required The coupon ID.
+     * @bodyParam name string required Coupon name. Max 255 chars.
+     * @bodyParam type string required Coupon type. Must be one of: percentage, flat, fixed.
+     * @bodyParam minimum_spend numeric required Minimum spend amount. Must be greater than 0.
+     * @bodyParam maximum_spend numeric required Maximum spend amount. Must be greater than 0.
+     * @bodyParam discount numeric required Discount amount. Must be greater than 0.
+     * @bodyParam usage_limit_per_coupon numeric required Usage limit per coupon. Must be greater than 0.
+     * @bodyParam usage_limit_per_user numeric required Usage limit per user. Must be greater than 0.
+     * @bodyParam expiry_date string required Expiry date. Format: Y-m-d.
+     * @bodyParam code string required Coupon code. Must be unique except for this coupon.
+     * @bodyParam included_module array Included module IDs for fixed type coupons.
+     * @bodyParam excluded_module array Excluded module IDs for fixed type coupons.
+     * @response redirect="coupons.index"
+     */
     public function update(Request $request, Coupon $coupon)
     {
         if(\Auth::user()->isAbleTo('coupon edit'))
@@ -185,6 +248,13 @@ class CouponController extends Controller
     }
 
 
+    /**
+     * Delete a coupon
+     *
+     * @authenticated
+     * @urlParam coupon int required The coupon ID.
+     * @response redirect="coupons.index"
+     */
     public function destroy(Coupon $coupon)
     {
         if(\Auth::user()->isAbleTo('coupon delete'))

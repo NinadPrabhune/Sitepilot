@@ -352,6 +352,7 @@ class PaymentService
             if ($invoice->po_id && $invoice->supplier_id) {
                 $supplierAdvances = \App\Models\SupplierAdvance::where('po_id', $invoice->po_id)
                     ->where('supplier_id', $invoice->supplier_id)
+                    ->whereNull('deleted_at')
                     ->whereIn('status', [
                         \App\Models\SupplierAdvance::STATUS_APPROVED,
                         \App\Models\SupplierAdvance::STATUS_PAID,
@@ -369,6 +370,16 @@ class PaymentService
                     $available = $advance->amount - $advance->utilized_amount;
                     $toAllocate = min($available, $remainingOnInvoice);
                     if ($toAllocate > 0) {
+                        // Over-allocation guard
+                        $newUtilized = $advance->utilized_amount + $toAllocate;
+                        if ($newUtilized > $advance->amount) {
+                            throw new \OverflowException(
+                                'Advance #' . $advance->advance_number . ' would be over-allocated: ' .
+                                'utilized ' . number_format($newUtilized, 2) .
+                                ' exceeds amount ' . number_format($advance->amount, 2)
+                            );
+                        }
+
                         $allocationPlan[] = ['advance' => $advance, 'amount' => $toAllocate];
                         $allocatedAdvance += $toAllocate;
                         $remainingOnInvoice -= $toAllocate;
@@ -378,6 +389,8 @@ class PaymentService
                             'advance_number' => $advance->advance_number,
                             'available' => $available,
                             'to_allocate' => $toAllocate,
+                            'new_utilized' => $newUtilized,
+                            'advance_amount' => $advance->amount,
                             'invoice_id' => $invoice->id,
                         ]);
                     }
@@ -428,6 +441,20 @@ class PaymentService
             foreach ($allocationPlan as $plan) {
                 $advance = $plan['advance'];
                 $amount = $plan['amount'];
+
+                // Idempotency: skip if AdvanceUtilization already exists for this payment
+                $exists = \App\Models\AdvanceUtilization::where('payments_module_id', $payment->id)
+                    ->where('supplier_advance_id', $advance->id)
+                    ->where('status', \App\Models\AdvanceUtilization::STATUS_APPLIED)
+                    ->exists();
+
+                if ($exists) {
+                    Log::channel('payment_audit')->info('AdvanceUtilization already exists — skipping duplicate', [
+                        'advance_id' => $advance->id,
+                        'payment_id' => $payment->id,
+                    ]);
+                    continue;
+                }
 
                 \App\Models\AdvanceUtilization::create([
                     'supplier_advance_id' => $advance->id,
@@ -498,11 +525,23 @@ class PaymentService
             if ($allocatedAdvance > 0) {
                 try {
                     foreach ($allocationPlan as $plan) {
-                        \App\Helpers\LedgerHelper::createAdvanceUtilizationLedgerEntry(
-                            $plan['advance'],
-                            $invoice,
-                            $plan['amount']
-                        );
+                        $advance = $plan['advance'];
+                        $amount = $plan['amount'];
+
+                        // Idempotency: skip if ledger entry already exists
+                        $ledgerExists = \App\Models\SupplierTransaction::where('supplier_id', $advance->supplier_id)
+                            ->where('reference_type', \App\Models\SupplierTransaction::TYPE_ADJUSTMENT)
+                            ->where('reference_id', $advance->id)
+                            ->where('credit', $amount)
+                            ->where('debit', 0)
+                            ->where('description', 'like', "%{$invoice->invoice_number}%")
+                            ->exists();
+
+                        if (!$ledgerExists) {
+                            \App\Helpers\LedgerHelper::createAdvanceUtilizationLedgerEntry(
+                                $advance, $invoice, $amount
+                            );
+                        }
                     }
                     Log::channel('payment_audit')->info('Advance utilization ledger entries created', [
                         'invoice_id' => $invoice->id,

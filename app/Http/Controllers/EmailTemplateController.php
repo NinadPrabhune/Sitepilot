@@ -12,9 +12,10 @@ class EmailTemplateController extends Controller
 {
 
     /**
-     * Display a listing of the resource.
+     * List all email templates.
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @response view="email_templates.index"
      */
     public function index(EmailTemplateDataTable $dataTable)
     {
@@ -29,9 +30,10 @@ class EmailTemplateController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new email template.
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @response view="email_templates.show"
      */
     public function create()
     {
@@ -40,10 +42,12 @@ class EmailTemplateController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created email template.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @bodyParam name string required Template name. Example: welcome-email
+     * @bodyParam content string required Template content. Example: <h1>Welcome</h1>
+     * @response view="null"
      */
     public function store(Request $request)
     {
@@ -51,10 +55,12 @@ class EmailTemplateController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified email template with language variant.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id int required Template ID. Example: 1
+     * @urlParam lang string required Language code. Example: en
+     * @response view="email_templates.show"
      */
     public function show($id ,$lang = 'en')
     {
@@ -83,10 +89,11 @@ class EmailTemplateController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified email template.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id int required Template ID. Example: 1
+     * @response view="null"
      */
     public function edit($id)
     {
@@ -94,11 +101,12 @@ class EmailTemplateController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified email template.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id int required Template ID. Example: 1
+     * @bodyParam from string required Sender email address. Example: no-reply@example.com
+     * @response view="email_templates.index" (redirect back)
      */
     public function update(Request $request, $id)
     {
@@ -109,17 +117,27 @@ class EmailTemplateController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified email template.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id int required Template ID. Example: 1
+     * @response view="null"
      */
     public function destroy($id)
     {
         //
     }
 
-    // Used For Store Email Template Language Wise
+    /**
+     * Store email template content for a specific language.
+     *
+     * @authenticated
+     * @urlParam id int required Template ID. Example: 1
+     * @bodyParam subject string required Email subject. Example: Welcome to SitePilot
+     * @bodyParam content string required Email content. Example: <p>Dear User, welcome!</p>
+     * @bodyParam lang string required Language code. Example: en
+     * @response view="email_templates.show" (redirect)
+     */
     public function storeEmailLang(Request $request, $id)
     {
         $validator = \Validator::make(

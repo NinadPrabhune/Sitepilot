@@ -19,6 +19,9 @@ class OpeningStockController extends Controller
 
     /**
      * Display a listing of the opening stock.
+     *
+     * @authenticated
+     * @response view="opening-stock.index"
      */
     public function index()
     {
@@ -31,6 +34,9 @@ class OpeningStockController extends Controller
 
     /**
      * Show the form for creating new opening stock.
+     *
+     * @authenticated
+     * @response view="opening-stock.create"
      */
     public function create()
     {
@@ -51,6 +57,14 @@ class OpeningStockController extends Controller
 
     /**
      * Store newly created opening stock.
+     *
+     * @authenticated
+     * @bodyParam project_id integer required The project ID. Example: 1
+     * @bodyParam material_id integer required The material ID. Example: 1
+     * @bodyParam quantity numeric required Stock quantity (min: 0.0001). Example: 10.5
+     * @bodyParam rate numeric nullable Rate/price. Example: 100
+     * @bodyParam remarks string nullable Remarks.
+     * @response redirect
      */
     public function store(Request $request)
 {
@@ -105,6 +119,13 @@ class OpeningStockController extends Controller
 
     /**
      * Get current stock for a material at a project via AJAX.
+     *
+     * @authenticated
+     * @bodyParam project_id integer required Project ID.
+     * @bodyParam material_id integer required Material ID.
+     * @response {
+     *   "stock": 50
+     * }
      */
     public function getStock(Request $request)
     {

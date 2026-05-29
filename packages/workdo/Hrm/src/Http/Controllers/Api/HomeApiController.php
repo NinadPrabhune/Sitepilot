@@ -19,6 +19,29 @@ use Workdo\Hrm\Entities\Event;
  */
 class HomeApiController extends Controller
 {
+    /**
+     * Get HRM dashboard data
+     *
+     * Returns the current clock-in/out status, today's total hours worked, and announcements for the authenticated user.
+     *
+     * @authenticated
+     * @group HRM Home
+     *
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam user_id integer optional User ID. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": {
+     *    "is_clockin": 1,
+     *    "attendance_id": 10,
+     *    "clock_in": "09:00 AM",
+     *    "clock_out": "00:00",
+     *    "total_hours": "08:00 hours",
+     *    "announcements": [...]
+     *  }
+     * }
+     */
     public function index(Request $request)
     {
 
@@ -135,6 +158,31 @@ class HomeApiController extends Controller
         }
     }
 
+    /**
+     * Get events for a given month and year
+     *
+     * @authenticated
+     * @group HRM Home
+     *
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam user_id integer optional User ID. Example: 1
+     * @bodyParam month integer optional Month number (1-12). Example: 1
+     * @bodyParam year integer optional Year. Example: 2024
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": [
+     *    {
+     *      "id": 1,
+     *      "title": "Team Meeting",
+     *      "start_date": "2024-01-15",
+     *      "end_date": "2024-01-15",
+     *      "color": "#FF0000",
+     *      "description": "Quarterly meeting"
+     *    }
+     *  ]
+     * }
+     */
     public function getEvents(Request $request)
     {
 

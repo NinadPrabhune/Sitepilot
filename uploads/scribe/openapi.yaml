@@ -54,13 +54,13 @@ tags:
     description: 'Endpoints for event management'
   -
     name: 'HRM Holiday List'
-    description: 'Endpoints for holiday list retrieval'
+    description: ''
   -
     name: 'HRM Holidays'
     description: 'Endpoints for holiday management'
   -
     name: 'HRM Home'
-    description: 'Endpoints for HRM dashboard data'
+    description: ''
   -
     name: 'HRM Leave Types'
     description: 'Endpoints for leave type management'
@@ -662,7 +662,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the activity.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -1731,7 +1731,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the daily consumption.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -2224,6 +2224,42 @@ paths:
                   message:
                     type: string
                     example: 'Machinery/Materials not found.'
+      tags:
+        - 'Daily Progress Report'
+  /api/daily-progress-reports-test:
+    get:
+      summary: 'List all reports (filtered by workspace & project).'
+      operationId: listAllReportsfilteredByWorkspaceProject
+      description: ''
+      parameters:
+        -
+          in: query
+          name: workspace_id
+          description: 'optional Filter by workspace ID.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by workspace ID.'
+            example: 1
+        -
+          in: query
+          name: site_id
+          description: 'optional Filter by site/project ID.'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by site/project ID.'
+            example: 5
+      responses:
+        200:
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"success\": true,\n  \"message\": \"Daily progress reports fetched successfully.\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"date\": \"2024-01-15\",\n      \"machinery\": {...}\n    }\n  ]\n}"
       tags:
         - 'Daily Progress Report'
   /api/device-tokens:
@@ -3080,23 +3116,42 @@ paths:
         - Employees
   /api/numbering-configs:
     get:
-      summary: 'Get Numbering Configurations API'
-      operationId: getNumberingConfigurationsAPI
+      summary: 'Get all numbering configurations as JSON.'
+      operationId: getAllNumberingConfigurationsAsJSON
       description: ''
       parameters: []
       responses:
-        404:
-          description: ''
+        200:
+          description: success
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    module:
+                      type: string
+                      example: po
+                    prefix:
+                      type: string
+                      example: PO
+                    starting_number:
+                      type: integer
+                      example: 1
+                    padding_length:
+                      type: integer
+                      example: 5
                 example:
-                  message: 'The route api/numbering-configs could not be found.'
-                properties:
-                  message:
-                    type: string
-                    example: 'The route api/numbering-configs could not be found.'
+                  -
+                    id: 1
+                    module: po
+                    prefix: PO
+                    starting_number: 1
+                    padding_length: 5
       tags:
         - Endpoints
   /api/machinery/payment-logs:
@@ -3104,20 +3159,70 @@ paths:
       summary: "Get logs filtered by payment_request_id\nNOTE: This reads from log files - for production, consider using a log aggregation service"
       operationId: getLogsFilteredByPaymentRequestIdNOTEThisReadsFromLogFilesForProductionConsiderUsingALogAggregationService
       description: ''
-      parameters: []
+      parameters:
+        -
+          in: query
+          name: payment_request_id
+          description: 'The payment request ID to filter logs.'
+          example: 16
+          required: true
+          schema:
+            type: integer
+            description: 'The payment request ID to filter logs.'
+            example: 16
+        -
+          in: query
+          name: channel
+          description: 'optional Log channel name. Default: payment_audit.'
+          example: architecto
+          required: false
+          schema:
+            type: string
+            description: 'optional Log channel name. Default: payment_audit.'
+            example: architecto
+        -
+          in: query
+          name: lines
+          description: 'optional Number of lines to return. Default: 100.'
+          example: 16
+          required: false
+          schema:
+            type: integer
+            description: 'optional Number of lines to return. Default: 100.'
+            example: 16
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/machinery/payment-logs could not be found.'
+                  success: true
+                  data:
+                    payment_request_id: 1
+                    channel: payment_audit
+                    lines: []
+                    count: 0
                 properties:
-                  message:
-                    type: string
-                    example: 'The route api/machinery/payment-logs could not be found.'
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      payment_request_id:
+                        type: integer
+                        example: 1
+                      channel:
+                        type: string
+                        example: payment_audit
+                      lines:
+                        type: array
+                        example: []
+                      count:
+                        type: integer
+                        example: 0
       tags:
         - Endpoints
   /api/machinery/payment-logs/recent:
@@ -3125,20 +3230,42 @@ paths:
       summary: 'Get recent logs from all machinery payment channels'
       operationId: getRecentLogsFromAllMachineryPaymentChannels
       description: ''
-      parameters: []
+      parameters:
+        -
+          in: query
+          name: lines
+          description: 'optional Number of lines per channel. Default: 50.'
+          example: 16
+          required: false
+          schema:
+            type: integer
+            description: 'optional Number of lines per channel. Default: 50.'
+            example: 16
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/machinery/payment-logs/recent could not be found.'
+                  success: true
+                  data:
+                    payment_audit: []
+                    payment_debug: []
                 properties:
-                  message:
-                    type: string
-                    example: 'The route api/machinery/payment-logs/recent could not be found.'
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      payment_audit:
+                        type: array
+                        example: []
+                      payment_debug:
+                        type: array
+                        example: []
       tags:
         - Endpoints
   /api/stock-ledger:
@@ -3284,7 +3411,7 @@ paths:
                 type:
                   type: string
                   description: ''
-                  example: transfer_out
+                  example: opening
                   enum:
                     - opening
                     - grn
@@ -3296,12 +3423,12 @@ paths:
                 start_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-28T14:34:59'
+                  example: '2026-05-29T20:01:08'
                   nullable: true
                 end_date:
                   type: string
                   description: 'Must be a valid date. Must be a date after or equal to <code>start_date</code>.'
-                  example: '2052-06-20'
+                  example: '2052-06-21'
                   nullable: true
   /api/stock-ledger/export:
     get:
@@ -3437,12 +3564,12 @@ paths:
                 start_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-28T14:34:59'
+                  example: '2026-05-29T20:01:08'
                   nullable: true
                 end_date:
                   type: string
                   description: 'Must be a valid date. Must be a date after or equal to <code>start_date</code>.'
-                  example: '2052-06-20'
+                  example: '2052-06-21'
                   nullable: true
   /api/stock-ledger/create-data:
     post:
@@ -4401,23 +4528,87 @@ paths:
         - 'Goods Received Note (GRN)'
   /api/Hrm/announcements:
     get:
-      summary: ''
-      operationId: getApiHrmAnnouncements
+      summary: 'List all announcements'
+      operationId: listAllAnnouncements
       description: ''
-      parameters: []
+      parameters:
+        -
+          in: query
+          name: workspace_id
+          description: 'optional Filter by workspace ID.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by workspace ID.'
+            example: 1
+        -
+          in: query
+          name: site_id
+          description: 'optional Filter by site ID.'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by site ID.'
+            example: 5
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/Hrm/announcements could not be found.'
+                  status: 1
+                  data:
+                    -
+                      id: 1
+                      title: 'Company Holiday'
+                      start_date: '2024-01-15'
+                      end_date: '2024-01-20'
+                      description: 'Office closed for holidays'
+                      workspace: 1
+                      site_id: 5
                 properties:
-                  message:
-                    type: string
-                    example: 'The route api/Hrm/announcements could not be found.'
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        title: 'Company Holiday'
+                        start_date: '2024-01-15'
+                        end_date: '2024-01-20'
+                        description: 'Office closed for holidays'
+                        workspace: 1
+                        site_id: 5
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        title:
+                          type: string
+                          example: 'Company Holiday'
+                        start_date:
+                          type: string
+                          example: '2024-01-15'
+                        end_date:
+                          type: string
+                          example: '2024-01-20'
+                        description:
+                          type: string
+                          example: 'Office closed for holidays'
+                        workspace:
+                          type: integer
+                          example: 1
+                        site_id:
+                          type: integer
+                          example: 5
       tags:
         - 'HRM Announcements'
     post:
@@ -4501,11 +4692,47 @@ paths:
                 - created_by
   '/api/Hrm/announcements/{id}':
     get:
-      summary: ''
-      operationId: getApiHrmAnnouncementsId
+      summary: 'Show a single announcement'
+      operationId: showASingleAnnouncement
       description: ''
       parameters: []
       responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    id: 1
+                    title: 'Company Holiday'
+                    start_date: '2024-01-15'
+                    end_date: '2024-01-20'
+                    description: 'Office closed'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      title:
+                        type: string
+                        example: 'Company Holiday'
+                      start_date:
+                        type: string
+                        example: '2024-01-15'
+                      end_date:
+                        type: string
+                        example: '2024-01-20'
+                      description:
+                        type: string
+                        example: 'Office closed'
         404:
           description: ''
           content:
@@ -4513,27 +4740,97 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/Hrm/announcements/architecto could not be found.'
+                  status: 0
+                  message: 'Announcement not found'
                 properties:
+                  status:
+                    type: integer
+                    example: 0
                   message:
                     type: string
-                    example: 'The route api/Hrm/announcements/architecto could not be found.'
+                    example: 'Announcement not found'
       tags:
         - 'HRM Announcements'
     put:
-      summary: ''
-      operationId: putApiHrmAnnouncementsId
+      summary: 'Update an announcement'
+      operationId: updateAnAnnouncement
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"status\": 1,\n \"message\": \"Announcement updated successfully\",\n \"data\": {...}\n}"
       tags:
         - 'HRM Announcements'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'Announcement title.'
+                  example: 'Updated Holiday'
+                start_date:
+                  type: date
+                  description: 'Start date.'
+                  example: '2024-01-15'
+                end_date:
+                  type: date
+                  description: 'End date.'
+                  example: '2024-01-20'
+                description:
+                  type: string
+                  description: Description.
+                  example: 'Updated description'
+                workspace_id:
+                  type: integer
+                  description: 'Workspace ID.'
+                  example: 1
+                site_id:
+                  type: integer
+                  description: 'Site ID.'
+                  example: 5
+                created_by:
+                  type: integer
+                  description: 'Creator user ID.'
+                  example: 1
+              required:
+                - title
+                - start_date
+                - end_date
+                - description
+                - workspace_id
+                - site_id
+                - created_by
     delete:
-      summary: ''
-      operationId: deleteApiHrmAnnouncementsId
+      summary: 'Delete an announcement'
+      operationId: deleteAnAnnouncement
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  message: 'Announcement deleted successfully'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Announcement deleted successfully'
       tags:
         - 'HRM Announcements'
     parameters:
@@ -4541,38 +4838,137 @@ paths:
         in: path
         name: id
         description: 'The ID of the announcement.'
-        example: architecto
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
   /api/Hrm/announcements/create-data:
     post:
-      summary: ''
-      operationId: postApiHrmAnnouncementsCreateData
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - 'HRM Announcements'
-  /Hrm/announcements:
-    get:
-      summary: ''
-      operationId: getHrmAnnouncements
+      summary: 'Get data required for creating an announcement (projects list)'
+      operationId: getDataRequiredForCreatingAnAnnouncementprojectsList
       description: ''
       parameters: []
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route Hrm/announcements could not be found.'
+                  success: true
+                  projects:
+                    '1': 'Project Alpha'
+                    '2': 'Project Beta'
                 properties:
-                  message:
-                    type: string
-                    example: 'The route Hrm/announcements could not be found.'
+                  success:
+                    type: boolean
+                    example: true
+                  projects:
+                    type: object
+                    properties:
+                      1:
+                        type: string
+                        example: 'Project Alpha'
+                      2:
+                        type: string
+                        example: 'Project Beta'
+      tags:
+        - 'HRM Announcements'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workspace_id:
+                  type: integer
+                  description: 'optional Workspace ID.'
+                  example: 1
+  /Hrm/announcements:
+    get:
+      summary: 'List all announcements'
+      operationId: listAllAnnouncements
+      description: ''
+      parameters:
+        -
+          in: query
+          name: workspace_id
+          description: 'optional Filter by workspace ID.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by workspace ID.'
+            example: 1
+        -
+          in: query
+          name: site_id
+          description: 'optional Filter by site ID.'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by site ID.'
+            example: 5
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    -
+                      id: 1
+                      title: 'Company Holiday'
+                      start_date: '2024-01-15'
+                      end_date: '2024-01-20'
+                      description: 'Office closed for holidays'
+                      workspace: 1
+                      site_id: 5
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        title: 'Company Holiday'
+                        start_date: '2024-01-15'
+                        end_date: '2024-01-20'
+                        description: 'Office closed for holidays'
+                        workspace: 1
+                        site_id: 5
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        title:
+                          type: string
+                          example: 'Company Holiday'
+                        start_date:
+                          type: string
+                          example: '2024-01-15'
+                        end_date:
+                          type: string
+                          example: '2024-01-20'
+                        description:
+                          type: string
+                          example: 'Office closed for holidays'
+                        workspace:
+                          type: integer
+                          example: 1
+                        site_id:
+                          type: integer
+                          example: 5
       tags:
         - 'HRM Announcements'
     post:
@@ -4656,11 +5052,47 @@ paths:
                 - created_by
   '/Hrm/announcements/{id}':
     get:
-      summary: ''
-      operationId: getHrmAnnouncementsId
+      summary: 'Show a single announcement'
+      operationId: showASingleAnnouncement
       description: ''
       parameters: []
       responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    id: 1
+                    title: 'Company Holiday'
+                    start_date: '2024-01-15'
+                    end_date: '2024-01-20'
+                    description: 'Office closed'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      title:
+                        type: string
+                        example: 'Company Holiday'
+                      start_date:
+                        type: string
+                        example: '2024-01-15'
+                      end_date:
+                        type: string
+                        example: '2024-01-20'
+                      description:
+                        type: string
+                        example: 'Office closed'
         404:
           description: ''
           content:
@@ -4668,27 +5100,97 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route Hrm/announcements/architecto could not be found.'
+                  status: 0
+                  message: 'Announcement not found'
                 properties:
+                  status:
+                    type: integer
+                    example: 0
                   message:
                     type: string
-                    example: 'The route Hrm/announcements/architecto could not be found.'
+                    example: 'Announcement not found'
       tags:
         - 'HRM Announcements'
     put:
-      summary: ''
-      operationId: putHrmAnnouncementsId
+      summary: 'Update an announcement'
+      operationId: updateAnAnnouncement
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"status\": 1,\n \"message\": \"Announcement updated successfully\",\n \"data\": {...}\n}"
       tags:
         - 'HRM Announcements'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'Announcement title.'
+                  example: 'Updated Holiday'
+                start_date:
+                  type: date
+                  description: 'Start date.'
+                  example: '2024-01-15'
+                end_date:
+                  type: date
+                  description: 'End date.'
+                  example: '2024-01-20'
+                description:
+                  type: string
+                  description: Description.
+                  example: 'Updated description'
+                workspace_id:
+                  type: integer
+                  description: 'Workspace ID.'
+                  example: 1
+                site_id:
+                  type: integer
+                  description: 'Site ID.'
+                  example: 5
+                created_by:
+                  type: integer
+                  description: 'Creator user ID.'
+                  example: 1
+              required:
+                - title
+                - start_date
+                - end_date
+                - description
+                - workspace_id
+                - site_id
+                - created_by
     delete:
-      summary: ''
-      operationId: deleteHrmAnnouncementsId
+      summary: 'Delete an announcement'
+      operationId: deleteAnAnnouncement
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  message: 'Announcement deleted successfully'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Announcement deleted successfully'
       tags:
         - 'HRM Announcements'
     parameters:
@@ -4696,40 +5198,190 @@ paths:
         in: path
         name: id
         description: 'The ID of the announcement.'
-        example: architecto
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
   /Hrm/announcements/create-data:
     post:
-      summary: ''
-      operationId: postHrmAnnouncementsCreateData
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - 'HRM Announcements'
-  /api/Hrm/attendence-history:
-    get:
-      summary: ''
-      operationId: getApiHrmAttendenceHistory
+      summary: 'Get data required for creating an announcement (projects list)'
+      operationId: getDataRequiredForCreatingAnAnnouncementprojectsList
       description: ''
       parameters: []
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/Hrm/attendence-history could not be found.'
+                  success: true
+                  projects:
+                    '1': 'Project Alpha'
+                    '2': 'Project Beta'
                 properties:
-                  message:
-                    type: string
-                    example: 'The route api/Hrm/attendence-history could not be found.'
+                  success:
+                    type: boolean
+                    example: true
+                  projects:
+                    type: object
+                    properties:
+                      1:
+                        type: string
+                        example: 'Project Alpha'
+                      2:
+                        type: string
+                        example: 'Project Beta'
+      tags:
+        - 'HRM Announcements'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workspace_id:
+                  type: integer
+                  description: 'optional Workspace ID.'
+                  example: 1
+  /api/Hrm/attendence-history:
+    get:
+      summary: 'Get attendance history grouped by date'
+      operationId: getAttendanceHistoryGroupedByDate
+      description: 'Returns attendance records grouped by date. Supports monthly filtering and role-based access.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    -
+                      total_time: '08:00'
+                      date: '2024-01-15'
+                      history:
+                        -
+                          id: 1
+                          status: Present
+                          clock_in: '09:00:00'
+                          clock_out: '18:00:00'
+                          total: '08:00 hours'
+                          employee_id: 5
+                          employee_name: 'John Doe'
+                          site_id: 1
+                          site_name: 'Main Office'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example:
+                      -
+                        total_time: '08:00'
+                        date: '2024-01-15'
+                        history:
+                          -
+                            id: 1
+                            status: Present
+                            clock_in: '09:00:00'
+                            clock_out: '18:00:00'
+                            total: '08:00 hours'
+                            employee_id: 5
+                            employee_name: 'John Doe'
+                            site_id: 1
+                            site_name: 'Main Office'
+                    items:
+                      type: object
+                      properties:
+                        total_time:
+                          type: string
+                          example: '08:00'
+                        date:
+                          type: string
+                          example: '2024-01-15'
+                        history:
+                          type: array
+                          example:
+                            -
+                              id: 1
+                              status: Present
+                              clock_in: '09:00:00'
+                              clock_out: '18:00:00'
+                              total: '08:00 hours'
+                              employee_id: 5
+                              employee_name: 'John Doe'
+                              site_id: 1
+                              site_name: 'Main Office'
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                              status:
+                                type: string
+                                example: Present
+                              clock_in:
+                                type: string
+                                example: '09:00:00'
+                              clock_out:
+                                type: string
+                                example: '18:00:00'
+                              total:
+                                type: string
+                                example: '08:00 hours'
+                              employee_id:
+                                type: integer
+                                example: 5
+                              employee_name:
+                                type: string
+                                example: 'John Doe'
+                              site_id:
+                                type: integer
+                                example: 1
+                              site_name:
+                                type: string
+                                example: 'Main Office'
       tags:
         - 'HRM Attendance'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workspace_id:
+                  type: integer
+                  description: 'optional Workspace ID.'
+                  example: 1
+                site_id:
+                  type: integer
+                  description: 'optional Site ID.'
+                  example: 5
+                employee_id:
+                  type: integer
+                  description: 'optional Employee ID.'
+                  example: 5
+                type:
+                  type: string
+                  description: 'optional Filter type (monthly).'
+                  example: monthly
+                month:
+                  type: integer
+                  description: 'optional Month number (1-12).'
+                  example: 1
+                year:
+                  type: integer
+                  description: 'optional Year.'
+                  example: 2024
   /api/Hrm/clock-in-out:
     post:
       summary: 'Clock in or clock out an employee.'
@@ -4902,11 +5554,51 @@ paths:
                 - created_by
   '/api/Hrm/admin-attendence/{id}':
     get:
-      summary: ''
-      operationId: getApiHrmAdminAttendenceId
+      summary: 'Show a single attendance record'
+      operationId: showASingleAttendanceRecord
       description: ''
       parameters: []
       responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  data:
+                    id: 1
+                    employee_id: 5
+                    date: '2024-01-15'
+                    status: Present
+                    clock_in: '09:00:00'
+                    clock_out: '18:00:00'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      employee_id:
+                        type: integer
+                        example: 5
+                      date:
+                        type: string
+                        example: '2024-01-15'
+                      status:
+                        type: string
+                        example: Present
+                      clock_in:
+                        type: string
+                        example: '09:00:00'
+                      clock_out:
+                        type: string
+                        example: '18:00:00'
         404:
           description: ''
           content:
@@ -4914,74 +5606,151 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/Hrm/admin-attendence/architecto could not be found.'
+                  status: error
+                  message: 'Attendance record not found.'
                 properties:
+                  status:
+                    type: string
+                    example: error
                   message:
                     type: string
-                    example: 'The route api/Hrm/admin-attendence/architecto could not be found.'
+                    example: 'Attendance record not found.'
       tags:
         - 'HRM Attendance'
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the admin attendence.'
-        example: architecto
+        description: 'The ID of the attendance record.'
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
   '/api/Hrm/admin-attendence-update/{id}':
     post:
-      summary: ''
-      operationId: postApiHrmAdminAttendenceUpdateId
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - 'HRM Attendance'
-    parameters:
-      -
-        in: path
-        name: id
-        description: 'The ID of the admin attendence update.'
-        example: architecto
-        required: true
-        schema:
-          type: string
-  '/api/Hrm/admin-attendence-delete/{id}':
-    delete:
-      summary: ''
-      operationId: deleteApiHrmAdminAttendenceDeleteId
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - 'HRM Attendance'
-    parameters:
-      -
-        in: path
-        name: id
-        description: 'The ID of the admin attendence delete.'
-        example: architecto
-        required: true
-        schema:
-          type: string
-  /api/Hrm/createData:
-    post:
-      summary: ''
-      operationId: postApiHrmCreateData
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - 'HRM Attendance'
-  /Hrm/attendence-history:
-    get:
-      summary: ''
-      operationId: getHrmAttendenceHistory
+      summary: 'Update attendance record (admin)'
+      operationId: updateAttendanceRecordadmin
       description: ''
       parameters: []
       responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'The employee attendance details have been updated successfully.'
+                  data:
+                    id: 1
+                    employee_id: 5
+                    date: '2024-01-15'
+                    clock_in: '09:00:00'
+                    clock_out: '18:00:00'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'The employee attendance details have been updated successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      employee_id:
+                        type: integer
+                        example: 5
+                      date:
+                        type: string
+                        example: '2024-01-15'
+                      clock_in:
+                        type: string
+                        example: '09:00:00'
+                      clock_out:
+                        type: string
+                        example: '18:00:00'
+      tags:
+        - 'HRM Attendance'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employee_id:
+                  type: integer
+                  description: 'Employee ID.'
+                  example: 5
+                user_id:
+                  type: integer
+                  description: 'User ID.'
+                  example: 1
+                date:
+                  type: date
+                  description: 'Attendance date.'
+                  example: '2024-01-15'
+                clock_in:
+                  type: string
+                  description: 'Clock in time (HH:mm).'
+                  example: '09:00'
+                clock_out:
+                  type: string
+                  description: 'Clock out time (HH:mm).'
+                  example: '18:00'
+                site_id:
+                  type: integer
+                  description: 'Site ID.'
+                  example: 5
+                workspace_id:
+                  type: integer
+                  description: 'Workspace ID.'
+                  example: 1
+                created_by:
+                  type: integer
+                  description: 'Creator user ID.'
+                  example: 1
+              required:
+                - employee_id
+                - user_id
+                - date
+                - clock_in
+                - clock_out
+                - site_id
+                - workspace_id
+                - created_by
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the attendance record.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/Hrm/admin-attendence-delete/{id}':
+    delete:
+      summary: 'Delete attendance record (admin)'
+      operationId: deleteAttendanceRecordadmin
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Attendance record deleted successfully'
+                properties:
+                  message:
+                    type: string
+                    example: 'Attendance record deleted successfully'
         404:
           description: ''
           content:
@@ -4989,13 +5758,237 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route Hrm/attendence-history could not be found.'
+                  message: 'Attendance record not found'
                 properties:
                   message:
                     type: string
-                    example: 'The route Hrm/attendence-history could not be found.'
+                    example: 'Attendance record not found'
       tags:
         - 'HRM Attendance'
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the attendance record.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/Hrm/createData:
+    post:
+      summary: 'Get data required for creating attendance (employees list)'
+      operationId: getDataRequiredForCreatingAttendanceemployeesList
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  employees:
+                    -
+                      id: 1
+                      name: 'John Doe'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  employees:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: 'John Doe'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: 'John Doe'
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  error: 'Permission denied.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: 'Permission denied.'
+      tags:
+        - 'HRM Attendance'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: 'User ID.'
+                  example: 1
+                site_id:
+                  type: integer
+                  description: 'Site ID.'
+                  example: 5
+                workspace_id:
+                  type: integer
+                  description: 'Workspace ID.'
+                  example: 1
+              required:
+                - user_id
+                - site_id
+                - workspace_id
+  /Hrm/attendence-history:
+    get:
+      summary: 'Get attendance history grouped by date'
+      operationId: getAttendanceHistoryGroupedByDate
+      description: 'Returns attendance records grouped by date. Supports monthly filtering and role-based access.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    -
+                      total_time: '08:00'
+                      date: '2024-01-15'
+                      history:
+                        -
+                          id: 1
+                          status: Present
+                          clock_in: '09:00:00'
+                          clock_out: '18:00:00'
+                          total: '08:00 hours'
+                          employee_id: 5
+                          employee_name: 'John Doe'
+                          site_id: 1
+                          site_name: 'Main Office'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example:
+                      -
+                        total_time: '08:00'
+                        date: '2024-01-15'
+                        history:
+                          -
+                            id: 1
+                            status: Present
+                            clock_in: '09:00:00'
+                            clock_out: '18:00:00'
+                            total: '08:00 hours'
+                            employee_id: 5
+                            employee_name: 'John Doe'
+                            site_id: 1
+                            site_name: 'Main Office'
+                    items:
+                      type: object
+                      properties:
+                        total_time:
+                          type: string
+                          example: '08:00'
+                        date:
+                          type: string
+                          example: '2024-01-15'
+                        history:
+                          type: array
+                          example:
+                            -
+                              id: 1
+                              status: Present
+                              clock_in: '09:00:00'
+                              clock_out: '18:00:00'
+                              total: '08:00 hours'
+                              employee_id: 5
+                              employee_name: 'John Doe'
+                              site_id: 1
+                              site_name: 'Main Office'
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                              status:
+                                type: string
+                                example: Present
+                              clock_in:
+                                type: string
+                                example: '09:00:00'
+                              clock_out:
+                                type: string
+                                example: '18:00:00'
+                              total:
+                                type: string
+                                example: '08:00 hours'
+                              employee_id:
+                                type: integer
+                                example: 5
+                              employee_name:
+                                type: string
+                                example: 'John Doe'
+                              site_id:
+                                type: integer
+                                example: 1
+                              site_name:
+                                type: string
+                                example: 'Main Office'
+      tags:
+        - 'HRM Attendance'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workspace_id:
+                  type: integer
+                  description: 'optional Workspace ID.'
+                  example: 1
+                site_id:
+                  type: integer
+                  description: 'optional Site ID.'
+                  example: 5
+                employee_id:
+                  type: integer
+                  description: 'optional Employee ID.'
+                  example: 5
+                type:
+                  type: string
+                  description: 'optional Filter type (monthly).'
+                  example: monthly
+                month:
+                  type: integer
+                  description: 'optional Month number (1-12).'
+                  example: 1
+                year:
+                  type: integer
+                  description: 'optional Year.'
+                  example: 2024
   /Hrm/clock-in-out:
     post:
       summary: 'Clock in or clock out an employee.'
@@ -5168,11 +6161,51 @@ paths:
                 - created_by
   '/Hrm/admin-attendence/{id}':
     get:
-      summary: ''
-      operationId: getHrmAdminAttendenceId
+      summary: 'Show a single attendance record'
+      operationId: showASingleAttendanceRecord
       description: ''
       parameters: []
       responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  data:
+                    id: 1
+                    employee_id: 5
+                    date: '2024-01-15'
+                    status: Present
+                    clock_in: '09:00:00'
+                    clock_out: '18:00:00'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      employee_id:
+                        type: integer
+                        example: 5
+                      date:
+                        type: string
+                        example: '2024-01-15'
+                      status:
+                        type: string
+                        example: Present
+                      clock_in:
+                        type: string
+                        example: '09:00:00'
+                      clock_out:
+                        type: string
+                        example: '18:00:00'
         404:
           description: ''
           content:
@@ -5180,67 +6213,253 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route Hrm/admin-attendence/architecto could not be found.'
+                  status: error
+                  message: 'Attendance record not found.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Attendance record not found.'
+      tags:
+        - 'HRM Attendance'
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the attendance record.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/Hrm/admin-attendence-update/{id}':
+    post:
+      summary: 'Update attendance record (admin)'
+      operationId: updateAttendanceRecordadmin
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'The employee attendance details have been updated successfully.'
+                  data:
+                    id: 1
+                    employee_id: 5
+                    date: '2024-01-15'
+                    clock_in: '09:00:00'
+                    clock_out: '18:00:00'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'The employee attendance details have been updated successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      employee_id:
+                        type: integer
+                        example: 5
+                      date:
+                        type: string
+                        example: '2024-01-15'
+                      clock_in:
+                        type: string
+                        example: '09:00:00'
+                      clock_out:
+                        type: string
+                        example: '18:00:00'
+      tags:
+        - 'HRM Attendance'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employee_id:
+                  type: integer
+                  description: 'Employee ID.'
+                  example: 5
+                user_id:
+                  type: integer
+                  description: 'User ID.'
+                  example: 1
+                date:
+                  type: date
+                  description: 'Attendance date.'
+                  example: '2024-01-15'
+                clock_in:
+                  type: string
+                  description: 'Clock in time (HH:mm).'
+                  example: '09:00'
+                clock_out:
+                  type: string
+                  description: 'Clock out time (HH:mm).'
+                  example: '18:00'
+                site_id:
+                  type: integer
+                  description: 'Site ID.'
+                  example: 5
+                workspace_id:
+                  type: integer
+                  description: 'Workspace ID.'
+                  example: 1
+                created_by:
+                  type: integer
+                  description: 'Creator user ID.'
+                  example: 1
+              required:
+                - employee_id
+                - user_id
+                - date
+                - clock_in
+                - clock_out
+                - site_id
+                - workspace_id
+                - created_by
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the attendance record.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/Hrm/admin-attendence-delete/{id}':
+    delete:
+      summary: 'Delete attendance record (admin)'
+      operationId: deleteAttendanceRecordadmin
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Attendance record deleted successfully'
                 properties:
                   message:
                     type: string
-                    example: 'The route Hrm/admin-attendence/architecto could not be found.'
+                    example: 'Attendance record deleted successfully'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Attendance record not found'
+                properties:
+                  message:
+                    type: string
+                    example: 'Attendance record not found'
       tags:
         - 'HRM Attendance'
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the admin attendence.'
-        example: architecto
+        description: 'The ID of the attendance record.'
+        example: 1
         required: true
         schema:
-          type: string
-  '/Hrm/admin-attendence-update/{id}':
-    post:
-      summary: ''
-      operationId: postHrmAdminAttendenceUpdateId
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - 'HRM Attendance'
-    parameters:
-      -
-        in: path
-        name: id
-        description: 'The ID of the admin attendence update.'
-        example: architecto
-        required: true
-        schema:
-          type: string
-  '/Hrm/admin-attendence-delete/{id}':
-    delete:
-      summary: ''
-      operationId: deleteHrmAdminAttendenceDeleteId
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - 'HRM Attendance'
-    parameters:
-      -
-        in: path
-        name: id
-        description: 'The ID of the admin attendence delete.'
-        example: architecto
-        required: true
-        schema:
-          type: string
+          type: integer
   /Hrm/createData:
     post:
-      summary: ''
-      operationId: postHrmCreateData
+      summary: 'Get data required for creating attendance (employees list)'
+      operationId: getDataRequiredForCreatingAttendanceemployeesList
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  employees:
+                    -
+                      id: 1
+                      name: 'John Doe'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  employees:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: 'John Doe'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: 'John Doe'
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  error: 'Permission denied.'
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: 'Permission denied.'
       tags:
         - 'HRM Attendance'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: 'User ID.'
+                  example: 1
+                site_id:
+                  type: integer
+                  description: 'Site ID.'
+                  example: 5
+                workspace_id:
+                  type: integer
+                  description: 'Workspace ID.'
+                  example: 1
+              required:
+                - user_id
+                - site_id
+                - workspace_id
   /api/Hrm/monthly-attendance:
     get:
       summary: 'Get monthly attendance report'
@@ -6658,20 +7877,79 @@ paths:
       summary: 'List all events'
       operationId: listAllEvents
       description: ''
-      parameters: []
+      parameters:
+        -
+          in: query
+          name: workspace_id
+          description: 'optional Filter by workspace ID.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by workspace ID.'
+            example: 1
+        -
+          in: query
+          name: site_id
+          description: 'optional Filter by site ID.'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by site ID.'
+            example: 5
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/Hrm/events could not be found.'
+                  status: 1
+                  data:
+                    -
+                      id: 1
+                      title: 'Team Meeting'
+                      start_date: '2024-01-15'
+                      end_date: '2024-01-15'
+                      color: '#FF0000'
+                      description: 'Quarterly team meeting'
                 properties:
-                  message:
-                    type: string
-                    example: 'The route api/Hrm/events could not be found.'
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        title: 'Team Meeting'
+                        start_date: '2024-01-15'
+                        end_date: '2024-01-15'
+                        color: '#FF0000'
+                        description: 'Quarterly team meeting'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        title:
+                          type: string
+                          example: 'Team Meeting'
+                        start_date:
+                          type: string
+                          example: '2024-01-15'
+                        end_date:
+                          type: string
+                          example: '2024-01-15'
+                        color:
+                          type: string
+                          example: '#FF0000'
+                        description:
+                          type: string
+                          example: 'Quarterly team meeting'
       tags:
         - 'HRM Events'
     post:
@@ -6764,6 +8042,46 @@ paths:
       description: ''
       parameters: []
       responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    id: 1
+                    title: 'Team Meeting'
+                    start_date: '2024-01-15'
+                    end_date: '2024-01-15'
+                    color: '#FF0000'
+                    description: 'Quarterly team meeting'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      title:
+                        type: string
+                        example: 'Team Meeting'
+                      start_date:
+                        type: string
+                        example: '2024-01-15'
+                      end_date:
+                        type: string
+                        example: '2024-01-15'
+                      color:
+                        type: string
+                        example: '#FF0000'
+                      description:
+                        type: string
+                        example: 'Quarterly team meeting'
         404:
           description: ''
           content:
@@ -6771,11 +8089,15 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/Hrm/events/architecto could not be found.'
+                  status: 0
+                  message: 'Event not found'
                 properties:
+                  status:
+                    type: integer
+                    example: 0
                   message:
                     type: string
-                    example: 'The route api/Hrm/events/architecto could not be found.'
+                    example: 'Event not found'
       tags:
         - 'HRM Events'
     put:
@@ -6783,7 +8105,14 @@ paths:
       operationId: updateEvent
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"status\": 1,\n \"message\": \"Event updated successfully\",\n \"data\": {...}\n}"
       tags:
         - 'HRM Events'
       requestBody:
@@ -6795,32 +8124,36 @@ paths:
               properties:
                 title:
                   type: string
-                  description: ''
-                  example: architecto
+                  description: 'Event title.'
+                  example: 'Updated Meeting'
                 start_date:
-                  type: string
-                  description: 'Must be a valid date.'
-                  example: '2026-05-28T14:35:02'
+                  type: date
+                  description: 'Start date.'
+                  example: '2024-01-15'
                 end_date:
-                  type: string
-                  description: 'Must be a date after or equal to <code>start_date</code>.'
-                  example: '2052-06-20'
+                  type: date
+                  description: 'End date.'
+                  example: '2024-01-15'
                 color:
                   type: string
-                  description: ''
-                  example: architecto
+                  description: 'Event color.'
+                  example: '#00FF00'
                 workspace_id:
-                  type: string
-                  description: ''
-                  example: architecto
+                  type: integer
+                  description: 'Workspace ID.'
+                  example: 1
                 site_id:
-                  type: string
-                  description: ''
-                  example: architecto
+                  type: integer
+                  description: 'Site ID.'
+                  example: 5
                 created_by:
+                  type: integer
+                  description: 'Creator user ID.'
+                  example: 1
+                description:
                   type: string
-                  description: ''
-                  example: architecto
+                  description: 'optional Description.'
+                  example: 'Updated description'
               required:
                 - title
                 - start_date
@@ -6834,7 +8167,23 @@ paths:
       operationId: deleteEvent
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  message: 'Event deleted successfully'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Event deleted successfully'
       tags:
         - 'HRM Events'
     parameters:
@@ -6842,29 +8191,88 @@ paths:
         in: path
         name: id
         description: 'The ID of the event.'
-        example: architecto
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
   /Hrm/events:
     get:
       summary: 'List all events'
       operationId: listAllEvents
       description: ''
-      parameters: []
+      parameters:
+        -
+          in: query
+          name: workspace_id
+          description: 'optional Filter by workspace ID.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by workspace ID.'
+            example: 1
+        -
+          in: query
+          name: site_id
+          description: 'optional Filter by site ID.'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by site ID.'
+            example: 5
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route Hrm/events could not be found.'
+                  status: 1
+                  data:
+                    -
+                      id: 1
+                      title: 'Team Meeting'
+                      start_date: '2024-01-15'
+                      end_date: '2024-01-15'
+                      color: '#FF0000'
+                      description: 'Quarterly team meeting'
                 properties:
-                  message:
-                    type: string
-                    example: 'The route Hrm/events could not be found.'
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        title: 'Team Meeting'
+                        start_date: '2024-01-15'
+                        end_date: '2024-01-15'
+                        color: '#FF0000'
+                        description: 'Quarterly team meeting'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        title:
+                          type: string
+                          example: 'Team Meeting'
+                        start_date:
+                          type: string
+                          example: '2024-01-15'
+                        end_date:
+                          type: string
+                          example: '2024-01-15'
+                        color:
+                          type: string
+                          example: '#FF0000'
+                        description:
+                          type: string
+                          example: 'Quarterly team meeting'
       tags:
         - 'HRM Events'
     post:
@@ -6957,6 +8365,46 @@ paths:
       description: ''
       parameters: []
       responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    id: 1
+                    title: 'Team Meeting'
+                    start_date: '2024-01-15'
+                    end_date: '2024-01-15'
+                    color: '#FF0000'
+                    description: 'Quarterly team meeting'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      title:
+                        type: string
+                        example: 'Team Meeting'
+                      start_date:
+                        type: string
+                        example: '2024-01-15'
+                      end_date:
+                        type: string
+                        example: '2024-01-15'
+                      color:
+                        type: string
+                        example: '#FF0000'
+                      description:
+                        type: string
+                        example: 'Quarterly team meeting'
         404:
           description: ''
           content:
@@ -6964,11 +8412,15 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route Hrm/events/architecto could not be found.'
+                  status: 0
+                  message: 'Event not found'
                 properties:
+                  status:
+                    type: integer
+                    example: 0
                   message:
                     type: string
-                    example: 'The route Hrm/events/architecto could not be found.'
+                    example: 'Event not found'
       tags:
         - 'HRM Events'
     put:
@@ -6976,7 +8428,14 @@ paths:
       operationId: updateEvent
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"status\": 1,\n \"message\": \"Event updated successfully\",\n \"data\": {...}\n}"
       tags:
         - 'HRM Events'
       requestBody:
@@ -6988,32 +8447,36 @@ paths:
               properties:
                 title:
                   type: string
-                  description: ''
-                  example: architecto
+                  description: 'Event title.'
+                  example: 'Updated Meeting'
                 start_date:
-                  type: string
-                  description: 'Must be a valid date.'
-                  example: '2026-05-28T14:35:03'
+                  type: date
+                  description: 'Start date.'
+                  example: '2024-01-15'
                 end_date:
-                  type: string
-                  description: 'Must be a date after or equal to <code>start_date</code>.'
-                  example: '2052-06-20'
+                  type: date
+                  description: 'End date.'
+                  example: '2024-01-15'
                 color:
                   type: string
-                  description: ''
-                  example: architecto
+                  description: 'Event color.'
+                  example: '#00FF00'
                 workspace_id:
-                  type: string
-                  description: ''
-                  example: architecto
+                  type: integer
+                  description: 'Workspace ID.'
+                  example: 1
                 site_id:
-                  type: string
-                  description: ''
-                  example: architecto
+                  type: integer
+                  description: 'Site ID.'
+                  example: 5
                 created_by:
+                  type: integer
+                  description: 'Creator user ID.'
+                  example: 1
+                description:
                   type: string
-                  description: ''
-                  example: architecto
+                  description: 'optional Description.'
+                  example: 'Updated description'
               required:
                 - title
                 - start_date
@@ -7027,7 +8490,23 @@ paths:
       operationId: deleteEvent
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  message: 'Event deleted successfully'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Event deleted successfully'
       tags:
         - 'HRM Events'
     parameters:
@@ -7035,47 +8514,222 @@ paths:
         in: path
         name: id
         description: 'The ID of the event.'
-        example: architecto
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
   /api/Hrm/holidays-list:
     post:
-      summary: ''
-      operationId: postApiHrmHolidaysList
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - 'HRM Holiday List'
-  /Hrm/holidays-list:
-    post:
-      summary: ''
-      operationId: postHrmHolidaysList
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - 'HRM Holiday List'
-  /api/Hrm/holidays:
-    get:
-      summary: 'List holidays with optional filters'
-      operationId: listHolidaysWithOptionalFilters
-      description: ''
+      summary: 'List holidays (calendar format)'
+      operationId: listHolidayscalendarFormat
+      description: 'Returns holidays formatted for calendar display, optionally filtered by date range.'
       parameters: []
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/Hrm/holidays could not be found.'
+                  status: 1
+                  data:
+                    -
+                      title: Diwali
+                      start: '2024-11-01'
+                      end: '2024-11-05'
+                      className: event-danger
                 properties:
-                  message:
-                    type: string
-                    example: 'The route api/Hrm/holidays could not be found.'
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example:
+                      -
+                        title: Diwali
+                        start: '2024-11-01'
+                        end: '2024-11-05'
+                        className: event-danger
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                          example: Diwali
+                        start:
+                          type: string
+                          example: '2024-11-01'
+                        end:
+                          type: string
+                          example: '2024-11-05'
+                        className:
+                          type: string
+                          example: event-danger
+      tags:
+        - 'HRM Holiday List'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workspace_id:
+                  type: integer
+                  description: 'Workspace ID.'
+                  example: 1
+                date:
+                  type: string
+                  description: 'optional Date range (start_date to end_date).'
+                  example: '2024-01-01 to 2024-01-31'
+              required:
+                - workspace_id
+  /Hrm/holidays-list:
+    post:
+      summary: 'List holidays (calendar format)'
+      operationId: listHolidayscalendarFormat
+      description: 'Returns holidays formatted for calendar display, optionally filtered by date range.'
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    -
+                      title: Diwali
+                      start: '2024-11-01'
+                      end: '2024-11-05'
+                      className: event-danger
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example:
+                      -
+                        title: Diwali
+                        start: '2024-11-01'
+                        end: '2024-11-05'
+                        className: event-danger
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                          example: Diwali
+                        start:
+                          type: string
+                          example: '2024-11-01'
+                        end:
+                          type: string
+                          example: '2024-11-05'
+                        className:
+                          type: string
+                          example: event-danger
+      tags:
+        - 'HRM Holiday List'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workspace_id:
+                  type: integer
+                  description: 'Workspace ID.'
+                  example: 1
+                date:
+                  type: string
+                  description: 'optional Date range (start_date to end_date).'
+                  example: '2024-01-01 to 2024-01-31'
+              required:
+                - workspace_id
+  /api/Hrm/holidays:
+    get:
+      summary: 'List holidays with optional filters'
+      operationId: listHolidaysWithOptionalFilters
+      description: ''
+      parameters:
+        -
+          in: query
+          name: workspace_id
+          description: 'optional Filter by workspace ID.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by workspace ID.'
+            example: 1
+        -
+          in: query
+          name: site_id
+          description: 'optional Filter by site ID.'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by site ID.'
+            example: 5
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    -
+                      id: 1
+                      occasion: Diwali
+                      start_date: '2024-11-01'
+                      end_date: '2024-11-05'
+                      workspace: 1
+                      site_id: 5
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        occasion: Diwali
+                        start_date: '2024-11-01'
+                        end_date: '2024-11-05'
+                        workspace: 1
+                        site_id: 5
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        occasion:
+                          type: string
+                          example: Diwali
+                        start_date:
+                          type: string
+                          example: '2024-11-01'
+                        end_date:
+                          type: string
+                          example: '2024-11-05'
+                        workspace:
+                          type: integer
+                          example: 1
+                        site_id:
+                          type: integer
+                          example: 5
       tags:
         - 'HRM Holidays'
     post:
@@ -7135,6 +8789,38 @@ paths:
       description: ''
       parameters: []
       responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    id: 1
+                    occasion: Diwali
+                    start_date: '2024-11-01'
+                    end_date: '2024-11-05'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      occasion:
+                        type: string
+                        example: Diwali
+                      start_date:
+                        type: string
+                        example: '2024-11-01'
+                      end_date:
+                        type: string
+                        example: '2024-11-05'
         404:
           description: ''
           content:
@@ -7142,11 +8828,15 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/Hrm/holidays/architecto could not be found.'
+                  status: 0
+                  message: 'Holiday not found'
                 properties:
+                  status:
+                    type: integer
+                    example: 0
                   message:
                     type: string
-                    example: 'The route api/Hrm/holidays/architecto could not be found.'
+                    example: 'Holiday not found'
       tags:
         - 'HRM Holidays'
     put:
@@ -7154,15 +8844,61 @@ paths:
       operationId: updateHoliday
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"status\": 1,\n \"message\": \"Holiday updated successfully\",\n \"data\": {...}\n}"
       tags:
         - 'HRM Holidays'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                occasion:
+                  type: string
+                  description: 'Holiday occasion/name.'
+                  example: 'Updated Diwali'
+                start_date:
+                  type: date
+                  description: 'Start date.'
+                  example: '2024-11-01'
+                end_date:
+                  type: date
+                  description: 'End date.'
+                  example: '2024-11-05'
+              required:
+                - occasion
+                - start_date
+                - end_date
     delete:
       summary: 'Delete holiday'
       operationId: deleteHoliday
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  message: 'Holiday deleted successfully'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Holiday deleted successfully'
       tags:
         - 'HRM Holidays'
     parameters:
@@ -7170,29 +8906,88 @@ paths:
         in: path
         name: id
         description: 'The ID of the holiday.'
-        example: architecto
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
   /Hrm/holidays:
     get:
       summary: 'List holidays with optional filters'
       operationId: listHolidaysWithOptionalFilters
       description: ''
-      parameters: []
+      parameters:
+        -
+          in: query
+          name: workspace_id
+          description: 'optional Filter by workspace ID.'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by workspace ID.'
+            example: 1
+        -
+          in: query
+          name: site_id
+          description: 'optional Filter by site ID.'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'optional Filter by site ID.'
+            example: 5
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route Hrm/holidays could not be found.'
+                  status: 1
+                  data:
+                    -
+                      id: 1
+                      occasion: Diwali
+                      start_date: '2024-11-01'
+                      end_date: '2024-11-05'
+                      workspace: 1
+                      site_id: 5
                 properties:
-                  message:
-                    type: string
-                    example: 'The route Hrm/holidays could not be found.'
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        occasion: Diwali
+                        start_date: '2024-11-01'
+                        end_date: '2024-11-05'
+                        workspace: 1
+                        site_id: 5
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        occasion:
+                          type: string
+                          example: Diwali
+                        start_date:
+                          type: string
+                          example: '2024-11-01'
+                        end_date:
+                          type: string
+                          example: '2024-11-05'
+                        workspace:
+                          type: integer
+                          example: 1
+                        site_id:
+                          type: integer
+                          example: 5
       tags:
         - 'HRM Holidays'
     post:
@@ -7252,6 +9047,38 @@ paths:
       description: ''
       parameters: []
       responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    id: 1
+                    occasion: Diwali
+                    start_date: '2024-11-01'
+                    end_date: '2024-11-05'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      occasion:
+                        type: string
+                        example: Diwali
+                      start_date:
+                        type: string
+                        example: '2024-11-01'
+                      end_date:
+                        type: string
+                        example: '2024-11-05'
         404:
           description: ''
           content:
@@ -7259,11 +9086,15 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route Hrm/holidays/architecto could not be found.'
+                  status: 0
+                  message: 'Holiday not found'
                 properties:
+                  status:
+                    type: integer
+                    example: 0
                   message:
                     type: string
-                    example: 'The route Hrm/holidays/architecto could not be found.'
+                    example: 'Holiday not found'
       tags:
         - 'HRM Holidays'
     put:
@@ -7271,15 +9102,61 @@ paths:
       operationId: updateHoliday
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"status\": 1,\n \"message\": \"Holiday updated successfully\",\n \"data\": {...}\n}"
       tags:
         - 'HRM Holidays'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                occasion:
+                  type: string
+                  description: 'Holiday occasion/name.'
+                  example: 'Updated Diwali'
+                start_date:
+                  type: date
+                  description: 'Start date.'
+                  example: '2024-11-01'
+                end_date:
+                  type: date
+                  description: 'End date.'
+                  example: '2024-11-05'
+              required:
+                - occasion
+                - start_date
+                - end_date
     delete:
       summary: 'Delete holiday'
       operationId: deleteHoliday
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  message: 'Holiday deleted successfully'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Holiday deleted successfully'
       tags:
         - 'HRM Holidays'
     parameters:
@@ -7287,17 +9164,24 @@ paths:
         in: path
         name: id
         description: 'The ID of the holiday.'
-        example: architecto
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
   /api/Hrm/home:
     post:
-      summary: ''
-      operationId: postApiHrmHome
-      description: ''
+      summary: 'Get HRM dashboard data'
+      operationId: getHRMDashboardData
+      description: "Returns the current clock-in/out status, today's total hours worked, and announcements for the authenticated user."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"status\": 1,\n \"data\": {\n   \"is_clockin\": 1,\n   \"attendance_id\": 10,\n   \"clock_in\": \"09:00 AM\",\n   \"clock_out\": \"00:00\",\n   \"total_hours\": \"08:00 hours\",\n   \"announcements\": [...]\n }\n}"
       tags:
         - 'HRM Home'
       requestBody:
@@ -7308,18 +9192,29 @@ paths:
               type: object
               properties:
                 workspace_id:
-                  type: string
-                  description: ''
-                  example: architecto
+                  type: integer
+                  description: 'Workspace ID.'
+                  example: 1
+                user_id:
+                  type: integer
+                  description: 'optional User ID.'
+                  example: 1
               required:
                 - workspace_id
   /Hrm/home:
     post:
-      summary: ''
-      operationId: postHrmHome
-      description: ''
+      summary: 'Get HRM dashboard data'
+      operationId: getHRMDashboardData
+      description: "Returns the current clock-in/out status, today's total hours worked, and announcements for the authenticated user."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"status\": 1,\n \"data\": {\n   \"is_clockin\": 1,\n   \"attendance_id\": 10,\n   \"clock_in\": \"09:00 AM\",\n   \"clock_out\": \"00:00\",\n   \"total_hours\": \"08:00 hours\",\n   \"announcements\": [...]\n }\n}"
       tags:
         - 'HRM Home'
       requestBody:
@@ -7330,30 +9225,78 @@ paths:
               type: object
               properties:
                 workspace_id:
-                  type: string
-                  description: ''
-                  example: architecto
+                  type: integer
+                  description: 'Workspace ID.'
+                  example: 1
+                user_id:
+                  type: integer
+                  description: 'optional User ID.'
+                  example: 1
               required:
                 - workspace_id
   /api/Hrm/leaves-types:
     get:
       summary: 'List all leave types for a workspace'
       operationId: listAllLeaveTypesForAWorkspace
-      description: ''
-      parameters: []
+      description: 'Returns leave types with used days and remaining eligibility for the given user.'
+      parameters:
+        -
+          in: query
+          name: user_id
+          description: 'User ID to calculate used leaves.'
+          example: 1
+          required: true
+          schema:
+            type: integer
+            description: 'User ID to calculate used leaves.'
+            example: 1
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/Hrm/leaves-types could not be found.'
+                  status: 1
+                  data:
+                    -
+                      id: 1
+                      title: 'Sick Leave'
+                      days: 12
+                      used: 2
+                      is_disable: 0
                 properties:
-                  message:
-                    type: string
-                    example: 'The route api/Hrm/leaves-types could not be found.'
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        title: 'Sick Leave'
+                        days: 12
+                        used: 2
+                        is_disable: 0
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        title:
+                          type: string
+                          example: 'Sick Leave'
+                        days:
+                          type: integer
+                          example: 12
+                        used:
+                          type: integer
+                          example: 2
+                        is_disable:
+                          type: integer
+                          example: 0
       tags:
         - 'HRM Leave Types'
     post:
@@ -7396,6 +9339,34 @@ paths:
       description: ''
       parameters: []
       responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    id: 1
+                    title: 'Sick Leave'
+                    days: 12
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      title:
+                        type: string
+                        example: 'Sick Leave'
+                      days:
+                        type: integer
+                        example: 12
         404:
           description: ''
           content:
@@ -7403,11 +9374,15 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route api/Hrm/leaves-types/architecto could not be found.'
+                  status: 0
+                  message: 'Leave type not found'
                 properties:
+                  status:
+                    type: integer
+                    example: 0
                   message:
                     type: string
-                    example: 'The route api/Hrm/leaves-types/architecto could not be found.'
+                    example: 'Leave type not found'
       tags:
         - 'HRM Leave Types'
     put:
@@ -7415,45 +9390,127 @@ paths:
       operationId: updateAnExistingLeaveType
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"status\": 1,\n \"data\": {...},\n \"message\": \"Leave type successfully updated.\"\n}"
       tags:
         - 'HRM Leave Types'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'optional Leave type title.'
+                  example: 'Sick Leave'
+                days:
+                  type: integer
+                  description: 'optional Number of days allowed.'
+                  example: 15
     delete:
       summary: 'Delete a leave type'
       operationId: deleteALeaveType
       description: ''
       parameters: []
-      responses: {  }
-      tags:
-        - 'HRM Leave Types'
-    parameters:
-      -
-        in: path
-        name: id
-        description: 'The ID of the leaves type.'
-        example: architecto
-        required: true
-        schema:
-          type: string
-  /Hrm/leaves-types:
-    get:
-      summary: 'List all leave types for a workspace'
-      operationId: listAllLeaveTypesForAWorkspace
-      description: ''
-      parameters: []
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route Hrm/leaves-types could not be found.'
+                  status: 1
+                  message: 'Leave type successfully deleted.'
                 properties:
+                  status:
+                    type: integer
+                    example: 1
                   message:
                     type: string
-                    example: 'The route Hrm/leaves-types could not be found.'
+                    example: 'Leave type successfully deleted.'
+      tags:
+        - 'HRM Leave Types'
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the leave type.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /Hrm/leaves-types:
+    get:
+      summary: 'List all leave types for a workspace'
+      operationId: listAllLeaveTypesForAWorkspace
+      description: 'Returns leave types with used days and remaining eligibility for the given user.'
+      parameters:
+        -
+          in: query
+          name: user_id
+          description: 'User ID to calculate used leaves.'
+          example: 1
+          required: true
+          schema:
+            type: integer
+            description: 'User ID to calculate used leaves.'
+            example: 1
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    -
+                      id: 1
+                      title: 'Sick Leave'
+                      days: 12
+                      used: 2
+                      is_disable: 0
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        title: 'Sick Leave'
+                        days: 12
+                        used: 2
+                        is_disable: 0
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        title:
+                          type: string
+                          example: 'Sick Leave'
+                        days:
+                          type: integer
+                          example: 12
+                        used:
+                          type: integer
+                          example: 2
+                        is_disable:
+                          type: integer
+                          example: 0
       tags:
         - 'HRM Leave Types'
     post:
@@ -7496,6 +9553,34 @@ paths:
       description: ''
       parameters: []
       responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  data:
+                    id: 1
+                    title: 'Sick Leave'
+                    days: 12
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      title:
+                        type: string
+                        example: 'Sick Leave'
+                      days:
+                        type: integer
+                        example: 12
         404:
           description: ''
           content:
@@ -7503,11 +9588,15 @@ paths:
               schema:
                 type: object
                 example:
-                  message: 'The route Hrm/leaves-types/architecto could not be found.'
+                  status: 0
+                  message: 'Leave type not found'
                 properties:
+                  status:
+                    type: integer
+                    example: 0
                   message:
                     type: string
-                    example: 'The route Hrm/leaves-types/architecto could not be found.'
+                    example: 'Leave type not found'
       tags:
         - 'HRM Leave Types'
     put:
@@ -7515,26 +9604,64 @@ paths:
       operationId: updateAnExistingLeaveType
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"status\": 1,\n \"data\": {...},\n \"message\": \"Leave type successfully updated.\"\n}"
       tags:
         - 'HRM Leave Types'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'optional Leave type title.'
+                  example: 'Sick Leave'
+                days:
+                  type: integer
+                  description: 'optional Number of days allowed.'
+                  example: 15
     delete:
       summary: 'Delete a leave type'
       operationId: deleteALeaveType
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  message: 'Leave type successfully deleted.'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Leave type successfully deleted.'
       tags:
         - 'HRM Leave Types'
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the leaves type.'
-        example: architecto
+        description: 'The ID of the leave type.'
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
   /api/Hrm/leaves:
     get:
       summary: 'Get all leave records'
@@ -10450,7 +12577,7 @@ paths:
                 follow_up_date:
                   type: string
                   description: 'Must be a valid date in the format <code>Y-m-d</code>.'
-                  example: '2026-05-28'
+                  example: '2026-05-29'
                 lead_id:
                   type: string
                   description: 'The <code>id</code> of an existing record in the leads table.'
@@ -11076,7 +13203,7 @@ paths:
                 maintenance_schedule:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-28T14:34:54'
+                  example: '2026-05-29T20:01:03'
                   nullable: true
                 remarks:
                   type: string
@@ -11131,7 +13258,7 @@ paths:
                 rate_type:
                   type: string
                   description: 'Rental-specific fields. This field is required when <code>owned_by</code> is <code>rental</code>.'
-                  example: daily
+                  example: hourly
                   enum:
                     - hourly
                     - daily
@@ -11147,7 +13274,7 @@ paths:
                 operator_by_supplier:
                   type: boolean
                   description: ''
-                  example: true
+                  example: false
                 number_of_operators:
                   type: integer
                   description: 'This field is required when <code>operator_by_supplier</code> is <code>1</code>. Must be at least 1.'
@@ -11160,19 +13287,19 @@ paths:
                 insurance_due_date:
                   type: string
                   description: 'This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date.'
-                  example: '2026-05-28T14:34:54'
+                  example: '2026-05-29T20:01:03'
                 puc_due_date:
                   type: string
                   description: 'This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date.'
-                  example: '2026-05-28T14:34:54'
+                  example: '2026-05-29T20:01:03'
                 fitness_due_date:
                   type: string
                   description: 'This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date.'
-                  example: '2026-05-28T14:34:54'
+                  example: '2026-05-29T20:01:03'
                 last_service_date:
                   type: string
                   description: 'This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date.'
-                  example: '2026-05-28T14:34:54'
+                  example: '2026-05-29T20:01:03'
                 rental_agreement_file:
                   type: string
                   format: binary
@@ -11732,99 +13859,6 @@ paths:
           present:
             summary: 'When the value is present'
             value: dpr
-  '/api/ledger/{id}':
-    get:
-      summary: 'Show a single machinery ledger entry by ID.'
-      operationId: showASingleMachineryLedgerEntryByID
-      description: ''
-      parameters: []
-      responses:
-        200:
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  success: true
-                  message: 'Ledger entry fetched successfully.'
-                  data:
-                    id: 101
-                    machinery_id: 3
-                    entry_direction: credit
-                    entry_type: dpr
-                    amount: '5000.00'
-                    running_balance: '15000.00'
-                    date: '2025-06-15'
-                    description: 'DPR for June week 2'
-                    is_reversal: false
-                    is_locked: false
-                    machinery:
-                      id: 3
-                      name: 'Excavator EX-01'
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                    description: 'Whether the request succeeded. Example: true'
-                  message:
-                    type: string
-                    example: 'Ledger entry fetched successfully.'
-                    description: 'Response message. Example: Ledger entry fetched successfully.'
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                        example: 101
-                      machinery_id:
-                        type: integer
-                        example: 3
-                      entry_direction:
-                        type: string
-                        example: credit
-                      entry_type:
-                        type: string
-                        example: dpr
-                      amount:
-                        type: string
-                        example: '5000.00'
-                      running_balance:
-                        type: string
-                        example: '15000.00'
-                      date:
-                        type: string
-                        example: '2025-06-15'
-                      description:
-                        type: string
-                        example: 'DPR for June week 2'
-                      is_reversal:
-                        type: boolean
-                        example: false
-                      is_locked:
-                        type: boolean
-                        example: false
-                      machinery:
-                        type: object
-                        properties:
-                          id:
-                            type: integer
-                            example: 3
-                          name:
-                            type: string
-                            example: 'Excavator EX-01'
-                    description: 'The ledger entry record.'
-      tags:
-        - 'Machinery Ledger'
-    parameters:
-      -
-        in: path
-        name: id
-        description: 'The ID of the ledger entry.'
-        example: 101
-        required: true
-        schema:
-          type: integer
   /api/ledger/balance:
     get:
       summary: 'Get the running balance summary for a specific machinery within a date range.'
@@ -11952,12 +13986,12 @@ paths:
                 date_from:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-28T14:34:59'
+                  example: '2026-05-29T20:01:08'
                   nullable: true
                 date_to:
                   type: string
                   description: 'Must be a valid date. Must be a date after or equal to <code>date_from</code>.'
-                  example: '2052-06-20'
+                  example: '2052-06-21'
                   nullable: true
               required:
                 - machinery_id
@@ -12011,6 +14045,99 @@ paths:
                           example: 'Excavator EX-01'
       tags:
         - 'Machinery Ledger'
+  '/api/ledger/{id}':
+    get:
+      summary: 'Show a single machinery ledger entry by ID.'
+      operationId: showASingleMachineryLedgerEntryByID
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Ledger entry fetched successfully.'
+                  data:
+                    id: 101
+                    machinery_id: 3
+                    entry_direction: credit
+                    entry_type: dpr
+                    amount: '5000.00'
+                    running_balance: '15000.00'
+                    date: '2025-06-15'
+                    description: 'DPR for June week 2'
+                    is_reversal: false
+                    is_locked: false
+                    machinery:
+                      id: 3
+                      name: 'Excavator EX-01'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                    description: 'Whether the request succeeded. Example: true'
+                  message:
+                    type: string
+                    example: 'Ledger entry fetched successfully.'
+                    description: 'Response message. Example: Ledger entry fetched successfully.'
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 101
+                      machinery_id:
+                        type: integer
+                        example: 3
+                      entry_direction:
+                        type: string
+                        example: credit
+                      entry_type:
+                        type: string
+                        example: dpr
+                      amount:
+                        type: string
+                        example: '5000.00'
+                      running_balance:
+                        type: string
+                        example: '15000.00'
+                      date:
+                        type: string
+                        example: '2025-06-15'
+                      description:
+                        type: string
+                        example: 'DPR for June week 2'
+                      is_reversal:
+                        type: boolean
+                        example: false
+                      is_locked:
+                        type: boolean
+                        example: false
+                      machinery:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 3
+                          name:
+                            type: string
+                            example: 'Excavator EX-01'
+                    description: 'The ledger entry record.'
+      tags:
+        - 'Machinery Ledger'
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the ledger entry.'
+        example: 101
+        required: true
+        schema:
+          type: integer
   /api/machinery/payment-requests:
     get:
       summary: 'List Requests'
@@ -12803,7 +14930,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the manpower.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -13156,7 +15283,7 @@ paths:
                 issue_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-28T14:34:57'
+                  example: '2026-05-29T20:01:05'
                 remarks:
                   type: string
                   description: ''
@@ -13375,7 +15502,7 @@ paths:
                 return_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-28T14:34:57'
+                  example: '2026-05-29T20:01:06'
                 remarks:
                   type: string
                   description: ''
@@ -18678,11 +20805,11 @@ paths:
                 advance_date:
                   type: string
                   description: 'Must be a valid date.'
-                  example: '2026-05-28T14:34:56'
+                  example: '2026-05-29T20:01:04'
                 source:
                   type: string
                   description: ''
-                  example: po
+                  example: manual
                   enum:
                     - po
                     - manual
@@ -18822,23 +20949,34 @@ paths:
           type: string
   /api/supplier-categories:
     get:
-      summary: ''
-      operationId: getApiSupplierCategories
-      description: ''
+      summary: 'List Supplier Categories'
+      operationId: listSupplierCategories
+      description: 'Returns all active supplier categories.'
       parameters: []
       responses:
-        404:
-          description: ''
+        200:
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": 1,\n  \"data\": [\n    {\"id\": 1, \"name\": \"Subcontractors\", \"description\": null, \"is_active\": true, ...}\n  ]\n}"
+        403:
+          description: 'Permission denied'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/supplier-categories could not be found.'
+                  status: 0
+                  message: 'Permission denied'
                 properties:
+                  status:
+                    type: integer
+                    example: 0
                   message:
                     type: string
-                    example: 'The route api/supplier-categories could not be found.'
+                    example: 'Permission denied'
       tags:
         - 'Supplier Categories'
     post:
@@ -18891,23 +21029,50 @@ paths:
                 - created_by
   '/api/supplier-categories/{id}':
     get:
-      summary: ''
-      operationId: getApiSupplierCategoriesId
-      description: ''
+      summary: 'Show Supplier Category'
+      operationId: showSupplierCategory
+      description: 'Retrieve a specific supplier category by ID.'
       parameters: []
       responses:
-        404:
-          description: ''
+        200:
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": 1,\n  \"data\": {\"id\": 1, \"name\": \"Subcontractors\", \"description\": null, ...}\n}"
+        403:
+          description: 'Permission denied'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/supplier-categories/architecto could not be found.'
+                  status: 0
+                  message: 'Permission denied'
                 properties:
+                  status:
+                    type: integer
+                    example: 0
                   message:
                     type: string
-                    example: 'The route api/supplier-categories/architecto could not be found.'
+                    example: 'Permission denied'
+        404:
+          description: 'Not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 0
+                  message: 'Category not found'
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: 'Category not found'
       tags:
         - 'Supplier Categories'
     put:
@@ -18952,22 +21117,86 @@ paths:
                 - name
                 - created_by
     delete:
-      summary: ''
-      operationId: deleteApiSupplierCategoriesId
-      description: ''
+      summary: 'Delete Supplier Category'
+      operationId: deleteSupplierCategory
+      description: 'Permanently delete a supplier category. Category ID 1 (Subcontractors) is protected from deletion. Categories used in suppliers cannot be deleted.'
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'Deleted successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  message: 'Category deleted successfully'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Category deleted successfully'
+        400:
+          description: 'In use by suppliers'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 0
+                  message: 'Supplier Category cannot be deleted because it is used in the Suppliers Master.'
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: 'Supplier Category cannot be deleted because it is used in the Suppliers Master.'
+        403:
+          description: 'Permission denied or system category'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 0
+                  message: 'This category cannot be deleted as it is a system category used by the application.'
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: 'This category cannot be deleted as it is a system category used by the application.'
+        404:
+          description: 'Not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 0
+                  message: 'Category not found'
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: 'Category not found'
       tags:
         - 'Supplier Categories'
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the supplier category.'
-        example: architecto
+        description: 'Category ID.'
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
   /api/reports/supplier-ledger:
     get:
       summary: 'List supplier ledger transactions.'
@@ -19210,12 +21439,12 @@ paths:
                 from_date:
                   type: string
                   description: 'Must be a valid date in the format <code>Y-m-d</code>.'
-                  example: '2026-05-28'
+                  example: '2026-05-29'
                   nullable: true
                 to_date:
                   type: string
                   description: 'Must be a valid date in the format <code>Y-m-d</code>.'
-                  example: '2026-05-28'
+                  example: '2026-05-29'
                   nullable: true
                 per_page:
                   type: integer
@@ -19416,12 +21645,12 @@ paths:
                 from_date:
                   type: string
                   description: 'Must be a valid date in the format <code>Y-m-d</code>.'
-                  example: '2026-05-28'
+                  example: '2026-05-29'
                   nullable: true
                 to_date:
                   type: string
                   description: 'Must be a valid date in the format <code>Y-m-d</code>.'
-                  example: '2026-05-28'
+                  example: '2026-05-29'
                   nullable: true
   /api/reports/supplier-ledger/export-excel:
     get:
@@ -19512,12 +21741,12 @@ paths:
                 from_date:
                   type: string
                   description: 'Must be a valid date in the format <code>Y-m-d</code>.'
-                  example: '2026-05-28'
+                  example: '2026-05-29'
                   nullable: true
                 to_date:
                   type: string
                   description: 'Must be a valid date in the format <code>Y-m-d</code>.'
-                  example: '2026-05-28'
+                  example: '2026-05-29'
                   nullable: true
   /api/suppliers:
     get:
@@ -20083,23 +22312,34 @@ paths:
                 - workspace_id
   /api/units:
     get:
-      summary: ''
-      operationId: getApiUnits
-      description: ''
+      summary: 'List Units'
+      operationId: listUnits
+      description: 'Returns all material units.'
       parameters: []
       responses:
-        404:
-          description: ''
+        200:
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": 1,\n  \"data\": [\n    {\"id\": 1, \"name\": \"Kilogram\", \"symbol\": \"kg\", \"site_id\": 1, ...}\n  ]\n}"
+        403:
+          description: 'Permission denied'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/units could not be found.'
+                  status: false
+                  message: 'Permission denied'
                 properties:
+                  status:
+                    type: boolean
+                    example: false
                   message:
                     type: string
-                    example: 'The route api/units could not be found.'
+                    example: 'Permission denied'
       tags:
         - Units
     post:
@@ -20152,23 +22392,50 @@ paths:
                 - workspace_id
   '/api/units/{id}':
     get:
-      summary: ''
-      operationId: getApiUnitsId
-      description: ''
+      summary: 'Show Unit'
+      operationId: showUnit
+      description: 'Retrieve a specific material unit by ID.'
       parameters: []
       responses:
-        404:
-          description: ''
+        200:
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": 1,\n  \"data\": {\"id\": 1, \"name\": \"Kilogram\", \"symbol\": \"kg\", ...}\n}"
+        403:
+          description: 'Permission denied'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/units/architecto could not be found.'
+                  status: false
+                  message: 'Permission denied'
                 properties:
+                  status:
+                    type: boolean
+                    example: false
                   message:
                     type: string
-                    example: 'The route api/units/architecto could not be found.'
+                    example: 'Permission denied'
+        404:
+          description: 'Not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 0
+                  message: 'Unit not found'
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: 'Unit not found'
       tags:
         - Units
     put:
@@ -20180,22 +22447,417 @@ paths:
       tags:
         - Units
     delete:
-      summary: ''
-      operationId: deleteApiUnitsId
-      description: ''
+      summary: 'Delete Unit'
+      operationId: deleteUnit
+      description: 'Permanently delete a material unit. Units used in the Material Master cannot be deleted.'
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'Deleted successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 1
+                  message: 'Unit deleted successfully'
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: 'Unit deleted successfully'
+        400:
+          description: 'In use by materials'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 0
+                  message: 'Unit cannot be deleted as it is used in the Material Master'
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: 'Unit cannot be deleted as it is used in the Material Master'
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+        404:
+          description: 'Not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 0
+                  message: 'Unit not found'
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: 'Unit not found'
       tags:
         - Units
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the unit.'
-        example: architecto
+        description: 'Unit ID.'
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
+  /api/users/create-data:
+    get:
+      summary: 'Get Create-User Form Data'
+      operationId: getCreateUserFormData
+      description: "Returns the list of available roles that can be assigned to a new user.\nUsed to populate the role selector on the user creation form."
+      parameters: []
+      responses:
+        200:
+          description: 'Roles retrieved successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Roles data retrieved successfully'
+                  data:
+                    roles:
+                      '1': staff
+                      '2': admin
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Roles data retrieved successfully'
+                  data:
+                    type: object
+                    properties:
+                      roles:
+                        type: object
+                        properties:
+                          1:
+                            type: string
+                            example: staff
+                          2:
+                            type: string
+                            example: admin
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+      tags:
+        - Users
+  /api/users/profile:
+    get:
+      summary: 'Get User Profile'
+      operationId: getUserProfile
+      description: "Retrieve the authenticated user's profile data.\nSensitive fields (password, 2FA secrets, remember_token) are excluded."
+      parameters: []
+      responses:
+        200:
+          description: 'Profile retrieved successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": true,\n  \"message\": \"Profile retrieved successfully\",\n  \"data\": {\n    \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... }\n  }\n}"
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+      tags:
+        - Users
+    put:
+      summary: 'Update Profile'
+      operationId: updateProfile
+      description: "Update the authenticated user's own name, email, mobile number, and optionally avatar."
+      parameters: []
+      responses:
+        200:
+          description: 'Profile updated successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"status\": true,\n  \"message\": \"Profile updated successfully\",\n  \"data\": { \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... } }\n}"
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+        422:
+          description: 'Validation error'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{ "status": false, "message": "...", "data": {...} }'
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'User full name.'
+                  example: 'John Doe'
+                email:
+                  type: string
+                  description: 'Updated email address.'
+                  example: john@example.com
+                mobile_no:
+                  type: string
+                  description: 'optional Updated mobile number.'
+                  example: '+1234567890'
+                avatar:
+                  type: string
+                  format: binary
+                  description: 'optional Profile image (jpeg/png/jpg/gif, max 2 MB).'
+              required:
+                - name
+                - email
+  /api/users/profile/avatar:
+    post:
+      summary: 'Update Avatar'
+      operationId: updateAvatar
+      description: "Replace the authenticated user's profile avatar image."
+      parameters: []
+      responses:
+        200:
+          description: 'Avatar updated successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Avatar updated successfully'
+                  data:
+                    avatar: 'https://...'
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Avatar updated successfully'
+                  data:
+                    type: object
+                    properties:
+                      avatar:
+                        type: string
+                        example: 'https://...'
+        400:
+          description: 'No avatar file provided'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'No avatar file provided'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'No avatar file provided'
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+                  description: 'Profile image (jpeg/png/jpg/gif, max 2 MB).'
+              required:
+                - avatar
+  /api/users/password:
+    put:
+      summary: 'Change Own Password'
+      operationId: changeOwnPassword
+      description: "Update the authenticated user's password. Requires verification of the current password.\nThe new password must be at least 6 characters and must match the confirmation field."
+      parameters: []
+      responses:
+        200:
+          description: 'Password updated successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: true
+                  message: 'Password updated successfully'
+                  data: []
+                properties:
+                  status:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Password updated successfully'
+                  data:
+                    type: array
+                    example: []
+        400:
+          description: 'Current password is incorrect'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Please enter correct current password'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Please enter correct current password'
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: 'Permission denied'
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Permission denied'
+        422:
+          description: 'Validation error'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: false
+                  message: ...
+                properties:
+                  status:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: ...
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_password:
+                  type: string
+                  description: 'Current password for verification.'
+                  example: oldpass123
+                new_password:
+                  type: string
+                  description: 'New password (min 6 characters).'
+                  example: newpass456
+                confirm_password:
+                  type: string
+                  description: 'Must match new_password.'
+                  example: newpass456
+              required:
+                - current_password
+                - new_password
+                - confirm_password
   /api/users:
     get:
       summary: 'List Users'
@@ -20566,337 +23228,6 @@ paths:
         required: true
         schema:
           type: integer
-  /api/users/create-data:
-    get:
-      summary: 'Get Create-User Form Data'
-      operationId: getCreateUserFormData
-      description: "Returns the list of available roles that can be assigned to a new user.\nUsed to populate the role selector on the user creation form."
-      parameters: []
-      responses:
-        200:
-          description: 'Roles retrieved successfully'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: true
-                  message: 'Roles data retrieved successfully'
-                  data:
-                    roles:
-                      '1': staff
-                      '2': admin
-                properties:
-                  status:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: 'Roles data retrieved successfully'
-                  data:
-                    type: object
-                    properties:
-                      roles:
-                        type: object
-                        properties:
-                          1:
-                            type: string
-                            example: staff
-                          2:
-                            type: string
-                            example: admin
-        403:
-          description: 'Permission denied'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: false
-                  message: 'Permission denied'
-                properties:
-                  status:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: 'Permission denied'
-      tags:
-        - Users
-  /api/users/profile:
-    get:
-      summary: 'Get User Profile'
-      operationId: getUserProfile
-      description: "Retrieve the authenticated user's profile data.\nSensitive fields (password, 2FA secrets, remember_token) are excluded."
-      parameters: []
-      responses:
-        200:
-          description: 'Profile retrieved successfully'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "{\n  \"status\": true,\n  \"message\": \"Profile retrieved successfully\",\n  \"data\": {\n    \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... }\n  }\n}"
-        403:
-          description: 'Permission denied'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: false
-                  message: 'Permission denied'
-                properties:
-                  status:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: 'Permission denied'
-      tags:
-        - Users
-    put:
-      summary: 'Update Profile'
-      operationId: updateProfile
-      description: "Update the authenticated user's own name, email, mobile number, and optionally avatar."
-      parameters: []
-      responses:
-        200:
-          description: 'Profile updated successfully'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "{\n  \"status\": true,\n  \"message\": \"Profile updated successfully\",\n  \"data\": { \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... } }\n}"
-        403:
-          description: 'Permission denied'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: false
-                  message: 'Permission denied'
-                properties:
-                  status:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: 'Permission denied'
-        422:
-          description: 'Validation error'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: '{ "status": false, "message": "...", "data": {...} }'
-      tags:
-        - Users
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: 'User full name.'
-                  example: 'John Doe'
-                email:
-                  type: string
-                  description: 'Updated email address.'
-                  example: john@example.com
-                mobile_no:
-                  type: string
-                  description: 'optional Updated mobile number.'
-                  example: '+1234567890'
-                avatar:
-                  type: string
-                  format: binary
-                  description: 'optional Profile image (jpeg/png/jpg/gif, max 2 MB).'
-              required:
-                - name
-                - email
-  /api/users/profile/avatar:
-    post:
-      summary: 'Update Avatar'
-      operationId: updateAvatar
-      description: "Replace the authenticated user's profile avatar image."
-      parameters: []
-      responses:
-        200:
-          description: 'Avatar updated successfully'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: true
-                  message: 'Avatar updated successfully'
-                  data:
-                    avatar: 'https://...'
-                properties:
-                  status:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: 'Avatar updated successfully'
-                  data:
-                    type: object
-                    properties:
-                      avatar:
-                        type: string
-                        example: 'https://...'
-        400:
-          description: 'No avatar file provided'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: false
-                  message: 'No avatar file provided'
-                properties:
-                  status:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: 'No avatar file provided'
-        403:
-          description: 'Permission denied'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: false
-                  message: 'Permission denied'
-                properties:
-                  status:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: 'Permission denied'
-      tags:
-        - Users
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                avatar:
-                  type: string
-                  format: binary
-                  description: 'Profile image (jpeg/png/jpg/gif, max 2 MB).'
-              required:
-                - avatar
-  /api/users/password:
-    put:
-      summary: 'Change Own Password'
-      operationId: changeOwnPassword
-      description: "Update the authenticated user's password. Requires verification of the current password.\nThe new password must be at least 6 characters and must match the confirmation field."
-      parameters: []
-      responses:
-        200:
-          description: 'Password updated successfully'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: true
-                  message: 'Password updated successfully'
-                  data: []
-                properties:
-                  status:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: 'Password updated successfully'
-                  data:
-                    type: array
-                    example: []
-        400:
-          description: 'Current password is incorrect'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: false
-                  message: 'Please enter correct current password'
-                properties:
-                  status:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: 'Please enter correct current password'
-        403:
-          description: 'Permission denied'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: false
-                  message: 'Permission denied'
-                properties:
-                  status:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: 'Permission denied'
-        422:
-          description: 'Validation error'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  status: false
-                  message: ...
-                properties:
-                  status:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: ...
-      tags:
-        - Users
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                current_password:
-                  type: string
-                  description: 'Current password for verification.'
-                  example: oldpass123
-                new_password:
-                  type: string
-                  description: 'New password (min 6 characters).'
-                  example: newpass456
-                confirm_password:
-                  type: string
-                  description: 'Must match new_password.'
-                  example: newpass456
-              required:
-                - current_password
-                - new_password
-                - confirm_password
   '/api/users/{id}/password':
     get:
       summary: 'Get Password Reset Form Data (Admin)'
@@ -21855,76 +24186,346 @@ paths:
           type: integer
   /api/workspaces:
     get:
-      summary: ''
-      operationId: getApiWorkspaces
-      description: ''
+      summary: 'List Workspaces'
+      operationId: listWorkspaces
+      description: "Returns all active workspaces. Users with 'workspace manage' permission see all workspaces; others see workspaces they are assigned to via projects."
       parameters: []
       responses:
-        404:
-          description: ''
+        200:
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"workspaces\": [\n    {\"id\": 1, \"name\": \"Main Office\", \"slug\": \"main-office\", \"status\": \"active\", ...}\n  ]\n}"
+        403:
+          description: 'Permission denied'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/workspaces could not be found.'
+                  error: 'Permission denied'
                 properties:
-                  message:
+                  error:
                     type: string
-                    example: 'The route api/workspaces could not be found.'
+                    example: 'Permission denied'
       tags:
         - Workspaces
     post:
-      summary: ''
-      operationId: postApiWorkspaces
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Workspaces
-  '/api/workspaces/{id}':
-    get:
-      summary: ''
-      operationId: getApiWorkspacesId
-      description: ''
+      summary: 'Create Workspace'
+      operationId: createWorkspace
+      description: 'Create a new workspace/site. Optionally upload a logo image. Seeds global master data on creation.'
       parameters: []
       responses:
-        404:
-          description: ''
+        201:
+          description: 'Created successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"success\": \"Workspace created successfully.\",\n  \"workspace\": {\"id\": 1, \"name\": \"Main Office\", \"slug\": \"main-office\", ...}\n}"
+        403:
+          description: 'Permission denied'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'The route api/workspaces/architecto could not be found.'
+                  error: 'Permission denied'
                 properties:
-                  message:
+                  error:
                     type: string
-                    example: 'The route api/workspaces/architecto could not be found.'
+                    example: 'Permission denied'
+        422:
+          description: 'Validation error'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{ "error": "Validation failed message", "details": {...} }'
+      tags:
+        - Workspaces
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Workspace name.'
+                  example: 'Main Office'
+                created_by:
+                  type: integer
+                  description: 'Creator user ID.'
+                  example: 1
+                email:
+                  type: string
+                  description: 'optional Workspace email.'
+                  example: office@example.com
+                phone:
+                  type: string
+                  description: 'optional Phone number.'
+                  example: '+1234567890'
+                pincode:
+                  type: string
+                  description: 'optional Pincode/ZIP code.'
+                  example: '100001'
+                gst_number:
+                  type: string
+                  description: 'optional GST number.'
+                  example: 27AAECS1234F1Z5
+                pan_number:
+                  type: string
+                  description: 'optional PAN number.'
+                  example: ABCDE1234F
+                ifsc_code:
+                  type: string
+                  description: 'optional IFSC code.'
+                  example: SBIN0001234
+                bank_name:
+                  type: string
+                  description: 'optional Bank name.'
+                  example: 'State Bank of India'
+                account_number:
+                  type: string
+                  description: 'optional Bank account number.'
+                  example: '1234567890'
+                logo:
+                  type: string
+                  format: binary
+                  description: 'optional Workspace logo image (jpeg,jpg,png,gif,svg, max 2 MB).'
+                domain_switch:
+                  type: string
+                  description: 'optional Domain switch setting.'
+                  example: 'on'
+                domains:
+                  type: string
+                  description: 'optional Custom domain name.'
+                  example: example.com
+                subdomain:
+                  type: string
+                  description: 'optional Subdomain.'
+                  example: mysite
+              required:
+                - name
+                - created_by
+  '/api/workspaces/{id}':
+    get:
+      summary: 'Show Workspace'
+      operationId: showWorkspace
+      description: 'Retrieve a specific workspace by ID.'
+      parameters: []
+      responses:
+        200:
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"workspace\": {\"id\": 1, \"name\": \"Main Office\", \"slug\": \"main-office\", \"status\": \"active\", ...}\n}"
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Permission denied'
+                properties:
+                  error:
+                    type: string
+                    example: 'Permission denied'
+        404:
+          description: 'Not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Workspace not found.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Workspace not found.'
       tags:
         - Workspaces
     put:
-      summary: ''
-      operationId: putApiWorkspacesId
-      description: ''
+      summary: 'Update Workspace'
+      operationId: updateWorkspace
+      description: "Update an existing workspace's details including logo. Seeds global master data on completion."
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'Updated successfully'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n  \"success\": \"Workspace updated successfully.\",\n  \"workspace\": {\"id\": 1, \"name\": \"Main Office\", \"slug\": \"main-office\", ...}\n}"
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Permission denied'
+                properties:
+                  error:
+                    type: string
+                    example: 'Permission denied'
+        404:
+          description: 'Not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Workspace not found.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Workspace not found.'
+        422:
+          description: 'Validation error'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{ "error": "Validation failed message", "details": {...} }'
       tags:
         - Workspaces
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Workspace name.'
+                  example: 'Main Office'
+                created_by:
+                  type: integer
+                  description: 'Creator user ID.'
+                  example: 1
+                email:
+                  type: string
+                  description: 'optional Workspace email.'
+                  example: office@example.com
+                phone:
+                  type: string
+                  description: 'optional Phone number.'
+                  example: '+1234567890'
+                pincode:
+                  type: string
+                  description: 'optional Pincode/ZIP code.'
+                  example: '100001'
+                gst_number:
+                  type: string
+                  description: 'optional GST number.'
+                  example: 27AAECS1234F1Z5
+                pan_number:
+                  type: string
+                  description: 'optional PAN number.'
+                  example: ABCDE1234F
+                ifsc_code:
+                  type: string
+                  description: 'optional IFSC code.'
+                  example: SBIN0001234
+                bank_name:
+                  type: string
+                  description: 'optional Bank name.'
+                  example: 'State Bank of India'
+                account_number:
+                  type: string
+                  description: 'optional Bank account number.'
+                  example: '1234567890'
+                logo:
+                  type: string
+                  format: binary
+                  description: 'optional Workspace logo image (jpeg,jpg,png,gif,svg, max 2 MB).'
+                status:
+                  type: string
+                  description: 'optional Workspace status.'
+                  example: active
+              required:
+                - name
+                - created_by
     delete:
-      summary: ''
-      operationId: deleteApiWorkspacesId
-      description: ''
+      summary: 'Delete Workspace'
+      operationId: deleteWorkspace
+      description: 'Permanently delete a workspace. Workspaces used in projects cannot be deleted.'
       parameters: []
-      responses: {  }
+      responses:
+        200:
+          description: 'Deleted successfully'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: 'Workspace deleted successfully.'
+                properties:
+                  success:
+                    type: string
+                    example: 'Workspace deleted successfully.'
+        400:
+          description: 'In use by projects'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: 0
+                  message: 'Site cannot be deleted because it is used in Projects.'
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: 'Site cannot be deleted because it is used in Projects.'
+        403:
+          description: 'Permission denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: error
+                  message: 'Permission denied.'
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: 'Permission denied.'
+        404:
+          description: 'Not found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Workspace not found.'
+                properties:
+                  error:
+                    type: string
+                    example: 'Workspace not found.'
       tags:
         - Workspaces
     parameters:
       -
         in: path
         name: id
-        description: 'The ID of the workspace.'
-        example: architecto
+        description: 'Workspace ID.'
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer

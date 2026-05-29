@@ -25,7 +25,10 @@ class MaterialReturnController extends Controller
     }
 
     /**
-     * Display a listing of the material returns.
+     * Display a listing of material returns
+     *
+     * @authenticated
+     * @response view="material-returns.index"
      */
     public function index(MaterialReturnDataTable $dataTable)
     {
@@ -33,7 +36,11 @@ class MaterialReturnController extends Controller
     }
 
     /**
-     * Show the form for creating a new material return.
+     * Show create material return form
+     *
+     * @authenticated
+     * @queryParam issue_id int Pre-select an issue ID.
+     * @response view="material-returns.create"
      */
     public function create(Request $request)
     {
@@ -53,7 +60,18 @@ class MaterialReturnController extends Controller
     }
 
     /**
-     * Store a newly created material return.
+     * Store a newly created material return
+     *
+     * @authenticated
+     * @bodyParam issue_id int required The material issue ID being returned against.
+     * @bodyParam return_date date required Return date.
+     * @bodyParam remarks string optional Remarks.
+     * @bodyParam items array required Array of returned items.
+     * @bodyParam items.*.issue_item_id int required The issue item ID.
+     * @bodyParam items.*.material_id int required Material ID.
+     * @bodyParam items.*.quantity numeric required Return quantity. Min 0.01.
+     * @bodyParam items.*.remarks string optional Item remarks.
+     * @response redirect to material-returns.index
      */
     public function store(StoreMaterialReturnRequest $request)
     {
@@ -111,7 +129,11 @@ class MaterialReturnController extends Controller
     }
 
     /**
-     * Display the specified material return.
+     * Display the specified material return
+     *
+     * @authenticated
+     * @urlParam id int required The material return ID.
+     * @response view="material-returns.show"
      */
     public function show($id)
     {
@@ -122,7 +144,11 @@ class MaterialReturnController extends Controller
     }
 
     /**
-     * Show the form for editing the specified material return.
+     * Show edit material return form
+     *
+     * @authenticated
+     * @urlParam id int required The material return ID.
+     * @response view="material-returns.edit"
      */
     public function edit($id)
     {
@@ -142,7 +168,19 @@ class MaterialReturnController extends Controller
     }
 
     /**
-     * Update the specified material return.
+     * Update the specified material return
+     *
+     * @authenticated
+     * @urlParam id int required The material return ID.
+     * @bodyParam issue_id int required The material issue ID.
+     * @bodyParam return_date date required Return date.
+     * @bodyParam remarks string optional Remarks.
+     * @bodyParam items array required Array of returned items.
+     * @bodyParam items.*.issue_item_id int required Issue item ID.
+     * @bodyParam items.*.material_id int required Material ID.
+     * @bodyParam items.*.quantity numeric required Return quantity.
+     * @bodyParam items.*.remarks string optional Item remarks.
+     * @response redirect to material-returns.index
      */
     public function update(Request $request, $id)
     {
@@ -285,7 +323,11 @@ class MaterialReturnController extends Controller
     }
 
     /**
-     * Remove the specified material return.
+     * Remove the specified material return
+     *
+     * @authenticated
+     * @urlParam id int required The material return ID.
+     * @response redirect to material-returns.index
      */
     public function destroy($id)
     {
@@ -327,7 +369,14 @@ class MaterialReturnController extends Controller
     }
 
     /**
-     * Get issue details for return form.
+     * Get issue details for return form (AJAX)
+     *
+     * @authenticated
+     * @bodyParam issue_id int required The material issue ID.
+     * @response {
+     *   "success": true,
+     *   "issue": {}
+     * }
      */
     public function getIssueDetails(Request $request)
     {

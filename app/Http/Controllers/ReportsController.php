@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class ReportsController extends Controller
 {
+    /**
+     * Display the reports index page.
+     *
+     * @authenticated
+     * @response view="reports.index"
+     */
     public function index()
     {
         if (!Auth::user()->isAbleTo('reports manage')) {
@@ -22,6 +28,12 @@ class ReportsController extends Controller
 
     /**
      * Machinery Ledger Summary Report
+     *
+     * @authenticated
+     * @queryParam machinery_id integer Filter by machinery ID. Example: 1
+     * @queryParam start_date date Filter transactions from this date. Example: 2024-01-01
+     * @queryParam end_date date Filter transactions up to this date. Example: 2024-12-31
+     * @response view="reports.machinery_ledger_summary"
      */
     public function machineryLedgerSummary(Request $request)
     {
@@ -73,6 +85,10 @@ class ReportsController extends Controller
 
     /**
      * Supplier Outstanding Report
+     *
+     * @authenticated
+     * @queryParam supplier_id integer Filter by supplier ID. Example: 1
+     * @response view="reports.supplier_outstanding"
      */
     public function supplierOutstanding(Request $request)
     {
@@ -119,6 +135,12 @@ class ReportsController extends Controller
 
     /**
      * Monthly Cost Report
+     *
+     * @authenticated
+     * @queryParam machinery_id integer Filter by machinery ID. Example: 1
+     * @queryParam year integer Filter by year. Default: current year. Example: 2025
+     * @queryParam month integer Filter by month (1-12). Example: 3
+     * @response view="reports.monthly_cost"
      */
     public function monthlyCostReport(Request $request)
     {

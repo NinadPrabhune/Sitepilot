@@ -27,6 +27,12 @@ class MaterialController extends Controller {
         return 'MAT-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
     }
 
+    /**
+     * List materials
+     *
+     * @authenticated
+     * @response view="materials.index"
+     */
     public function index(MaterialDataTable $dataTable) {
 
 
@@ -37,6 +43,12 @@ class MaterialController extends Controller {
         }
     }
 
+    /**
+     * Show create material form
+     *
+     * @authenticated
+     * @response view="materials.create"
+     */
     public function create() {
         if (\Auth::user()->isAbleTo('material create')) {
             $categories = \App\Models\MaterialCategory::pluck('name', 'id');
@@ -49,6 +61,22 @@ class MaterialController extends Controller {
         }
     }
 
+    /**
+     * Store a new material
+     *
+     * @authenticated
+     * @bodyParam name string required Material name. Example: Portland Cement
+     * @bodyParam hsn_sac string optional HSN/SAC code. Max 20 chars.
+     * @bodyParam gst_master_id int optional GST master ID. Must exist in gst_masters.
+     * @bodyParam category_id int required Category ID. Must exist in material_categories.
+     * @bodyParam unit_id int required Unit ID. Must exist in units.
+     * @bodyParam description string optional Description.
+     * @bodyParam price numeric required Material price.
+     * @bodyParam reorder_level int required Reorder level quantity.
+     * @bodyParam status string required Status.
+     * @bodyParam image file optional Material image. Max 2MB.
+     * @response redirect to material.index
+     */
     public function store(Request $request) {
 
         if (\Auth::user()->isAbleTo('material create')) {
@@ -105,6 +133,13 @@ class MaterialController extends Controller {
         }
     }
 
+    /**
+     * Show edit material form
+     *
+     * @authenticated
+     * @urlParam material int required The material ID.
+     * @response view="materials.edit"
+     */
     public function edit(Material $material) {
 
         $categories = \App\Models\MaterialCategory::pluck('name', 'id');
@@ -114,6 +149,23 @@ class MaterialController extends Controller {
         return view('materials.edit', compact('material', 'categories', 'units', 'gstMasters'));
     }
 
+    /**
+     * Update material
+     *
+     * @authenticated
+     * @urlParam material int required The material ID.
+     * @bodyParam name string required Material name. Max 255 chars.
+     * @bodyParam hsn_sac string optional HSN/SAC code. Max 20 chars.
+     * @bodyParam gst_master_id int optional GST master ID.
+     * @bodyParam category_id int required Category ID.
+     * @bodyParam unit_id int required Unit ID.
+     * @bodyParam description string optional Description.
+     * @bodyParam price numeric required Price.
+     * @bodyParam reorder_level int required Reorder level.
+     * @bodyParam status string required Status (active/inactive).
+     * @bodyParam image file optional Material image. Max 2MB.
+     * @response redirect to material.index
+     */
     public function update(Request $request, Material $material) {
 
 
@@ -184,6 +236,13 @@ class MaterialController extends Controller {
         }
     }
 
+    /**
+     * Delete material
+     *
+     * @authenticated
+     * @urlParam material int required The material ID.
+     * @response redirect to material.index
+     */
     public function destroy(Material $material) {
 
         if (\Auth::user()->isAbleTo('material delete')) {
@@ -233,7 +292,11 @@ class MaterialController extends Controller {
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified material
+     *
+     * @authenticated
+     * @urlParam material int required The material ID.
+     * @response view="materials.show"
      */
     public function show(Material $material) {
         if (\Auth::user()->isAbleTo('material show')) {
@@ -244,6 +307,14 @@ class MaterialController extends Controller {
         }
     }
 
+    /**
+     * Get unit name for a material (AJAX)
+     *
+     * @urlParam id int required The material ID.
+     * @response {
+     *   "unit": "Kg"
+     * }
+     */
     public function getUnit($id) {
         $material = \App\Models\Material::with('unit')->find($id);
         return response()->json(['unit' => optional($material->unit)->name]);
@@ -251,6 +322,14 @@ class MaterialController extends Controller {
 
     /**
      * AJAX endpoint for materials with category filtering
+     *
+     * @authenticated
+     * @queryParam category_id int Filter by category ID.
+     * @queryParam q string Search query to filter materials by name.
+     * @response {
+     *   "status": 1,
+     *   "data": [{"id": 1, "name": "Cement", "category_id": 1, "unit_id": 1, "price": 500}]
+     * }
      */
     public function getMaterialsAjax(Request $request) {
         $query = \App\Models\Material::with('category', 'unit');
@@ -273,6 +352,12 @@ class MaterialController extends Controller {
 
     /**
      * AJAX endpoint to get single material details with price
+     *
+     * @urlParam id int required The material ID.
+     * @response {
+     *   "status": 1,
+     *   "data": {"id": 1, "name": "Cement", "unit": {}, "category": {}, "gstMaster": {}}
+     * }
      */
     public function getMaterialDetails($id) {
         $material = \App\Models\Material::with(['unit', 'category', 'gstMaster'])

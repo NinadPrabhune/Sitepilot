@@ -16,7 +16,10 @@ use Illuminate\Support\Str;
 class ReferralProgramController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display referral program settings and transactions.
+     *
+     * @authenticated
+     * @response view="referral-program.index"
      */
     public function index()
     {
@@ -43,7 +46,14 @@ class ReferralProgramController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store or update referral program settings.
+     *
+     * @authenticated
+     * @bodyParam percentage numeric required Referral commission percentage.
+     * @bodyParam minimum_threshold_amount numeric required Minimum threshold amount for payout.
+     * @bodyParam guideline string required Program guidelines.
+     * @bodyParam is_enable string Enable toggle ('on'/'off').
+     * @response redirect
      */
     public function store(Request $request)
     {
@@ -87,6 +97,12 @@ class ReferralProgramController extends Controller
         return redirect()->route('referral-program.index')->with('success', __('Referral Program Setting details are updated successfully'));
     }
 
+    /**
+     * Company referral program dashboard.
+     *
+     * @authenticated
+     * @response view="referral-program.company"
+     */
     public function companyIndex()
     {
         $setting = ReferralSetting::where('created_by',1)->first();
@@ -102,6 +118,13 @@ class ReferralProgramController extends Controller
         return view('referral-program.company' , compact('setting' , 'transactions' , 'paidAmount' , 'transactionsOrder' , 'paymentRequest','company_settings'));
     }
 
+    /**
+     * Show form to request referral payout amount.
+     *
+     * @authenticated
+     * @urlParam id string required Encrypted transaction order ID.
+     * @response view="referral-program.request_amount"
+     */
     public function requestedAmountSent($id)
     {
         $id  = \Illuminate\Support\Facades\Crypt::decrypt($id);
@@ -113,6 +136,14 @@ class ReferralProgramController extends Controller
         return view('referral-program.request_amount' , compact('id' , 'netAmount'));
     }
 
+    /**
+     * Store a referral payout request.
+     *
+     * @authenticated
+     * @urlParam id int required Transaction order ID.
+     * @bodyParam request_amount numeric required Amount requested for payout.
+     * @response redirect
+     */
     public function requestedAmountStore(Request $request , $id)
     {
         $order = new TransactionOrder();
@@ -125,6 +156,13 @@ class ReferralProgramController extends Controller
         return redirect()->route('referral-program.company')->with('success', __('Request Send Successfully.'));
     }
 
+    /**
+     * Cancel a referral payout request.
+     *
+     * @authenticated
+     * @urlParam id int required User ID.
+     * @response redirect
+     */
     public function requestCancel($id)
     {
         $transaction = TransactionOrder::where('req_user_id',$id)->orderBy('id','desc')->first();
@@ -133,6 +171,14 @@ class ReferralProgramController extends Controller
         return redirect()->route('referral-program.company')->with('success', __('Request Cancel Successfully.'));
     }
 
+    /**
+     * Approve or reject a referral payout request.
+     *
+     * @authenticated
+     * @urlParam id int required Transaction order ID.
+     * @urlParam status int required Status: 0 = Reject, 2 = Accept.
+     * @response redirect
+     */
     public function requestedAmount($id , $status)
     {
         $setting = ReferralSetting::where('created_by',1)->first();

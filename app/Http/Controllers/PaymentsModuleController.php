@@ -42,7 +42,10 @@ class PaymentsModuleController extends Controller {
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of payments.
+     *
+     * @authenticated
+     * @response view="payments-module.index"
      */
     public function index(PaymentsModuleDataTable $dataTable) {
         if (!Auth::user()->isAbleTo('manage-payment manage')) {
@@ -57,7 +60,10 @@ class PaymentsModuleController extends Controller {
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show form for creating a new payment.
+     *
+     * @authenticated
+     * @response view="payments-module.create"
      */
     public function create() {
         if (!Auth::user()->isAbleTo('manage-payment create')) {
@@ -79,7 +85,11 @@ class PaymentsModuleController extends Controller {
     }
 
     /**
-     * Create payment from Purchase Order (for advance payments).
+     * Show form to create payment from a purchase order (advance payment).
+     *
+     * @authenticated
+     * @urlParam purchaseOrder int required Purchase order ID.
+     * @response view="payments-module.create"
      */
     public function createFromPo(PurchaseOrder $purchaseOrder) {
         if (!Auth::user()->isAbleTo('manage-payment create')) {
@@ -112,7 +122,11 @@ class PaymentsModuleController extends Controller {
     }
 
     /**
-     * Create payment from Purchase Invoice.
+     * Show form to create payment from a purchase invoice.
+     *
+     * @authenticated
+     * @urlParam purchaseInvoice int required Purchase invoice ID.
+     * @response view="payments-module.create"
      */
     public function createFromInvoice(PurchaseInvoice $purchaseInvoice) {
         if (!Auth::user()->isAbleTo('manage-payment create')) {
@@ -147,7 +161,11 @@ class PaymentsModuleController extends Controller {
     }
 
     /**
-     * Create payment from Payment Request.
+     * Show form to create payment from a payment request.
+     *
+     * @authenticated
+     * @urlParam paymentRequest int required Payment request ID.
+     * @response view="payments-module.create"
      */
     public function createFromPaymentRequest(PaymentRequest $paymentRequest) {
         if (!Auth::user()->isAbleTo('manage-payment create')) {
@@ -238,7 +256,22 @@ class PaymentsModuleController extends Controller {
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created payment.
+     *
+     * @authenticated
+     * @bodyParam supplier_id int required Supplier ID.
+     * @bodyParam site_id int required Site/Project ID.
+     * @bodyParam payment_date date required Payment date.
+     * @bodyParam amount numeric required Payment amount (min 0.01).
+     * @bodyParam payment_type string required Type: advance_against_po, against_po, or against_invoice.
+     * @bodyParam mode string nullable Payment mode (cheque, cash, bank transfer, etc.).
+     * @bodyParam reference_number string nullable Reference number.
+     * @bodyParam notes string nullable Payment notes.
+     * @bodyParam payment_proff_file file nullable Payment proof file.
+     * @bodyParam purchase_order_id int nullable Purchase order ID.
+     * @bodyParam purchase_invoice_id int nullable Invoice ID.
+     * @bodyParam payment_request_id int nullable Payment request ID.
+     * @response redirect
      */
     public function store(Request $request) {
         Log::channel('payment_audit')->info('====== PAYMENT STORE REQUEST STARTED ======', [
@@ -804,7 +837,11 @@ class PaymentsModuleController extends Controller {
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified payment.
+     *
+     * @authenticated
+     * @urlParam paymentsModule int required Payment ID.
+     * @response view="payments-module.show"
      */
     public function show(PaymentsModule $paymentsModule) {
         if (!Auth::user()->isAbleTo('manage-payment show')) {
@@ -820,7 +857,11 @@ class PaymentsModuleController extends Controller {
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show form for editing a payment.
+     *
+     * @authenticated
+     * @urlParam paymentsModule int required Payment ID.
+     * @response view="payments-module.edit"
      */
     public function edit(PaymentsModule $paymentsModule) {
         if (!Auth::user()->isAbleTo('manage-payment edit')) {
@@ -851,7 +892,20 @@ class PaymentsModuleController extends Controller {
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a payment.
+     *
+     * @authenticated
+     * @urlParam paymentsModule int required Payment ID.
+     * @bodyParam supplier_id int required Supplier ID.
+     * @bodyParam site_id int required Site/Project ID.
+     * @bodyParam payment_date date required Payment date.
+     * @bodyParam amount numeric required Payment amount (min 0.01).
+     * @bodyParam payment_type string required Type: advance_against_po, against_po, or against_invoice.
+     * @bodyParam mode string nullable Payment mode.
+     * @bodyParam reference_number string nullable Reference number.
+     * @bodyParam notes string nullable Payment notes.
+     * @bodyParam payment_proff_file file nullable Payment proof file.
+     * @response redirect
      */
     public function update(Request $request, PaymentsModule $paymentsModule) {
         if (!Auth::user()->isAbleTo('manage-payment edit')) {
@@ -1018,6 +1072,13 @@ class PaymentsModuleController extends Controller {
 
     /**
      * Remove the specified resource from storage.
+     */
+    /**
+     * Remove the specified payment.
+     *
+     * @authenticated
+     * @urlParam paymentsModule int required Payment ID.
+     * @response redirect
      */
     public function destroy(PaymentsModule $paymentsModule) {
         if (!Auth::user()->isAbleTo('manage-payment delete')) {

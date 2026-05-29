@@ -20,7 +20,15 @@ class StockLedgerController extends Controller
     }
 
     /**
-     * Display stock ledger with filters.
+     * Display the stock ledger with filters.
+     *
+     * @authenticated
+     * @queryParam project_id integer Filter by project (site) ID. Example: 1
+     * @queryParam material_id integer Filter by material ID. Example: 1
+     * @queryParam type string Filter by transaction type (opening, grn, issue, transfer_in, transfer_out, adjustment). Example: grn
+     * @queryParam start_date date Filter from this date. Example: 2025-01-01
+     * @queryParam end_date date Filter up to this date. Example: 2025-12-31
+     * @response view="stock-ledger.index"
      */
     public function index(Request $request)
     {
@@ -73,7 +81,15 @@ class StockLedgerController extends Controller
     }
 
     /**
-     * Export stock ledger to Excel.
+     * Export the stock ledger to Excel.
+     *
+     * @authenticated
+     * @queryParam project_id integer Filter by project (site) ID. Example: 1
+     * @queryParam material_id integer Filter by material ID. Example: 1
+     * @queryParam type string Filter by transaction type (opening, grn, issue, transfer_in, transfer_out, adjustment). Example: grn
+     * @queryParam start_date date Filter from this date. Example: 2025-01-01
+     * @queryParam end_date date Filter up to this date. Example: 2025-12-31
+     * @response file="stock_ledger_*.xlsx"
      */
     public function export(Request $request)
     {

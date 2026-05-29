@@ -10,9 +10,10 @@ use Illuminate\Support\Facades\Auth;
 class HelpdeskTicketCategoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List all helpdesk ticket categories.
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @response view="ticket_category.index"
      */
     public function index()
     {
@@ -25,9 +26,10 @@ class HelpdeskTicketCategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new ticket category.
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @response view="ticket_category.create"
      */
     public function create()
     {
@@ -39,10 +41,12 @@ class HelpdeskTicketCategoryController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created ticket category.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @bodyParam name string required Category name. Example: Bug Report
+     * @bodyParam color string required Category color (hex). Example: #ff0000
+     * @response view="ticket_category.index" (redirect)
      */
     public function store(Request $request)
     {
@@ -75,10 +79,11 @@ class HelpdeskTicketCategoryController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display a ticket category (redirects to index).
      *
-     * @param  \App\Models\HelpdeskTicketCategory  $helpdeskTicketCategory
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam helpdeskTicketCategory int required Category ID. Example: 1
+     * @response view="ticket_category.index" (redirect)
      */
     public function show(HelpdeskTicketCategory $helpdeskTicketCategory)
     {
@@ -87,10 +92,11 @@ class HelpdeskTicketCategoryController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing a ticket category.
      *
-     * @param  \App\Models\HelpdeskTicketCategory  $helpdeskTicketCategory
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id int required Category ID. Example: 1
+     * @response view="ticket_category.edit"
      */
     public function edit($id)
     {
@@ -103,11 +109,13 @@ class HelpdeskTicketCategoryController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a ticket category.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\HelpdeskTicketCategory  $helpdeskTicketCategory
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id int required Category ID. Example: 1
+     * @bodyParam name string required Category name. Example: Feature Request
+     * @bodyParam color string required Category color (hex). Example: #00ff00
+     * @response view="ticket_category.index" (redirect)
      */
     public function update(Request $request, $id)
     {
@@ -124,10 +132,11 @@ class HelpdeskTicketCategoryController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a ticket category.
      *
-     * @param  \App\Models\HelpdeskTicketCategory  $helpdeskTicketCategory
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id int required Category ID. Example: 1
+     * @response view="ticket_category.index" (redirect)
      */
     public function destroy($id)
     {

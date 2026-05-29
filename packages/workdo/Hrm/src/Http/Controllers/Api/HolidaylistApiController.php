@@ -14,6 +14,29 @@ use App\Models\WorkSpace;
 class HolidaylistApiController extends Controller
 {
 
+    /**
+     * List holidays (calendar format)
+     *
+     * Returns holidays formatted for calendar display, optionally filtered by date range.
+     *
+     * @authenticated
+     * @group HRM Holiday List
+     *
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam date string optional Date range (start_date to end_date). Example: 2024-01-01 to 2024-01-31
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": [
+     *    {
+     *      "title": "Diwali",
+     *      "start": "2024-11-01",
+     *      "end": "2024-11-05",
+     *      "className": "event-danger"
+     *    }
+     *  ]
+     * }
+     */
     public function index(Request $request)
     {
         try{

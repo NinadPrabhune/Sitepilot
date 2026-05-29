@@ -21,7 +21,10 @@ class MachineryPaymentRequestController extends Controller
     }
     
     /**
-     * Web: Index page
+     * Web: Index page for payment requests
+     *
+     * @authenticated
+     * @response view="machinery-payment.index"
      */
     public function index(Request $request, MachineryPaymentRequestDataTable $dataTable)
     {
@@ -35,7 +38,10 @@ class MachineryPaymentRequestController extends Controller
     }
     
     /**
-     * Web: Create page
+     * Web: Create payment request page
+     *
+     * @authenticated
+     * @response view="machinery-payment.create"
      */
     public function create()
     {
@@ -45,7 +51,11 @@ class MachineryPaymentRequestController extends Controller
     }
     
     /**
-     * Web: Show page
+     * Web: Show payment request details
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @response view="machinery-payment.show"
      */
     public function show($id)
     {
@@ -70,7 +80,18 @@ class MachineryPaymentRequestController extends Controller
     }
     
     /**
-     * Create payment request from ledger (API endpoint - actually creates the payment request)
+     * Create payment request from ledger (API endpoint)
+     *
+     * @authenticated
+     * @bodyParam machinery_id int required Machinery ID. Must exist in machineries table.
+     * @bodyParam supplier_id int required Supplier ID. Must exist in suppliers table.
+     * @bodyParam period_start date required Period start date.
+     * @bodyParam period_end date required Period end date. Must be after or equal to period_start.
+     * @bodyParam idempotency_key string optional Idempotency key for safe retries. Max 64 chars.
+     * @response status=201 {
+     *   "success": true,
+     *   "data": {}
+     * }
      */
     public function store(Request $request): JsonResponse
     {
@@ -105,7 +126,17 @@ class MachineryPaymentRequestController extends Controller
     }
 
     /**
-     * Calculate payment request from ledger (web endpoint - preview only, does not create payment request)
+     * Calculate payment request from ledger (preview only, does not create payment request)
+     *
+     * @authenticated
+     * @bodyParam machinery_id int required Machinery ID.
+     * @bodyParam supplier_id int required Supplier ID.
+     * @bodyParam period_start date required Period start date.
+     * @bodyParam period_end date required Period end date.
+     * @response {
+     *   "success": true,
+     *   "data": {}
+     * }
      */
     public function calculate(Request $request): JsonResponse
     {
@@ -138,6 +169,20 @@ class MachineryPaymentRequestController extends Controller
     
     /**
      * API: List payment requests
+     *
+     * @authenticated
+     * @queryParam machinery_id int Filter by machinery ID.
+     * @queryParam status string Filter by status.
+     * @queryParam workspace_id int Filter by workspace ID.
+     * @queryParam per_page int Results per page. Default: 20.
+     * @queryParam draw int DataTables draw counter.
+     * @response {
+     *   "success": true,
+     *   "data": [],
+     *   "recordsTotal": 0,
+     *   "recordsFiltered": 0,
+     *   "draw": 0
+     * }
      */
     public function apiIndex(Request $request)
     {
@@ -168,6 +213,13 @@ class MachineryPaymentRequestController extends Controller
     
     /**
      * API: Show payment request details
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @response {
+     *   "success": true,
+     *   "data": {}
+     * }
      */
     public function apiShow(int $id): JsonResponse
     {
@@ -199,7 +251,14 @@ class MachineryPaymentRequestController extends Controller
     }
     
     /**
-     * Submit payment request
+     * Submit payment request for approval
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @response {
+     *   "success": true,
+     *   "message": "Payment request submitted successfully"
+     * }
      */
     public function submit(int $id): JsonResponse
     {
@@ -213,6 +272,13 @@ class MachineryPaymentRequestController extends Controller
 
     /**
      * Approve payment request
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @response {
+     *   "success": true,
+     *   "message": "Payment request approved successfully"
+     * }
      */
     public function approve(int $id): JsonResponse
     {
@@ -225,7 +291,14 @@ class MachineryPaymentRequestController extends Controller
     }
     
     /**
-     * Lock payment request
+     * Lock payment request (prevent further changes)
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @response {
+     *   "success": true,
+     *   "message": "Payment request locked successfully"
+     * }
      */
     public function lock(int $id): JsonResponse
     {
@@ -239,6 +312,13 @@ class MachineryPaymentRequestController extends Controller
     
     /**
      * Mark payment request as paid
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @response {
+     *   "success": true,
+     *   "message": "Payment request marked as paid successfully"
+     * }
      */
     public function pay(int $id): JsonResponse
     {
@@ -252,6 +332,14 @@ class MachineryPaymentRequestController extends Controller
     
     /**
      * Reject payment request
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @bodyParam reason string optional Rejection reason.
+     * @response {
+     *   "success": true,
+     *   "message": "Payment request rejected successfully"
+     * }
      */
     public function reject(Request $request, int $id): JsonResponse
     {
@@ -270,6 +358,13 @@ class MachineryPaymentRequestController extends Controller
     /**
      * Debug endpoint for payment request validation
      * Returns detailed breakdown for debugging
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @response {
+     *   "success": true,
+     *   "data": {}
+     * }
      */
     public function debug(int $id): JsonResponse
     {
@@ -350,8 +445,21 @@ class MachineryPaymentRequestController extends Controller
     }
     
     /**
-     * Recalculate endpoint for pre-approval validation
+     * Recalculate for pre-approval validation
      * Returns diff between original and current calculation
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @response {
+     *   "success": true,
+     *   "data": {
+     *     "original": {},
+     *     "current": {},
+     *     "diff": {},
+     *     "has_mismatch": false,
+     *     "can_approve": true
+     *   }
+     * }
      */
     public function recalculate(int $id): JsonResponse
     {
@@ -405,6 +513,14 @@ class MachineryPaymentRequestController extends Controller
     
     /**
      * ADMIN: Force reject after approval
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @bodyParam override_reason string required Reason for force rejection.
+     * @response {
+     *   "success": true,
+     *   "message": "Payment request force rejected (admin override)"
+     * }
      */
     public function forceReject(Request $request, int $id): JsonResponse
     {
@@ -422,6 +538,14 @@ class MachineryPaymentRequestController extends Controller
     
     /**
      * ADMIN: Force unlock period
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @bodyParam override_reason string required Reason for force unlock.
+     * @response {
+     *   "success": true,
+     *   "message": "Period force unlocked (admin override)"
+     * }
      */
     public function forceUnlock(Request $request, int $id): JsonResponse
     {
@@ -439,6 +563,14 @@ class MachineryPaymentRequestController extends Controller
     
     /**
      * ADMIN: Add override note
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @bodyParam note string required Override note text.
+     * @response {
+     *   "success": true,
+     *   "message": "Override note added"
+     * }
      */
     public function addOverrideNote(Request $request, int $id): JsonResponse
     {
@@ -456,6 +588,15 @@ class MachineryPaymentRequestController extends Controller
 
     /**
      * Upload invoice for payment request
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @bodyParam invoice_file file required Invoice file. mimes:pdf,jpg,jpeg,png. Max 10MB.
+     * @response {
+     *   "success": true,
+     *   "message": "Invoice uploaded successfully",
+     *   "path": ""
+     * }
      */
     public function uploadInvoice(Request $request, int $id): JsonResponse
     {
@@ -481,6 +622,19 @@ class MachineryPaymentRequestController extends Controller
 
     /**
      * Upload payment proof for payment request
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @bodyParam payment_proof_file file required Payment proof file. mimes:pdf,jpg,jpeg,png. Max 5MB.
+     * @bodyParam payment_mode string required Payment mode. Must be bank_transfer, cash, cheque, or upi.
+     * @bodyParam payment_date date required Payment date.
+     * @bodyParam payment_amount numeric required Payment amount. Min 0.01.
+     * @bodyParam reference_number string optional Reference number. Max 255 chars.
+     * @bodyParam remarks string optional Remarks. Max 1000 chars.
+     * @response {
+     *   "success": true,
+     *   "message": "Payment proof uploaded and ERP payment created successfully"
+     * }
      */
     public function uploadPaymentProof(Request $request, int $id): JsonResponse
     {
@@ -554,6 +708,15 @@ class MachineryPaymentRequestController extends Controller
     /**
      * Debug endpoint to analyze ledger entries query
      * Helps identify why "No eligible ledger entries found" error occurs
+     *
+     * @authenticated
+     * @bodyParam machinery_id int required Machinery ID.
+     * @bodyParam period_start date required Period start date.
+     * @bodyParam period_end date required Period end date. Must be after or equal to period_start.
+     * @response {
+     *   "success": true,
+     *   "data": {}
+     * }
      */
     public function debugLedgerQuery(Request $request): JsonResponse
     {
@@ -681,6 +844,10 @@ class MachineryPaymentRequestController extends Controller
 
     /**
      * Show payment modal content
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @response view="machinery-payment.create-payment-modal"
      */
     public function paymentModal(int $id)
     {
@@ -690,7 +857,21 @@ class MachineryPaymentRequestController extends Controller
 
     /**
      * Create ERP Payment for Machinery Payment Request
-     * Phase B2: Real ERP Flow Implementation
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @bodyParam payment_date date required Payment date.
+     * @bodyParam amount numeric required Payment amount. Min 0.01.
+     * @bodyParam payment_mode string required Payment mode. Must be bank_transfer, cash, cheque, or upi.
+     * @bodyParam remarks string optional Remarks. Max 1000 chars.
+     * @bodyParam payment_proof file required Payment proof file. mimes:pdf,jpg,jpeg,png. Max 5MB.
+     * @response {
+     *   "success": true,
+     *   "payment_id": 0,
+     *   "payment_number": "",
+     *   "amount": 0,
+     *   "voucher_id": ""
+     * }
      */
     public function createErpPayment(Request $request, int $id): JsonResponse
     {

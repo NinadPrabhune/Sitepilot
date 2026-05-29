@@ -20,18 +20,16 @@ use App\Exports\SupplierSelectedExport;
 class ExportController extends Controller
 {
     /**
-     * Export selected rows to Excel (Generic handler for all DataTables)
-     * 
-     * Parameters:
-     * - model: Fully qualified model class name (e.g., App\Models\Supplier)
-     * - ids: Comma-separated IDs to export (optional)
-     * - all: 'true' to export all records (optional)
-     * - columns: Comma-separated column names to export (optional)
-     * - labels: Comma-separated column labels for headings (optional)
-     * - prefix: Export file prefix (optional)
-     * 
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     * Export selected rows to Excel (Generic handler for all DataTables).
+     *
+     * @authenticated
+     * @bodyParam model string required Fully qualified model class name. Example: App\Models\Supplier
+     * @bodyParam ids string Comma-separated IDs to export. Example: 1,2,3
+     * @bodyParam all boolean Set to true to export all records. Example: false
+     * @bodyParam columns string Comma-separated column names or JSON array.
+     * @bodyParam labels string Comma-separated column labels or JSON array.
+     * @bodyParam prefix string Export file prefix. Example: suppliers
+     * @response file="*_export_*.xlsx"
      */
     public function exportSelected(Request $request)
     {
@@ -349,10 +347,15 @@ class ExportController extends Controller
 
     /**
      * Legacy export method for backward compatibility with Supplier exports.
-     * 
+     *
      * @deprecated Use exportSelected() instead for new implementations
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @authenticated
+     * @bodyParam ids string Comma-separated IDs to export. Example: 1,2,3
+     * @bodyParam all boolean Set to true to export all records. Example: false
+     * @bodyParam columns string Comma-separated column names or JSON array.
+     * @bodyParam labels string Comma-separated column labels or JSON array.
+     * @bodyParam prefix string Export file prefix. Example: suppliers
+     * @response file="suppliers_export_*.xlsx"
      */
     public function exportSupplierSelected(Request $request)
     {

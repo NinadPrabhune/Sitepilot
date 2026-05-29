@@ -11,7 +11,10 @@ use Illuminate\Support\Facades\Auth;
 class NotificationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of notification templates.
+     *
+     * @authenticated
+     * @response view="notification_templates.index"
      */
     public function index(Request $request)
     {
@@ -42,7 +45,12 @@ class NotificationController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified notification template.
+     *
+     * @authenticated
+     * @urlParam id string required Notification template ID.
+     * @urlParam lang string Language code. Default: 'en'.
+     * @response view="notification_templates.show"
      */
     public function show(string $id, $lang = 'en')
     {
@@ -90,6 +98,17 @@ class NotificationController extends Controller
         //
     }
 
+    /**
+     * Store notification template language content.
+     *
+     * @authenticated
+     * @urlParam id string required Notification template ID.
+     * @bodyParam content string required The notification content.
+     * @bodyParam lang string nullable Language code.
+     * @bodyParam module string nullable Module name.
+     * @bodyParam variables string nullable Variables JSON string.
+     * @response redirect
+     */
     public function storeNotificationLang(Request $request, $id)
     {
         if (Auth::user()->isAbleTo('notification template manage')) {

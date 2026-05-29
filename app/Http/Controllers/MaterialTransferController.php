@@ -16,6 +16,12 @@ use App\Models\WorkSpace;
 
 class MaterialTransferController extends Controller {
 
+    /**
+     * List material transfers
+     *
+     * @authenticated
+     * @response view="material-transfer.index"
+     */
     public function index(MaterialTransferDataTable $dataTable) {
 
         if (!Auth::user()->isAbleTo('material-transfer manage')) {
@@ -26,6 +32,13 @@ class MaterialTransferController extends Controller {
         return $dataTable->render('material-transfer.index');
     }
 
+    /**
+     * Show create material transfer form
+     *
+     * @authenticated
+     * @bodyParam material_id int required Material ID to pre-select.
+     * @response view="material-transfer.create"
+     */
     public function create(Request $request) {
 
         if (!Auth::user()->isAbleTo('material-transfer create')) {
@@ -88,6 +101,21 @@ class MaterialTransferController extends Controller {
         }
     }
 
+    /**
+     * Store a new material transfer
+     *
+     * @authenticated
+     * @bodyParam record_date date required Transfer record date.
+     * @bodyParam from_site_id int required Source site ID.
+     * @bodyParam to_site_id int required Destination site ID. Must differ from from_site_id.
+     * @bodyParam items array required Array of transferred items.
+     * @bodyParam items.*.material_id int required Material ID.
+     * @bodyParam items.*.quantity numeric required Transfer quantity. Min 0.01.
+     * @bodyParam items.*.unit string required Unit of measurement.
+     * @bodyParam items.*.price numeric required Unit price. Min 0.
+     * @bodyParam invoice_file file optional Invoice file attachment.
+     * @response redirect back with success message
+     */
     public function store(Request $request) {
 
         if (!Auth::user()->isAbleTo('material-transfer create')) {
@@ -201,6 +229,13 @@ class MaterialTransferController extends Controller {
         }
     }
 
+    /**
+     * Show edit material transfer form
+     *
+     * @authenticated
+     * @urlParam material_transfer int required The material transfer ID.
+     * @response view="material-transfer.edit"
+     */
     public function edit(MaterialTransfer $materialTransfer) {
 
         if (!Auth::user()->isAbleTo('material-transfer edit')) {
@@ -271,6 +306,22 @@ class MaterialTransferController extends Controller {
         }
     }
 
+    /**
+     * Update material transfer
+     *
+     * @authenticated
+     * @urlParam material_transfer int required The material transfer ID.
+     * @bodyParam record_date date required Transfer record date.
+     * @bodyParam from_site_id int required Source site ID.
+     * @bodyParam to_site_id int required Destination site ID.
+     * @bodyParam items array required Array of transferred items.
+     * @bodyParam items.*.material_id int required Material ID.
+     * @bodyParam items.*.quantity numeric required Quantity. Min 0.01.
+     * @bodyParam items.*.unit string required Unit.
+     * @bodyParam items.*.price numeric required Price. Min 0.
+     * @bodyParam invoice_file file optional Invoice file.
+     * @response redirect to material-transfer.index
+     */
     public function update(Request $request, MaterialTransfer $materialTransfer) {
 
         if (!Auth::user()->isAbleTo('material-transfer edit')) {
@@ -369,6 +420,13 @@ class MaterialTransferController extends Controller {
         }
     }
 
+    /**
+     * Show material transfer details
+     *
+     * @authenticated
+     * @urlParam material_transfer int required The material transfer ID.
+     * @response view="material-transfer.show"
+     */
     public function show(MaterialTransfer $materialTransfer) {
 
         if (!Auth::user()->isAbleTo('material-transfer show')) {
@@ -382,6 +440,13 @@ class MaterialTransferController extends Controller {
         }
     }
 
+    /**
+     * Delete material transfer
+     *
+     * @authenticated
+     * @urlParam material_transfer int required The material transfer ID.
+     * @response redirect to material-transfer.index
+     */
     public function destroy(MaterialTransfer $materialTransfer) {
 
         if (!Auth::user()->isAbleTo('material-transfer delete')) {
@@ -403,6 +468,13 @@ class MaterialTransferController extends Controller {
         }
     }
 
+    /**
+     * Get stock by site (AJAX)
+     *
+     * @authenticated
+     * @bodyParam site_id int required The site ID.
+     * @response JSON array of stock items
+     */
     public function getStockBySite(Request $request) {
         try {
             $siteId = $request->input('site_id');
@@ -417,6 +489,14 @@ class MaterialTransferController extends Controller {
         }
     }
 
+    /**
+     * Get stock by site for material transfer edit (AJAX)
+     *
+     * @authenticated
+     * @bodyParam site_id int required The site ID.
+     * @bodyParam materialTransferId int required The material transfer ID to exclude.
+     * @response JSON array of stock items
+     */
     public function getStockBySiteMaterialTransferEdit(Request $request) {
         try {
             $siteId = $request->input('site_id');

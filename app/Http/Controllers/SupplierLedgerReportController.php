@@ -14,7 +14,14 @@ use Dompdf\Options;
 class SupplierLedgerReportController extends Controller
 {
     /**
-     * Display the supplier ledger report.
+     * Display the supplier ledger report with filters.
+     *
+     * @authenticated
+     * @queryParam supplier_id string Filter by supplier ID or "all". Example: all
+     * @queryParam site_id string Filter by site ID or "all". Example: all
+     * @queryParam from_date date Filter from this date. Default: start of month. Example: 2025-01-01
+     * @queryParam to_date date Filter up to this date. Default: today. Example: 2025-12-31
+     * @response view="reports.supplier-ledger.index"
      */
     public function index(Request $request)
     {
@@ -151,7 +158,14 @@ class SupplierLedgerReportController extends Controller
     }
 
     /**
-     * Export supplier ledger report to PDF.
+     * Export the supplier ledger report to PDF.
+     *
+     * @authenticated
+     * @queryParam supplier_id string Filter by supplier ID or "all". Example: all
+     * @queryParam site_id string Filter by site ID or "all". Example: all
+     * @queryParam from_date date Filter from this date. Example: 2025-01-01
+     * @queryParam to_date date Filter up to this date. Example: 2025-12-31
+     * @response file="supplier-ledger-report.pdf"
      */
     public function exportPdf(Request $request)
     {
@@ -251,7 +265,14 @@ class SupplierLedgerReportController extends Controller
     }
 
     /**
-     * Export supplier ledger report to Excel.
+     * Export the supplier ledger report to Excel.
+     *
+     * @authenticated
+     * @queryParam supplier_id string Filter by supplier ID or "all". Example: all
+     * @queryParam site_id string Filter by site ID or "all". Example: all
+     * @queryParam from_date date Filter from this date. Example: 2025-01-01
+     * @queryParam to_date date Filter up to this date. Example: 2025-12-31
+     * @response file="supplier-ledger-report-*.xlsx"
      */
     public function exportExcel(Request $request)
     {
@@ -298,6 +319,10 @@ class SupplierLedgerReportController extends Controller
 
     /**
      * Get supplier balance for AJAX request.
+     *
+     * @authenticated
+     * @bodyParam supplier_id integer required The supplier ID. Example: 1
+     * @response status=200 scenario="success" {"balance": 50000}
      */
     public function getSupplierBalance(Request $request)
     {

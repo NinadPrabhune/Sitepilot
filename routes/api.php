@@ -252,6 +252,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('daily-progress-reports', DailyProgressReportApiController::class)->names('api.daily-progress-reports');
     Route::post('/daily-progress-reports/create-data', [DailyProgressReportApiController::class, 'createData']);
 
+    // Temporary route for testing without middleware
+    Route::get('/daily-progress-reports-test', [DailyProgressReportApiController::class, 'index']);
+
     // Activities
     Route::apiResource('activities', ActivityApiController::class)->names('api.activities');
     Route::post('/activities/create-data', [ActivityApiController::class, 'createData']);
@@ -281,9 +284,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Mirrors: GET /ledger (web)
     Route::prefix('ledger')->name('api.ledger.')->group(function () {
         Route::get('/', [LedgerApiController::class, 'index'])->name('index');
-        Route::get('/{id}', [LedgerApiController::class, 'show'])->name('show');
         Route::get('/balance', [LedgerApiController::class, 'balance'])->name('balance');
         Route::get('/machinery/list', [LedgerApiController::class, 'machineryList'])->name('machinery-list');
+        Route::get('/{id}', [LedgerApiController::class, 'show'])->name('show');
     });
 
     // ─── Supplier Ledger Report ──────────────────────────────────────────
@@ -368,17 +371,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 // User Management API Routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    // User CRUD
-    Route::apiResource('users', UserApiController::class)->names('api.users');
-
     // User creation data (roles)
     Route::get('users/create-data', [UserApiController::class, 'createData']);
 
-    // User Profile
+    // User Profile (must be before apiResource to avoid {user} catching "profile")
     Route::get('users/profile', [UserApiController::class, 'profile']);
     Route::put('users/profile', [UserApiController::class, 'editprofile']);
     Route::post('users/profile/avatar', [UserApiController::class, 'updateAvatar']);
     Route::put('users/password', [UserApiController::class, 'updatePassword']);
+
+    // User CRUD
+    Route::apiResource('users', UserApiController::class)->names('api.users');
 
     // Admin Password Reset
     Route::get('users/{id}/password', [UserApiController::class, 'UserPassword']);

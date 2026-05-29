@@ -17,6 +17,12 @@ use App\Services\NotificationService;
 
 class ActivityController extends Controller {
 
+    /**
+     * List all activities
+     *
+     * @authenticated
+     * @response view="activities.index"
+     */
     public function index(ActivityDataTable $dataTable) {
         if (!Auth::user()->isAbleTo('activity manage')) {
             abort(403, 'Permission denied.');
@@ -29,6 +35,12 @@ class ActivityController extends Controller {
         }
     }
 
+    /**
+     * Show create activity form
+     *
+     * @authenticated
+     * @response view="activities.create"
+     */
     public function create() {
         if (!Auth::user()->isAbleTo('activity create')) {
             abort(403, 'Permission denied.');
@@ -55,6 +67,23 @@ class ActivityController extends Controller {
         }
     }
 
+    /**
+     * Store a new activity
+     *
+     * @authenticated
+     * @bodyParam assign_to array required The users to assign the activity to.
+     * @bodyParam start_date string required The start date (format: Y-m-d).
+     * @bodyParam due_date string required The due date (format: Y-m-d).
+     * @bodyParam title string required The activity title. Max 255 chars.
+     * @bodyParam scope string required The scope of work.
+     * @bodyParam quantity integer required The total quantity. Minimum 0.
+     * @bodyParam unit string required The unit of measurement.
+     * @bodyParam priority string required The priority level. Must be one of: low, medium, high.
+     * @bodyParam completed_quantity array Completed quantities per entry.
+     * @bodyParam completed_quantity.* integer Completed quantity per entry. Minimum 0.
+     * @bodyParam reference_file file Reference file. Allowed: pdf,doc,docx,jpg,jpeg,png,xls,xlsx. Max 20MB.
+     * @response view="back with success message"
+     */
     public function store(Request $request) {
         if (!Auth::user()->isAbleTo('activity create')) {
             abort(403, 'Permission denied.');
@@ -172,8 +201,14 @@ class ActivityController extends Controller {
         }
     }
 
+    /**
+     * Show edit activity form
+     *
+     * @authenticated
+     * @urlParam activity int required The activity ID.
+     * @response view="activities.edit"
+     */
     public function edit(Activity $activity) {
-        
         
         
         
@@ -280,6 +315,28 @@ class ActivityController extends Controller {
         }
     }
 
+    /**
+     * Update an activity
+     *
+     * @authenticated
+     * @urlParam activity int required The activity ID.
+     * @bodyParam assign_to array required The users to assign the activity to.
+     * @bodyParam start_date string required The start date (format: Y-m-d).
+     * @bodyParam due_date string required The due date (format: Y-m-d).
+     * @bodyParam title string required The activity title. Max 255 chars.
+     * @bodyParam scope string required The scope of work.
+     * @bodyParam quantity integer required The total quantity. Minimum 0.
+     * @bodyParam unit string required The unit of measurement.
+     * @bodyParam priority string required The priority level. Must be one of: low, medium, high.
+     * @bodyParam completed_quantity array Completed quantities per entry.
+     * @bodyParam completed_date array Completion dates per entry.
+     * @bodyParam activities_completed array Nested activity completion entries.
+     * @bodyParam activities_completed.*.completed_quantity integer Quantity completed for this entry.
+     * @bodyParam activities_completed.*.completed_date string Completion date for this entry.
+     * @bodyParam activities_completed.*.completed_reference_file file Reference file for completion.
+     * @bodyParam reference_file file Reference file. Allowed: pdf,doc,docx,jpg,jpeg,png,xls,xlsx. Max 20MB.
+     * @response view="back with success message"
+     */
     public function update(Request $request, Activity $activity) {
         if (!Auth::user() || !Auth::user()->isAbleTo('activity edit')) {
             abort(403, 'Permission denied.');
@@ -467,6 +524,13 @@ class ActivityController extends Controller {
         }
     }
 
+    /**
+     * Show activity details
+     *
+     * @authenticated
+     * @urlParam id int required The activity ID.
+     * @response view="activities.show"
+     */
     public function show($id) {
         if (!Auth::user()->isAbleTo('activity show')) {
             abort(403, 'Permission denied.');
@@ -480,6 +544,13 @@ class ActivityController extends Controller {
         }
     }
 
+    /**
+     * Delete an activity
+     *
+     * @authenticated
+     * @urlParam activity int required The activity ID.
+     * @response redirect="activities.index"
+     */
     public function destroy(Activity $activity) {
         if (!Auth::user()->isAbleTo('activity delete')) {
             abort(403, 'Permission denied.');

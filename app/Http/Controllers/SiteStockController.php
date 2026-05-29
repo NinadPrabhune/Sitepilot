@@ -17,7 +17,12 @@ class SiteStockController extends Controller
     }
 
     /**
-     * Display site/stock report.
+     * Display the site stock report.
+     *
+     * @authenticated
+     * @queryParam project_id integer Filter by project (site) ID. Example: 1
+     * @queryParam material_id integer Filter by material ID. Example: 1
+     * @response view="site-stock.index"
      */
     public function index(Request $request)
     {
@@ -47,7 +52,12 @@ class SiteStockController extends Controller
     }
 
     /**
-     * Export site stock report to CSV/Excel.
+     * Export the site stock report to Excel.
+     *
+     * @authenticated
+     * @queryParam project_id integer Filter by project (site) ID. Example: 1
+     * @queryParam material_id integer Filter by material ID. Example: 1
+     * @response file="site_stock_report_*.xlsx"
      */
     public function export(Request $request)
     {

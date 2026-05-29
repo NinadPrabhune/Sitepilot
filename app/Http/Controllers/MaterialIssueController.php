@@ -25,7 +25,10 @@ class MaterialIssueController extends Controller
     }
 
     /**
-     * Display a listing of the material issues.
+     * Display a listing of material issues
+     *
+     * @authenticated
+     * @response view="material-issues.index"
      */
     public function index(MaterialIssueDataTable $dataTable)
     {
@@ -33,7 +36,10 @@ class MaterialIssueController extends Controller
     }
 
     /**
-     * Show the form for creating a new material issue.
+     * Show create material issue form
+     *
+     * @authenticated
+     * @response view="material-issues.create"
      */
     public function create()
     {
@@ -48,7 +54,19 @@ class MaterialIssueController extends Controller
     }
 
     /**
-     * Store a newly created material issue.
+     * Store a newly created material issue
+     *
+     * @authenticated
+     * @bodyParam issue_to_type string required Issue recipient type. Must be user or supplier.
+     * @bodyParam issue_to_id int required Issue recipient ID.
+     * @bodyParam issue_date date required Issue date.
+     * @bodyParam remarks string optional Remarks.
+     * @bodyParam items array required Array of items. Min 1 item.
+     * @bodyParam items.*.material_id int required Material ID. Must exist in materials.
+     * @bodyParam items.*.quantity numeric required Quantity. Min 0.01. Must not exceed available stock.
+     * @bodyParam items.*.rate numeric optional Rate per unit.
+     * @bodyParam items.*.remarks string optional Item remarks.
+     * @response redirect to material-issues.index
      */
     public function store(Request $request)
     {
@@ -141,7 +159,11 @@ class MaterialIssueController extends Controller
     }
 
     /**
-     * Display the specified material issue.
+     * Display the specified material issue
+     *
+     * @authenticated
+     * @urlParam id int required The material issue ID.
+     * @response view="material-issues.show"
      */
     public function show($id)
     {
@@ -152,7 +174,11 @@ class MaterialIssueController extends Controller
     }
 
     /**
-     * Show the form for editing the specified material issue.
+     * Show edit material issue form
+     *
+     * @authenticated
+     * @urlParam id int required The material issue ID.
+     * @response view="material-issues.edit"
      */
     public function edit($id)
     {
@@ -169,7 +195,20 @@ class MaterialIssueController extends Controller
     }
 
     /**
-     * Update the specified material issue.
+     * Update the specified material issue
+     *
+     * @authenticated
+     * @urlParam id int required The material issue ID.
+     * @bodyParam issue_to_type string required Issue recipient type.
+     * @bodyParam issue_to_id int required Issue recipient ID.
+     * @bodyParam issue_date date required Issue date.
+     * @bodyParam remarks string optional Remarks.
+     * @bodyParam items array required Array of items.
+     * @bodyParam items.*.material_id int required Material ID.
+     * @bodyParam items.*.quantity numeric required Quantity. Min 0.01.
+     * @bodyParam items.*.rate numeric optional Rate.
+     * @bodyParam items.*.remarks string optional Item remarks.
+     * @response redirect to material-issues.index
      */
     public function update(Request $request, $id)
     {
@@ -284,7 +323,11 @@ class MaterialIssueController extends Controller
     }
 
     /**
-     * Remove the specified material issue.
+     * Remove the specified material issue
+     *
+     * @authenticated
+     * @urlParam id int required The material issue ID.
+     * @response redirect to material-issues.index
      */
     public function destroy($id)
     {
@@ -326,7 +369,15 @@ class MaterialIssueController extends Controller
     }
 
     /**
-     * Get available stock for a material at the current site.
+     * Get available stock for a material at the current site (AJAX)
+     *
+     * @authenticated
+     * @bodyParam material_id int required Material ID. Must exist in materials.
+     * @response {
+     *   "success": true,
+     *   "available_stock": 100,
+     *   "rate": 500
+     * }
      */
     public function getAvailableStock(Request $request)
     {

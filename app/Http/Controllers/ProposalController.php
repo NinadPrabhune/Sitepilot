@@ -32,8 +32,11 @@ use Illuminate\Support\Facades\Validator;
 class ProposalController extends Controller
 {
      /**
-     * Display a listing of the resource.
-     * @return Renderable
+     * Display a listing of proposals.
+     *
+     * @authenticated
+     *
+     * @response view="proposal.index"
      */
     public function index(ProposalDataTable $dataTable)
     {
@@ -47,6 +50,17 @@ class ProposalController extends Controller
             return redirect()->back()->with('error', __('Permission Denied.'));
         }
     }
+    /**
+     * Display proposals as grid view.
+     *
+     * @authenticated
+     *
+     * @queryParam customer int Filter by customer ID. Example: 1
+     * @queryParam issue_date string Filter by issue date range (fromto). Example: 2024-01-01to2024-12-31
+     * @queryParam status string Filter by status. Example: Sent
+     *
+     * @response view="proposal.grid"
+     */
     public function Grid(Request $request)
     {
         if (Auth::user()->isAbleTo('proposal manage'))
@@ -95,8 +109,13 @@ class ProposalController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     * @return Renderable
+     * Show the form for creating a new proposal.
+     *
+     * @authenticated
+     *
+     * @urlParam customerId int required The customer ID. Example: 1
+     *
+     * @response view="proposal.create"
      */
     public function create($customerId)
     {
@@ -163,9 +182,22 @@ class ProposalController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
+     * Store a newly created proposal.
+     *
+     * @authenticated
+     *
+     * @bodyParam proposal_type string required Proposal type (product/project/parts). Example: product
+     * @bodyParam customer_id int required Customer ID. Example: 1
+     * @bodyParam issue_date string required Issue date. Example: 2024-01-15
+     * @bodyParam category_id int required Category ID. Example: 1
+     * @bodyParam items array required Array of line items. Example: [{"item":1,"quantity":2,"price":100}]
+     * @bodyParam project int Required if proposal_type is project. Example: 1
+     * @bodyParam tax_project array Required if proposal_type is project. Example: [1,2]
+     * @bodyParam work_order int Required if proposal_type is parts. Example: 1
+     * @bodyParam proposal_template string Proposal template name. Example: template1
+     * @bodyParam account_type string Account type. Example: Projects
+     *
+     * @response view="proposal.index"
      */
     public function store(Request $request)
     {
@@ -362,9 +394,13 @@ class ProposalController extends Controller
     }
 
     /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
+     * Display the specified proposal.
+     *
+     * @authenticated
+     *
+     * @urlParam e_id string required Encrypted proposal ID. Example: eyJpdiI6Ik1...
+     *
+     * @response view="proposal.view"
      */
     public function show($e_id)
     {
@@ -405,9 +441,13 @@ class ProposalController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
+     * Show the form for editing a proposal.
+     *
+     * @authenticated
+     *
+     * @urlParam e_id string required Encrypted proposal ID. Example: eyJpdiI6Ik1...
+     *
+     * @response view="proposal.edit"
      */
     public function edit($e_id)
     {
@@ -480,10 +520,21 @@ class ProposalController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
+     * Update the specified proposal.
+     *
+     * @authenticated
+     *
+     * @urlParam proposal int required The proposal ID. Example: 1
+     * @bodyParam proposal_type string required Proposal type (product/project/parts). Example: product
+     * @bodyParam customer_id int required Customer ID. Example: 1
+     * @bodyParam issue_date string required Issue date. Example: 2024-01-15
+     * @bodyParam category_id int required Category ID. Example: 1
+     * @bodyParam items array required Array of line items. Example: [{"id":1,"item":1,"quantity":2,"price":100}]
+     * @bodyParam project int Required if proposal_type is project. Example: 1
+     * @bodyParam tax_project array Required if proposal_type is project. Example: [1,2]
+     * @bodyParam work_order int Required if proposal_type is parts. Example: 1
+     *
+     * @response view="proposal.index"
      */
     public function update(Request $request, Proposal $proposal)
     {
@@ -676,9 +727,13 @@ class ProposalController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
+     * Remove the specified proposal.
+     *
+     * @authenticated
+     *
+     * @urlParam proposal int required The proposal ID. Example: 1
+     *
+     * @response view="proposal.index"
      */
     public function destroy(Proposal $proposal)
     {
@@ -713,6 +768,11 @@ class ProposalController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Get the next proposal number.
+     *
+     * @response 1
+     */
     function proposalNumber()
     {
 
@@ -726,6 +786,15 @@ class ProposalController extends Controller
             return $latest;
         }
     }
+    /**
+     * Get customer detail by ID.
+     *
+     * @authenticated
+     *
+     * @bodyParam id int required User ID. Example: 1
+     *
+     * @response view="proposal.customer_detail"
+     */
     public function customer(Request $request)
     {
         if(module_is_active('Account'))
@@ -746,6 +815,15 @@ class ProposalController extends Controller
         }
         return view('proposal.customer_detail', compact('customer'));
     }
+    /**
+     * Get product details for proposal.
+     *
+     * @authenticated
+     *
+     * @bodyParam product_id int required The product ID. Example: 1
+     *
+     * @response {"product":{},"unit":"Pcs","taxRate":5,"taxes":{},"totalAmount":100}
+     */
     public function product(Request $request)
     {
         $data['product']     = $product = \Workdo\ProductService\Entities\ProductService::find($request->product_id);
@@ -760,6 +838,15 @@ class ProposalController extends Controller
         return json_encode($data);
     }
 
+    /**
+     * Convert a proposal to invoice.
+     *
+     * @authenticated
+     *
+     * @urlParam proposal_id int required The proposal ID. Example: 1
+     *
+     * @response view="proposal.index"
+     */
     public function convert($proposal_id)
     {
         if(Auth::user()->isAbleTo('proposal convert invoice'))
@@ -853,6 +940,15 @@ class ProposalController extends Controller
         }
     }
 
+    /**
+     * Duplicate a proposal.
+     *
+     * @authenticated
+     *
+     * @urlParam proposal_id int required The proposal ID. Example: 1
+     *
+     * @response view="proposal.index"
+     */
     public function duplicate($proposal_id)
     {
         if (Auth::user()->isAbleTo('proposal duplicate'))
@@ -895,12 +991,27 @@ class ProposalController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Get proposal product item details.
+     *
+     * @bodyParam proposal_id int required The proposal ID. Example: 1
+     * @bodyParam product_id int required The product ID. Example: 1
+     *
+     * @response {"id":1,"proposal_id":1,"product_id":1,"quantity":2,"price":100}
+     */
     public function items(Request $request)
     {
         $items = ProposalProduct::where('proposal_id', $request->proposal_id)->where('product_id', $request->product_id)->first();
 
         return json_encode($items);
     }
+    /**
+     * Display proposal payment page (public).
+     *
+     * @urlParam proposal_id string required Encrypted proposal ID. Example: eyJpdiI6Ik1...
+     *
+     * @response view="proposal.proposalpay"
+     */
     public function payproposal($proposal_id)
     {
         if(!empty($proposal_id))
@@ -1028,6 +1139,15 @@ class ProposalController extends Controller
         }
     }
 
+    /**
+     * Change proposal status.
+     *
+     * @bodyParam status string required New status. Example: Sent
+     *
+     * @urlParam id int required The proposal ID. Example: 1
+     *
+     * @response view="proposal.index"
+     */
     public function statusChange(Request $request, $id)
     {
         $status           = $request->status;
@@ -1040,6 +1160,15 @@ class ProposalController extends Controller
 
         return redirect()->back()->with('success', __('Proposal status changed successfully.'));
     }
+    /**
+     * Resend proposal to customer.
+     *
+     * @authenticated
+     *
+     * @urlParam id int required The proposal ID. Example: 1
+     *
+     * @response view="proposal.index"
+     */
     public function resent($id)
     {
         if (Auth::user()->isAbleTo('proposal send'))
@@ -1079,6 +1208,15 @@ class ProposalController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Mark proposal as sent.
+     *
+     * @authenticated
+     *
+     * @urlParam id int required The proposal ID. Example: 1
+     *
+     * @response view="proposal.index"
+     */
     public function sent($id)
     {
 
@@ -1134,6 +1272,13 @@ class ProposalController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Display proposal PDF view (public).
+     *
+     * @urlParam proposal_id string required Encrypted proposal ID. Example: eyJpdiI6Ik1...
+     *
+     * @response view="proposal.templates.*"
+     */
     public function proposal($proposal_id)
     {
         try {
@@ -1284,6 +1429,11 @@ class ProposalController extends Controller
         }
 
     }
+    /**
+     * Get the next invoice number.
+     *
+     * @response 1
+     */
     function invoiceNumber()
     {
         $invoice = Invoice::where('workspace',getActiveWorkSpace())->where('created_by',creatorId())->latest()->first();
@@ -1302,6 +1452,19 @@ class ProposalController extends Controller
         }
         return $latest;
     }
+    /**
+     * Save proposal template/print settings.
+     *
+     * @authenticated
+     *
+     * @bodyParam proposal_template string Proposal template name. Example: template1
+     * @bodyParam proposal_color string Color hex code. Example: ffffff
+     * @bodyParam proposal_logo file Proposal logo image. Example: null
+     * @bodyParam proposal_shipping_display string Show shipping details (on/off). Example: off
+     * @bodyParam proposal_qr_display string Show QR (on/off). Example: off
+     *
+     * @response view="proposal.index"
+     */
     public function saveTemplateSettings(Request $request)
     {
         $user = Auth::user();
@@ -1368,6 +1531,16 @@ class ProposalController extends Controller
         comapnySettingCacheForget();
         return redirect()->back()->with('success', __('Proposal Print setting save sucessfully.'));
     }
+    /**
+     * Preview proposal template.
+     *
+     * @authenticated
+     *
+     * @urlParam template string required Template name. Example: template1
+     * @urlParam color string required Color hex without #. Example: ffffff
+     *
+     * @response view="proposal.templates.*"
+     */
     public function previewInvoice($template, $color)
     {
         $proposal = new Proposal();
@@ -1481,6 +1654,16 @@ class ProposalController extends Controller
 
         return view('proposal.templates.' . $template, compact('proposal', 'preview', 'color', 'img', 'settings', 'customer', 'font_color', 'customFields'));
     }
+    /**
+     * Get proposal section HTML by type.
+     *
+     * @bodyParam type string required Section type (product/project/parts). Example: product
+     * @bodyParam acction string Action (create/edit). Example: create
+     * @bodyParam proposal_id int Proposal ID for edit action. Example: 1
+     * @bodyParam project_id int Project ID for project type. Example: 1
+     *
+     * @response {"is_success":true,"html":"..."}
+     */
     public function ProposalSectionGet(Request $request)
     {
         $type = $request->type;
@@ -1554,6 +1737,13 @@ class ProposalController extends Controller
             return [];
         }
     }
+    /**
+     * Get tax details by IDs.
+     *
+     * @bodyParam Taxid array required Tax IDs. Example: [1,2]
+     *
+     * @response [{"id":1,"name":"GST","rate":18}]
+     */
     public function TaxDetailGet(Request $request)
     {
         $taxs_data = [];
@@ -1563,6 +1753,13 @@ class ProposalController extends Controller
         }
         return $taxs_data;
     }
+    /**
+     * Get tax data by IDs (JSON).
+     *
+     * @bodyParam tax_id array required Tax IDs. Example: [1,2]
+     *
+     * @response [{"id":1,"name":"GST","rate":18}]
+     */
     public function getTax(Request $request){
 
         if(module_is_active('ProductService'))
@@ -1575,6 +1772,15 @@ class ProposalController extends Controller
         }
 
     }
+    /**
+     * Remove a product from proposal.
+     *
+     * @authenticated
+     *
+     * @bodyParam id int required Proposal product ID. Example: 1
+     *
+     * @response {"success":"The proposal product has been deleted"}
+     */
     public function productDestroy(Request $request)
     {
         if(Auth::user()->isAbleTo('proposal product delete'))
@@ -1588,6 +1794,16 @@ class ProposalController extends Controller
             return response()->json(['error' => __('Permission denied.')]);
         }
     }
+    /**
+     * Upload attachment to a proposal.
+     *
+     * @authenticated
+     *
+     * @urlParam id int required The proposal ID. Example: 1
+     * @bodyParam file file required The attachment file. Example: null
+     *
+     * @response {"is_success":true}
+     */
     public function proposalAttechment(Request $request,$id)
     {
         $proposal = Proposal::find($id);
@@ -1630,6 +1846,15 @@ class ProposalController extends Controller
         }
     }
 
+    /**
+     * Delete a proposal attachment.
+     *
+     * @authenticated
+     *
+     * @urlParam id int required The attachment ID. Example: 1
+     *
+     * @response view="proposal.index"
+     */
     public function proposalAttechmentDestroy($id)
     {
         $file = ProposalAttechment::find($id);
@@ -1641,6 +1866,13 @@ class ProposalController extends Controller
         return redirect()->back()->with('success', __('The file has been deleted'));
     }
 
+    /**
+     * Show proposal quick statistics.
+     *
+     * @authenticated
+     *
+     * @response view="proposal.statsreport"
+     */
     public function ProposalQuickStats()
     {
         $total_proposals = Proposal::where('workspace',getActiveWorkSpace())->count();

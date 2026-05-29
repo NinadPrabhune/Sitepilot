@@ -29,6 +29,9 @@ class SupplierAdvanceController extends Controller
 
     /**
      * Display a listing of supplier advances.
+     *
+     * @authenticated
+     * @response view="supplier-advance.index"
      */
     public function index(Request $request, SupplierAdvanceDataTable $dataTable)
     {
@@ -52,6 +55,10 @@ class SupplierAdvanceController extends Controller
 
     /**
      * Display the specified advance.
+     *
+     * @authenticated
+     * @urlParam id integer required The advance ID. Example: 1
+     * @response view="supplier-advance.show"
      */
     public function show($id)
     {
@@ -62,7 +69,11 @@ class SupplierAdvanceController extends Controller
     }
 
     /**
-     * Show advance request form from PO.
+     * Show the advance request form for a given PO.
+     *
+     * @authenticated
+     * @urlParam poId integer required The purchase order ID. Example: 1
+     * @response view="supplier-advance.create-from-po"
      */
     public function createFromPO($poId)
     {
@@ -84,6 +95,14 @@ class SupplierAdvanceController extends Controller
 
     /**
      * Store a newly created advance request.
+     *
+     * @authenticated
+     * @bodyParam po_id integer required The purchase order ID. Example: 1
+     * @bodyParam amount numeric required The advance amount. Minimum: 0. Example: 50000
+     * @bodyParam advance_date date required The advance date. Example: 2025-05-01
+     * @bodyParam source string required Source of advance (po, manual). Example: po
+     * @bodyParam remarks string Optional remarks. Example: Urgent payment
+     * @response redirect to="supplier-advance.show"
      */
     public function store(Request $request)
     {
@@ -118,6 +137,10 @@ class SupplierAdvanceController extends Controller
 
     /**
      * Approve an advance request.
+     *
+     * @authenticated
+     * @urlParam id integer required The advance ID. Example: 1
+     * @response redirect to="supplier-advance.show"
      */
     public function approve($id)
     {
@@ -139,6 +162,11 @@ class SupplierAdvanceController extends Controller
 
     /**
      * Reject an advance request.
+     *
+     * @authenticated
+     * @urlParam id integer required The advance ID. Example: 1
+     * @bodyParam rejection_reason string required Reason for rejection. Example: Insufficient funds
+     * @response redirect to="supplier-advance.show"
      */
     public function reject(Request $request, $id)
     {
@@ -178,7 +206,11 @@ class SupplierAdvanceController extends Controller
     }
 
     /**
-     * Show payment recording form.
+     * Show the payment recording form for an advance.
+     *
+     * @authenticated
+     * @urlParam id integer required The advance ID. Example: 1
+     * @response view="supplier-advance.payment-form"
      */
     public function showPaymentForm($id)
     {
@@ -193,6 +225,14 @@ class SupplierAdvanceController extends Controller
 
     /**
      * Record payment for an advance.
+     *
+     * @authenticated
+     * @urlParam id integer required The advance ID. Example: 1
+     * @bodyParam payment_date date required Payment date. Example: 2025-05-15
+     * @bodyParam payment_mode string required Payment mode. Example: bank_transfer
+     * @bodyParam reference_number string Optional reference number. Example: CHQ12345
+     * @bodyParam payment_proof_file string Optional payment proof file URL.
+     * @response redirect to="supplier-advance.show"
      */
     public function recordPayment(Request $request, $id)
     {
@@ -222,6 +262,10 @@ class SupplierAdvanceController extends Controller
 
     /**
      * Remove the specified advance (only if pending/cancelled).
+     *
+     * @authenticated
+     * @urlParam id integer required The advance ID. Example: 1
+     * @response redirect to="supplier-advance.index"
      */
     public function destroy($id)
     {
@@ -253,7 +297,11 @@ class SupplierAdvanceController extends Controller
     }
 
     /**
-     * Show timeline view for advance allocation.
+     * Show the timeline view for advance allocation.
+     *
+     * @authenticated
+     * @urlParam id integer required The advance ID. Example: 1
+     * @response view="supplier-advance.timeline"
      */
     public function timeline($id)
     {

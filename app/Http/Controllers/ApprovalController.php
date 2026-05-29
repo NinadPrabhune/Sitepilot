@@ -14,6 +14,9 @@ class ApprovalController extends Controller
 {
     /**
      * Display pending approvals list
+     *
+     * @authenticated
+     * @response view="approvals.index"
      */
     public function index()
     {
@@ -31,6 +34,11 @@ class ApprovalController extends Controller
 
     /**
      * Approve a payment request
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @bodyParam remarks string Remarks for the approval. Max 500 chars.
+     * @response {"success":true,"message":"Payment request approved successfully.","new_status":"site_approved"}
      */
     public function approve(Request $request, int $id): JsonResponse
     {
@@ -109,6 +117,11 @@ class ApprovalController extends Controller
 
     /**
      * Reject a payment request
+     *
+     * @authenticated
+     * @urlParam id int required The payment request ID.
+     * @bodyParam reason string required The reason for rejection. Max 500 chars.
+     * @response {"success":true,"message":"Payment request rejected successfully."}
      */
     public function reject(Request $request, int $id): JsonResponse
     {
@@ -166,6 +179,11 @@ class ApprovalController extends Controller
     /**
      * Approve a DPR (Daily Progress Report)
      * Ledger entry is created ONLY at this approval stage
+     *
+     * @authenticated
+     * @urlParam id int required The DPR ID.
+     * @bodyParam remarks string Remarks for the approval. Max 500 chars.
+     * @response {"success":true,"message":"DPR approved and ledger entry created successfully.","ledger_entry_id":1}
      */
     public function approveDPR(Request $request, int $id): JsonResponse
     {
@@ -246,6 +264,11 @@ class ApprovalController extends Controller
 
     /**
      * Reject a DPR
+     *
+     * @authenticated
+     * @urlParam id int required The DPR ID.
+     * @bodyParam remarks string required The reason for rejection. Max 500 chars.
+     * @response {"success":true,"message":"DPR rejected successfully."}
      */
     public function rejectDPR(Request $request, int $id): JsonResponse
     {

@@ -12,9 +12,10 @@ use Illuminate\Support\Facades\Auth;
 class HelpdeskConversionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List all helpdesk conversions.
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @response view="null"
      */
     public function index()
     {
@@ -22,9 +23,10 @@ class HelpdeskConversionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new conversion.
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @response view="null"
      */
     public function create()
     {
@@ -32,10 +34,13 @@ class HelpdeskConversionController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new reply/conversion on a helpdesk ticket.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam ticket_id int required Ticket ID. Example: 5
+     * @bodyParam reply_description string required Reply content. Example: Issue has been resolved.
+     * @bodyParam reply_attachments file nullable Attachment files.
+     * @response view="helpdesk_ticket.show" (redirect back)
      */
     public function store(Request $request,$ticket_id)
     {
@@ -126,10 +131,11 @@ class HelpdeskConversionController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display a specific conversion.
      *
-     * @param  \App\Models\HelpdeskConversion  $helpdeskConversion
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam helpdeskConversion int required Conversion ID. Example: 1
+     * @response view="null"
      */
     public function show(HelpdeskConversion $helpdeskConversion)
     {
@@ -137,10 +143,11 @@ class HelpdeskConversionController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing a conversion.
      *
-     * @param  \App\Models\HelpdeskConversion  $helpdeskConversion
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam helpdeskConversion int required Conversion ID. Example: 1
+     * @response view="null"
      */
     public function edit(HelpdeskConversion $helpdeskConversion)
     {
@@ -148,11 +155,12 @@ class HelpdeskConversionController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a conversion.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\HelpdeskConversion  $helpdeskConversion
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam helpdeskConversion int required Conversion ID. Example: 1
+     * @bodyParam description string required Conversion description. Example: Updated reply.
+     * @response view="null"
      */
     public function update(Request $request, HelpdeskConversion $helpdeskConversion)
     {
@@ -160,10 +168,11 @@ class HelpdeskConversionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a conversion.
      *
-     * @param  \App\Models\HelpdeskConversion  $helpdeskConversion
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam helpdeskConversion int required Conversion ID. Example: 1
+     * @response view="null"
      */
     public function destroy(HelpdeskConversion $helpdeskConversion)
     {

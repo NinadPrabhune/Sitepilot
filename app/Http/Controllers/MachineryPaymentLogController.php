@@ -11,6 +11,20 @@ class MachineryPaymentLogController extends Controller
     /**
      * Get logs filtered by payment_request_id
      * NOTE: This reads from log files - for production, consider using a log aggregation service
+     *
+     * @authenticated
+     * @queryParam payment_request_id int required The payment request ID to filter logs.
+     * @queryParam channel string optional Log channel name. Default: payment_audit.
+     * @queryParam lines int optional Number of lines to return. Default: 100.
+     * @response {
+     *   "success": true,
+     *   "data": {
+     *     "payment_request_id": 1,
+     *     "channel": "payment_audit",
+     *     "lines": [],
+     *     "count": 0
+     *   }
+     * }
      */
     public function index(Request $request): JsonResponse
     {
@@ -59,6 +73,16 @@ class MachineryPaymentLogController extends Controller
     
     /**
      * Get recent logs from all machinery payment channels
+     *
+     * @authenticated
+     * @queryParam lines int optional Number of lines per channel. Default: 50.
+     * @response {
+     *   "success": true,
+     *   "data": {
+     *     "payment_audit": [],
+     *     "payment_debug": []
+     *   }
+     * }
      */
     public function recent(Request $request): JsonResponse
     {

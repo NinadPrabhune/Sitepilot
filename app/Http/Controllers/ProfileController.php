@@ -15,6 +15,9 @@ class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
+     *
+     * @authenticated
+     * @response view="profile.edit"
      */
     public function edit(Request $request): View
     {
@@ -25,6 +28,10 @@ class ProfileController extends Controller
 
     /**
      * Update the user's profile information.
+     *
+     * @authenticated
+     * @bodyParam name string required User's name.
+     * @response redirect
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
@@ -37,6 +44,10 @@ class ProfileController extends Controller
 
     /**
      * Delete the user's account.
+     *
+     * @authenticated
+     * @bodyParam password string required Current password for confirmation.
+     * @response redirect
      */
     public function destroy(Request $request): RedirectResponse
     {

@@ -1,0 +1,76 @@
+=== SUPPLIER ADVANCE HISTORY REPAIR ===
+MODE: APPLY CHANGES
+
+
+PHASE 1 — ANALYZING RECORDS...
+
+A. Advances missing ledger entries...
+  ✓ All advances have ledger entries
+
+B. Advances with incorrect utilized_amount...
+  ✓ All utilized_amount values are correct
+
+C. Payments with advance deduction but missing utilization records...
+  ✓ All advance payments have utilization records
+
+D. Duplicate utilization records...
+  ✓ No duplicate utilization records found
+
+E. Over-utilized advances (utilized_amount > amount)...
+  ✓ No over-utilized advances found
+
+F. Ledger balance mismatches...
+  ⚠ Found 24 balance mismatches
+    - Transaction ID 5 (po) - Expected: 75595.8, Actual: 0.00
+    - Transaction ID 8 (po) - Expected: 170090.55, Actual: 0.00
+    - Transaction ID 9 (advance) - Expected: 159470.55, Actual: -10620.00
+    - Transaction ID 10 (grn) - Expected: 159470.55, Actual: 10620.00
+    - Transaction ID 11 (invoice) - Expected: 194870.55, Actual: 46020.00
+    - Transaction ID 12 (payment) - Expected: 170090.55, Actual: 21240.00
+    - Transaction ID 13 (grn) - Expected: 170090.55, Actual: 21240.00
+    - Transaction ID 14 (invoice) - Expected: 252690.55, Actual: 103840.00
+    - Transaction ID 15 (payment) - Expected: 180710.55, Actual: 31860.00
+    - Transaction ID 16 (po) - Expected: 180710.55, Actual: 31860.00
+    - Transaction ID 17 (grn) - Expected: 180710.55, Actual: 31860.00
+    - Transaction ID 18 (po) - Expected: 180710.55, Actual: 0.00
+    - Transaction ID 19 (grn) - Expected: 180710.55, Actual: 0.00
+    - Transaction ID 20 (po) - Expected: 180710.55, Actual: 0.00
+    - Transaction ID 22 (grn) - Expected: 180710.55, Actual: -10030.00
+    - Transaction ID 23 (po) - Expected: 180710.55, Actual: 0.00
+    - Transaction ID 24 (grn) - Expected: 180710.55, Actual: 0.00
+    - Transaction ID 25 (po) - Expected: 180710.55, Actual: 0.00
+    - Transaction ID 27 (grn) - Expected: 180710.55, Actual: 0.00
+    - Transaction ID 28 (invoice) - Expected: 1065710.55, Actual: 885000.00
+    - Transaction ID 29 (payment) - Expected: 475710.55, Actual: 295000.00
+    - Transaction ID 30 (grn) - Expected: 475710.55, Actual: 295000.00
+    - Transaction ID 31 (invoice) - Expected: 2540710.55, Actual: 2360000.00
+    - Transaction ID 32 (payment) - Expected: 770710.55, Actual: 590000.00
+
+=== ANALYSIS SUMMARY ===
+A. Missing ledger entries: 0
+B. Incorrect utilized_amount: 0
+C. Missing utilization records: 0
+D. Duplicate utilizations: 0
+E. Over-utilized advances: 0
+F. Balance mismatches: 24
+
+=== REPAIR PLAN ===
+
+  RECALCULATE_LEDGER_BALANCES: 24 records - Risk: LOW
+    Reason: Ledger balances will be recalculated in transaction
+
+
+PHASE 3 — EXECUTING REPAIRS...
+
+No missing ledger entries to create
+No incorrect utilized_amount values to fix
+No missing utilization records to create
+Recalculating ledger balances...
+Recalculated ledger balances for 6 suppliers
+
+=== REPAIR COMPLETE ===
+Repaired IDs: 0
+Skipped IDs: 0
+Failed IDs: 0
+
+Before/After verification is recommended

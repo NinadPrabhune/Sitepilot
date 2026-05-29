@@ -228,12 +228,27 @@ class SupplierAdvanceService
 
             // Create supplier_transactions ledger entry for this advance payment
             try {
-                LedgerHelper::createAdvancePaymentLedgerEntry($advance, $paymentData);
-                Log::info('Ledger entry created for advance payment', [
-                    'advance_id' => $advance->id,
-                    'advance_number' => $advance->advance_number,
-                    'amount' => $advance->amount,
-                ]);
+                // Guard: prevent duplicate ledger entries on retry
+                $existing = \App\Models\SupplierTransaction::where('supplier_id', $advance->supplier_id)
+                    ->where('reference_type', \App\Models\SupplierTransaction::TYPE_ADVANCE)
+                    ->where('reference_id', $advance->id)
+                    ->where('credit', $advance->amount)
+                    ->where('debit', 0)
+                    ->exists();
+
+                if (!$existing) {
+                    LedgerHelper::createAdvancePaymentLedgerEntry($advance, $paymentData);
+                    Log::info('Ledger entry created for advance payment', [
+                        'advance_id' => $advance->id,
+                        'advance_number' => $advance->advance_number,
+                        'amount' => $advance->amount,
+                    ]);
+                } else {
+                    Log::info('Ledger entry already exists for advance payment — skipping duplicate', [
+                        'advance_id' => $advance->id,
+                        'advance_number' => $advance->advance_number,
+                    ]);
+                }
             } catch (\Exception $e) {
                 Log::error('Failed to create ledger entry for advance payment', [
                     'advance_id' => $advance->id,

@@ -106,19 +106,29 @@ class LedgerHealthCheck extends Command
             $this->info('✓ PASS: All balances have values');
         }
 
-        // Check 5: Payment-to-ledger reconciliation
+// Check 5: Payment-to-ledger reconciliation
         $this->info('Check 5: Payment-to-ledger reconciliation...');
+        
+        // Build query to include adjustment corrections
         $paymentMismatches = DB::select("
             SELECT 
                 pm.id as payment_id,
                 pm.payment_number,
                 pm.amount as payment_amount,
-                COUNT(st.id) as ledger_count,
-                SUM(st.credit) as total_credit
+                pm.payment_type,
+                COALESCE(SUM(CASE 
+                    WHEN pm.payment_type != 'advance_against_po' AND st.reference_type = 'payment' THEN st.credit
+                    WHEN pm.payment_type = 'advance_against_po' AND st.reference_type = 'advance' THEN st.credit
+                    ELSE 0 
+                END), 0) as ledger_credit,
+                COALESCE(SUM(CASE 
+                    WHEN st.reference_type = 'adjustment' AND JSON_EXTRACT(st.meta, '$.adjustment_type') = 'payment_credit_correction' AND st.reference_id = pm.id THEN st.credit
+                    ELSE 0 
+                END), 0) as correction_credit
             FROM payments_module pm
-            LEFT JOIN supplier_transactions st ON st.reference_type IN ('payment', 'advance') AND st.reference_id = pm.id
-            GROUP BY pm.id, pm.payment_number, pm.amount
-            HAVING ledger_count != 1 OR total_credit != pm.amount
+            LEFT JOIN supplier_transactions st ON st.reference_id = pm.id
+            GROUP BY pm.id, pm.payment_number, pm.amount, pm.payment_type
+            HAVING ABS((ledger_credit + correction_credit) - pm.amount) > 0.01
         ");
 
         if (!empty($paymentMismatches)) {

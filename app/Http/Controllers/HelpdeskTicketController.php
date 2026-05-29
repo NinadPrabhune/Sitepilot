@@ -17,9 +17,10 @@ use Illuminate\Support\Facades\Session;
 class HelpdeskTicketController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List all helpdesk tickets.
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @response view="helpdesk_ticket.index"
      */
     public function index(SupportDataTable $dataTable)
     {
@@ -31,9 +32,10 @@ class HelpdeskTicketController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new ticket.
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @response view="helpdesk_ticket.create"
      */
     public function create()
     {
@@ -52,10 +54,17 @@ class HelpdeskTicketController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created helpdesk ticket.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @bodyParam name integer required User ID (for super admin). Example: 2
+     * @bodyParam email string required Email address. Example: user@example.com
+     * @bodyParam category string required Category ID. Example: 1
+     * @bodyParam subject string required Ticket subject. Example: Login issue
+     * @bodyParam status string required Ticket status. Example: open
+     * @bodyParam description string nullable Ticket description. Example: Unable to login to the system
+     * @bodyParam attachments file nullable Attachment files.
+     * @response view="helpdesk_ticket.index" (redirect)
      */
     public function store(Request $request)
     {
@@ -167,10 +176,11 @@ class HelpdeskTicketController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display a specific helpdesk ticket.
      *
-     * @param  \App\Models\HelpdeskTicket  $helpdeskTicket
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam ticket_id string required Encrypted ticket ID. Example: eyJpdiI6Ik...
+     * @response view="helpdesk_ticket.show"
      */
     public function show(HelpdeskTicket $helpdeskTicket, $ticket_id)
     {
@@ -185,10 +195,11 @@ class HelpdeskTicketController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing a helpdesk ticket.
      *
-     * @param  \App\Models\HelpdeskTicket  $helpdeskTicket
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id int required Ticket ID. Example: 1
+     * @response view="helpdesk_ticket.edit"
      */
     public function edit($id)
     {
@@ -212,11 +223,18 @@ class HelpdeskTicketController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a helpdesk ticket.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\HelpdeskTicket  $helpdeskTicket
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id int required Ticket ID. Example: 1
+     * @bodyParam name integer required User ID (for super admin). Example: 2
+     * @bodyParam email string required Email address. Example: user@example.com
+     * @bodyParam category string required Category ID. Example: 1
+     * @bodyParam subject string required Ticket subject. Example: Login issue
+     * @bodyParam status string required Ticket status. Example: in_progress
+     * @bodyParam description string nullable Ticket description. Example: Updated with more details
+     * @bodyParam attachments file nullable Attachment files.
+     * @response view="helpdesk_ticket.show" (redirect back)
      */
     public function update(Request $request,$id)
     {
@@ -304,10 +322,11 @@ class HelpdeskTicketController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a helpdesk ticket.
      *
-     * @param  \App\Models\HelpdeskTicket  $helpdeskTicket
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id int required Ticket ID. Example: 1
+     * @response view="helpdesk_ticket.index" (redirect back)
      */
     public function destroy($id)
     {
@@ -325,6 +344,13 @@ class HelpdeskTicketController extends Controller
         }
     }
 
+    /**
+     * Get user details by ID (AJAX).
+     *
+     * @authenticated
+     * @bodyParam user_id integer required User ID. Example: 2
+     * @response view="json"
+     */
     public function  getUser(Request $request)
     {
         $user = User::find($request->user_id);
@@ -340,6 +366,14 @@ class HelpdeskTicketController extends Controller
 
     }
 
+    /**
+     * Delete an attachment from a helpdesk ticket.
+     *
+     * @authenticated
+     * @urlParam ticket_id int required Ticket ID. Example: 1
+     * @urlParam id int required Attachment index. Example: 0
+     * @response view="helpdesk_ticket.show" (redirect back)
+     */
     public function attachmentDestroy($ticket_id, $id)
     {
         $ticket = HelpdeskTicket::find($ticket_id);
@@ -356,6 +390,14 @@ class HelpdeskTicketController extends Controller
             return redirect()->back()->with('error', __('Attachment is missing'));
         }
     }
+    /**
+     * Store a private note on a helpdesk ticket.
+     *
+     * @authenticated
+     * @urlParam ticketID int required Ticket ID. Example: 1
+     * @bodyParam note string required Note content. Example: Escalated to senior team.
+     * @response view="helpdesk_ticket.show" (redirect back)
+     */
     public function storeNote($ticketID, Request $request)
     {
 
@@ -370,6 +412,15 @@ class HelpdeskTicketController extends Controller
         }
     }
 
+    /**
+     * Reply to a helpdesk ticket (public reply).
+     *
+     * @authenticated
+     * @urlParam ticket_id string required Ticket ID. Example: 1234567890
+     * @bodyParam reply_description string required Reply content. Example: We are working on this issue.
+     * @bodyParam reply_attachments file nullable Attachment files.
+     * @response view="helpdesk_ticket.show" (redirect back)
+     */
     public function reply($ticket_id, Request $request)
     {
 

@@ -32,6 +32,12 @@ class PurchaseInvoiceController extends Controller {
          $this->notificationService = $notificationService;          
      }
 
+    /**
+     * Display a listing of purchase invoices.
+     *
+     * @authenticated
+     * @response view="purchase-invoice.index"
+     */
     public function index(PurchaseInvoiceDataTable $dataTable) {
 
         $user = \Auth::user();
@@ -47,6 +53,16 @@ class PurchaseInvoiceController extends Controller {
         }
     }
 
+    /**
+     * Log debug info for purchase invoice actions.
+     *
+     * @authenticated
+     * @bodyParam action string required Action name. Example: export_purchase_invoice
+     * @bodyParam ids array nullable List of invoice IDs.
+     * @response {
+     *   "success": true
+     * }
+     */
     public function debugLog(Request $request) {
         if ($request->action == 'export_purchase_invoice') {
             Log::info("Export Purchase Invoice", ['ids' => $request->ids]);
@@ -54,6 +70,12 @@ class PurchaseInvoiceController extends Controller {
         return response()->json(['success' => true]);
     }
 
+    /**
+     * Show form for creating a new purchase invoice.
+     *
+     * @authenticated
+     * @response view="purchase-invoice.create"
+     */
     public function create() {
         $user = \Auth::user();
         if (!$user || !$user->isAbleTo('purchase-invoice create')) {
@@ -100,6 +122,25 @@ class PurchaseInvoiceController extends Controller {
             }
     }
 
+    /**
+     * Store a newly created purchase invoice.
+     *
+     * @authenticated
+     * @bodyParam supplier_invoice_number string nullable Supplier's invoice number.
+     * @bodyParam supplier_id integer required Supplier ID.
+     * @bodyParam site_id integer required Site/Project ID.
+     * @bodyParam invoice_date date required Invoice date.
+     * @bodyParam invoice_file file nullable Invoice file (pdf,jpg,jpeg,png, max 2MB).
+     * @bodyParam invoice_type string required Invoice type: general_po or minor_misc_service.
+     * @bodyParam items array nullable Invoice items array.
+     * @bodyParam items.*.material_id integer Material ID.
+     * @bodyParam items.*.quantity numeric Quantity.
+     * @bodyParam items.*.unit string Unit.
+     * @bodyParam items.*.price numeric Unit price.
+     * @bodyParam assign_to array nullable User IDs to assign.
+     * @bodyParam assign_to.* integer User ID.
+     * @response redirect
+     */
     public function store(Request $request) {
         $user = \Auth::user();
         if (!$user || !$user->isAbleTo('purchase-invoice create')) {
@@ -214,6 +255,13 @@ class PurchaseInvoiceController extends Controller {
         }
     }
 
+    /**
+     * Display the specified purchase invoice.
+     *
+     * @authenticated
+     * @urlParam purchaseInvoice int required Purchase invoice ID.
+     * @response view="purchase-invoice.show"
+     */
     public function show(PurchaseInvoice $purchaseInvoice) {
         $user = \Auth::user();
         if (!$user || !$user->isAbleTo('purchase-invoice show')) {
@@ -238,6 +286,13 @@ class PurchaseInvoiceController extends Controller {
             }
     }
 
+    /**
+     * Show form for editing a purchase invoice.
+     *
+     * @authenticated
+     * @urlParam purchaseInvoice int required Purchase invoice ID.
+     * @response view="purchase-invoice.edit"
+     */
     public function edit(PurchaseInvoice $purchaseInvoice) {
         $user = \Auth::user();
         if (!$user || !$user->isAbleTo('purchase-invoice edit')) {
@@ -269,6 +324,26 @@ class PurchaseInvoiceController extends Controller {
             }
     }
 
+    /**
+     * Update the specified purchase invoice.
+     *
+     * @authenticated
+     * @urlParam purchaseInvoice int required Purchase invoice ID.
+     * @bodyParam supplier_invoice_number string nullable Supplier's invoice number.
+     * @bodyParam supplier_id integer required Supplier ID.
+     * @bodyParam site_id integer required Site/Project ID.
+     * @bodyParam invoice_date date required Invoice date.
+     * @bodyParam invoice_file file nullable Invoice file (pdf,jpg,jpeg,png, max 2MB).
+     * @bodyParam invoice_type string required Invoice type: general_po or minor_misc_service.
+     * @bodyParam items array nullable Invoice items array.
+     * @bodyParam items.*.material_id integer Material ID.
+     * @bodyParam items.*.quantity numeric Quantity.
+     * @bodyParam items.*.unit string Unit.
+     * @bodyParam items.*.price numeric Unit price.
+     * @bodyParam assign_to array nullable User IDs to assign.
+     * @bodyParam assign_to.* integer User ID.
+     * @response redirect
+     */
     public function update(UpdatePurchaseInvoiceRequest $request, PurchaseInvoice $purchaseInvoice) {
         $user = \Auth::user();
         if (!$user || !$user->isAbleTo('purchase-invoice edit')) {
@@ -431,6 +506,13 @@ class PurchaseInvoiceController extends Controller {
 //        }
 //    }
 
+    /**
+     * Remove the specified purchase invoice.
+     *
+     * @authenticated
+     * @urlParam purchaseInvoice int required Purchase invoice ID.
+     * @response redirect
+     */
     public function destroy(PurchaseInvoice $purchaseInvoice) {
         $user = \Auth::user();
         if (!$user || !$user->isAbleTo('purchase-invoice delete')) {
@@ -479,6 +561,16 @@ class PurchaseInvoiceController extends Controller {
             }
     }
 
+    /**
+     * Get purchase invoices by supplier ID (AJAX).
+     *
+     * @authenticated
+     * @bodyParam supplier_id integer required Supplier ID.
+     * @response {
+     *   "1": "INV-0001",
+     *   "2": "INV-0002"
+     * }
+     */
     public function getPurchaseInvoiceBySupplierId(Request $request) {
 
         try {
@@ -495,6 +587,16 @@ class PurchaseInvoiceController extends Controller {
         }
     }
 
+    /**
+     * Get purchase invoices by supplier ID for edit mode (AJAX).
+     *
+     * @authenticated
+     * @bodyParam supplier_id integer required Supplier ID.
+     * @bodyParam payments_module_id integer nullable Current payment module ID to exclude.
+     * @response {
+     *   "1": "INV-0001"
+     * }
+     */
     public function getPurchaseInvoiceBySupplierIdEdit(Request $request) {
 
 
@@ -523,6 +625,16 @@ class PurchaseInvoiceController extends Controller {
         }
     }
 
+    /**
+     * Get remaining amount for a purchase invoice (AJAX).
+     *
+     * @authenticated
+     * @bodyParam purchase_invoice_id integer required Invoice ID.
+     * @bodyParam payments_module_id integer nullable Payment module ID to exclude from calculation.
+     * @response {
+     *   "remaining_amount": 5000
+     * }
+     */
     public function getPurchaseInvoiceRemainingAmountByPurchaseInvoiceId(Request $request) {
         try {
             $invoice = PurchaseInvoice::findOrFail($request->purchase_invoice_id);
@@ -551,6 +663,19 @@ class PurchaseInvoiceController extends Controller {
 
     /**
      * Store invoice from GRN.
+     *
+     * @authenticated
+     * @bodyParam grn_id integer required GRN ID.
+     * @bodyParam invoice_number string required Invoice number (must be unique).
+     * @bodyParam invoice_date date required Invoice date.
+     * @bodyParam supplier_invoice_number string nullable Supplier's invoice number.
+     * @bodyParam invoice_file file nullable Invoice file (pdf,jpg,jpeg,png, max 2MB).
+     * @response {
+     *   "success": true,
+     *   "message": "Invoice created successfully!",
+     *   "invoice_id": 1,
+     *   "invoice_number": "INV-0001"
+     * }
      */
     public function storeFromGrn(Request $request)
     {
@@ -879,6 +1004,10 @@ class PurchaseInvoiceController extends Controller {
 
     /**
      * Print purchase invoice.
+     *
+     * @authenticated
+     * @urlParam purchaseInvoice int required Purchase invoice ID.
+     * @response view="purchase-invoice.print"
      */
     public function print(PurchaseInvoice $purchaseInvoice)
     {
@@ -948,6 +1077,10 @@ class PurchaseInvoiceController extends Controller {
 
     /**
      * Download purchase invoice PDF.
+     *
+     * @authenticated
+     * @urlParam purchaseInvoice int required Purchase invoice ID.
+     * @response file redirect to PDF URL
      */
     public function downloadPdf(PurchaseInvoice $purchaseInvoice)
     {

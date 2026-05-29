@@ -15,8 +15,10 @@ use App\Models\WarehouseTransfer;
 class WarehouseTransferController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     * @return Renderable
+     * Display a listing of warehouse transfers.
+     *
+     * @authenticated
+     * @response view="warehouses-transfer.index"
      */
     public function index(WarehouseTransferDataTable $dataTable)
     {
@@ -24,8 +26,10 @@ class WarehouseTransferController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     * @return Renderable
+     * Show the form for creating a new warehouse transfer.
+     *
+     * @authenticated
+     * @response view="warehouses-transfer.create"
      */
     public function create()
     {
@@ -39,9 +43,15 @@ class WarehouseTransferController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
+     * Store a newly created warehouse transfer.
+     *
+     * @authenticated
+     * @bodyParam from_warehouse integer required The source warehouse ID. Example: 1
+     * @bodyParam to_warehouse integer required The destination warehouse ID. Example: 2
+     * @bodyParam product_id integer required The product ID. Example: 1
+     * @bodyParam quantity integer required The quantity to transfer. Example: 10
+     * @bodyParam date string The transfer date. Example: 2025-05-01
+     * @response redirect to="warehouses-transfer.index"
      */
     public function store(Request $request)
     {
@@ -92,6 +102,13 @@ class WarehouseTransferController extends Controller
         }
     }
 
+    /**
+     * Get products and available "to" warehouses for a selected warehouse via AJAX.
+     *
+     * @authenticated
+     * @bodyParam warehouse_id integer required The source warehouse ID. Example: 1
+     * @response status=200 scenario="success" {"ware_products": {1: "Product A"}, "to_warehouses": {2: "Warehouse B"}}
+     */
     public function getproduct(Request $request)
     {
         if($request->warehouse_id == 0)
@@ -115,6 +132,13 @@ class WarehouseTransferController extends Controller
         return response()->json($result);
     }
 
+    /**
+     * Get product quantities for a selected product via AJAX.
+     *
+     * @authenticated
+     * @bodyParam product_id integer required The product ID. Example: 1
+     * @response status=200 scenario="success" {1: 50, 2: 30}
+     */
     public function getquantity(Request $request)
     {
         if($request->product_id == 0)
@@ -133,9 +157,11 @@ class WarehouseTransferController extends Controller
 
 
     /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
+     * Display the specified warehouse transfer (redirects to index).
+     *
+     * @authenticated
+     * @urlParam id integer required The transfer ID. Example: 1
+     * @response redirect to="warehouses-transfer.index"
      */
     public function show($id)
     {
@@ -143,9 +169,11 @@ class WarehouseTransferController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
+     * Show the form for editing a warehouse transfer.
+     *
+     * @authenticated
+     * @urlParam id integer required The transfer ID. Example: 1
+     * @response view="pos::edit"
      */
     public function edit($id)
     {
@@ -153,10 +181,10 @@ class WarehouseTransferController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
+     * Update the specified warehouse transfer (not implemented).
+     *
+     * @authenticated
+     * @urlParam id integer required The transfer ID. Example: 1
      */
     public function update(Request $request, $id)
     {
@@ -164,9 +192,11 @@ class WarehouseTransferController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
+     * Remove the specified warehouse transfer.
+     *
+     * @authenticated
+     * @urlParam id integer required The transfer ID. Example: 1
+     * @response redirect to="warehouses-transfer.index"
      */
 
 

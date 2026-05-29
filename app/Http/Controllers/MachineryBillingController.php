@@ -31,6 +31,11 @@ class MachineryBillingController extends Controller
 
     /**
      * Billing index page
+     *
+     * @authenticated
+     * @queryParam month int Month number (1-12). Example: 5
+     * @queryParam year int Year. Example: 2026
+     * @response view="machinery.billing.index"
      */
     public function index(Request $request)
     {
@@ -62,6 +67,11 @@ class MachineryBillingController extends Controller
 
     /**
      * Create billing page
+     *
+     * @authenticated
+     * @queryParam month int Month number (1-12). Example: 5
+     * @queryParam year int Year. Example: 2026
+     * @response view="machinery.billing.create"
      */
     public function create(Request $request)
     {
@@ -85,6 +95,13 @@ class MachineryBillingController extends Controller
 
     /**
      * Review billing before creation
+     *
+     * @authenticated
+     * @bodyParam month int required Month number (1-12). Example: 5
+     * @bodyParam year int required Year. Example: 2026
+     * @bodyParam supplier_ids array required Array of supplier IDs.
+     * @bodyParam supplier_ids.* int required Supplier ID. Must exist in suppliers table.
+     * @response view="machinery.billing.review"
      */
     public function review(Request $request)
     {
@@ -135,6 +152,14 @@ class MachineryBillingController extends Controller
 
     /**
      * Store billing (group items into bills)
+     *
+     * @authenticated
+     * @bodyParam month int required Month number (1-12). Example: 5
+     * @bodyParam year int required Year. Example: 2026
+     * @bodyParam supplier_ids array required Array of supplier IDs.
+     * @bodyParam supplier_ids.* int required Supplier ID. Must exist in suppliers table.
+     * @bodyParam remarks string optional Remarks for the bills. Max 1000 chars.
+     * @response redirect to machinery.billing.index
      */
     public function store(Request $request)
     {
@@ -175,6 +200,10 @@ class MachineryBillingController extends Controller
 
     /**
      * Show bill details
+     *
+     * @authenticated
+     * @urlParam id int required The bill ID.
+     * @response view="machinery.billing.show"
      */
     public function show($id)
     {
@@ -189,6 +218,17 @@ class MachineryBillingController extends Controller
 
     /**
      * Get billing items for supplier (AJAX)
+     *
+     * @authenticated
+     * @bodyParam month int required Month number (1-12). Example: 5
+     * @bodyParam year int required Year. Example: 2026
+     * @bodyParam supplier_id int required Supplier ID. Must exist in suppliers table.
+     * @response {
+     *   "items": [],
+     *   "total_amount": 0,
+     *   "total_hours": 0,
+     *   "total_diesel": 0
+     * }
      */
     public function getBillingItems(Request $request)
     {
@@ -221,6 +261,10 @@ class MachineryBillingController extends Controller
 
     /**
      * Delete bill (only draft status)
+     *
+     * @authenticated
+     * @urlParam id int required The bill ID.
+     * @response redirect back with success message
      */
     public function destroy($id)
     {

@@ -30,13 +30,27 @@ class PurchaseOrderController extends Controller
         $this->purchaseOrderService = $purchaseOrderService;
     }
     /**
-     * Display a listing of the purchase orders.
+     * Display a listing of purchase orders.
+     *
+     * @authenticated
+     *
+     * @response view="purchase-order.index"
      */
     public function index(PurchaseOrderDataTable $dataTable) {
         $suppliers = Supplier::pluck('name', 'id');
         return $dataTable->render('purchase-order.index', compact('suppliers'));
     }
 
+    /**
+     * Log debug actions for purchase orders.
+     *
+     * @authenticated
+     *
+     * @bodyParam action string required The debug action. Example: export_po
+     * @bodyParam ids string Comma-separated PO IDs. Example: 1,2,3
+     *
+     * @response {"success":true}
+     */
     public function debugLog(Request $request) {
         if ($request->action == 'export_po') {
             Log::info("Export Purchase Order", ['ids' => $request->ids]);
@@ -46,6 +60,12 @@ class PurchaseOrderController extends Controller
 
     /**
      * Show the form for creating a new purchase order.
+     *
+     * @authenticated
+     *
+     * @queryParam site_id int Filter by site/project ID. Example: 1
+     *
+     * @response view="purchase-order.create"
      */
     public function create(Request $request)
     {
@@ -97,7 +117,29 @@ class PurchaseOrderController extends Controller
     }
 
     /**
-     * Store a newly created purchase order in storage.
+     * Store a newly created purchase order.
+     *
+     * @authenticated
+     *
+     * @bodyParam po_date string required PO date. Example: 2024-01-15
+     * @bodyParam supplier_id int required Supplier ID. Example: 1
+     * @bodyParam site_id int Site/project ID. Example: 1
+     * @bodyParam indent_id int Indent ID. Example: 1
+     * @bodyParam tax_type string required Tax type (cgst/igst). Example: cgst
+     * @bodyParam description string PO description. Example: Monthly material order
+     * @bodyParam items array required Array of PO items. Example: [{"material_id":1,"quantity":100,"unit":"Pcs","price":50,"gst_master_id":1,"discount_amount":0}]
+     * @bodyParam additional_charge numeric Additional charges. Example: 100.00
+     * @bodyParam additional_deduction numeric Additional deductions. Example: 0
+     * @bodyParam additional_discount numeric Additional discount. Example: 0
+     * @bodyParam delivery_date string Delivery date. Example: 2024-02-15
+     * @bodyParam delivery_address string Delivery address. Example: 123 Main St
+     * @bodyParam delivery_terms_conditions string Delivery terms. Example: FOB Origin
+     * @bodyParam payment_terms_conditions string Payment terms. Example: Net 30
+     * @bodyParam remark string Internal remarks. Example: Urgent order
+     * @bodyParam reference_file file Reference document. Example: null
+     * @bodyParam assign_to array Assign users. Example: [1,2]
+     *
+     * @response view="purchase-order.index"
      */
     public function store(Request $request)
     {
@@ -301,6 +343,12 @@ class PurchaseOrderController extends Controller
 
     /**
      * Display the specified purchase order.
+     *
+     * @authenticated
+     *
+     * @urlParam purchaseOrder int required The purchase order ID. Example: 1
+     *
+     * @response view="purchase-order.show"
      */
     public function show(PurchaseOrder $purchaseOrder)
     {
@@ -343,7 +391,13 @@ class PurchaseOrderController extends Controller
     }
 
     /**
-     * Show the form for editing the specified purchase order.
+     * Show the form for editing a purchase order.
+     *
+     * @authenticated
+     *
+     * @urlParam purchaseOrder int required The purchase order ID. Example: 1
+     *
+     * @response view="purchase-order.edit"
      */
     public function edit(PurchaseOrder $purchaseOrder)
     {
@@ -435,7 +489,30 @@ class PurchaseOrderController extends Controller
     }
 
     /**
-     * Update the specified purchase order in storage.
+     * Update the specified purchase order.
+     *
+     * @authenticated
+     *
+     * @urlParam purchaseOrder int required The purchase order ID. Example: 1
+     * @bodyParam po_date string required PO date. Example: 2024-01-15
+     * @bodyParam supplier_id int Supplier ID. Example: 1
+     * @bodyParam site_id int Site/project ID. Example: 1
+     * @bodyParam indent_id int Indent ID. Example: 1
+     * @bodyParam tax_type string required Tax type (cgst/igst). Example: cgst
+     * @bodyParam description string PO description. Example: Updated order details
+     * @bodyParam items array required Array of PO items. Example: [{"material_id":1,"quantity":100,"unit":"Pcs","price":50}]
+     * @bodyParam additional_charge numeric Additional charges. Example: 100.00
+     * @bodyParam additional_deduction numeric Additional deductions. Example: 0
+     * @bodyParam additional_discount numeric Additional discount. Example: 0
+     * @bodyParam delivery_date string Delivery date. Example: 2024-02-15
+     * @bodyParam delivery_address string Delivery address. Example: 123 Main St
+     * @bodyParam delivery_terms_conditions string Delivery terms. Example: FOB Origin
+     * @bodyParam payment_terms_conditions string Payment terms. Example: Net 30
+     * @bodyParam remark string Internal remarks. Example: Updated
+     * @bodyParam reference_file file Reference document. Example: null
+     * @bodyParam assign_to array Assign users. Example: [1,2]
+     *
+     * @response view="purchase-order.index"
      */
     public function update(Request $request, PurchaseOrder $purchaseOrder)
     {
@@ -646,7 +723,13 @@ class PurchaseOrderController extends Controller
     }
 
     /**
-     * Remove the specified purchase order from storage.
+     * Remove the specified purchase order (draft only).
+     *
+     * @authenticated
+     *
+     * @urlParam purchaseOrder int required The purchase order ID. Example: 1
+     *
+     * @response view="purchase-order.index"
      */
     public function destroy(PurchaseOrder $purchaseOrder)
     {
@@ -679,7 +762,13 @@ class PurchaseOrderController extends Controller
     }
 
     /**
-     * Get materials for a specific indent (AJAX)
+     * Get materials for a specific indent (AJAX).
+     *
+     * @authenticated
+     *
+     * @bodyParam indent_id int required The indent ID. Example: 1
+     *
+     * @response {"indent":{},"materials":[{"id":1,"material_id":1,"material_name":"Cement","indent_quantity":500,"remaining_quantity":300,"unit":"Bags","price":350}]}
      */
     public function getIndentMaterials(Request $request)
     {
@@ -712,8 +801,13 @@ class PurchaseOrderController extends Controller
     }
 
     /**
-     * Show approve form for purchase order
-     * Supports updating status from Draft, Approved, or Flagged
+     * Show approve form for purchase order status change.
+     *
+     * @authenticated
+     *
+     * @urlParam purchaseOrder int required The purchase order ID. Example: 1
+     *
+     * @response view="purchase-order.approve"
      */
     public function showApproveForm(PurchaseOrder $purchaseOrder)
     {
@@ -729,14 +823,15 @@ class PurchaseOrderController extends Controller
     }
 
     /**
-     * Update purchase order status
-     * 
-     * Status workflow:
-     * - Draft -> Approved, Rejected
-     * - Approved -> Flagged, Rejected
-     * - Flagged -> Approved, Rejected, Flagged (re-flag)
-     * - Partial Received -> Short Closed
-     * - Completed, Rejected -> No changes allowed
+     * Update purchase order status.
+     *
+     * @authenticated
+     *
+     * @urlParam purchaseOrder int required The purchase order ID. Example: 1
+     * @bodyParam status string required New status (Approved/Rejected/Flagged/Short Closed). Example: Approved
+     * @bodyParam reason string Reason for status change (required for Flagged/Short Closed). Example: Budget hold
+     *
+     * @response view="purchase-order.index"
      */
     public function updateStatus(Request $request, PurchaseOrder $purchaseOrder)
     {
@@ -822,12 +917,14 @@ class PurchaseOrderController extends Controller
     }
 
     /**
-     * Short close a Purchase Order.
-     * Only Partial Received POs can be short closed.
+     * Short close a purchase order (Partial Received only).
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\PurchaseOrder $purchaseOrder
-     * @return \Illuminate\Http\RedirectResponse
+     * @authenticated
+     *
+     * @urlParam purchaseOrder int required The purchase order ID. Example: 1
+     * @bodyParam reason string required Reason for short close. Example: Partial delivery accepted
+     *
+     * @response view="purchase-order.index"
      */
     public function shortClose(Request $request, PurchaseOrder $purchaseOrder)
     {
@@ -869,10 +966,13 @@ class PurchaseOrderController extends Controller
     }
 
     /**
-     * Print Invoice
+     * Print purchase order invoice (PDF/HTML).
      *
-     * If a PDF has been generated and saved, serve it directly.
-     * Otherwise, render the HTML view.
+     * @authenticated
+     *
+     * @urlParam purchaseOrder int required The purchase order ID. Example: 1
+     *
+     * @response view="purchase-order.print-invoice"
      */
     public function printInvoice(PurchaseOrder $purchaseOrder)
     {
@@ -963,8 +1063,13 @@ class PurchaseOrderController extends Controller
     }
 
     /**
-     * Print Invoice - Revision 2
-     * Regenerates PDF every time to ensure latest data is reflected.
+     * Print purchase order invoice - Revision 2.
+     *
+     * @authenticated
+     *
+     * @urlParam purchaseOrder int required The purchase order ID. Example: 1
+     *
+     * @response view="purchase-order.print-invoice-2"
      */
     public function printInvoice2(PurchaseOrder $purchaseOrder)
     {
@@ -1181,6 +1286,13 @@ class PurchaseOrderController extends Controller
 
     /**
      * Get PO list by supplier for payment module.
+     *
+     * @authenticated
+     *
+     * @bodyParam supplier_id int required Supplier ID. Example: 1
+     * @bodyParam status string Filter by status (comma-separated). Example: Approved
+     *
+     * @response [{"id":1,"po_number":"PO-001","po_date":"2024-01-15","grand_total":5000,"status":"Approved","invoiced_amount":2000,"po_balance":3000}]
      */
     public function getPOBySupplier(Request $request)
     {
@@ -1219,6 +1331,12 @@ class PurchaseOrderController extends Controller
 
     /**
      * Show advance request modal for PO.
+     *
+     * @authenticated
+     *
+     * @urlParam poId int required The purchase order ID. Example: 1
+     *
+     * @response {"success":true,"data":{}}
      */
     public function advanceRequestModal($poId)
     {
@@ -1240,7 +1358,17 @@ class PurchaseOrderController extends Controller
     }
 
     /**
-     * Store PO advance request.
+     * Store PO advance payment request.
+     *
+     * @authenticated
+     *
+     * @urlParam poId int required The purchase order ID. Example: 1
+     * @bodyParam percentage int required Advance percentage (1-100). Example: 30
+     * @bodyParam advance_amount numeric required Advance amount. Example: 1500.00
+     * @bodyParam payment_date string required Payment date. Example: 2024-02-01
+     * @bodyParam notes string Notes for the request. Example: Advance for material procurement
+     *
+     * @response {"success":true,"message":"Advance request created successfully","data":{}}
      */
     public function storeAdvanceRequest(Request $request, $poId)
     {
@@ -1331,6 +1459,13 @@ class PurchaseOrderController extends Controller
 
     /**
      * Get payment request details for modal display.
+     *
+     * @authenticated
+     *
+     * @bodyParam request_id int required Payment request ID. Example: 1
+     * @bodyParam po_id int required Purchase order ID. Example: 1
+     *
+     * @response {"success":true,"status":"pending","status_label":"Requested","requested_amount":"$1,500.00","approved_amount":"$1,200.00","paid_amount":"$0.00","rejection_reason":null}
      */
     public function getPaymentRequestDetails(Request $request)
     {

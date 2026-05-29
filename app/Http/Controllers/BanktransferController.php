@@ -18,11 +18,26 @@ use Illuminate\Support\Facades\Cache;
 
 class BanktransferController extends Controller
 {
+    /**
+     * Show bank transfer settings form
+     *
+     * @authenticated
+     * @urlParam settings string required The settings data.
+     * @response view="bank_transfer.setting"
+     */
     public function settingGet($settings)
     {
         return view('bank_transfer.setting',compact('settings'));
     }
 
+    /**
+     * Update bank transfer settings
+     *
+     * @authenticated
+     * @bodyParam bank_transfer_payment_is_on string Whether bank transfer payment is enabled. Must be "on".
+     * @bodyParam bank_number string required Bank account number for transfers. Required if bank_transfer_payment_is_on is set.
+     * @response redirect back with success message
+     */
     public function setting(Request $request)
     {
         if ($request->has('bank_transfer_payment_is_on'))
@@ -70,6 +85,12 @@ class BanktransferController extends Controller
         return redirect()->back()->with('success', __('The bank Transfer Setting save successfully'));
     }
 
+    /**
+     * List all bank transfer requests
+     *
+     * @authenticated
+     * @response view="bank_transfer.index"
+     */
     public function index(BankTransferDataTable $dataTable)
     {
         if (Auth::user()->isAbleTo('plan orders'))
@@ -87,6 +108,13 @@ class BanktransferController extends Controller
         }
     }
 
+    /**
+     * Show bank transfer request edit form
+     *
+     * @authenticated
+     * @urlParam id int required The bank transfer payment ID.
+     * @response view="bank_transfer.action"
+     */
     public function edit($id)
     {
         $bank_transfer_payment = BankTransferPayment::find($id);
@@ -99,6 +127,14 @@ class BanktransferController extends Controller
             return response()->json(['error' => __('Request data not found!')], 401);
         }
     }
+    /**
+     * Update bank transfer request status (approve/reject)
+     *
+     * @authenticated
+     * @urlParam id int required The bank transfer payment ID.
+     * @bodyParam status string required The new status. Must be "Approved" or "Rejected".
+     * @response redirect back with success message
+     */
     public function update(Request $request, $id)
     {
         $bank_transfer_payment = BankTransferPayment::find($id);
@@ -170,6 +206,13 @@ class BanktransferController extends Controller
         }
     }
 
+    /**
+     * Delete a bank transfer request
+     *
+     * @authenticated
+     * @urlParam id int required The bank transfer payment ID.
+     * @response redirect back with success message
+     */
     public function destroy($id)
     {
         $bank_transfer_payment = BankTransferPayment::find($id);
@@ -188,6 +231,21 @@ class BanktransferController extends Controller
             return redirect()->back()->with('error', __('Request data not found!'));
         }
     }
+    /**
+     * Initiate plan payment via bank transfer
+     *
+     * @authenticated
+     * @bodyParam user_counter_input string required User counter input.
+     * @bodyParam workspace_counter_input string required Workspace counter input.
+     * @bodyParam userprice_input string required User price input.
+     * @bodyParam user_module_price_input string required Module price input.
+     * @bodyParam time_period string required The billing period.
+     * @bodyParam payment_receipt file required Payment receipt file.
+     * @bodyParam plan_id int The plan ID.
+     * @bodyParam coupon_code string Coupon code.
+     * @bodyParam user_module_input string Selected user modules.
+     * @response {"status":"success","msg":"Plan payment request send successfully"}
+     */
     public function planPayWithBank(Request $request)
     {
         $validator  = \Validator::make(
@@ -302,6 +360,16 @@ class BanktransferController extends Controller
 
     }
 
+    /**
+     * Initiate invoice payment via bank transfer
+     *
+     * @authenticated
+     * @bodyParam payment_receipt file required Payment receipt file.
+     * @bodyParam type string required The invoice type. Must be "invoice" or "retainer".
+     * @bodyParam invoice_id int The invoice ID.
+     * @bodyParam amount numeric The payment amount.
+     * @response redirect to invoice pay page with success message
+     */
     public function invoicePayWithBank(Request $request)
     {
         $validator  = \Validator::make(
@@ -377,6 +445,13 @@ class BanktransferController extends Controller
         }
 
     }
+    /**
+     * Show invoice bank request edit form
+     *
+     * @authenticated
+     * @urlParam id int required The bank transfer payment ID.
+     * @response view="bank_transfer.invoice_action"
+     */
     public function invoiceBankRequestEdit($id)
     {
         $bank_transfer_payment = BankTransferPayment::find($id);
@@ -400,6 +475,14 @@ class BanktransferController extends Controller
         }
     }
 
+    /**
+     * Update invoice bank request status (approve/reject)
+     *
+     * @authenticated
+     * @urlParam id int required The bank transfer payment ID.
+     * @bodyParam status string required The new status. Must be "Approved" or "Rejected".
+     * @response redirect back with success message
+     */
     public function invoiceBankRequestupdate(Request $request, $id)
     {
         $bank_transfer_payment = BankTransferPayment::find($id);

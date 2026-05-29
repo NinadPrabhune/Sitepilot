@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\DB;
 
 class SpentController extends Controller
 {
+    /**
+     * Display a listing of spents.
+     *
+     * @authenticated
+     * @response view="spent.index"
+     */
     public function index(SpentDataTable $dataTable)
     {
         if (!Auth::user()->isAbleTo('spent manage')) {
@@ -25,6 +31,12 @@ class SpentController extends Controller
         return $dataTable->render('spent.index', compact('projects'));
     }
 
+    /**
+     * Show the form for creating a new spent.
+     *
+     * @authenticated
+     * @response view="spent.create"
+     */
     public function create()
     {
         if (!Auth::user()->isAbleTo('spent create')) {
@@ -36,6 +48,15 @@ class SpentController extends Controller
         return view('spent.create', compact('ledgers'));
     }
 
+    /**
+     * Store a newly created spent.
+     *
+     * @authenticated
+     * @bodyParam name string required The spent name. Example: Office Supplies
+     * @bodyParam spent_ledger_id integer required The spent ledger ID. Example: 1
+     * @bodyParam amount numeric required The spent amount. Minimum: 0. Example: 5000
+     * @response redirect to="spent.index"
+     */
     public function store(Request $request)
     {
         if (!Auth::user()->isAbleTo('spent create')) {
@@ -67,6 +88,13 @@ class SpentController extends Controller
         }
     }
 
+    /**
+     * Show the form for editing a spent.
+     *
+     * @authenticated
+     * @urlParam spent integer required The spent ID. Example: 1
+     * @response view="spent.edit"
+     */
     public function edit(Spent $spent)
     {
         if (!Auth::user()->isAbleTo('spent edit')) {
@@ -78,6 +106,16 @@ class SpentController extends Controller
         return view('spent.edit', compact('spent', 'ledgers'));
     }
 
+    /**
+     * Update the specified spent.
+     *
+     * @authenticated
+     * @urlParam spent integer required The spent ID. Example: 1
+     * @bodyParam name string required The spent name. Example: Office Supplies
+     * @bodyParam spent_ledger_id integer required The spent ledger ID. Example: 1
+     * @bodyParam amount numeric required The spent amount. Minimum: 0. Example: 5000
+     * @response redirect to="spent.index"
+     */
     public function update(Request $request, Spent $spent)
     {
         if (!Auth::user()->isAbleTo('spent edit')) {
@@ -106,6 +144,13 @@ class SpentController extends Controller
         }
     }
 
+    /**
+     * Remove the specified spent.
+     *
+     * @authenticated
+     * @urlParam spent integer required The spent ID. Example: 1
+     * @response status=200 scenario="success" {"success": true, "message": "Spent deleted successfully!"}
+     */
     public function destroy(Spent $spent)
     {
         if (!Auth::user()->isAbleTo('spent delete')) {
@@ -120,6 +165,13 @@ class SpentController extends Controller
         }
     }
 
+    /**
+     * Store a new spent ledger via AJAX.
+     *
+     * @authenticated
+     * @bodyParam name string required The ledger name. Must be unique. Example: Office Expenses
+     * @response status=200 scenario="success" {"success": true, "message": "Ledger created successfully!", "id": 1, "name": "Office Expenses"}
+     */
     public function storeLedger(Request $request)
     {
         if (!Auth::user()->isAbleTo('spent ledger create')) {

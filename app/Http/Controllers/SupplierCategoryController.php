@@ -14,7 +14,10 @@ use App\Events\UpdateSupplierCategory;
 class SupplierCategoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of supplier categories.
+     *
+     * @authenticated
+     * @response view="supplier-categories.index"
      */
     public function index(SupplierCategoryDataTable $dataTable)
     {
@@ -26,7 +29,10 @@ class SupplierCategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new supplier category.
+     *
+     * @authenticated
+     * @response view="supplier-categories.create"
      */
     public function create()
     {
@@ -39,7 +45,12 @@ class SupplierCategoryController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created supplier category.
+     *
+     * @authenticated
+     * @bodyParam name string required The category name. Maximum: 255 characters. Example: Subcontractors
+     * @bodyParam site_id integer Optional site ID.
+     * @response redirect to="supplier-categories.index"
      */
     public function store(Request $request)
     {
@@ -75,7 +86,11 @@ class SupplierCategoryController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified supplier category.
+     *
+     * @authenticated
+     * @urlParam SupplierCategory integer required The category ID. Example: 1
+     * @response status=200 scenario="success" {"id": 1, "name": "Subcontractors", ...}
      */
     public function show(SupplierCategory $SupplierCategory)
     {
@@ -87,7 +102,11 @@ class SupplierCategoryController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing a supplier category.
+     *
+     * @authenticated
+     * @urlParam SupplierCategory integer required The category ID. Example: 1
+     * @response view="supplier-categories.edit"
      */
     public function edit(SupplierCategory $SupplierCategory)
     {
@@ -105,7 +124,12 @@ class SupplierCategoryController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified supplier category.
+     *
+     * @authenticated
+     * @urlParam SupplierCategory integer required The category ID. Example: 1
+     * @bodyParam name string required The category name. Must be unique. Maximum: 255 characters. Example: Subcontractors
+     * @response redirect to="supplier-categories.index"
      */
     public function update(Request $request, SupplierCategory $SupplierCategory)
     {
@@ -142,7 +166,11 @@ class SupplierCategoryController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified supplier category.
+     *
+     * @authenticated
+     * @urlParam SupplierCategory integer required The category ID. Example: 1
+     * @response redirect to="supplier-categories.index"
      */
     public function destroy(SupplierCategory $SupplierCategory)
     {

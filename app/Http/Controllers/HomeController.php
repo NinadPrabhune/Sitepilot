@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\File;
 class HomeController extends Controller {
 
     /**
-     * Show the application dashboard.
+     * Show the application home page / landing page.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @response view="landingpage::layouts.landingpage" or "marketplace.landing" or "login"
      */
     public function index() {
         
@@ -58,6 +58,12 @@ class HomeController extends Controller {
         }
     }
 
+    /**
+     * Show the main dashboard for authenticated users.
+     *
+     * @authenticated
+     * @response view="dashboard.dashboard" or "dashboard"
+     */
     public function Dashboard() {
         
         
@@ -149,6 +155,13 @@ class HomeController extends Controller {
         }
     }
 
+    /**
+     * Get order chart data for the dashboard.
+     *
+     * @authenticated
+     * @bodyParam duration string required Chart duration. Example: week
+     * @response view="json" (returns chart data array)
+     */
     public function getOrderChart($arrParam) {
         $arrDuration = [];
         if ($arrParam['duration']) {
@@ -200,6 +213,12 @@ class HomeController extends Controller {
         return $arrTask;
     }
 
+    /**
+     * Show software/module details page.
+     *
+     * @urlParam slug string required Module slug. Example: taskly
+     * @response view="marketplace.detail_not_found" or module-specific view
+     */
     public function SoftwareDetails($slug) {
         $modules_all = Module::all();
         $modules = [];
@@ -236,6 +255,12 @@ class HomeController extends Controller {
         return view('marketplace.detail_not_found', compact('modules', 'layout'));
     }
 
+    /**
+     * Show the software marketplace listing.
+     *
+     * @queryParam query string Search term for filtering modules. Example: task
+     * @response view="marketplace.software"
+     */
     public function Software(Request $request) {
         // Get the query parameter from the request
         $query = $request->query('query');
@@ -259,6 +284,11 @@ class HomeController extends Controller {
         return view('marketplace.software', compact('modules', 'layout'));
     }
 
+    /**
+     * Show the pricing page.
+     *
+     * @response view="marketplace.pricing" or "landingpage::layouts.pricing"
+     */
     public function Pricing() {
         $admin_settings = getAdminAllSetting();
         if (module_is_active('GoogleCaptcha') && (isset($admin_settings['google_recaptcha_is_on']) ? $admin_settings['google_recaptcha_is_on'] : 'off') == 'on') {
@@ -286,6 +316,11 @@ class HomeController extends Controller {
         }
     }
 
+    /**
+     * Show the pricing plans page (non-custom plans).
+     *
+     * @response view="marketplace.pricing" or "landingpage::layouts.pricing-plans"
+     */
     public function PricingPlans() {
         $plan = Plan::where('custom_plan', 0)->get();
         $modules = Module::all();
@@ -300,6 +335,12 @@ class HomeController extends Controller {
         return view('marketplace.pricing', compact('modules', 'plan', 'layout'));
     }
 
+    /**
+     * Show a custom page (terms & conditions or privacy policy).
+     *
+     * @queryParam page string required Page name. Example: terms_and_conditions
+     * @response view="custompage.terms_and_conditions" or "custompage.privacy_policy"
+     */
     public function CustomPage(Request $request) {
         $modules = Module::all();
 

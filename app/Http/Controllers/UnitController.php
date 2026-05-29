@@ -17,7 +17,10 @@ use App\Events\UpdateUnit;
 class UnitController extends Controller {
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of units.
+     *
+     * @authenticated
+     * @response view="units.index"
      */
     public function index(UnitDataTable $dataTable) {
         if (\Auth::user()->isAbleTo('material-unit manage')) {
@@ -28,7 +31,10 @@ class UnitController extends Controller {
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new unit.
+     *
+     * @authenticated
+     * @response view="units.create"
      */
     public function create() {
         if (\Auth::user()->isAbleTo('material-unit create')) {
@@ -42,7 +48,12 @@ class UnitController extends Controller {
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created unit.
+     *
+     * @authenticated
+     * @bodyParam name string required The unit name. Maximum: 255. Example: Kilograms
+     * @bodyParam symbol string required The unit symbol. Maximum: 255. Example: kg
+     * @response redirect to="units.index"
      */
     public function store(Request $request) {
 
@@ -79,7 +90,11 @@ class UnitController extends Controller {
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified unit.
+     *
+     * @authenticated
+     * @urlParam unit integer required The unit ID. Example: 1
+     * @response status=200 {"id": 1, "name": "Kilograms", "symbol": "kg"}
      */
     public function show(Unit $unit) {
         if (\Auth::user()->isAbleTo('material-unit show')) {
@@ -90,7 +105,11 @@ class UnitController extends Controller {
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing a unit.
+     *
+     * @authenticated
+     * @urlParam unit integer required The unit ID. Example: 1
+     * @response view="units.edit"
      */
     public function edit(Unit $unit) {
 
@@ -108,7 +127,13 @@ class UnitController extends Controller {
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified unit.
+     *
+     * @authenticated
+     * @urlParam unit integer required The unit ID. Example: 1
+     * @bodyParam name string required The unit name. Must be unique. Maximum: 255. Example: Kilograms
+     * @bodyParam symbol string required The unit symbol. Maximum: 255. Example: kg
+     * @response redirect to="units.index"
      */
     public function update(Request $request, Unit $unit) {
         if (\Auth::user()->isAbleTo('material-unit edit')) {
@@ -137,7 +162,11 @@ class UnitController extends Controller {
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified unit.
+     *
+     * @authenticated
+     * @urlParam unit integer required The unit ID. Example: 1
+     * @response redirect to="units.index"
      */
     public function destroy(Unit $unit) {
         if (\Auth::user()->isAbleTo('material-unit delete')) {

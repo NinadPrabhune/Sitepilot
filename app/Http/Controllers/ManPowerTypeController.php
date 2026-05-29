@@ -21,6 +21,12 @@ class ManPowerTypeController extends Controller {
 //        $this->middleware('permission:manpower-type delete')->only('destroy');
 //    }
 
+    /**
+     * List manpower types
+     *
+     * @authenticated
+     * @response view="manpower-type.index"
+     */
     public function index(ManPowerTypeDataTable $dataTable) {
         if (\Auth::user()->isAbleTo('man-power-type manage')) {
 
@@ -30,6 +36,12 @@ class ManPowerTypeController extends Controller {
         }
     }
 
+    /**
+     * Show create manpower type form
+     *
+     * @authenticated
+     * @response view="manpower-type.create"
+     */
     public function create() {
         if (\Auth::user()->isAbleTo('man-power-type create')) {
             $sites = \Workdo\Taskly\Entities\Project::where('workspace', getActiveWorkSpace())->projectonly()->get()->pluck('name', 'id');
@@ -40,6 +52,13 @@ class ManPowerTypeController extends Controller {
         }
     }
 
+    /**
+     * Store a new manpower type
+     *
+     * @authenticated
+     * @bodyParam name string required Manpower type name. Max 255 chars. Example: Skilled Labor
+     * @response redirect to manpower-type.index
+     */
     public function store(Request $request) {
         if (\Auth::user()->isAbleTo('man-power-type create')) {
             $validator = Validator::make($request->all(), [
@@ -62,6 +81,13 @@ class ManPowerTypeController extends Controller {
         }
     }
 
+    /**
+     * Show edit manpower type form
+     *
+     * @authenticated
+     * @urlParam manpower_type int required The manpower type ID.
+     * @response view="manpower-type.edit"
+     */
     public function edit(ManPowerType $manpower_type) {
         if (\Auth::user()->isAbleTo('man-power-type edit')) {
 
@@ -71,6 +97,14 @@ class ManPowerTypeController extends Controller {
         }
     }
 
+    /**
+     * Update manpower type
+     *
+     * @authenticated
+     * @urlParam manpower_type int required The manpower type ID.
+     * @bodyParam name string required Manpower type name. Max 255 chars.
+     * @response redirect to manpower-type.index
+     */
     public function update(Request $request, ManPowerType $manpower_type) {
         if (\Auth::user()->isAbleTo('man-power-type edit')) {
             $validator = Validator::make($request->all(), [
@@ -92,6 +126,13 @@ class ManPowerTypeController extends Controller {
         }
     }
 
+    /**
+     * Delete manpower type
+     *
+     * @authenticated
+     * @urlParam manpower_type int required The manpower type ID.
+     * @response redirect to manpower-type.index
+     */
     public function destroy(ManPowerType $manpower_type): RedirectResponse {
         if (\Auth::user()->isAbleTo('man-power-type delete')) {
             try {
@@ -125,6 +166,13 @@ class ManPowerTypeController extends Controller {
         }
     }
 
+    /**
+     * Show manpower type details
+     *
+     * @authenticated
+     * @urlParam manpower_type int required The manpower type ID.
+     * @response view="manpower-type.show"
+     */
     public function show(ManPowerType $manpower_type) {
         if (\Auth::user()->isAbleTo('man-power-type show')) {
             return view('manpower-type.show', compact('manpower_type'));

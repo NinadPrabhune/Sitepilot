@@ -22,6 +22,26 @@ class EventApiController extends Controller
 {
     /**
      * List all events
+     *
+     * @authenticated
+     * @group HRM Events
+     *
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by site ID. Example: 5
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": [
+     *    {
+     *      "id": 1,
+     *      "title": "Team Meeting",
+     *      "start_date": "2024-01-15",
+     *      "end_date": "2024-01-15",
+     *      "color": "#FF0000",
+     *      "description": "Quarterly team meeting"
+     *    }
+     *  ]
+     * }
      */
     public function index(Request $request)
     {
@@ -144,6 +164,26 @@ class EventApiController extends Controller
 
     /**
      * Show event details
+     *
+     * @group HRM Events
+     *
+     * @urlParam id integer required The ID of the event. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": {
+     *    "id": 1,
+     *    "title": "Team Meeting",
+     *    "start_date": "2024-01-15",
+     *    "end_date": "2024-01-15",
+     *    "color": "#FF0000",
+     *    "description": "Quarterly team meeting"
+     *  }
+     * }
+     * @response 404 {
+     *  "status": 0,
+     *  "message": "Event not found"
+     * }
      */
     public function show($id)
     {
@@ -158,6 +198,26 @@ class EventApiController extends Controller
 
     /**
      * Update event
+     *
+     * @authenticated
+     * @group HRM Events
+     *
+     * @urlParam id integer required The ID of the event. Example: 1
+     *
+     * @bodyParam title string required Event title. Example: Updated Meeting
+     * @bodyParam start_date date required Start date. Example: 2024-01-15
+     * @bodyParam end_date date required End date. Example: 2024-01-15
+     * @bodyParam color string required Event color. Example: #00FF00
+     * @bodyParam description string optional Description. Example: Updated description
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam site_id integer required Site ID. Example: 5
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "message": "Event updated successfully",
+     *  "data": {...}
+     * }
      */
     public function update(Request $request, $id)
     {
@@ -194,6 +254,16 @@ class EventApiController extends Controller
 
     /**
      * Delete event
+     *
+     * @authenticated
+     * @group HRM Events
+     *
+     * @urlParam id integer required The ID of the event. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "message": "Event deleted successfully"
+     * }
      */
     public function destroy($id)
     {

@@ -19,18 +19,19 @@ use Illuminate\Support\Str;
 class WorkSpaceController extends Controller {
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of workspaces (no-op).
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
      */
     public function index() {
         //
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new workspace.
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @response view="workspace.create"
      */
     public function create() {
         if (Auth::user()->isAbleTo('workspace create')) {
@@ -60,10 +61,32 @@ class WorkSpaceController extends Controller {
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created workspace.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @bodyParam name string required The workspace name. Example: Main Workspace
+     * @bodyParam contact_person string Contact person name. Example: John Doe
+     * @bodyParam phone string Phone number. Maximum: 20. Example: +911234567890
+     * @bodyParam email string Email address. Example: john@example.com
+     * @bodyParam address string Address.
+     * @bodyParam city string City.
+     * @bodyParam state string State.
+     * @bodyParam pincode string Pincode.
+     * @bodyParam country string Country.
+     * @bodyParam gst_number string GST number. Maximum: 20.
+     * @bodyParam pan_number string PAN number. Maximum: 20.
+     * @bodyParam bank_name string Bank name.
+     * @bodyParam account_number string Account number. Maximum: 30.
+     * @bodyParam ifsc_code string IFSC code. Maximum: 20.
+     * @bodyParam website string Website URL. Maximum: 255.
+     * @bodyParam cin_no string CIN number. Maximum: 50.
+     * @bodyParam logo file Workspace logo (image, max 2MB).
+     * @bodyParam terms_and_conditions string Terms and conditions text.
+     * @bodyParam domain_switch string Enable domain configuration. Example: on
+     * @bodyParam enable_domain string Domain type (enable_domain, enable_subdomain).
+     * @bodyParam domains string Custom domain name.
+     * @bodyParam subdomain string Subdomain name.
+     * @response redirect
      */
     public function store(Request $request) {
         if (Auth::user()->isAbleTo('workspace create')) {
@@ -232,20 +255,21 @@ class WorkSpaceController extends Controller {
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified workspace (no-op).
      *
-     * @param  \App\Models\WorkSpace  $workSpace
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam workSpace integer required The workspace ID. Example: 1
      */
     public function show(WorkSpace $workSpace) {
         //
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing a workspace.
      *
-     * @param  \App\Models\WorkSpace  $workSpace
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id integer required The workspace ID. Example: 1
+     * @response view="workspace.edit"
      */
     public function edit($id) {
         if (Auth::user()->isAbleTo('workspace edit')) {
@@ -283,11 +307,33 @@ class WorkSpaceController extends Controller {
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified workspace.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\WorkSpace  $workSpace
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id integer required The workspace ID. Example: 1
+     * @bodyParam name string required The workspace name.
+     * @bodyParam contact_person string Contact person name.
+     * @bodyParam phone string Phone number. Maximum: 20.
+     * @bodyParam email string Email address.
+     * @bodyParam address string Address.
+     * @bodyParam city string City.
+     * @bodyParam state string State.
+     * @bodyParam pincode string Pincode.
+     * @bodyParam country string Country.
+     * @bodyParam gst_number string GST number. Maximum: 20.
+     * @bodyParam pan_number string PAN number. Maximum: 20.
+     * @bodyParam bank_name string Bank name.
+     * @bodyParam account_number string Account number. Maximum: 30.
+     * @bodyParam ifsc_code string IFSC code. Maximum: 20.
+     * @bodyParam website string Website URL. Maximum: 255.
+     * @bodyParam cin_no string CIN number. Maximum: 50.
+     * @bodyParam logo file Workspace logo (image, max 2MB).
+     * @bodyParam terms_and_conditions string Terms and conditions text.
+     * @bodyParam domain_switch string Enable domain configuration. Example: on
+     * @bodyParam enable_domain string Domain type (enable_domain, enable_subdomain).
+     * @bodyParam domains string Custom domain name.
+     * @bodyParam subdomain string Subdomain name.
+     * @response redirect
      */
     public function update(Request $request, $id)
 {
@@ -446,10 +492,11 @@ class WorkSpaceController extends Controller {
 
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified workspace.
      *
-     * @param  \App\Models\WorkSpace  $workSpace
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam workspace_id integer required The workspace ID. Example: 1
+     * @response redirect to="dashboard"
      */
     public function destroy(WorkSpace $workSpace, $workspace_id) {
         if (Auth::user()->isAbleTo('workspace delete')) {
@@ -511,6 +558,13 @@ class WorkSpaceController extends Controller {
         }
     }
 
+    /**
+     * Switch the active workspace for the current user.
+     *
+     * @authenticated
+     * @urlParam workspace_id integer required The workspace ID. Example: 1
+     * @response redirect
+     */
     public function change($workspace_id) {
         $check = WorkSpace::find($workspace_id);
         if (!empty($check)) {
@@ -554,6 +608,15 @@ class WorkSpaceController extends Controller {
         }
     }
 
+    /**
+     * Check if a workspace slug is available via AJAX.
+     *
+     * @authenticated
+     * @bodyParam slug string required The slug to check. Example: main-workspace
+     * @bodyParam workspace integer The current workspace ID to exclude. Example: 1
+     * @response status=200 scenario="available" {"success": "This Slug is Available."}
+     * @response status=200 scenario="taken" {"error": "This Slug Not Available."}
+     */
     public function workspaceCheck(Request $request) {
         if (isset($request->slug)) {
             $workSpace = WorkSpace::where('slug', $request->slug)->where('id', '!=', $request->workspace)->exists();
@@ -564,6 +627,14 @@ class WorkSpaceController extends Controller {
         return response()->json(['error' => __('This Slug Not Available.')]);
     }
     
+    /**
+     * Switch the active project (site) for the current user.
+     *
+     * @authenticated
+     * @urlParam site_id integer required The project/site ID. Example: 1
+     * @response view="projects.locked" scenario="locked"
+     * @response redirect scenario="success"
+     */
     public function changeProject($site_id)
 {
     $authUser = \Auth::user();

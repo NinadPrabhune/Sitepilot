@@ -32,8 +32,11 @@ use Illuminate\Support\Facades\Validator;
 class PurchaseController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     * @return Renderable
+     * Display a listing of purchases.
+     *
+     * @authenticated
+     *
+     * @response view="purchases.index"
      */
     public function index(PurchaseDataTable $dataTable)
     {
@@ -51,8 +54,13 @@ class PurchaseController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     * @return Renderable
+     * Show the form for creating a new purchase.
+     *
+     * @authenticated
+     *
+     * @urlParam vendorId int required The vendor ID. Example: 1
+     *
+     * @response view="purchases.create"
      */
     public function create($vendorId)
     {
@@ -107,9 +115,21 @@ class PurchaseController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
+     * Store a newly created purchase.
+     *
+     * @authenticated
+     *
+     * @bodyParam purchase_type string required Purchase type (product/project/parts). Example: product
+     * @bodyParam vender_id int Vendor user ID. Example: 1
+     * @bodyParam vender_name string Vendor name for walk-in. Example: ABC Supplies
+     * @bodyParam warehouse_id int required Warehouse ID. Example: 1
+     * @bodyParam purchase_date string required Purchase date. Example: 2024-01-15
+     * @bodyParam category_id int required Category ID. Example: 1
+     * @bodyParam items array required Array of purchase items. Example: [{"item":1,"quantity":10,"price":50}]
+     * @bodyParam account_type string Account type. Example: Projects
+     * @bodyParam purchase_number string Purchase number. Example: PUR-001
+     *
+     * @response view="purchases.index"
      */
     public function store(Request $request)
     {
@@ -378,9 +398,13 @@ class PurchaseController extends Controller
     }
 
     /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
+     * Display the specified purchase.
+     *
+     * @authenticated
+     *
+     * @urlParam ids string required Encrypted purchase ID. Example: eyJpdiI6Ik1...
+     *
+     * @response view="purchases.view"
      */
     public function show($ids)
     {
@@ -420,9 +444,13 @@ class PurchaseController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
+     * Show the form for editing a purchase.
+     *
+     * @authenticated
+     *
+     * @urlParam idsd string required Encrypted purchase ID. Example: eyJpdiI6Ik1...
+     *
+     * @response view="purchases.edit"
      */
     public function edit($idsd)
     {
@@ -466,10 +494,18 @@ class PurchaseController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
+     * Update the specified purchase.
+     *
+     * @authenticated
+     *
+     * @urlParam purchase int required The purchase ID. Example: 1
+     * @bodyParam vender_id int Vendor user ID. Example: 1
+     * @bodyParam vender_name string Vendor name. Example: ABC Supplies
+     * @bodyParam purchase_date string required Purchase date. Example: 2024-01-15
+     * @bodyParam category_id int Category ID. Example: 1
+     * @bodyParam items array required Array of purchase items. Example: [{"id":1,"item":1,"quantity":10,"price":50}]
+     *
+     * @response view="purchases.index"
      */
 
     public function update(Request $request, Purchase $purchase)
@@ -587,9 +623,13 @@ class PurchaseController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
+     * Remove the specified purchase.
+     *
+     * @authenticated
+     *
+     * @urlParam purchase int required The purchase ID. Example: 1
+     *
+     * @response view="purchases.index"
      */
     public function destroy(Purchase $purchase)
     {
@@ -643,6 +683,11 @@ class PurchaseController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Get the next purchase number.
+     *
+     * @response 1
+     */
     function purchaseNumber()
     {
         $latest = Purchase::where('created_by', '=', creatorId())->where('workspace', getActiveWorkSpace())->latest()->first();
@@ -652,6 +697,15 @@ class PurchaseController extends Controller
 
         return $latest->purchase_id + 1;
     }
+    /**
+     * Get product details for purchase.
+     *
+     * @authenticated
+     *
+     * @bodyParam product_id int required The product ID. Example: 1
+     *
+     * @response {"product":{},"unit":"Pcs","taxRate":5,"taxes":{},"totalAmount":100}
+     */
     public function product(Request $request)
     {
         $data['product'] = $product = \Workdo\ProductService\Entities\ProductService::find($request->product_id);
@@ -665,6 +719,15 @@ class PurchaseController extends Controller
         return json_encode($data);
     }
 
+    /**
+     * Remove a product from purchase.
+     *
+     * @authenticated
+     *
+     * @bodyParam id int required Purchase product ID. Example: 1
+     *
+     * @response view="purchases.index"
+     */
     public function productDestroy(Request $request)
     {
         if (\Auth::user()->isAbleTo('purchase delete')) {
@@ -697,6 +760,15 @@ class PurchaseController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Mark purchase as sent.
+     *
+     * @authenticated
+     *
+     * @urlParam id int required The purchase ID. Example: 1
+     *
+     * @response view="purchases.index"
+     */
     public function sent($id)
     {
         if (\Auth::user()->isAbleTo('purchase send')) {
@@ -741,6 +813,15 @@ class PurchaseController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Resend purchase to vendor.
+     *
+     * @authenticated
+     *
+     * @urlParam id int required The purchase ID. Example: 1
+     *
+     * @response view="purchases.index"
+     */
     public function resent($id)
     {
         if (\Auth::user()->isAbleTo('purchase send')) {
@@ -779,6 +860,13 @@ class PurchaseController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Display purchase PDF view.
+     *
+     * @urlParam purchase_id string required Encrypted purchase ID. Example: eyJpdiI6Ik1...
+     *
+     * @response view="purchases.templates.*"
+     */
     public function purchase($purchase_id)
     {
         $purchaseId = Crypt::decrypt($purchase_id);
@@ -896,6 +984,15 @@ class PurchaseController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Show payment form for a purchase.
+     *
+     * @authenticated
+     *
+     * @urlParam purchase_id int required The purchase ID. Example: 1
+     *
+     * @response view="purchases.payment"
+     */
     public function payment($purchase_id)
     {
         if (\Auth::user()->isAbleTo('purchase payment create')) {
@@ -917,6 +1014,21 @@ class PurchaseController extends Controller
             return response()->json(['error' => __('Permission denied.')], 401);
         }
     }
+    /**
+     * Store a payment for a purchase.
+     *
+     * @authenticated
+     *
+     * @urlParam purchase_id int required The purchase ID. Example: 1
+     * @bodyParam date string required Payment date. Example: 2024-01-15
+     * @bodyParam amount numeric required Payment amount. Example: 500.00
+     * @bodyParam account_id int Bank account ID. Example: 1
+     * @bodyParam reference string Payment reference. Example: INV-001
+     * @bodyParam description string Payment description. Example: Payment for supplies
+     * @bodyParam add_receipt file Payment receipt file. Example: null
+     *
+     * @response view="purchases.index"
+     */
     public function createPayment(Request $request, $purchase_id)
     {
         if (\Auth::user()->isAbleTo('purchase payment create')) {
@@ -1043,6 +1155,13 @@ class PurchaseController extends Controller
             return redirect()->back()->with('success', __('Payment successfully added.') . ((isset($smtp_error)) ? '<br> <span class="text-danger">' . $smtp_error . '</span>' : ''));
         }
     }
+    /**
+     * Show POS print page.
+     *
+     * @authenticated
+     *
+     * @response view="purchases.pos"
+     */
     public function posPrintIndex()
     {
         if (\Auth::user()->isAbleTo('pos manage')) {
@@ -1052,6 +1171,16 @@ class PurchaseController extends Controller
             return redirect()->back()->with('error', 'Permission denied.');
         }
     }
+    /**
+     * Preview purchase template.
+     *
+     * @authenticated
+     *
+     * @urlParam template string required Template name. Example: template1
+     * @urlParam color string required Color hex without #. Example: ffffff
+     *
+     * @response view="purchases.templates.*"
+     */
     public function previewPurchase($template, $color)
     {
 
@@ -1158,6 +1287,19 @@ class PurchaseController extends Controller
         return view('purchases.templates.' . $template, compact('purchase', 'preview', 'color', 'img', 'settings', 'vendor', 'font_color', 'customFields'));
     }
 
+    /**
+     * Save purchase template/print settings.
+     *
+     * @authenticated
+     *
+     * @bodyParam purchase_template string required Template name. Example: template1
+     * @bodyParam purchase_logo file Purchase logo image (png). Example: null
+     * @bodyParam purchase_color string Color hex code. Example: ffffff
+     * @bodyParam purchase_shipping_display string Show shipping (on/off). Example: off
+     * @bodyParam purchase_qr_display string Show QR (on/off). Example: off
+     *
+     * @response view="purchases.index"
+     */
     public function savePurchaseTemplateSettings(Request $request)
     {
 
@@ -1232,12 +1374,27 @@ class PurchaseController extends Controller
         return redirect()->back()->with('success', 'The purchase Setting details are updated successfully');
     }
 
+    /**
+     * Get purchase product item details.
+     *
+     * @bodyParam purchase_id int required The purchase ID. Example: 1
+     * @bodyParam product_id int required The product ID. Example: 1
+     *
+     * @response {"id":1,"purchase_id":1,"product_id":1,"quantity":10,"price":50}
+     */
     public function items(Request $request)
     {
         $items = PurchaseProduct::where('purchase_id', $request->purchase_id)->where('product_id', $request->product_id)->first();
         return json_encode($items);
     }
 
+    /**
+     * Display purchase bill for customer (public).
+     *
+     * @urlParam purchaseId string required Encrypted purchase ID. Example: eyJpdiI6Ik1...
+     *
+     * @response view="purchases.customer_bill"
+     */
     public function purchaseLink($purchaseId)
     {
         $id = Crypt::decrypt($purchaseId);
@@ -1256,6 +1413,16 @@ class PurchaseController extends Controller
             return redirect()->back()->with('error', __('Permission Denied.'));
         }
     }
+    /**
+     * Delete a payment from purchase.
+     *
+     * @authenticated
+     *
+     * @urlParam purchase_id int required The purchase ID. Example: 1
+     * @urlParam payment_id int required The payment ID. Example: 1
+     *
+     * @response view="purchases.index"
+     */
     public function paymentDestroy(Request $request, $purchase_id, $payment_id)
     {
 
@@ -1288,6 +1455,15 @@ class PurchaseController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Get vendor detail by user ID.
+     *
+     * @authenticated
+     *
+     * @bodyParam id int required User ID. Example: 1
+     *
+     * @response view="purchases.vender_detail"
+     */
     public function vender(Request $request)
     {
         if (module_is_active('Account')) {
@@ -1307,6 +1483,13 @@ class PurchaseController extends Controller
     }
 
 
+    /**
+     * Display purchases as grid view.
+     *
+     * @authenticated
+     *
+     * @response view="purchases.grid"
+     */
     public function grid()
     {
         if (\Auth::user()->isAbleTo('purchase manage')) {
@@ -1328,6 +1511,16 @@ class PurchaseController extends Controller
     }
 
 
+    /**
+     * Upload attachment to a purchase.
+     *
+     * @authenticated
+     *
+     * @urlParam id int required The purchase ID. Example: 1
+     * @bodyParam file file required The attachment file. Example: null
+     *
+     * @response {"is_success":true}
+     */
     public function fileUpload($id, Request $request)
     {
         $purchase = Purchase::find($id);
@@ -1371,6 +1564,15 @@ class PurchaseController extends Controller
         }
     }
 
+    /**
+     * Delete a purchase attachment.
+     *
+     * @authenticated
+     *
+     * @urlParam id int required The attachment ID. Example: 1
+     *
+     * @response view="purchases.index"
+     */
     public function fileUploadDestroy($id)
     {
         $file = PurchaseAttachment::find($id);

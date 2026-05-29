@@ -9,7 +9,9 @@ use App\Http\Requests\UpdatePurchaseInvoiceItemRequest;
 class PurchaseInvoiceItemController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of purchase invoice items.
+     *
+     * @authenticated
      */
     public function index()
     {
@@ -17,7 +19,9 @@ class PurchaseInvoiceItemController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new purchase invoice item.
+     *
+     * @authenticated
      */
     public function create()
     {
@@ -25,7 +29,9 @@ class PurchaseInvoiceItemController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created purchase invoice item.
+     *
+     * @authenticated
      */
     public function store(StorePurchaseInvoiceItemRequest $request)
     {
@@ -33,7 +39,9 @@ class PurchaseInvoiceItemController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified purchase invoice item.
+     *
+     * @authenticated
      */
     public function show(PurchaseInvoiceItem $purchaseInvoiceItem)
     {
@@ -41,7 +49,9 @@ class PurchaseInvoiceItemController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified purchase invoice item.
+     *
+     * @authenticated
      */
     public function edit(PurchaseInvoiceItem $purchaseInvoiceItem)
     {
@@ -49,7 +59,9 @@ class PurchaseInvoiceItemController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified purchase invoice item.
+     *
+     * @authenticated
      */
     public function update(UpdatePurchaseInvoiceItemRequest $request, PurchaseInvoiceItem $purchaseInvoiceItem)
     {
@@ -57,7 +69,9 @@ class PurchaseInvoiceItemController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified purchase invoice item.
+     *
+     * @authenticated
      */
     public function destroy(PurchaseInvoiceItem $purchaseInvoiceItem)
     {

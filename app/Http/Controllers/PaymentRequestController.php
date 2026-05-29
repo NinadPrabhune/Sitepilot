@@ -41,6 +41,12 @@ class PaymentRequestController extends Controller {
         $this->advanceAllocationService = $advanceAllocationService;
     }
 
+    /**
+     * Display a listing of payment requests.
+     *
+     * @authenticated
+     * @response view="payment-request.index"
+     */
     public function index(PaymentRequestDataTable $dataTable) {
 
         if (\Auth::user()->isAbleTo('manage-payment manage')) {
@@ -54,6 +60,12 @@ class PaymentRequestController extends Controller {
         }
     }
 
+    /**
+     * Show form for creating a new payment request.
+     *
+     * @authenticated
+     * @response view="payment-request.create"
+     */
     public function create()
     {
         // Get available invoices for creating payment requests
@@ -66,6 +78,13 @@ class PaymentRequestController extends Controller {
         return view('payment-request.create', compact('invoices'));
     }
 
+    /**
+     * Show modal for creating a payment request for a specific invoice.
+     *
+     * @authenticated
+     * @urlParam invoiceId int required Invoice ID.
+     * @response view="payment-request.modal.create"
+     */
     public function createModal($invoiceId)
     {
         $invoiceData = DB::table('purchase_invoices as pi')
@@ -234,6 +253,20 @@ class PaymentRequestController extends Controller {
         ));
     }
 
+    /**
+     * Store a newly created payment request.
+     *
+     * @authenticated
+     * @bodyParam purchase_invoice_id int required Invoice ID.
+     * @bodyParam requested_amount numeric required Requested amount (min 0.01).
+     * @bodyParam payment_date date required Payment date.
+     * @bodyParam remarks string nullable Max 1000 characters.
+     * @bodyParam idempotency_key string nullable Idempotency key (max 64 chars).
+     * @response {
+     *   "success": true,
+     *   "message": "Payment request created successfully."
+     * }
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -608,6 +641,13 @@ class PaymentRequestController extends Controller {
         return max(0, $grandTotal - $paidAmount - $advanceUsed - $activeRequestsSum);
     }
 
+    /**
+     * Display the specified payment request.
+     *
+     * @authenticated
+     * @urlParam id int required Payment request ID.
+     * @response view="payment-request.show"
+     */
     public function show($id)
     {
         $paymentRequest = PaymentRequest::with([
@@ -624,6 +664,19 @@ class PaymentRequestController extends Controller {
         return view('payment-request.show', compact('paymentRequest'));
     }
 
+    /**
+     * Update a payment request.
+     *
+     * @authenticated
+     * @urlParam id int required Payment request ID.
+     * @bodyParam requested_amount numeric required Requested amount (min 0.01).
+     * @bodyParam payment_date date required Payment date.
+     * @bodyParam remarks string nullable Max 1000 characters.
+     * @response {
+     *   "success": true,
+     *   "message": "Payment request updated successfully."
+     * }
+     */
     public function update(Request $request, $id)
     {
         $paymentRequest = PaymentRequest::findOrFail($id);
@@ -673,6 +726,13 @@ class PaymentRequestController extends Controller {
         ]);
     }
 
+    /**
+     * Show approval page for a payment request.
+     *
+     * @authenticated
+     * @urlParam id int required Payment request ID or invoice ID.
+     * @response view="payment-request.approval"
+     */
     public function approval($id) {
         // Check if this is a payment request ID (for PO advances) or invoice ID
         $paymentRequest = PaymentRequest::find($id);
@@ -707,6 +767,19 @@ class PaymentRequestController extends Controller {
         }
     }
 
+    /**
+     * Approve or reject a single payment request.
+     *
+     * @authenticated
+     * @urlParam id int required Payment request ID.
+     * @bodyParam action string required Action: approve or reject.
+     * @bodyParam rejection_reason string nullable Required if action is reject.
+     * @bodyParam approved_amount numeric nullable Amount to approve (defaults to requested_amount).
+     * @response {
+     *   "success": true,
+     *   "message": "Payment request approved successfully."
+     * }
+     */
     public function approveSingle(Request $request, $id)
     {
         $paymentRequest = PaymentRequest::with(['invoice', 'po'])->findOrFail($id);
@@ -1049,6 +1122,18 @@ class PaymentRequestController extends Controller {
         }
     }
 
+    /**
+     * Bulk approve/reject multiple payment requests.
+     *
+     * @authenticated
+     * @urlParam id int required Payment request ID.
+     * @bodyParam payment_requests array required Array of payment request IDs with actions.
+     * @bodyParam payment_requests.*.id int required Payment request ID.
+     * @bodyParam payment_requests.*.action string required Action: approve or reject.
+     * @bodyParam payment_requests.*.approved_amount numeric nullable Amount to approve.
+     * @bodyParam payment_requests.*.rejection_reason string nullable Required if action is reject.
+     * @response redirect
+     */
     public function approvalUpdate(Request $request, $id) {
         $validator = Validator::make($request->all(), [
             'payment_requests' => 'required|array',
@@ -1273,6 +1358,13 @@ class PaymentRequestController extends Controller {
         }
     }
     
+    /**
+     * Update payment request (deprecated).
+     *
+     * @authenticated
+     * @deprecated
+     * @response status=410
+     */
     public function updatePaymentRequest(Request $request)
     {
         return response()->json(['success' => false, 'message' => 'This method is deprecated.'], 410);

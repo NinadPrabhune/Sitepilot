@@ -10,6 +10,12 @@ use App\Facades\ModuleFacade as Module;;
 
 class PermissionController extends Controller
 {
+    /**
+     * Display a listing of permissions.
+     *
+     * @authenticated
+     * @response view="permission.index"
+     */
     public function index()
     {
         if(Auth::user()->isAbleTo('permission manage'))
@@ -24,6 +30,12 @@ class PermissionController extends Controller
         }
     }
 
+    /**
+     * Show the form for creating a new permission.
+     *
+     * @authenticated
+     * @response view="permission.create"
+     */
     public function create()
     {
         $roles = Role::get();
@@ -31,6 +43,16 @@ class PermissionController extends Controller
         return view('permission.create',compact('modules','roles'));
     }
 
+    /**
+     * Store a newly created permission.
+     *
+     * @authenticated
+     * @bodyParam name string required Permission name (max 40 chars). Example: create-post
+     * @bodyParam module string required Module name. Example: General
+     * @bodyParam roles array nullable Role IDs to assign permission to.
+     * @bodyParam roles.* integer Role ID.
+     * @response redirect
+     */
     public function store(Request $request)
     {
         $this->validate(
@@ -70,6 +92,13 @@ class PermissionController extends Controller
     }
 
 
+    /**
+     * Show the form for editing the specified permission.
+     *
+     * @authenticated
+     * @urlParam permission int required Permission ID.
+     * @response view="permission.edit"
+     */
     public function edit(Permission $permission)
     {
 
@@ -81,6 +110,14 @@ class PermissionController extends Controller
     }
 
 
+    /**
+     * Update the specified permission.
+     *
+     * @authenticated
+     * @urlParam permission int required Permission ID.
+     * @bodyParam name string required Permission name (max 40 chars). Example: create-post
+     * @response redirect
+     */
     public function update(Request $request, Permission $permission)
     {
 
@@ -100,6 +137,13 @@ class PermissionController extends Controller
 
     }
 
+    /**
+     * Remove the specified permission.
+     *
+     * @authenticated
+     * @urlParam id int required Permission ID.
+     * @response redirect
+     */
     public function destroy($id)
     {
 

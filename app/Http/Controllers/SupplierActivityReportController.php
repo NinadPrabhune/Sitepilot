@@ -15,7 +15,14 @@ use Illuminate\Support\Facades\DB;
 class SupplierActivityReportController extends Controller
 {
     /**
-     * Display the supplier activity report.
+     * Display the supplier activity report with filters.
+     *
+     * @authenticated
+     * @queryParam supplier_id string Filter by supplier ID or "all". Example: all
+     * @queryParam site_id string Filter by site ID or "all". Example: all
+     * @queryParam from_date date Filter from this date. Required when filtering. Example: 2025-01-01
+     * @queryParam to_date date Filter up to this date. Required when filtering. Example: 2025-12-31
+     * @response view="reports.supplier-activity.index"
      */
     public function index(Request $request)
     {

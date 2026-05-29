@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\DB;
 
 class MachineryPaymentPeriodController extends Controller
 {
+    /**
+     * List payment periods
+     *
+     * @authenticated
+     * @response view="periods.index"
+     */
     public function index()
     {
         if (!Auth::user()->isAbleTo('machinery-payment-requests manage')) {
@@ -25,6 +31,14 @@ class MachineryPaymentPeriodController extends Controller
         return view('periods.index', compact('periods', 'machineries'));
     }
 
+    /**
+     * Lock a payment period
+     *
+     * @authenticated
+     * @urlParam id int required The period ID.
+     * @bodyParam notes string optional Notes for locking.
+     * @response redirect back with success message
+     */
     public function lock(Request $request, int $id)
     {
         if (!Auth::user()->isAbleTo('machinery-payment-requests manage')) {
@@ -74,6 +88,14 @@ class MachineryPaymentPeriodController extends Controller
         return back()->with('success', 'Period locked successfully.');
     }
 
+    /**
+     * Unlock a payment period (requires override reason)
+     *
+     * @authenticated
+     * @urlParam id int required The period ID.
+     * @bodyParam override_reason string required Reason for unlocking. Max 500 chars.
+     * @response redirect back with success message
+     */
     public function unlock(Request $request, int $id)
     {
         if (!Auth::user()->isAbleTo('machinery-payment-requests manage')) {

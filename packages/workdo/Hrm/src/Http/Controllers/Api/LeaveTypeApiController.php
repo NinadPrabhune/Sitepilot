@@ -15,6 +15,26 @@ class LeaveTypeApiController extends Controller
 {
     /**
      * List all leave types for a workspace
+     *
+     * Returns leave types with used days and remaining eligibility for the given user.
+     *
+     * @authenticated
+     * @group HRM Leave Types
+     *
+     * @queryParam user_id integer required User ID to calculate used leaves. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": [
+     *    {
+     *      "id": 1,
+     *      "title": "Sick Leave",
+     *      "days": 12,
+     *      "used": 2,
+     *      "is_disable": 0
+     *    }
+     *  ]
+     * }
      */
     public function index(Request $request)
     {
@@ -47,6 +67,23 @@ class LeaveTypeApiController extends Controller
 
     /**
      * Show a single leave type
+     *
+     * @group HRM Leave Types
+     *
+     * @urlParam id integer required The ID of the leave type. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": {
+     *    "id": 1,
+     *    "title": "Sick Leave",
+     *    "days": 12
+     *  }
+     * }
+     * @response 404 {
+     *  "status": 0,
+     *  "message": "Leave type not found"
+     * }
      */
     public function show($id)
     {
@@ -95,6 +132,19 @@ class LeaveTypeApiController extends Controller
 
     /**
      * Update an existing leave type
+     *
+     * @group HRM Leave Types
+     *
+     * @urlParam id integer required The ID of the leave type. Example: 1
+     *
+     * @bodyParam title string optional Leave type title. Example: Sick Leave
+     * @bodyParam days integer optional Number of days allowed. Example: 15
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": {...},
+     *  "message": "Leave type successfully updated."
+     * }
      */
     public function update(Request $request, $id)
     {
@@ -126,6 +176,15 @@ class LeaveTypeApiController extends Controller
 
     /**
      * Delete a leave type
+     *
+     * @group HRM Leave Types
+     *
+     * @urlParam id integer required The ID of the leave type. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "message": "Leave type successfully deleted."
+     * }
      */
     public function destroy($id)
     {

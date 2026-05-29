@@ -16,6 +16,24 @@ use Illuminate\Support\Facades\DB;
 
 class UnitApiController extends Controller {
 
+    /**
+     * List Units
+     *
+     * Returns all material units.
+     *
+     * @authenticated
+     * @requiredPermission material-unit manage
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": 1,
+     *   "data": [
+     *     {"id": 1, "name": "Kilogram", "symbol": "kg", "site_id": 1, ...}
+     *   ]
+     * }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
+     */
     public function index() {
         if (!Auth::user()->isAbleTo('material-unit manage')) {
             return response()->json(['status' => false, 'message' => 'Permission denied'], 403);
@@ -66,6 +84,26 @@ class UnitApiController extends Controller {
         }
     }
 
+    /**
+     * Show Unit
+     *
+     * Retrieve a specific material unit by ID.
+     *
+     * @authenticated
+     * @requiredPermission material-unit show
+     *
+     * @urlParam id integer required Unit ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": 1,
+     *   "data": {"id": 1, "name": "Kilogram", "symbol": "kg", ...}
+     * }
+     * @response status=404 scenario="Not found"
+     * { "status": 0, "message": "Unit not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
+     */
     public function show($id) {
         if (!Auth::user()->isAbleTo('material-unit show')) {
             return response()->json(['status' => false, 'message' => 'Permission denied'], 403);
@@ -115,6 +153,25 @@ class UnitApiController extends Controller {
         }
     }
 
+    /**
+     * Delete Unit
+     *
+     * Permanently delete a material unit. Units used in the Material Master cannot be deleted.
+     *
+     * @authenticated
+     * @requiredPermission material-unit delete
+     *
+     * @urlParam id integer required Unit ID. Example: 1
+     *
+     * @response status=200 scenario="Deleted successfully"
+     * { "status": 1, "message": "Unit deleted successfully" }
+     * @response status=400 scenario="In use by materials"
+     * { "status": 0, "message": "Unit cannot be deleted as it is used in the Material Master" }
+     * @response status=404 scenario="Not found"
+     * { "status": 0, "message": "Unit not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": false, "message": "Permission denied" }
+     */
     public function destroy($id) {
         if (!Auth::user()->isAbleTo('material-unit delete')) {
             return response()->json(['status' => false, 'message' => 'Permission denied'], 403);

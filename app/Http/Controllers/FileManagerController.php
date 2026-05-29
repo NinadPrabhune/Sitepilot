@@ -21,7 +21,11 @@ class FileManagerController extends Controller
     }
 
     /**
-     * Display file manager dashboard
+     * Display the file manager dashboard.
+     *
+     * @authenticated
+     * @queryParam folder string Folder path to browse. Example: reports/2026
+     * @response view="file-manager.index"
      */
     public function index(Request $request)
     {
@@ -81,7 +85,11 @@ class FileManagerController extends Controller
     }
 
     /**
-     * Switch project
+     * Switch the active project in file manager.
+     *
+     * @authenticated
+     * @urlParam projectId int required The project ID to switch to. Example: 2
+     * @response view="file-manager.index" (redirect)
      */
     public function switchProject(Request $request, $projectId)
     {
@@ -106,7 +114,13 @@ class FileManagerController extends Controller
     }
 
     /**
-     * Upload file
+     * Upload a file (AJAX).
+     *
+     * @authenticated
+     * @bodyParam file file required The file to upload.
+     * @bodyParam folder string nullable Target folder path. Example: documents
+     * @bodyParam description string nullable File description. Example: Site report
+     * @response view="json"
      */
     public function upload(Request $request)
     {
@@ -150,7 +164,12 @@ class FileManagerController extends Controller
     }
 
     /**
-     * Create folder
+     * Create a new folder (AJAX).
+     *
+     * @authenticated
+     * @bodyParam name string required Folder name. Example: Site Photos
+     * @bodyParam folder string nullable Parent folder path. Example: documents
+     * @response view="json"
      */
     public function createFolder(Request $request)
     {
@@ -192,7 +211,11 @@ class FileManagerController extends Controller
     }
 
     /**
-     * Download file
+     * Download a file.
+     *
+     * @authenticated
+     * @urlParam fileId int required File ID. Example: 5
+     * @response view="file-download" (binary)
      */
     public function download($fileId)
     {
@@ -229,7 +252,12 @@ class FileManagerController extends Controller
     }
 
     /**
-     * Rename file or folder
+     * Rename a file or folder (AJAX).
+     *
+     * @authenticated
+     * @urlParam fileId int required File ID. Example: 5
+     * @bodyParam name string required New name. Example: Updated-Report.pdf
+     * @response view="json"
      */
     public function rename(Request $request, $fileId)
     {
@@ -269,7 +297,11 @@ class FileManagerController extends Controller
     }
 
     /**
-     * Delete file or folder
+     * Delete a file or folder (AJAX).
+     *
+     * @authenticated
+     * @urlParam fileId int required File ID. Example: 5
+     * @response view="json"
      */
     public function delete($fileId)
     {
@@ -304,7 +336,11 @@ class FileManagerController extends Controller
     }
 
     /**
-     * Make file public
+     * Make a file publicly accessible (AJAX).
+     *
+     * @authenticated
+     * @urlParam fileId int required File ID. Example: 5
+     * @response view="json"
      */
     public function makePublic($fileId)
     {
@@ -334,7 +370,11 @@ class FileManagerController extends Controller
     }
 
     /**
-     * Archive file
+     * Archive a file (AJAX).
+     *
+     * @authenticated
+     * @urlParam fileId int required File ID. Example: 5
+     * @response view="json"
      */
     public function archive($fileId)
     {

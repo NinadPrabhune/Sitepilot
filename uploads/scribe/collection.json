@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "SitePilot ERP API Documentation",
-        "_postman_id": "6c4c3951-e7bf-41f4-a19b-83b478872441",
+        "_postman_id": "13989902-8036-4363-9d89-ad9ab42803e0",
         "description": "Complete API documentation for SitePilot ERP system including materials, suppliers, purchase orders, payments, and project management.",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -231,7 +231,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the activity."
                                 },
                                 {
@@ -289,7 +289,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the activity."
                                 },
                                 {
@@ -457,7 +457,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the activity."
                                 },
                                 {
@@ -1544,7 +1544,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the daily consumption."
                                 },
                                 {
@@ -1596,7 +1596,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the daily consumption."
                                 },
                                 {
@@ -1740,7 +1740,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the daily consumption."
                                 },
                                 {
@@ -2363,6 +2363,51 @@
                             "code": 404,
                             "body": "{\"success\": false, \"message\": \"Machinery\/Materials not found.\"}",
                             "name": "Not found"
+                        }
+                    ]
+                },
+                {
+                    "name": "List all reports (filtered by workspace & project).",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/daily-progress-reports-test",
+                            "query": [
+                                {
+                                    "key": "workspace_id",
+                                    "value": "1",
+                                    "description": "optional Filter by workspace ID.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "site_id",
+                                    "value": "5",
+                                    "description": "optional Filter by site\/project ID.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/daily-progress-reports-test?workspace_id=1&site_id=5"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Daily progress reports fetched successfully.\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"date\": \"2024-01-15\",\n      \"machinery\": {...}\n    }\n  ]\n}",
+                            "name": "Success"
                         }
                     ]
                 }
@@ -3244,7 +3289,7 @@
             "description": "",
             "item": [
                 {
-                    "name": "Get Numbering Configurations API",
+                    "name": "Get all numbering configurations as JSON.",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -3268,23 +3313,10 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/numbering-configs could not be found.\"\n}",
-                            "name": ""
+                            "header": [],
+                            "code": 200,
+                            "body": "[{\"id\": 1, \"module\": \"po\", \"prefix\": \"PO\", \"starting_number\": 1, \"padding_length\": 5}]",
+                            "name": "success"
                         }
                     ]
                 },
@@ -3294,8 +3326,27 @@
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "api\/machinery\/payment-logs",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/machinery\/payment-logs"
+                            "query": [
+                                {
+                                    "key": "payment_request_id",
+                                    "value": "16",
+                                    "description": "The payment request ID to filter logs.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "channel",
+                                    "value": "architecto",
+                                    "description": "optional Log channel name. Default: payment_audit.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "lines",
+                                    "value": "16",
+                                    "description": "optional Number of lines to return. Default: 100.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/machinery\/payment-logs?payment_request_id=16&channel=architecto&lines=16"
                         },
                         "method": "GET",
                         "header": [
@@ -3313,22 +3364,9 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/machinery\/payment-logs could not be found.\"\n}",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": true,\n  \"data\": {\n    \"payment_request_id\": 1,\n    \"channel\": \"payment_audit\",\n    \"lines\": [],\n    \"count\": 0\n  }\n}",
                             "name": ""
                         }
                     ]
@@ -3339,8 +3377,15 @@
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "api\/machinery\/payment-logs\/recent",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/machinery\/payment-logs\/recent"
+                            "query": [
+                                {
+                                    "key": "lines",
+                                    "value": "16",
+                                    "description": "optional Number of lines per channel. Default: 50.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/machinery\/payment-logs\/recent?lines=16"
                         },
                         "method": "GET",
                         "header": [
@@ -3358,22 +3403,9 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/machinery\/payment-logs\/recent could not be found.\"\n}",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": true,\n  \"data\": {\n    \"payment_audit\": [],\n    \"payment_debug\": []\n  }\n}",
                             "name": ""
                         }
                     ]
@@ -3431,7 +3463,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"project_id\":16,\"material_id\":16,\"type\":\"transfer_out\",\"start_date\":\"2026-05-28T14:34:59\",\"end_date\":\"2052-06-20\"}"
+                            "raw": "{\"project_id\":16,\"material_id\":16,\"type\":\"opening\",\"start_date\":\"2026-05-29T20:01:08\",\"end_date\":\"2052-06-21\"}"
                         },
                         "description": "Returns a list of stock ledger transactions based on the provided filters."
                     },
@@ -3509,7 +3541,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"project_id\":16,\"material_id\":16,\"type\":\"transfer_out\",\"start_date\":\"2026-05-28T14:34:59\",\"end_date\":\"2052-06-20\"}"
+                            "raw": "{\"project_id\":16,\"material_id\":16,\"type\":\"transfer_out\",\"start_date\":\"2026-05-29T20:01:08\",\"end_date\":\"2052-06-21\"}"
                         },
                         "description": "Downloads an Excel file containing stock ledger transactions based on the provided filters."
                     },
@@ -5409,13 +5441,26 @@
             "description": "Endpoints for announcement management",
             "item": [
                 {
-                    "name": "GET api\/Hrm\/announcements",
+                    "name": "List all announcements",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "api\/Hrm\/announcements",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/Hrm\/announcements"
+                            "query": [
+                                {
+                                    "key": "workspace_id",
+                                    "value": "1",
+                                    "description": "optional Filter by workspace ID.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "site_id",
+                                    "value": "5",
+                                    "description": "optional Filter by site ID.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/Hrm\/announcements?workspace_id=1&site_id=5"
                         },
                         "method": "GET",
                         "header": [
@@ -5433,22 +5478,9 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/Hrm\/announcements could not be found.\"\n}",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": [\n   {\n     \"id\": 1,\n     \"title\": \"Company Holiday\",\n     \"start_date\": \"2024-01-15\",\n     \"end_date\": \"2024-01-20\",\n     \"description\": \"Office closed for holidays\",\n     \"workspace\": 1,\n     \"site_id\": 5\n   }\n ]\n}",
                             "name": ""
                         }
                     ]
@@ -5489,7 +5521,7 @@
                     ]
                 },
                 {
-                    "name": "GET api\/Hrm\/announcements\/{id}",
+                    "name": "Show a single announcement",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -5500,7 +5532,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the announcement."
                                 }
                             ]
@@ -5521,28 +5553,21 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": {\n   \"id\": 1,\n   \"title\": \"Company Holiday\",\n   \"start_date\": \"2024-01-15\",\n   \"end_date\": \"2024-01-20\",\n   \"description\": \"Office closed\"\n }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/Hrm\/announcements\/architecto could not be found.\"\n}",
+                            "body": "{\n \"status\": 0,\n \"message\": \"Announcement not found\"\n}",
                             "name": ""
                         }
                     ]
                 },
                 {
-                    "name": "PUT api\/Hrm\/announcements\/{id}",
+                    "name": "Update an announcement",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -5553,7 +5578,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the announcement."
                                 }
                             ]
@@ -5569,13 +5594,23 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"Updated Holiday\",\"start_date\":\"2024-01-15\",\"end_date\":\"2024-01-20\",\"description\":\"Updated description\",\"workspace_id\":1,\"site_id\":5,\"created_by\":1}"
+                        },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Announcement updated successfully\",\n \"data\": {...}\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "DELETE api\/Hrm\/announcements\/{id}",
+                    "name": "Delete an announcement",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -5586,7 +5621,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the announcement."
                                 }
                             ]
@@ -5605,10 +5640,17 @@
                         "body": null,
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Announcement deleted successfully\"\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "POST api\/Hrm\/announcements\/create-data",
+                    "name": "Get data required for creating an announcement (projects list)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -5627,19 +5669,42 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"workspace_id\":1}"
+                        },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"success\": true,\n \"projects\": {\n   \"1\": \"Project Alpha\",\n   \"2\": \"Project Beta\"\n }\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "GET Hrm\/announcements",
+                    "name": "List all announcements",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "Hrm\/announcements",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/Hrm\/announcements"
+                            "query": [
+                                {
+                                    "key": "workspace_id",
+                                    "value": "1",
+                                    "description": "optional Filter by workspace ID.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "site_id",
+                                    "value": "5",
+                                    "description": "optional Filter by site ID.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/Hrm\/announcements?workspace_id=1&site_id=5"
                         },
                         "method": "GET",
                         "header": [
@@ -5657,18 +5722,9 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route Hrm\/announcements could not be found.\"\n}",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": [\n   {\n     \"id\": 1,\n     \"title\": \"Company Holiday\",\n     \"start_date\": \"2024-01-15\",\n     \"end_date\": \"2024-01-20\",\n     \"description\": \"Office closed for holidays\",\n     \"workspace\": 1,\n     \"site_id\": 5\n   }\n ]\n}",
                             "name": ""
                         }
                     ]
@@ -5709,7 +5765,7 @@
                     ]
                 },
                 {
-                    "name": "GET Hrm\/announcements\/{id}",
+                    "name": "Show a single announcement",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -5720,7 +5776,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the announcement."
                                 }
                             ]
@@ -5741,24 +5797,21 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": {\n   \"id\": 1,\n   \"title\": \"Company Holiday\",\n   \"start_date\": \"2024-01-15\",\n   \"end_date\": \"2024-01-20\",\n   \"description\": \"Office closed\"\n }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route Hrm\/announcements\/architecto could not be found.\"\n}",
+                            "body": "{\n \"status\": 0,\n \"message\": \"Announcement not found\"\n}",
                             "name": ""
                         }
                     ]
                 },
                 {
-                    "name": "PUT Hrm\/announcements\/{id}",
+                    "name": "Update an announcement",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -5769,7 +5822,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the announcement."
                                 }
                             ]
@@ -5785,13 +5838,23 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"Updated Holiday\",\"start_date\":\"2024-01-15\",\"end_date\":\"2024-01-20\",\"description\":\"Updated description\",\"workspace_id\":1,\"site_id\":5,\"created_by\":1}"
+                        },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Announcement updated successfully\",\n \"data\": {...}\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "DELETE Hrm\/announcements\/{id}",
+                    "name": "Delete an announcement",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -5802,7 +5865,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the announcement."
                                 }
                             ]
@@ -5821,10 +5884,17 @@
                         "body": null,
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Announcement deleted successfully\"\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "POST Hrm\/announcements\/create-data",
+                    "name": "Get data required for creating an announcement (projects list)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -5843,10 +5913,20 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"workspace_id\":1}"
+                        },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"success\": true,\n \"projects\": {\n   \"1\": \"Project Alpha\",\n   \"2\": \"Project Beta\"\n }\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -5855,7 +5935,7 @@
             "description": "Endpoints for employee attendance management including clock in\/out",
             "item": [
                 {
-                    "name": "GET api\/Hrm\/attendence-history",
+                    "name": "Get attendance history grouped by date",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -5874,27 +5954,17 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": ""
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"workspace_id\":1,\"site_id\":5,\"employee_id\":5,\"type\":\"monthly\",\"month\":1,\"year\":2024}"
+                        },
+                        "description": "Returns attendance records grouped by date. Supports monthly filtering and role-based access."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/Hrm\/attendence-history could not be found.\"\n}",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": [\n   {\n     \"total_time\": \"08:00\",\n     \"date\": \"2024-01-15\",\n     \"history\": [\n       {\n         \"id\": 1,\n         \"status\": \"Present\",\n         \"clock_in\": \"09:00:00\",\n         \"clock_out\": \"18:00:00\",\n         \"total\": \"08:00 hours\",\n         \"employee_id\": 5,\n         \"employee_name\": \"John Doe\",\n         \"site_id\": 1,\n         \"site_name\": \"Main Office\"\n       }\n     ]\n   }\n ]\n}",
                             "name": ""
                         }
                     ]
@@ -6041,7 +6111,7 @@
                     ]
                 },
                 {
-                    "name": "GET api\/Hrm\/admin-attendence\/{id}",
+                    "name": "Show a single attendance record",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -6052,8 +6122,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the admin attendence."
+                                    "value": "1",
+                                    "description": "The ID of the attendance record."
                                 }
                             ]
                         },
@@ -6073,28 +6143,21 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": \"success\",\n \"data\": {\n   \"id\": 1,\n   \"employee_id\": 5,\n   \"date\": \"2024-01-15\",\n   \"status\": \"Present\",\n   \"clock_in\": \"09:00:00\",\n   \"clock_out\": \"18:00:00\"\n }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/Hrm\/admin-attendence\/architecto could not be found.\"\n}",
+                            "body": "{\n \"status\": \"error\",\n \"message\": \"Attendance record not found.\"\n}",
                             "name": ""
                         }
                     ]
                 },
                 {
-                    "name": "POST api\/Hrm\/admin-attendence-update\/{id}",
+                    "name": "Update attendance record (admin)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -6105,8 +6168,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the admin attendence update."
+                                    "value": "1",
+                                    "description": "The ID of the attendance record."
                                 }
                             ]
                         },
@@ -6121,13 +6184,23 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"employee_id\":5,\"user_id\":1,\"date\":\"2024-01-15\",\"clock_in\":\"09:00\",\"clock_out\":\"18:00\",\"site_id\":5,\"workspace_id\":1,\"created_by\":1}"
+                        },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": \"success\",\n \"message\": \"The employee attendance details have been updated successfully.\",\n \"data\": {\n   \"id\": 1,\n   \"employee_id\": 5,\n   \"date\": \"2024-01-15\",\n   \"clock_in\": \"09:00:00\",\n   \"clock_out\": \"18:00:00\"\n }\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "DELETE api\/Hrm\/admin-attendence-delete\/{id}",
+                    "name": "Delete attendance record (admin)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -6138,8 +6211,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the admin attendence delete."
+                                    "value": "1",
+                                    "description": "The ID of the attendance record."
                                 }
                             ]
                         },
@@ -6157,10 +6230,23 @@
                         "body": null,
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"message\": \"Attendance record deleted successfully\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n \"message\": \"Attendance record not found\"\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "POST api\/Hrm\/createData",
+                    "name": "Get data required for creating attendance (employees list)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -6179,13 +6265,29 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"user_id\":1,\"site_id\":5,\"workspace_id\":1}"
+                        },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"success\": true,\n \"employees\": [\n   {\"id\": 1, \"name\": \"John Doe\"}\n ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n \"success\": false,\n \"error\": \"Permission denied.\"\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "GET Hrm\/attendence-history",
+                    "name": "Get attendance history grouped by date",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -6204,23 +6306,17 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": ""
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"workspace_id\":1,\"site_id\":5,\"employee_id\":5,\"type\":\"monthly\",\"month\":1,\"year\":2024}"
+                        },
+                        "description": "Returns attendance records grouped by date. Supports monthly filtering and role-based access."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route Hrm\/attendence-history could not be found.\"\n}",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": [\n   {\n     \"total_time\": \"08:00\",\n     \"date\": \"2024-01-15\",\n     \"history\": [\n       {\n         \"id\": 1,\n         \"status\": \"Present\",\n         \"clock_in\": \"09:00:00\",\n         \"clock_out\": \"18:00:00\",\n         \"total\": \"08:00 hours\",\n         \"employee_id\": 5,\n         \"employee_name\": \"John Doe\",\n         \"site_id\": 1,\n         \"site_name\": \"Main Office\"\n       }\n     ]\n   }\n ]\n}",
                             "name": ""
                         }
                     ]
@@ -6367,7 +6463,7 @@
                     ]
                 },
                 {
-                    "name": "GET Hrm\/admin-attendence\/{id}",
+                    "name": "Show a single attendance record",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -6378,8 +6474,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the admin attendence."
+                                    "value": "1",
+                                    "description": "The ID of the attendance record."
                                 }
                             ]
                         },
@@ -6399,24 +6495,21 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": \"success\",\n \"data\": {\n   \"id\": 1,\n   \"employee_id\": 5,\n   \"date\": \"2024-01-15\",\n   \"status\": \"Present\",\n   \"clock_in\": \"09:00:00\",\n   \"clock_out\": \"18:00:00\"\n }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route Hrm\/admin-attendence\/architecto could not be found.\"\n}",
+                            "body": "{\n \"status\": \"error\",\n \"message\": \"Attendance record not found.\"\n}",
                             "name": ""
                         }
                     ]
                 },
                 {
-                    "name": "POST Hrm\/admin-attendence-update\/{id}",
+                    "name": "Update attendance record (admin)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -6427,8 +6520,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the admin attendence update."
+                                    "value": "1",
+                                    "description": "The ID of the attendance record."
                                 }
                             ]
                         },
@@ -6443,13 +6536,23 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"employee_id\":5,\"user_id\":1,\"date\":\"2024-01-15\",\"clock_in\":\"09:00\",\"clock_out\":\"18:00\",\"site_id\":5,\"workspace_id\":1,\"created_by\":1}"
+                        },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": \"success\",\n \"message\": \"The employee attendance details have been updated successfully.\",\n \"data\": {\n   \"id\": 1,\n   \"employee_id\": 5,\n   \"date\": \"2024-01-15\",\n   \"clock_in\": \"09:00:00\",\n   \"clock_out\": \"18:00:00\"\n }\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "DELETE Hrm\/admin-attendence-delete\/{id}",
+                    "name": "Delete attendance record (admin)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -6460,8 +6563,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the admin attendence delete."
+                                    "value": "1",
+                                    "description": "The ID of the attendance record."
                                 }
                             ]
                         },
@@ -6479,10 +6582,23 @@
                         "body": null,
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"message\": \"Attendance record deleted successfully\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\n \"message\": \"Attendance record not found\"\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "POST Hrm\/createData",
+                    "name": "Get data required for creating attendance (employees list)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -6501,10 +6617,26 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"user_id\":1,\"site_id\":5,\"workspace_id\":1}"
+                        },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"success\": true,\n \"employees\": [\n   {\"id\": 1, \"name\": \"John Doe\"}\n ]\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n \"success\": false,\n \"error\": \"Permission denied.\"\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -7110,8 +7242,21 @@
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "api\/Hrm\/events",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/Hrm\/events"
+                            "query": [
+                                {
+                                    "key": "workspace_id",
+                                    "value": "1",
+                                    "description": "optional Filter by workspace ID.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "site_id",
+                                    "value": "5",
+                                    "description": "optional Filter by site ID.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/Hrm\/events?workspace_id=1&site_id=5"
                         },
                         "method": "GET",
                         "header": [
@@ -7129,22 +7274,9 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/Hrm\/events could not be found.\"\n}",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": [\n   {\n     \"id\": 1,\n     \"title\": \"Team Meeting\",\n     \"start_date\": \"2024-01-15\",\n     \"end_date\": \"2024-01-15\",\n     \"color\": \"#FF0000\",\n     \"description\": \"Quarterly team meeting\"\n   }\n ]\n}",
                             "name": ""
                         }
                     ]
@@ -7196,7 +7328,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the event."
                                 }
                             ]
@@ -7217,22 +7349,15 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": {\n   \"id\": 1,\n   \"title\": \"Team Meeting\",\n   \"start_date\": \"2024-01-15\",\n   \"end_date\": \"2024-01-15\",\n   \"color\": \"#FF0000\",\n   \"description\": \"Quarterly team meeting\"\n }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/Hrm\/events\/architecto could not be found.\"\n}",
+                            "body": "{\n \"status\": 0,\n \"message\": \"Event not found\"\n}",
                             "name": ""
                         }
                     ]
@@ -7249,7 +7374,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the event."
                                 }
                             ]
@@ -7267,11 +7392,18 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"title\":\"architecto\",\"start_date\":\"2026-05-28T14:35:02\",\"end_date\":\"2052-06-20\",\"color\":\"architecto\",\"workspace_id\":\"architecto\",\"site_id\":\"architecto\",\"created_by\":\"architecto\"}"
+                            "raw": "{\"title\":\"Updated Meeting\",\"start_date\":\"2024-01-15\",\"end_date\":\"2024-01-15\",\"color\":\"#00FF00\",\"workspace_id\":1,\"site_id\":5,\"created_by\":1,\"description\":\"Updated description\"}"
                         },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Event updated successfully\",\n \"data\": {...}\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
                     "name": "Delete event",
@@ -7285,7 +7417,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the event."
                                 }
                             ]
@@ -7304,7 +7436,14 @@
                         "body": null,
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Event deleted successfully\"\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
                     "name": "List all events",
@@ -7312,8 +7451,21 @@
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "Hrm\/events",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/Hrm\/events"
+                            "query": [
+                                {
+                                    "key": "workspace_id",
+                                    "value": "1",
+                                    "description": "optional Filter by workspace ID.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "site_id",
+                                    "value": "5",
+                                    "description": "optional Filter by site ID.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/Hrm\/events?workspace_id=1&site_id=5"
                         },
                         "method": "GET",
                         "header": [
@@ -7331,18 +7483,9 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route Hrm\/events could not be found.\"\n}",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": [\n   {\n     \"id\": 1,\n     \"title\": \"Team Meeting\",\n     \"start_date\": \"2024-01-15\",\n     \"end_date\": \"2024-01-15\",\n     \"color\": \"#FF0000\",\n     \"description\": \"Quarterly team meeting\"\n   }\n ]\n}",
                             "name": ""
                         }
                     ]
@@ -7394,7 +7537,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the event."
                                 }
                             ]
@@ -7415,18 +7558,15 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": {\n   \"id\": 1,\n   \"title\": \"Team Meeting\",\n   \"start_date\": \"2024-01-15\",\n   \"end_date\": \"2024-01-15\",\n   \"color\": \"#FF0000\",\n   \"description\": \"Quarterly team meeting\"\n }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route Hrm\/events\/architecto could not be found.\"\n}",
+                            "body": "{\n \"status\": 0,\n \"message\": \"Event not found\"\n}",
                             "name": ""
                         }
                     ]
@@ -7443,7 +7583,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the event."
                                 }
                             ]
@@ -7461,11 +7601,18 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"title\":\"architecto\",\"start_date\":\"2026-05-28T14:35:03\",\"end_date\":\"2052-06-20\",\"color\":\"architecto\",\"workspace_id\":\"architecto\",\"site_id\":\"architecto\",\"created_by\":\"architecto\"}"
+                            "raw": "{\"title\":\"Updated Meeting\",\"start_date\":\"2024-01-15\",\"end_date\":\"2024-01-15\",\"color\":\"#00FF00\",\"workspace_id\":1,\"site_id\":5,\"created_by\":1,\"description\":\"Updated description\"}"
                         },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Event updated successfully\",\n \"data\": {...}\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
                     "name": "Delete event",
@@ -7479,7 +7626,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the event."
                                 }
                             ]
@@ -7498,16 +7645,23 @@
                         "body": null,
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Event deleted successfully\"\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
         {
             "name": "HRM Holiday List",
-            "description": "Endpoints for holiday list retrieval",
+            "description": "",
             "item": [
                 {
-                    "name": "POST api\/Hrm\/holidays-list",
+                    "name": "List holidays (calendar format)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -7526,13 +7680,23 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": ""
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"workspace_id\":1,\"date\":\"2024-01-01 to 2024-01-31\"}"
+                        },
+                        "description": "Returns holidays formatted for calendar display, optionally filtered by date range."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": [\n   {\n     \"title\": \"Diwali\",\n     \"start\": \"2024-11-01\",\n     \"end\": \"2024-11-05\",\n     \"className\": \"event-danger\"\n   }\n ]\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "POST Hrm\/holidays-list",
+                    "name": "List holidays (calendar format)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -7551,10 +7715,20 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": ""
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"workspace_id\":1,\"date\":\"2024-01-01 to 2024-01-31\"}"
+                        },
+                        "description": "Returns holidays formatted for calendar display, optionally filtered by date range."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": [\n   {\n     \"title\": \"Diwali\",\n     \"start\": \"2024-11-01\",\n     \"end\": \"2024-11-05\",\n     \"className\": \"event-danger\"\n   }\n ]\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -7568,8 +7742,21 @@
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "api\/Hrm\/holidays",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/Hrm\/holidays"
+                            "query": [
+                                {
+                                    "key": "workspace_id",
+                                    "value": "1",
+                                    "description": "optional Filter by workspace ID.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "site_id",
+                                    "value": "5",
+                                    "description": "optional Filter by site ID.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/Hrm\/holidays?workspace_id=1&site_id=5"
                         },
                         "method": "GET",
                         "header": [
@@ -7587,22 +7774,9 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/Hrm\/holidays could not be found.\"\n}",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": [\n   {\n     \"id\": 1,\n     \"occasion\": \"Diwali\",\n     \"start_date\": \"2024-11-01\",\n     \"end_date\": \"2024-11-05\",\n     \"workspace\": 1,\n     \"site_id\": 5\n   }\n ]\n}",
                             "name": ""
                         }
                     ]
@@ -7654,7 +7828,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the holiday."
                                 }
                             ]
@@ -7675,22 +7849,15 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": {\n   \"id\": 1,\n   \"occasion\": \"Diwali\",\n   \"start_date\": \"2024-11-01\",\n   \"end_date\": \"2024-11-05\"\n }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/Hrm\/holidays\/architecto could not be found.\"\n}",
+                            "body": "{\n \"status\": 0,\n \"message\": \"Holiday not found\"\n}",
                             "name": ""
                         }
                     ]
@@ -7707,7 +7874,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the holiday."
                                 }
                             ]
@@ -7723,10 +7890,20 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"occasion\":\"Updated Diwali\",\"start_date\":\"2024-11-01\",\"end_date\":\"2024-11-05\"}"
+                        },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Holiday updated successfully\",\n \"data\": {...}\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
                     "name": "Delete holiday",
@@ -7740,7 +7917,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the holiday."
                                 }
                             ]
@@ -7759,7 +7936,14 @@
                         "body": null,
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Holiday deleted successfully\"\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
                     "name": "List holidays with optional filters",
@@ -7767,8 +7951,21 @@
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "Hrm\/holidays",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/Hrm\/holidays"
+                            "query": [
+                                {
+                                    "key": "workspace_id",
+                                    "value": "1",
+                                    "description": "optional Filter by workspace ID.",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "site_id",
+                                    "value": "5",
+                                    "description": "optional Filter by site ID.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/Hrm\/holidays?workspace_id=1&site_id=5"
                         },
                         "method": "GET",
                         "header": [
@@ -7786,18 +7983,9 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route Hrm\/holidays could not be found.\"\n}",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": [\n   {\n     \"id\": 1,\n     \"occasion\": \"Diwali\",\n     \"start_date\": \"2024-11-01\",\n     \"end_date\": \"2024-11-05\",\n     \"workspace\": 1,\n     \"site_id\": 5\n   }\n ]\n}",
                             "name": ""
                         }
                     ]
@@ -7849,7 +8037,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the holiday."
                                 }
                             ]
@@ -7870,18 +8058,15 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": {\n   \"id\": 1,\n   \"occasion\": \"Diwali\",\n   \"start_date\": \"2024-11-01\",\n   \"end_date\": \"2024-11-05\"\n }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route Hrm\/holidays\/architecto could not be found.\"\n}",
+                            "body": "{\n \"status\": 0,\n \"message\": \"Holiday not found\"\n}",
                             "name": ""
                         }
                     ]
@@ -7898,7 +8083,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the holiday."
                                 }
                             ]
@@ -7914,10 +8099,20 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"occasion\":\"Updated Diwali\",\"start_date\":\"2024-11-01\",\"end_date\":\"2024-11-05\"}"
+                        },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Holiday updated successfully\",\n \"data\": {...}\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
                     "name": "Delete holiday",
@@ -7931,7 +8126,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the holiday."
                                 }
                             ]
@@ -7950,16 +8145,23 @@
                         "body": null,
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Holiday deleted successfully\"\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
         {
             "name": "HRM Home",
-            "description": "Endpoints for HRM dashboard data",
+            "description": "",
             "item": [
                 {
-                    "name": "POST api\/Hrm\/home",
+                    "name": "Get HRM dashboard data",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -7980,14 +8182,21 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"workspace_id\":\"architecto\"}"
+                            "raw": "{\"workspace_id\":1,\"user_id\":1}"
                         },
-                        "description": ""
+                        "description": "Returns the current clock-in\/out status, today's total hours worked, and announcements for the authenticated user."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": {\n   \"is_clockin\": 1,\n   \"attendance_id\": 10,\n   \"clock_in\": \"09:00 AM\",\n   \"clock_out\": \"00:00\",\n   \"total_hours\": \"08:00 hours\",\n   \"announcements\": [...]\n }\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "POST Hrm\/home",
+                    "name": "Get HRM dashboard data",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -8008,11 +8217,18 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"workspace_id\":\"architecto\"}"
+                            "raw": "{\"workspace_id\":1,\"user_id\":1}"
                         },
-                        "description": ""
+                        "description": "Returns the current clock-in\/out status, today's total hours worked, and announcements for the authenticated user."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": {\n   \"is_clockin\": 1,\n   \"attendance_id\": 10,\n   \"clock_in\": \"09:00 AM\",\n   \"clock_out\": \"00:00\",\n   \"total_hours\": \"08:00 hours\",\n   \"announcements\": [...]\n }\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -8026,8 +8242,15 @@
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "api\/Hrm\/leaves-types",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/Hrm\/leaves-types"
+                            "query": [
+                                {
+                                    "key": "user_id",
+                                    "value": "1",
+                                    "description": "User ID to calculate used leaves.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/Hrm\/leaves-types?user_id=1"
                         },
                         "method": "GET",
                         "header": [
@@ -8041,26 +8264,13 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Returns leave types with used days and remaining eligibility for the given user."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/Hrm\/leaves-types could not be found.\"\n}",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": [\n   {\n     \"id\": 1,\n     \"title\": \"Sick Leave\",\n     \"days\": 12,\n     \"used\": 2,\n     \"is_disable\": 0\n   }\n ]\n}",
                             "name": ""
                         }
                     ]
@@ -8112,8 +8322,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the leaves type."
+                                    "value": "1",
+                                    "description": "The ID of the leave type."
                                 }
                             ]
                         },
@@ -8133,22 +8343,15 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": {\n   \"id\": 1,\n   \"title\": \"Sick Leave\",\n   \"days\": 12\n }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/Hrm\/leaves-types\/architecto could not be found.\"\n}",
+                            "body": "{\n \"status\": 0,\n \"message\": \"Leave type not found\"\n}",
                             "name": ""
                         }
                     ]
@@ -8165,8 +8368,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the leaves type."
+                                    "value": "1",
+                                    "description": "The ID of the leave type."
                                 }
                             ]
                         },
@@ -8181,10 +8384,20 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"Sick Leave\",\"days\":15}"
+                        },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": {...},\n \"message\": \"Leave type successfully updated.\"\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
                     "name": "Delete a leave type",
@@ -8198,8 +8411,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the leaves type."
+                                    "value": "1",
+                                    "description": "The ID of the leave type."
                                 }
                             ]
                         },
@@ -8217,7 +8430,14 @@
                         "body": null,
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Leave type successfully deleted.\"\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
                     "name": "List all leave types for a workspace",
@@ -8225,8 +8445,15 @@
                         "url": {
                             "host": "{{baseUrl}}",
                             "path": "Hrm\/leaves-types",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/Hrm\/leaves-types"
+                            "query": [
+                                {
+                                    "key": "user_id",
+                                    "value": "1",
+                                    "description": "User ID to calculate used leaves.",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/Hrm\/leaves-types?user_id=1"
                         },
                         "method": "GET",
                         "header": [
@@ -8240,22 +8467,13 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Returns leave types with used days and remaining eligibility for the given user."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route Hrm\/leaves-types could not be found.\"\n}",
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": [\n   {\n     \"id\": 1,\n     \"title\": \"Sick Leave\",\n     \"days\": 12,\n     \"used\": 2,\n     \"is_disable\": 0\n   }\n ]\n}",
                             "name": ""
                         }
                     ]
@@ -8307,8 +8525,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the leaves type."
+                                    "value": "1",
+                                    "description": "The ID of the leave type."
                                 }
                             ]
                         },
@@ -8328,18 +8546,15 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": {\n   \"id\": 1,\n   \"title\": \"Sick Leave\",\n   \"days\": 12\n }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route Hrm\/leaves-types\/architecto could not be found.\"\n}",
+                            "body": "{\n \"status\": 0,\n \"message\": \"Leave type not found\"\n}",
                             "name": ""
                         }
                     ]
@@ -8356,8 +8571,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the leaves type."
+                                    "value": "1",
+                                    "description": "The ID of the leave type."
                                 }
                             ]
                         },
@@ -8372,10 +8587,20 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"Sick Leave\",\"days\":15}"
+                        },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"data\": {...},\n \"message\": \"Leave type successfully updated.\"\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
                     "name": "Delete a leave type",
@@ -8389,8 +8614,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the leaves type."
+                                    "value": "1",
+                                    "description": "The ID of the leave type."
                                 }
                             ]
                         },
@@ -8408,7 +8633,14 @@
                         "body": null,
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"status\": 1,\n \"message\": \"Leave type successfully deleted.\"\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -10186,7 +10418,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"workspace_id\":1,\"pipeline_id\":1,\"phone\":\"+91-9876543210\",\"subject\":\"Product Inquiry\",\"name\":\"John Doe\",\"email\":\"john@example.com\",\"follow_up_date\":\"2026-05-28\"}"
+                            "raw": "{\"workspace_id\":1,\"pipeline_id\":1,\"phone\":\"+91-9876543210\",\"subject\":\"Product Inquiry\",\"name\":\"John Doe\",\"email\":\"john@example.com\",\"follow_up_date\":\"2026-05-29\"}"
                         },
                         "description": ""
                     },
@@ -10607,7 +10839,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"Excavator JCB\",\"category_id\":1,\"model_number\":\"JCB 3DX\",\"manufacturer\":\"JCB\",\"purchase_date\":\"2024-01-15\",\"capacity\":\"z\",\"maintenance_schedule\":\"2026-05-28T14:34:54\",\"remarks\":\"architecto\",\"description\":\"Eius et animi quos velit et.\",\"vehicle_number\":\"MH-01-AB-1234\",\"operational_status\":\"active\",\"site_id\":16,\"status\":\"n\",\"created_by\":16,\"workspace_id\":1,\"owned_by\":\"owned\",\"supplier_id\":5,\"rate\":\"1500.00\",\"rate_type\":\"daily\",\"minimum_billing_hours\":84,\"diesel_by_company\":false,\"operator_by_supplier\":true,\"number_of_operators\":66,\"purchase_value\":77,\"insurance_due_date\":\"2026-05-28T14:34:54\",\"puc_due_date\":\"2026-05-28T14:34:54\",\"fitness_due_date\":\"2026-05-28T14:34:54\",\"last_service_date\":\"2026-05-28T14:34:54\"}"
+                            "raw": "{\"name\":\"Excavator JCB\",\"category_id\":1,\"model_number\":\"JCB 3DX\",\"manufacturer\":\"JCB\",\"purchase_date\":\"2024-01-15\",\"capacity\":\"z\",\"maintenance_schedule\":\"2026-05-29T20:01:03\",\"remarks\":\"architecto\",\"description\":\"Eius et animi quos velit et.\",\"vehicle_number\":\"MH-01-AB-1234\",\"operational_status\":\"active\",\"site_id\":16,\"status\":\"n\",\"created_by\":16,\"workspace_id\":1,\"owned_by\":\"owned\",\"supplier_id\":5,\"rate\":\"1500.00\",\"rate_type\":\"hourly\",\"minimum_billing_hours\":84,\"diesel_by_company\":false,\"operator_by_supplier\":false,\"number_of_operators\":66,\"purchase_value\":77,\"insurance_due_date\":\"2026-05-29T20:01:03\",\"puc_due_date\":\"2026-05-29T20:01:03\",\"fitness_due_date\":\"2026-05-29T20:01:03\",\"last_service_date\":\"2026-05-29T20:01:03\"}"
                         },
                         "description": "Update an existing machinery record with file uploads for rental agreement and ownership documents."
                     },
@@ -11014,46 +11246,6 @@
                     ]
                 },
                 {
-                    "name": "Show a single machinery ledger entry by ID.",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/ledger\/:id",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/ledger\/:id",
-                            "variable": [
-                                {
-                                    "id": "id",
-                                    "key": "id",
-                                    "value": "101",
-                                    "description": "The ID of the ledger entry."
-                                }
-                            ]
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": ""
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\n  \"success\": true,\n  \"message\": \"Ledger entry fetched successfully.\",\n  \"data\": {\n    \"id\": 101,\n    \"machinery_id\": 3,\n    \"entry_direction\": \"credit\",\n    \"entry_type\": \"dpr\",\n    \"amount\": \"5000.00\",\n    \"running_balance\": \"15000.00\",\n    \"date\": \"2025-06-15\",\n    \"description\": \"DPR for June week 2\",\n    \"is_reversal\": false,\n    \"is_locked\": false,\n    \"machinery\": {\"id\": 3, \"name\": \"Excavator EX-01\"}\n  }\n}",
-                            "name": "Success"
-                        }
-                    ]
-                },
-                {
                     "name": "Get the running balance summary for a specific machinery within a date range.",
                     "request": {
                         "url": {
@@ -11094,7 +11286,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"machinery_id\":16,\"date_from\":\"2026-05-28T14:34:59\",\"date_to\":\"2052-06-20\"}"
+                            "raw": "{\"machinery_id\":16,\"date_from\":\"2026-05-29T20:01:08\",\"date_to\":\"2052-06-21\"}"
                         },
                         "description": "Returns the opening balance (from the earliest entry before or on the start date)\nand the closing balance (last entry in the range)."
                     },
@@ -11147,6 +11339,46 @@
                             "header": [],
                             "code": 200,
                             "body": "{\n  \"success\": true,\n  \"message\": \"Machinery list fetched successfully.\",\n  \"data\": [\n    {\"id\": 1, \"name\": \"Excavator EX-01\"},\n    {\"id\": 3, \"name\": \"Crane CR-02\"}\n  ]\n}",
+                            "name": "Success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Show a single machinery ledger entry by ID.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/ledger\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/ledger\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "101",
+                                    "description": "The ID of the ledger entry."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": true,\n  \"message\": \"Ledger entry fetched successfully.\",\n  \"data\": {\n    \"id\": 101,\n    \"machinery_id\": 3,\n    \"entry_direction\": \"credit\",\n    \"entry_type\": \"dpr\",\n    \"amount\": \"5000.00\",\n    \"running_balance\": \"15000.00\",\n    \"date\": \"2025-06-15\",\n    \"description\": \"DPR for June week 2\",\n    \"is_reversal\": false,\n    \"is_locked\": false,\n    \"machinery\": {\"id\": 3, \"name\": \"Excavator EX-01\"}\n  }\n}",
                             "name": "Success"
                         }
                     ]
@@ -11953,7 +12185,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the manpower."
                                 },
                                 {
@@ -12005,7 +12237,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the manpower."
                                 },
                                 {
@@ -12125,7 +12357,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the manpower."
                                 },
                                 {
@@ -12769,7 +13001,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"issue_to_type\":\"user\",\"issue_to_id\":16,\"issue_date\":\"2026-05-28T14:34:57\",\"remarks\":\"architecto\",\"items\":[{\"material_id\":\"architecto\",\"quantity\":39,\"rate\":84,\"remarks\":\"architecto\"}]}"
+                            "raw": "{\"issue_to_type\":\"user\",\"issue_to_id\":16,\"issue_date\":\"2026-05-29T20:01:05\",\"remarks\":\"architecto\",\"items\":[{\"material_id\":\"architecto\",\"quantity\":39,\"rate\":84,\"remarks\":\"architecto\"}]}"
                         },
                         "description": ""
                     },
@@ -13075,7 +13307,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"issue_id\":\"architecto\",\"return_date\":\"2026-05-28T14:34:57\",\"remarks\":\"architecto\",\"items\":[{\"issue_item_id\":\"architecto\",\"material_id\":\"architecto\",\"quantity\":39,\"remarks\":\"architecto\"}]}"
+                            "raw": "{\"issue_id\":\"architecto\",\"return_date\":\"2026-05-29T20:01:06\",\"remarks\":\"architecto\",\"items\":[{\"issue_item_id\":\"architecto\",\"material_id\":\"architecto\",\"quantity\":39,\"remarks\":\"architecto\"}]}"
                         },
                         "description": ""
                     },
@@ -18804,7 +19036,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"amount\":27,\"advance_date\":\"2026-05-28T14:34:56\",\"source\":\"po\",\"remarks\":\"architecto\"}"
+                            "raw": "{\"amount\":27,\"advance_date\":\"2026-05-29T20:01:04\",\"source\":\"manual\",\"remarks\":\"architecto\"}"
                         },
                         "description": "API Rule 2: API-driven service\nAPI Rule 5: Idempotency support"
                     },
@@ -19025,7 +19257,7 @@
             "description": "Endpoints for supplier category management",
             "item": [
                 {
-                    "name": "GET api\/supplier-categories",
+                    "name": "List Supplier Categories",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -19045,27 +19277,20 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Returns all active supplier categories."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/supplier-categories could not be found.\"\n}",
-                            "name": ""
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": 1,\n  \"data\": [\n    {\"id\": 1, \"name\": \"Subcontractors\", \"description\": null, \"is_active\": true, ...}\n  ]\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": 0, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
                         }
                     ]
                 },
@@ -19105,7 +19330,7 @@
                     ]
                 },
                 {
-                    "name": "GET api\/supplier-categories\/{id}",
+                    "name": "Show Supplier Category",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -19116,8 +19341,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the supplier category."
+                                    "value": "1",
+                                    "description": "Category ID."
                                 }
                             ]
                         },
@@ -19133,27 +19358,26 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Retrieve a specific supplier category by ID."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": 1,\n  \"data\": {\"id\": 1, \"name\": \"Subcontractors\", \"description\": null, ...}\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": 0, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/supplier-categories\/architecto could not be found.\"\n}",
-                            "name": ""
+                            "body": "{ \"status\": 0, \"message\": \"Category not found\" }",
+                            "name": "Not found"
                         }
                     ]
                 },
@@ -19194,7 +19418,7 @@
                     "response": []
                 },
                 {
-                    "name": "DELETE api\/supplier-categories\/{id}",
+                    "name": "Delete Supplier Category",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -19205,8 +19429,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the supplier category."
+                                    "value": "1",
+                                    "description": "Category ID."
                                 }
                             ]
                         },
@@ -19222,9 +19446,34 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Permanently delete a supplier category. Category ID 1 (Subcontractors) is protected from deletion. Categories used in suppliers cannot be deleted."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{ \"status\": 1, \"message\": \"Category deleted successfully\" }",
+                            "name": "Deleted successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{ \"status\": 0, \"message\": \"Supplier Category cannot be deleted because it is used in the Suppliers Master.\" }",
+                            "name": "In use by suppliers"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": 0, \"message\": \"This category cannot be deleted as it is a system category used by the application.\" }",
+                            "name": "Permission denied or system category"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{ \"status\": 0, \"message\": \"Category not found\" }",
+                            "name": "Not found"
+                        }
+                    ]
                 }
             ]
         },
@@ -19285,7 +19534,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"from_date\":\"2026-05-28\",\"to_date\":\"2026-05-28\",\"per_page\":1,\"page\":22}"
+                            "raw": "{\"from_date\":\"2026-05-29\",\"to_date\":\"2026-05-29\",\"per_page\":1,\"page\":22}"
                         },
                         "description": "Returns transactions ordered by date (latest first) with a financial summary.\nTransactions include: Purchase Orders (`po`), Invoices (`invoice`), Payments (`payment`) and Advances (`advance`)."
                     },
@@ -19404,7 +19653,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"from_date\":\"2026-05-28\",\"to_date\":\"2026-05-28\"}"
+                            "raw": "{\"from_date\":\"2026-05-29\",\"to_date\":\"2026-05-29\"}"
                         },
                         "description": ""
                     },
@@ -19464,7 +19713,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"from_date\":\"2026-05-28\",\"to_date\":\"2026-05-28\"}"
+                            "raw": "{\"from_date\":\"2026-05-29\",\"to_date\":\"2026-05-29\"}"
                         },
                         "description": ""
                     },
@@ -20152,7 +20401,7 @@
             "description": "Endpoints for material unit management",
             "item": [
                 {
-                    "name": "GET api\/units",
+                    "name": "List Units",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -20172,27 +20421,20 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Returns all material units."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/units could not be found.\"\n}",
-                            "name": ""
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": 1,\n  \"data\": [\n    {\"id\": 1, \"name\": \"Kilogram\", \"symbol\": \"kg\", \"site_id\": 1, ...}\n  ]\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
                         }
                     ]
                 },
@@ -20232,7 +20474,7 @@
                     ]
                 },
                 {
-                    "name": "GET api\/units\/{id}",
+                    "name": "Show Unit",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -20243,8 +20485,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the unit."
+                                    "value": "1",
+                                    "description": "Unit ID."
                                 }
                             ]
                         },
@@ -20260,27 +20502,26 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Retrieve a specific material unit by ID."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": 1,\n  \"data\": {\"id\": 1, \"name\": \"Kilogram\", \"symbol\": \"kg\", ...}\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/units\/architecto could not be found.\"\n}",
-                            "name": ""
+                            "body": "{ \"status\": 0, \"message\": \"Unit not found\" }",
+                            "name": "Not found"
                         }
                     ]
                 },
@@ -20318,7 +20559,7 @@
                     "response": []
                 },
                 {
-                    "name": "DELETE api\/units\/{id}",
+                    "name": "Delete Unit",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -20329,8 +20570,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the unit."
+                                    "value": "1",
+                                    "description": "Unit ID."
                                 }
                             ]
                         },
@@ -20346,9 +20587,34 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Permanently delete a material unit. Units used in the Material Master cannot be deleted."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{ \"status\": 1, \"message\": \"Unit deleted successfully\" }",
+                            "name": "Deleted successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{ \"status\": 0, \"message\": \"Unit cannot be deleted as it is used in the Material Master\" }",
+                            "name": "In use by materials"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{ \"status\": 0, \"message\": \"Unit not found\" }",
+                            "name": "Not found"
+                        }
+                    ]
                 }
             ]
         },
@@ -20356,6 +20622,235 @@
             "name": "Users",
             "description": "Endpoints for user management including CRUD operations, profile, and password management",
             "item": [
+                {
+                    "name": "Get Create-User Form Data",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/users\/create-data",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/users\/create-data"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Returns the list of available roles that can be assigned to a new user.\nUsed to populate the role selector on the user creation form."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Roles data retrieved successfully\",\n  \"data\": { \"roles\": { \"1\": \"staff\", \"2\": \"admin\" } }\n}",
+                            "name": "Roles retrieved successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get User Profile",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/users\/profile",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/users\/profile"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Retrieve the authenticated user's profile data.\nSensitive fields (password, 2FA secrets, remember_token) are excluded."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Profile retrieved successfully\",\n  \"data\": {\n    \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... }\n  }\n}",
+                            "name": "Profile retrieved successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Profile",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/users\/profile",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/users\/profile"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"John Doe\",\"email\":\"john@example.com\",\"mobile_no\":\"+1234567890\"}"
+                        },
+                        "description": "Update the authenticated user's own name, email, mobile number, and optionally avatar."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Profile updated successfully\",\n  \"data\": { \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... } }\n}",
+                            "name": "Profile updated successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{ \"status\": false, \"message\": \"...\", \"data\": {...} }",
+                            "name": "Validation error"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Avatar",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/users\/profile\/avatar",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/users\/profile\/avatar"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "avatar",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "Replace the authenticated user's profile avatar image."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Avatar updated successfully\",\n  \"data\": { \"avatar\": \"https:\/\/...\" }\n}",
+                            "name": "Avatar updated successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{ \"status\": false, \"message\": \"No avatar file provided\" }",
+                            "name": "No avatar file provided"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        }
+                    ]
+                },
+                {
+                    "name": "Change Own Password",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/users\/password",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/users\/password"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"current_password\":\"oldpass123\",\"new_password\":\"newpass456\",\"confirm_password\":\"newpass456\"}"
+                        },
+                        "description": "Update the authenticated user's password. Requires verification of the current password.\nThe new password must be at least 6 characters and must match the confirmation field."
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"status\": true,\n  \"message\": \"Password updated successfully\",\n  \"data\": []\n}",
+                            "name": "Password updated successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{ \"status\": false, \"message\": \"Please enter correct current password\" }",
+                            "name": "Current password is incorrect"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{ \"status\": false, \"message\": \"...\" }",
+                            "name": "Validation error"
+                        }
+                    ]
+                },
                 {
                     "name": "List Users",
                     "request": {
@@ -20634,235 +21129,6 @@
                             "code": 404,
                             "body": "{ \"status\": false, \"message\": \"No query results for model\" }",
                             "name": "User not found"
-                        }
-                    ]
-                },
-                {
-                    "name": "Get Create-User Form Data",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/users\/create-data",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/users\/create-data"
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": "Returns the list of available roles that can be assigned to a new user.\nUsed to populate the role selector on the user creation form."
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\n  \"status\": true,\n  \"message\": \"Roles data retrieved successfully\",\n  \"data\": { \"roles\": { \"1\": \"staff\", \"2\": \"admin\" } }\n}",
-                            "name": "Roles retrieved successfully"
-                        },
-                        {
-                            "header": [],
-                            "code": 403,
-                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
-                            "name": "Permission denied"
-                        }
-                    ]
-                },
-                {
-                    "name": "Get User Profile",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/users\/profile",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/users\/profile"
-                        },
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": "Retrieve the authenticated user's profile data.\nSensitive fields (password, 2FA secrets, remember_token) are excluded."
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\n  \"status\": true,\n  \"message\": \"Profile retrieved successfully\",\n  \"data\": {\n    \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... }\n  }\n}",
-                            "name": "Profile retrieved successfully"
-                        },
-                        {
-                            "header": [],
-                            "code": 403,
-                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
-                            "name": "Permission denied"
-                        }
-                    ]
-                },
-                {
-                    "name": "Update Profile",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/users\/profile",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/users\/profile"
-                        },
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"name\":\"John Doe\",\"email\":\"john@example.com\",\"mobile_no\":\"+1234567890\"}"
-                        },
-                        "description": "Update the authenticated user's own name, email, mobile number, and optionally avatar."
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\n  \"status\": true,\n  \"message\": \"Profile updated successfully\",\n  \"data\": { \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"john@example.com\", ... } }\n}",
-                            "name": "Profile updated successfully"
-                        },
-                        {
-                            "header": [],
-                            "code": 403,
-                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
-                            "name": "Permission denied"
-                        },
-                        {
-                            "header": [],
-                            "code": 422,
-                            "body": "{ \"status\": false, \"message\": \"...\", \"data\": {...} }",
-                            "name": "Validation error"
-                        }
-                    ]
-                },
-                {
-                    "name": "Update Avatar",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/users\/profile\/avatar",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/users\/profile\/avatar"
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "multipart\/form-data"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "formdata",
-                            "formdata": [
-                                {
-                                    "key": "avatar",
-                                    "src": [],
-                                    "type": "file"
-                                }
-                            ]
-                        },
-                        "description": "Replace the authenticated user's profile avatar image."
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\n  \"status\": true,\n  \"message\": \"Avatar updated successfully\",\n  \"data\": { \"avatar\": \"https:\/\/...\" }\n}",
-                            "name": "Avatar updated successfully"
-                        },
-                        {
-                            "header": [],
-                            "code": 400,
-                            "body": "{ \"status\": false, \"message\": \"No avatar file provided\" }",
-                            "name": "No avatar file provided"
-                        },
-                        {
-                            "header": [],
-                            "code": 403,
-                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
-                            "name": "Permission denied"
-                        }
-                    ]
-                },
-                {
-                    "name": "Change Own Password",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/users\/password",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/users\/password"
-                        },
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"current_password\":\"oldpass123\",\"new_password\":\"newpass456\",\"confirm_password\":\"newpass456\"}"
-                        },
-                        "description": "Update the authenticated user's password. Requires verification of the current password.\nThe new password must be at least 6 characters and must match the confirmation field."
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\n  \"status\": true,\n  \"message\": \"Password updated successfully\",\n  \"data\": []\n}",
-                            "name": "Password updated successfully"
-                        },
-                        {
-                            "header": [],
-                            "code": 400,
-                            "body": "{ \"status\": false, \"message\": \"Please enter correct current password\" }",
-                            "name": "Current password is incorrect"
-                        },
-                        {
-                            "header": [],
-                            "code": 403,
-                            "body": "{ \"status\": false, \"message\": \"Permission denied\" }",
-                            "name": "Permission denied"
-                        },
-                        {
-                            "header": [],
-                            "code": 422,
-                            "body": "{ \"status\": false, \"message\": \"...\" }",
-                            "name": "Validation error"
                         }
                     ]
                 },
@@ -21542,7 +21808,7 @@
             "description": "Endpoints for workspace management including CRUD operations and domain configuration",
             "item": [
                 {
-                    "name": "GET api\/workspaces",
+                    "name": "List Workspaces",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -21562,32 +21828,25 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Returns all active workspaces. Users with 'workspace manage' permission see all workspaces; others see workspaces they are assigned to via projects."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/workspaces could not be found.\"\n}",
-                            "name": ""
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"workspaces\": [\n    {\"id\": 1, \"name\": \"Main Office\", \"slug\": \"main-office\", \"status\": \"active\", ...}\n  ]\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"error\": \"Permission denied\" }",
+                            "name": "Permission denied"
                         }
                     ]
                 },
                 {
-                    "name": "POST api\/workspaces",
+                    "name": "Create Workspace",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -21606,13 +21865,35 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": ""
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"Main Office\",\"created_by\":1,\"email\":\"office@example.com\",\"phone\":\"+1234567890\",\"pincode\":\"100001\",\"gst_number\":\"27AAECS1234F1Z5\",\"pan_number\":\"ABCDE1234F\",\"ifsc_code\":\"SBIN0001234\",\"bank_name\":\"State Bank of India\",\"account_number\":\"1234567890\",\"domain_switch\":\"on\",\"domains\":\"example.com\",\"subdomain\":\"mysite\"}"
+                        },
+                        "description": "Create a new workspace\/site. Optionally upload a logo image. Seeds global master data on creation."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"success\": \"Workspace created successfully.\",\n  \"workspace\": {\"id\": 1, \"name\": \"Main Office\", \"slug\": \"main-office\", ...}\n}",
+                            "name": "Created successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"error\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{ \"error\": \"Validation failed message\", \"details\": {...} }",
+                            "name": "Validation error"
+                        }
+                    ]
                 },
                 {
-                    "name": "GET api\/workspaces\/{id}",
+                    "name": "Show Workspace",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -21623,8 +21904,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the workspace."
+                                    "value": "1",
+                                    "description": "Workspace ID."
                                 }
                             ]
                         },
@@ -21640,32 +21921,31 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Retrieve a specific workspace by ID."
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"workspace\": {\"id\": 1, \"name\": \"Main Office\", \"slug\": \"main-office\", \"status\": \"active\", ...}\n}",
+                            "name": "Success"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"error\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
                             "code": 404,
-                            "body": "{\n    \"message\": \"The route api\/workspaces\/architecto could not be found.\"\n}",
-                            "name": ""
+                            "body": "{ \"error\": \"Workspace not found.\" }",
+                            "name": "Not found"
                         }
                     ]
                 },
                 {
-                    "name": "PUT api\/workspaces\/{id}",
+                    "name": "Update Workspace",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -21676,8 +21956,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the workspace."
+                                    "value": "1",
+                                    "description": "Workspace ID."
                                 }
                             ]
                         },
@@ -21692,13 +21972,41 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
-                        "description": ""
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"Main Office\",\"created_by\":1,\"email\":\"office@example.com\",\"phone\":\"+1234567890\",\"pincode\":\"100001\",\"gst_number\":\"27AAECS1234F1Z5\",\"pan_number\":\"ABCDE1234F\",\"ifsc_code\":\"SBIN0001234\",\"bank_name\":\"State Bank of India\",\"account_number\":\"1234567890\",\"status\":\"active\"}"
+                        },
+                        "description": "Update an existing workspace's details including logo. Seeds global master data on completion."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"success\": \"Workspace updated successfully.\",\n  \"workspace\": {\"id\": 1, \"name\": \"Main Office\", \"slug\": \"main-office\", ...}\n}",
+                            "name": "Updated successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"error\": \"Permission denied\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{ \"error\": \"Workspace not found.\" }",
+                            "name": "Not found"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{ \"error\": \"Validation failed message\", \"details\": {...} }",
+                            "name": "Validation error"
+                        }
+                    ]
                 },
                 {
-                    "name": "DELETE api\/workspaces\/{id}",
+                    "name": "Delete Workspace",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -21709,8 +22017,8 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the workspace."
+                                    "value": "1",
+                                    "description": "Workspace ID."
                                 }
                             ]
                         },
@@ -21726,9 +22034,34 @@
                             }
                         ],
                         "body": null,
-                        "description": ""
+                        "description": "Permanently delete a workspace. Workspaces used in projects cannot be deleted."
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{ \"success\": \"Workspace deleted successfully.\" }",
+                            "name": "Deleted successfully"
+                        },
+                        {
+                            "header": [],
+                            "code": 400,
+                            "body": "{ \"status\": 0, \"message\": \"Site cannot be deleted because it is used in Projects.\" }",
+                            "name": "In use by projects"
+                        },
+                        {
+                            "header": [],
+                            "code": 403,
+                            "body": "{ \"status\": \"error\", \"message\": \"Permission denied.\" }",
+                            "name": "Permission denied"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{ \"error\": \"Workspace not found.\" }",
+                            "name": "Not found"
+                        }
+                    ]
                 }
             ]
         }

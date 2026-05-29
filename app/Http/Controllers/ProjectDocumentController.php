@@ -19,7 +19,10 @@ class ProjectDocumentController extends Controller
     }
 
     /**
-     * Display project documents page
+     * Display project documents page.
+     *
+     * @authenticated
+     * @response view="project-documents.index"
      */
     public function index()
     {
@@ -82,7 +85,16 @@ class ProjectDocumentController extends Controller
     }
 
     /**
-     * Get documents in a specific folder
+     * Get documents in a specific folder (AJAX).
+     *
+     * @authenticated
+     * @urlParam projectId int required Project ID.
+     * @queryParam folder_path string Folder path to browse.
+     * @response {
+     *   "success": true,
+     *   "documents": [],
+     *   "folder_path": ""
+     * }
      */
     public function getFolder($projectId)
     {
@@ -110,7 +122,17 @@ class ProjectDocumentController extends Controller
     }
 
     /**
-     * Upload a file
+     * Upload a file to project documents (AJAX).
+     *
+     * @authenticated
+     * @bodyParam file file required The file to upload.
+     * @bodyParam project_id integer required Project ID.
+     * @bodyParam folder_path string nullable Target folder path.
+     * @response {
+     *   "success": true,
+     *   "document": {},
+     *   "message": "File uploaded successfully"
+     * }
      */
     public function upload(Request $request)
     {
@@ -171,7 +193,12 @@ class ProjectDocumentController extends Controller
     }
 
     /**
-     * Download a document
+     * Download a document.
+     *
+     * @authenticated
+     * @urlParam projectId int required Project ID.
+     * @urlParam documentId int required Document ID.
+     * @response file download
      */
     public function download($projectId, $documentId)
     {
@@ -196,7 +223,15 @@ class ProjectDocumentController extends Controller
     }
 
     /**
-     * Delete a document
+     * Delete a document (AJAX).
+     *
+     * @authenticated
+     * @urlParam projectId int required Project ID.
+     * @urlParam documentId int required Document ID.
+     * @response {
+     *   "success": true,
+     *   "message": "Document deleted successfully"
+     * }
      */
     public function delete(Request $request, $projectId, $documentId)
     {
@@ -221,7 +256,17 @@ class ProjectDocumentController extends Controller
     }
 
     /**
-     * Rename a document
+     * Rename a document (AJAX).
+     *
+     * @authenticated
+     * @urlParam projectId int required Project ID.
+     * @urlParam documentId int required Document ID.
+     * @bodyParam name string required New document name (max 255 chars).
+     * @response {
+     *   "success": true,
+     *   "document": {},
+     *   "message": "Document renamed successfully"
+     * }
      */
     public function rename(Request $request, $projectId, $documentId)
     {
@@ -254,7 +299,16 @@ class ProjectDocumentController extends Controller
     }
 
     /**
-     * Create a folder
+     * Create a folder in project documents (AJAX).
+     *
+     * @authenticated
+     * @urlParam projectId int required Project ID.
+     * @bodyParam folder_name string required Folder name (max 255 chars).
+     * @response {
+     *   "success": true,
+     *   "folder": {},
+     *   "message": "Folder created successfully"
+     * }
      */
     public function createFolder(Request $request, $projectId)
     {
@@ -291,7 +345,14 @@ class ProjectDocumentController extends Controller
     }
 
     /**
-     * Switch active project
+     * Switch active project (AJAX).
+     *
+     * @authenticated
+     * @urlParam projectId int required Project ID.
+     * @response {
+     *   "success": true,
+     *   "message": "Active project switched successfully"
+     * }
      */
     public function switchProject(Request $request, $projectId)
     {
@@ -317,7 +378,14 @@ class ProjectDocumentController extends Controller
     }
 
     /**
-     * Get project statistics
+     * Get project storage statistics (AJAX).
+     *
+     * @authenticated
+     * @urlParam projectId int required Project ID.
+     * @response {
+     *   "success": true,
+     *   "stats": {}
+     * }
      */
     public function getStats($projectId)
     {

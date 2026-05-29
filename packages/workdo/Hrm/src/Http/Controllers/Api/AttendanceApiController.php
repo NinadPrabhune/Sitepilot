@@ -25,6 +25,27 @@ use Workdo\Hrm\Events\UpdateMarkAttendance;
  */
 class AttendanceApiController extends Controller {
 
+    /**
+     * Get data required for creating attendance (employees list)
+     *
+     * @authenticated
+     * @group HRM Attendance
+     *
+     * @bodyParam user_id integer required User ID. Example: 1
+     * @bodyParam site_id integer required Site ID. Example: 5
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     *
+     * @response {
+     *  "success": true,
+     *  "employees": [
+     *    {"id": 1, "name": "John Doe"}
+     *  ]
+     * }
+     * @response 401 {
+     *  "success": false,
+     *  "error": "Permission denied."
+     * }
+     */
     public function createData(Request $request)
     {
         if (Auth::user()->isAbleTo('attendance create')) {
@@ -194,7 +215,31 @@ if ($validator->fails()) {
 }
 
 
-public function show($id)
+    /**
+     * Show a single attendance record
+     *
+     * @authenticated
+     * @group HRM Attendance
+     *
+     * @urlParam id integer required The ID of the attendance record. Example: 1
+     *
+     * @response {
+     *  "status": "success",
+     *  "data": {
+     *    "id": 1,
+     *    "employee_id": 5,
+     *    "date": "2024-01-15",
+     *    "status": "Present",
+     *    "clock_in": "09:00:00",
+     *    "clock_out": "18:00:00"
+     *  }
+     * }
+     * @response 404 {
+     *  "status": "error",
+     *  "message": "Attendance record not found."
+     * }
+     */
+    public function show($id)
 {
     try {
         // ✅ Permission check
@@ -574,6 +619,44 @@ if ($lastClockOut) {
         }
     }
 
+    /**
+     * Get attendance history grouped by date
+     *
+     * Returns attendance records grouped by date. Supports monthly filtering and role-based access.
+     *
+     * @authenticated
+     * @group HRM Attendance
+     *
+     * @bodyParam workspace_id integer optional Workspace ID. Example: 1
+     * @bodyParam site_id integer optional Site ID. Example: 5
+     * @bodyParam employee_id integer optional Employee ID. Example: 5
+     * @bodyParam type string optional Filter type (monthly). Example: monthly
+     * @bodyParam month integer optional Month number (1-12). Example: 1
+     * @bodyParam year integer optional Year. Example: 2024
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": [
+     *    {
+     *      "total_time": "08:00",
+     *      "date": "2024-01-15",
+     *      "history": [
+     *        {
+     *          "id": 1,
+     *          "status": "Present",
+     *          "clock_in": "09:00:00",
+     *          "clock_out": "18:00:00",
+     *          "total": "08:00 hours",
+     *          "employee_id": 5,
+     *          "employee_name": "John Doe",
+     *          "site_id": 1,
+     *          "site_name": "Main Office"
+     *        }
+     *      ]
+     *    }
+     *  ]
+     * }
+     */
     public function attendenceHistory(Request $request)
 {
     try {
@@ -951,6 +1034,35 @@ $timeRegex = '/(\d{2}:\d{2}:\d{2})$/';
 
 
 
+    /**
+     * Update attendance record (admin)
+     *
+     * @authenticated
+     * @group HRM Attendance
+     *
+     * @urlParam id integer required The ID of the attendance record. Example: 1
+     *
+     * @bodyParam employee_id integer required Employee ID. Example: 5
+     * @bodyParam user_id integer required User ID. Example: 1
+     * @bodyParam date date required Attendance date. Example: 2024-01-15
+     * @bodyParam clock_in string required Clock in time (HH:mm). Example: 09:00
+     * @bodyParam clock_out string required Clock out time (HH:mm). Example: 18:00
+     * @bodyParam site_id integer required Site ID. Example: 5
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     *
+     * @response {
+     *  "status": "success",
+     *  "message": "The employee attendance details have been updated successfully.",
+     *  "data": {
+     *    "id": 1,
+     *    "employee_id": 5,
+     *    "date": "2024-01-15",
+     *    "clock_in": "09:00:00",
+     *    "clock_out": "18:00:00"
+     *  }
+     * }
+     */
     public function AdminAttendenceUpdate(Request $request, $id)
     {
         try {
@@ -1111,7 +1223,21 @@ $timeRegex = '/(\d{2}:\d{2}:\d{2})$/';
 
 
 
-public function AdminAttendenceDelete($id)
+    /**
+     * Delete attendance record (admin)
+     *
+     * @group HRM Attendance
+     *
+     * @urlParam id integer required The ID of the attendance record. Example: 1
+     *
+     * @response {
+     *  "message": "Attendance record deleted successfully"
+     * }
+     * @response 404 {
+     *  "message": "Attendance record not found"
+     * }
+     */
+    public function AdminAttendenceDelete($id)
 {
     $attendance = Attendance::find($id);
 

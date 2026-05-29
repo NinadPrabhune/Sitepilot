@@ -14,12 +14,23 @@ use Illuminate\Support\Facades\Mail;
 class SettingsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display the settings page.
+     *
+     * @authenticated
+     * @response view="settings.index"
      */
     public function index()
     {
         return view('settings.index');
     }
+    /**
+     * Get the settings section for a given module.
+     *
+     * @authenticated
+     * @urlParam module string required The module name. Example: Base
+     * @urlParam method string The method to call on the settings controller. Default: index. Example: index
+     * @response status=200 scenario="success" {"status": 200, "html": "<div>...</div>"}
+     */
     public function getSettingSection($module, $method = 'index')
     {
         $folder = 'Company';
@@ -94,6 +105,12 @@ class SettingsController extends Controller
     }
 
 
+    /**
+     * Get email setting view for a given settings collection.
+     *
+     * @authenticated
+     * @response view="email.index"
+     */
     public function emailSettingGet($settings)
     {
         $activatedModules = ActivatedModule();
@@ -107,7 +124,10 @@ class SettingsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resource (redirects back).
+     *
+     * @authenticated
+     * @response redirect
      */
     public function create()
     {
@@ -115,7 +135,10 @@ class SettingsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage (redirects back).
+     *
+     * @authenticated
+     * @response redirect
      */
     public function store()
     {
@@ -123,7 +146,10 @@ class SettingsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified resource (redirects back).
+     *
+     * @authenticated
+     * @response redirect
      */
     public function show()
     {
@@ -131,7 +157,10 @@ class SettingsController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified resource (redirects back).
+     *
+     * @authenticated
+     * @response redirect
      */
     public function edit()
     {
@@ -139,7 +168,10 @@ class SettingsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource in storage (redirects back).
+     *
+     * @authenticated
+     * @response redirect
      */
     public function update()
     {
@@ -147,13 +179,23 @@ class SettingsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage (redirects back).
+     *
+     * @authenticated
+     * @response redirect
      */
     public function destroy()
     {
         return redirect()->back();
     }
 
+    /**
+     * Get email setting input fields for AJAX.
+     *
+     * @authenticated
+     * @bodyParam emailsetting string required The email setting key. Example: mail_driver
+     * @response status=200 scenario="success" {"is_success": true, "html": "<input>..."}
+     */
     public function getfields(Request $request)
     {
         if (auth()->user()->type == 'super admin') {
@@ -174,6 +216,21 @@ class SettingsController extends Controller
 
        return response()->json($response);
     }
+    /**
+     * Save mail configuration settings.
+     *
+     * @authenticated
+     * @bodyParam mail_driver string required Mail driver. Example: smtp
+     * @bodyParam mail_host string required Mail host. Example: smtp.gmail.com
+     * @bodyParam mail_port string required Mail port. Example: 587
+     * @bodyParam mail_username string required Mail username. Example: user@gmail.com
+     * @bodyParam mail_password string required Mail password.
+     * @bodyParam mail_encryption string required Mail encryption. Example: tls
+     * @bodyParam mail_from_address string required From email address. Example: noreply@example.com
+     * @bodyParam mail_from_name string required From name. Example: SitePilot
+     * @bodyParam email_setting string Email setting identifier.
+     * @response redirect
+     */
     public function mailStore(Request $request)
     {
 
@@ -230,6 +287,19 @@ class SettingsController extends Controller
         }
     }
 
+    /**
+     * Show the test mail form.
+     *
+     * @authenticated
+     * @bodyParam mail_driver string required Mail driver. Example: smtp
+     * @bodyParam mail_host string required Mail host. Example: smtp.gmail.com
+     * @bodyParam mail_port string required Mail port. Example: 587
+     * @bodyParam mail_username string required Mail username. Example: user@gmail.com
+     * @bodyParam mail_password string required Mail password.
+     * @bodyParam mail_from_address string required From email address. Example: noreply@example.com
+     * @bodyParam mail_encryption string required Mail encryption. Example: tls
+     * @response view="settings.test_mail"
+     */
     public function testMail(Request $request)
     {
         $data                    = [];
@@ -244,6 +314,21 @@ class SettingsController extends Controller
         return view('settings.test_mail', compact('data'));
     }
 
+    /**
+     * Send a test email.
+     *
+     * @authenticated
+     * @bodyParam email string required Recipient email address. Example: test@example.com
+     * @bodyParam mail_driver string required Mail driver. Example: smtp
+     * @bodyParam mail_host string required Mail host. Example: smtp.gmail.com
+     * @bodyParam mail_port string required Mail port. Example: 587
+     * @bodyParam mail_username string required Mail username. Example: user@gmail.com
+     * @bodyParam mail_password string required Mail password.
+     * @bodyParam mail_from_address string required From email address. Example: noreply@example.com
+     * @bodyParam mail_encryption string Mail encryption. Example: tls
+     * @response status=200 scenario="success" {"is_success": true, "message": "Email send Successfully"}
+     * @response status=422 scenario="error" {"is_success": false, "message": "Validation error"}
+     */
     public function sendTestMail(Request $request)
     {
         $validator = \Validator::make(
@@ -289,6 +374,13 @@ class SettingsController extends Controller
         }
     }
 
+    /**
+     * Save mail notification settings.
+     *
+     * @authenticated
+     * @bodyParam mail_noti object required Key-value pairs of notification settings.
+     * @response redirect
+     */
     public function mailNotificationStore(Request $request)
     {
         // mail notification save
@@ -312,7 +404,10 @@ class SettingsController extends Controller
     }
 
     /**
-     * Numbering Configuration Index
+     * Display the numbering configuration index page.
+     *
+     * @authenticated
+     * @response view="settings.numbering.index"
      */
     public function numberingIndex()
     {
@@ -325,7 +420,16 @@ class SettingsController extends Controller
     }
 
     /**
-     * Update Numbering Configuration
+     * Update numbering configuration for a module scope.
+     *
+     * @authenticated
+     * @bodyParam module string required The module name (po, indent, grn, invoice, payment). Example: po
+     * @bodyParam scope_type string required Scope type (site, workspace). Example: workspace
+     * @bodyParam scope_id integer required The scope ID. Example: 1
+     * @bodyParam prefix string required Number prefix. Example: PO
+     * @bodyParam starting_number integer required Starting number. Minimum: 1. Example: 1
+     * @bodyParam padding_length integer required Zero-padding length. Minimum: 1, Maximum: 10. Example: 5
+     * @response redirect
      */
     public function updateNumberingConfig(Request $request)
     {
@@ -463,7 +567,13 @@ class SettingsController extends Controller
     }
 
     /**
-     * Get Effective Configuration
+     * Get the effective numbering configuration for a module scope.
+     *
+     * @authenticated
+     * @queryParam module string required Module name. Example: po
+     * @queryParam scope_type string required Scope type (site, workspace). Example: workspace
+     * @queryParam scope_id integer required Scope ID. Example: 1
+     * @response status=200 scenario="success" {"id": 1, "module": "po", "prefix": "PO", "starting_number": 1, "padding_length": 5}
      */
     public function getEffectiveConfig(Request $request)
     {
@@ -489,7 +599,12 @@ class SettingsController extends Controller
     }
 
     /**
-     * Test Next Number (Dry Run)
+     * Preview the next generated number (dry run).
+     *
+     * @authenticated
+     * @queryParam module string required Module name. Example: po
+     * @queryParam scope_id integer required Scope ID. Example: 1
+     * @response status=200 scenario="success" {"next_number": "PO00001", "last_number": "PO00000", "is_preview": true}
      */
     public function testNextNumber(Request $request)
     {
@@ -546,7 +661,15 @@ class SettingsController extends Controller
     }
 
     /**
-     * Audit Log Viewer with Filters
+     * Display the numbering configuration audit log.
+     *
+     * @authenticated
+     * @queryParam module string Filter by module. Example: po
+     * @queryParam scope_type string Filter by scope type. Example: workspace
+     * @queryParam date_from date Filter logs from this date. Example: 2025-01-01
+     * @queryParam date_to date Filter logs up to this date. Example: 2025-12-31
+     * @queryParam user_id integer Filter by user who made the change. Example: 1
+     * @response view="settings.numbering.audit"
      */
     public function auditLog(Request $request)
     {
@@ -584,7 +707,13 @@ class SettingsController extends Controller
     }
 
     /**
-     * Force Reset Sequence
+     * Force reset the numbering sequence for a module scope.
+     *
+     * @authenticated
+     * @bodyParam module string required Module name. Example: po
+     * @bodyParam scope_id integer required Scope ID. Example: 1
+     * @bodyParam reset_to integer required Reset to this number. Minimum: 1. Example: 1
+     * @response status=200 scenario="success" {"success": true}
      */
     public function forceResetSequence(Request $request)
     {
@@ -632,7 +761,10 @@ class SettingsController extends Controller
     }
 
     /**
-     * Get Numbering Configurations API
+     * Get all numbering configurations as JSON.
+     *
+     * @authenticated
+     * @response status=200 scenario="success" [{"id": 1, "module": "po", "prefix": "PO", "starting_number": 1, "padding_length": 5}]
      */
     public function getNumberingConfigsApi()
     {

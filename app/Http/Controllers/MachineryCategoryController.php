@@ -17,7 +17,10 @@ use App\Events\UpdateMachineryCategory;
 class MachineryCategoryController extends Controller {
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of machinery categories
+     *
+     * @authenticated
+     * @response view="machinery-categories.index"
      */
     public function index(MachineryCategoryDataTable $dataTable) {
         if (\Auth::user()->isAbleTo('machinery-category manage')) {
@@ -27,6 +30,12 @@ class MachineryCategoryController extends Controller {
         }
     }
 
+    /**
+     * Show create machinery category form
+     *
+     * @authenticated
+     * @response view="machinery-categories.create"
+     */
     public function create() {
         if (\Auth::user()->isAbleTo('machinery-category create')) {
 
@@ -39,7 +48,12 @@ class MachineryCategoryController extends Controller {
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created machinery category
+     *
+     * @authenticated
+     * @bodyParam name string required Category name. Max 255 chars. Example: Excavators
+     * @bodyParam site_id int optional Site ID.
+     * @response redirect to machinery-categories.index
      */
     public function store(Request $request) {
         if (\Auth::user()->isAbleTo('machinery-category create')) {
@@ -73,7 +87,11 @@ class MachineryCategoryController extends Controller {
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified machinery category
+     *
+     * @authenticated
+     * @urlParam machinery_category int required The machinery category ID.
+     * @response view="machinery-categories.show"
      */
     public function show(MachineryCategory $MachineryCategory) {
         if (\Auth::user()->isAbleTo('machinery-category show')) {
@@ -86,7 +104,11 @@ class MachineryCategoryController extends Controller {
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show edit machinery category form
+     *
+     * @authenticated
+     * @urlParam machinery_category int required The machinery category ID.
+     * @response view="machinery-categories.edit"
      */
     public function edit(MachineryCategory $MachineryCategory) {
         if (\Auth::user()->isAbleTo('machinery-category edit')) {
@@ -102,7 +124,12 @@ class MachineryCategoryController extends Controller {
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified machinery category
+     *
+     * @authenticated
+     * @urlParam machinery_category int required The machinery category ID.
+     * @bodyParam name string required Category name. Max 255 chars. Must be unique. Example: Excavators
+     * @response redirect to machinery-categories.index
      */
     public function update(Request $request, MachineryCategory $MachineryCategory) {
         if (\Auth::user()->isAbleTo('machinery-category edit')) {
@@ -129,7 +156,11 @@ class MachineryCategoryController extends Controller {
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified machinery category
+     *
+     * @authenticated
+     * @urlParam machinery_category int required The machinery category ID.
+     * @response redirect to machinery-categories.index
      */
     public function destroy(MachineryCategory $MachineryCategory) {
         if (\Auth::user()->isAbleTo('machinery-category delete')) {

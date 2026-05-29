@@ -18,6 +18,30 @@ use Workdo\Hrm\Events\DestroyAnnouncement;
  */
 class AnnouncementApiController extends Controller {
 
+    /**
+     * List all announcements
+     *
+     * @authenticated
+     * @group HRM Announcements
+     *
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by site ID. Example: 5
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": [
+     *    {
+     *      "id": 1,
+     *      "title": "Company Holiday",
+     *      "start_date": "2024-01-15",
+     *      "end_date": "2024-01-20",
+     *      "description": "Office closed for holidays",
+     *      "workspace": 1,
+     *      "site_id": 5
+     *    }
+     *  ]
+     * }
+     */
     public function index(Request $request) {
         try {
             if (!Auth::user()->isAbleTo('announcement manage')) {
@@ -45,6 +69,22 @@ class AnnouncementApiController extends Controller {
         }
     }
     
+    /**
+     * Get data required for creating an announcement (projects list)
+     *
+     * @authenticated
+     * @group HRM Announcements
+     *
+     * @bodyParam workspace_id integer optional Workspace ID. Example: 1
+     *
+     * @response {
+     *  "success": true,
+     *  "projects": {
+     *    "1": "Project Alpha",
+     *    "2": "Project Beta"
+     *  }
+     * }
+     */
     public function createData(Request $request)
     {
         try {
@@ -156,6 +196,28 @@ class AnnouncementApiController extends Controller {
         }
     }
 
+    /**
+     * Show a single announcement
+     *
+     * @group HRM Announcements
+     *
+     * @urlParam id integer required The ID of the announcement. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": {
+     *    "id": 1,
+     *    "title": "Company Holiday",
+     *    "start_date": "2024-01-15",
+     *    "end_date": "2024-01-20",
+     *    "description": "Office closed"
+     *  }
+     * }
+     * @response 404 {
+     *  "status": 0,
+     *  "message": "Announcement not found"
+     * }
+     */
     public function show($id) {
         try {
             $announcement = Announcement::find($id);
@@ -170,6 +232,28 @@ class AnnouncementApiController extends Controller {
         }
     }
 
+    /**
+     * Update an announcement
+     *
+     * @authenticated
+     * @group HRM Announcements
+     *
+     * @urlParam id integer required The ID of the announcement. Example: 1
+     *
+     * @bodyParam title string required Announcement title. Example: Updated Holiday
+     * @bodyParam start_date date required Start date. Example: 2024-01-15
+     * @bodyParam end_date date required End date. Example: 2024-01-20
+     * @bodyParam description string required Description. Example: Updated description
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam site_id integer required Site ID. Example: 5
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "message": "Announcement updated successfully",
+     *  "data": {...}
+     * }
+     */
     public function update(Request $request, $id) {
         try {
             $announcement = Announcement::find($id);
@@ -221,6 +305,19 @@ class AnnouncementApiController extends Controller {
         }
     }
 
+    /**
+     * Delete an announcement
+     *
+     * @authenticated
+     * @group HRM Announcements
+     *
+     * @urlParam id integer required The ID of the announcement. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "message": "Announcement deleted successfully"
+     * }
+     */
     public function destroy($id) {
         try {
             $announcement = Announcement::find($id);

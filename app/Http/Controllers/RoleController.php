@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\Cache;
 
 class RoleController extends Controller
 {
+    /**
+     * Display a listing of roles.
+     *
+     * @authenticated
+     * @response view="role.index"
+     */
     public function index()
     {
 
@@ -35,6 +41,12 @@ class RoleController extends Controller
     }
 
 
+    /**
+     * Show the form for creating a new role.
+     *
+     * @authenticated
+     * @response view="role.create"
+     */
     public function create()
     {
         if(Auth::user()->isAbleTo('roles create'))
@@ -67,6 +79,14 @@ class RoleController extends Controller
     }
 
 
+    /**
+     * Store a newly created role.
+     *
+     * @authenticated
+     * @bodyParam name string required The name of the role. Example: Manager
+     * @bodyParam permissions array required Array of permission IDs. Example: [1,2,3]
+     * @response redirect to="roles.index"
+     */
     public function store(Request $request)
     {
         if(Auth::user()->isAbleTo('roles create'))
@@ -120,11 +140,24 @@ class RoleController extends Controller
 
     }
 
+    /**
+     * Display the specified role (redirects back).
+     *
+     * @authenticated
+     * @response redirect
+     */
     public function show(Request $request)
     {
         return redirect()->back();
     }
 
+    /**
+     * Show the form for editing a role.
+     *
+     * @authenticated
+     * @urlParam role integer required The role ID. Example: 1
+     * @response view="role.edit"
+     */
     public function edit(Role $role)
     {
         if(Auth::user()->isAbleTo('roles edit'))
@@ -142,6 +175,15 @@ class RoleController extends Controller
 
     }
     
+    /**
+     * Update the specified role.
+     *
+     * @authenticated
+     * @urlParam role integer required The role ID. Example: 1
+     * @bodyParam name string required The name of the role. Example: Manager
+     * @bodyParam permissions array required Array of permission IDs. Example: [1,2,3]
+     * @response redirect to="roles.index"
+     */
     public function update(Request $request, Role $role)
 {
     if(Auth::user()->isAbleTo('roles edit'))
@@ -214,6 +256,13 @@ class RoleController extends Controller
 //    }
 
 
+    /**
+     * Remove the specified role.
+     *
+     * @authenticated
+     * @urlParam role integer required The role ID. Example: 1
+     * @response redirect to="roles.index"
+     */
     public function destroy(Role $role)
     {
         if(Auth::user()->isAbleTo('roles delete'))

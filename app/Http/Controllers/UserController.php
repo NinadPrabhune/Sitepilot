@@ -29,9 +29,13 @@ use App\DataTables\UsersDataTable;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of users.
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @queryParam name string Filter by user name. Example: John
+     * @queryParam email string Filter by email. Example: john@example.com
+     * @queryParam role integer Filter by role ID. Example: 1
+     * @response view="users.index"
      */
     public function index(Request $request)
     {
@@ -84,6 +88,12 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Display users list via DataTable.
+     *
+     * @authenticated
+     * @response view="users.list"
+     */
     public function List(UsersDataTable $dataTable)
     {
         if(Auth::user()->isAbleTo('user manage'))
@@ -103,9 +113,10 @@ class UserController extends Controller
         }
     }
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new user.
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @response view="users.create"
      */
     public function create()
     {
@@ -121,10 +132,17 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created user.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @bodyParam name string required The user name. Maximum: 120. Example: John Doe
+     * @bodyParam email string required The email address. Must be unique. Example: john@example.com
+     * @bodyParam roles integer required The role ID (for non-super-admin). Example: 1
+     * @bodyParam password_switch string Enable login password. Example: on
+     * @bodyParam password string The password. Minimum: 6. Required when password_switch is on.
+     * @bodyParam mobile_no string Mobile number with country code. Example: +911234567890
+     * @bodyParam workSpace_name string Workspace name (super admin only).
+     * @response redirect
      */
     public function store(Request $request)
     {
@@ -298,10 +316,11 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified user (redirects to index).
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id integer required The user ID. Example: 1
+     * @response redirect to="users.index"
      */
     public function show($id)
     {
@@ -309,10 +328,11 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing a user.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id integer required The user ID. Example: 1
+     * @response view="users.edit"
      */
     public function edit($id)
     {
@@ -329,11 +349,14 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified user.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id integer required The user ID. Example: 1
+     * @bodyParam name string required The user name. Maximum: 120. Example: John Doe
+     * @bodyParam mobile_no string Mobile number with country code. Example: +911234567890
+     * @bodyParam roles integer The new role ID. Example: 1
+     * @response redirect
      */
     public function update(Request $request, $id)
     {
@@ -395,10 +418,11 @@ $validatorArray = [
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified user.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     * @urlParam id integer required The user ID. Example: 1
+     * @response redirect
      */
     public function destroy($id)
     {
@@ -455,6 +479,12 @@ $validatorArray = [
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Show the user profile page.
+     *
+     * @authenticated
+     * @response view="users.profile"
+     */
     public function profile()
     {
         if(Auth::user()->isAbleTo('user profile manage'))
@@ -468,6 +498,15 @@ $validatorArray = [
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Update the authenticated user's profile.
+     *
+     * @authenticated
+     * @bodyParam name string required The user name. Maximum: 120. Example: John Doe
+     * @bodyParam mobile_no string Mobile number with country code. Example: +911234567890
+     * @bodyParam profile file Profile image file.
+     * @response redirect
+     */
     public function editprofile(Request $request)
     {
         if(Auth::user()->isAbleTo('user profile manage'))
@@ -541,6 +580,15 @@ $validatorArray = [
         }
     }
 
+    /**
+     * Update the authenticated user's password.
+     *
+     * @authenticated
+     * @bodyParam current_password string required The current password.
+     * @bodyParam new_password string required The new password. Minimum: 6.
+     * @bodyParam confirm_password string required Must match new_password.
+     * @response redirect to="profile"
+     */
     public function updatePassword(Request $request)
     {
         if(Auth::user()->isAbleTo('user profile manage'))
@@ -575,6 +623,13 @@ $validatorArray = [
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Get users list as JSON for DataTable (AJAX).
+     *
+     * @authenticated
+     * @bodyParam name integer Filter by user ID.
+     * @response status=200 scenario="success" {"data": [{"id": 1, "name": "John Doe", "email": "john@example.com"}]}
+     */
     public function ajaxUserList(Request $request){
 
         if ($request->ajax()) {
@@ -600,6 +655,13 @@ $validatorArray = [
 
         }
     }
+    /**
+     * Show the password reset form for a user.
+     *
+     * @authenticated
+     * @urlParam id string required The encrypted user ID.
+     * @response view="users.reset"
+     */
     public function UserPassword($id)
     {
         if(Auth::user()->isAbleTo('user reset password'))
@@ -622,6 +684,16 @@ $validatorArray = [
         }
 
     }
+    /**
+     * Reset a user's password.
+     *
+     * @authenticated
+     * @urlParam id integer required The user ID. Example: 1
+     * @bodyParam password string required The new password. Confirmed. Minimum: 6.
+     * @bodyParam password_confirmation string required Must match password.
+     * @bodyParam login_enable string Enable login for the user. Example: on
+     * @response redirect to="users.index"
+     */
     public function UserPasswordReset(Request $request, $id)
     {
         if(Auth::user()->isAbleTo('user reset password'))
@@ -663,6 +735,13 @@ $validatorArray = [
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Toggle login enable/disable for a user.
+     *
+     * @authenticated
+     * @urlParam id string required The encrypted user ID.
+     * @response redirect to="users.index"
+     */
     public function LoginManage($id)
     {
         if(Auth::user()->isAbleTo('user reset password'))
@@ -688,6 +767,12 @@ $validatorArray = [
             return redirect()->route('users.index')->with('error', 'Permission denied.');
         }
     }
+    /**
+     * Show the user import page.
+     *
+     * @authenticated
+     * @response view="users.import"
+     */
     public function fileImportExport()
     {
         if(Auth::user()->isAbleTo('user import'))
@@ -700,6 +785,13 @@ $validatorArray = [
         }
 
     }
+    /**
+     * Parse CSV file for user import.
+     *
+     * @authenticated
+     * @bodyParam file file required The CSV file.
+     * @response status=200 scenario="success" {"output": "<table>...</table>", "error": ""}
+     */
     public function fileImport(Request $request)
     {
         if(Auth::user()->isAbleTo('user import'))
@@ -798,6 +890,12 @@ $validatorArray = [
 
     }
 
+    /**
+     * Show the user import modal page.
+     *
+     * @authenticated
+     * @response view="users.import_modal"
+     */
     public function fileImportModal()
     {
         if(Auth::user()->isAbleTo('user import'))
@@ -810,6 +908,15 @@ $validatorArray = [
         }
     }
 
+    /**
+     * Process and import user data from parsed CSV.
+     *
+     * @authenticated
+     * @bodyParam name integer The column index for name field.
+     * @bodyParam email integer The column index for email field.
+     * @bodyParam role array The role ID per row.
+     * @response status=200 scenario="success" {"html": false, "response": "Data Imported Successfully"}
+     */
     public function UserImportdata(Request $request)
     {
         if(Auth::user()->isAbleTo('user import'))
@@ -951,6 +1058,14 @@ $validatorArray = [
             ]);
         }
     }
+    /**
+     * Display user login history.
+     *
+     * @authenticated
+     * @queryParam month string Filter by month (YYYY-MM). Example: 2025-05
+     * @queryParam users integer Filter by user ID. Example: 1
+     * @response view="users.userlog"
+     */
     public function UserLogHistory(Request $request)
     {
         if(Auth::user()->isAbleTo('user logs history'))
@@ -1005,6 +1120,13 @@ $validatorArray = [
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Display a specific login detail record.
+     *
+     * @authenticated
+     * @urlParam id integer required The login detail ID. Example: 1
+     * @response view="users.userlogview"
+     */
     public function UserLogView($id)
     {
         $users_log = LoginDetail::find($id);
@@ -1012,6 +1134,13 @@ $validatorArray = [
         return view('users.userlogview', compact('users_log'));
     }
 
+    /**
+     * Delete a user login history record.
+     *
+     * @authenticated
+     * @urlParam id integer required The login detail ID. Example: 1
+     * @response redirect to="users.userlog.history"
+     */
     public function UserLogDestroy($id)
     {
         if(Auth::user()->isAbleTo('user delete'))
@@ -1026,6 +1155,13 @@ $validatorArray = [
         }
     }
 
+    /**
+     * Impersonate login as a company user.
+     *
+     * @authenticated
+     * @urlParam id integer required The target user ID. Example: 1
+     * @response redirect to="/home"
+     */
     public function LoginWithCompany(Request $request, User $user,  $id)
     {
         $user = User::find($id);
@@ -1035,12 +1171,25 @@ $validatorArray = [
         }
     }
 
+    /**
+     * Leave impersonation and return to original account.
+     *
+     * @authenticated
+     * @response redirect to="/dashboard"
+     */
     public function ExitCompany(Request $request)
     {
         \Auth::user()->leaveImpersonation($request->user());
         return redirect('/dashboard');
     }
 
+    /**
+     * Display company user and workspace information.
+     *
+     * @authenticated
+     * @urlParam id integer required The company user ID. Example: 1
+     * @response view="users.companyinfo"
+     */
     public function CompnayInfo($id)
     {
         if(!empty($id)){
@@ -1057,6 +1206,16 @@ $validatorArray = [
         }
     }
 
+    /**
+     * Enable/disable a user or workspace via AJAX.
+     *
+     * @authenticated
+     * @bodyParam id integer required The user or workspace ID. Example: 1
+     * @bodyParam company_id integer required The company ID. Example: 1
+     * @bodyParam name string required Type (user, workspace). Example: user
+     * @bodyParam is_disable integer required 1 to enable, 0 to disable. Example: 1
+     * @response status=200 scenario="success" {"success": "Successfully Unable.", "users_data": {...}, "workspce_data": {...}}
+     */
     public function UserUnable(Request $request)
     {
         if(!empty($request->id) && !empty($request->company_id))
@@ -1101,6 +1260,13 @@ $validatorArray = [
         return response()->json('error');
     }
 
+    /**
+     * Get user and workspace counters for a company.
+     *
+     * @authenticated
+     * @urlParam id integer required The company ID. Example: 1
+     * @response status=200 scenario="success" {"is_success": true, "response": {"users_data": {...}, "workspce_data": {...}}}
+     */
     public function Counter($id)
     {
         $response = [];
@@ -1153,6 +1319,13 @@ $validatorArray = [
         return ucwords(strtolower(trim($string)));
     }
 
+    /**
+     * Manually verify a user's email.
+     *
+     * @authenticated
+     * @urlParam id integer required The user ID. Example: 1
+     * @response redirect
+     */
     public function verifeduser($id)
     {
         $user                    = User::find($id);

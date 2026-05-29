@@ -28,6 +28,12 @@ class DailyProgressReportController extends Controller
 {
     use AuthorizesRequests;
 
+    /**
+     * List all daily progress reports.
+     *
+     * @authenticated
+     * @response view="daily-progress-reports.index"
+     */
     public function index(DailyProgressReportDataTable $dataTable)
     {
         if (!Auth::user()->isAbleTo('machinery-dpr manage')) {
@@ -41,6 +47,14 @@ class DailyProgressReportController extends Controller
         }
     }
     
+    /**
+     * Get the previous meter reading for a machinery (AJAX).
+     *
+     * @authenticated
+     * @bodyParam machinery_id integer required Machinery ID. Example: 2
+     * @bodyParam date string required Date to check previous reading for. Example: 2026-05-28
+     * @response view="json"
+     */
     public function getPreviousReading(Request $request)
     {
         if (!Auth::user()->isAbleTo('machinery-dpr create')) {
@@ -84,6 +98,14 @@ class DailyProgressReportController extends Controller
         }
     }
 
+    /**
+     * Check for duplicate DPR entry for a machinery on a given date (AJAX).
+     *
+     * @authenticated
+     * @bodyParam machinery_id integer required Machinery ID. Example: 2
+     * @bodyParam date string required Date to check. Example: 2026-05-29
+     * @response view="json"
+     */
     public function checkDuplicate(Request $request)
     {
         if (!Auth::user()->isAbleTo('machinery-dpr create')) {
@@ -110,6 +132,14 @@ class DailyProgressReportController extends Controller
         ]);
     }
 
+    /**
+     * Show the form for creating a new DPR (alternative route with activity context).
+     *
+     * @authenticated
+     * @urlParam activity_completed_id integer nullable Completed activity ID. Example: 3
+     * @queryParam activity_completed_id integer Filter by completed activity ID. Example: 3
+     * @response view="daily-progress-reports.create-new"
+     */
     public function createdpr(Request $request, $activity_completed_id = null)
     {
         // Check if user is authenticated
@@ -198,6 +228,13 @@ class DailyProgressReportController extends Controller
         }
     }
 
+    /**
+     * Show the form for creating a new daily progress report.
+     *
+     * @authenticated
+     * @queryParam machinery_id integer Pre-select a machinery. Example: 2
+     * @response view="daily-progress-reports.create"
+     */
     public function create(Request $request)
     {
         // Check if user is authenticated
@@ -264,6 +301,26 @@ class DailyProgressReportController extends Controller
     
     
         
+    /**
+     * Store a newly created daily progress report.
+     *
+     * @authenticated
+     * @bodyParam date string required Date of the report. Example: 2026-05-29
+     * @bodyParam machinery_id integer required Machinery ID. Example: 2
+     * @bodyParam machine_start_reading numeric nullable Start meter reading. Example: 1200
+     * @bodyParam machine_end_reading numeric nullable End meter reading. Example: 1280
+     * @bodyParam machine_idle_reading numeric nullable Idle hours. Example: 1.5
+     * @bodyParam number_of_operators integer nullable Number of operators. Example: 2
+     * @bodyParam operator_names string nullable Operator names. Example: John, Doe
+     * @bodyParam work_details string nullable Work performed. Example: Excavation work
+     * @bodyParam consumption_type string required Consumption type: fuel or all. Example: fuel
+     * @bodyParam items array nullable Array of fuel consumption items.
+     * @bodyParam items.*.material_id integer required Material ID. Example: 10
+     * @bodyParam items.*.quantity numeric required Quantity. Example: 10
+     * @bodyParam items.*.unit string required Unit. Example: litres
+     * @bodyParam items.*.remarks string nullable Remarks. Example: For excavator
+     * @response view="daily-progress-reports.index" (redirect back)
+     */
     public function store(Request $request)
 {
     // STORE DEBUG: Check if store method is being called
@@ -777,6 +834,13 @@ return back()->with('success', $successMessage);
 //        }
 //    }
 
+    /**
+     * Display a specific daily progress report.
+     *
+     * @authenticated
+     * @urlParam id integer required The DPR ID. Example: 1
+     * @response view="daily-progress-reports.show"
+     */
     public function show($id)
     {
         // ✅ POLICY-BASED AUTHORIZATION
@@ -801,6 +865,13 @@ return back()->with('success', $successMessage);
 }
 
     
+    /**
+     * Show the form for editing a daily progress report.
+     *
+     * @authenticated
+     * @urlParam id integer required The DPR ID. Example: 1
+     * @response view="daily-progress-reports.edit"
+     */
     public function edit($id)
     {
         // ✅ POLICY-BASED AUTHORIZATION
@@ -884,7 +955,25 @@ return back()->with('success', $successMessage);
 //        }
 //    }
 
-public function update(Request $request, $id)
+    /**
+     * Update a daily progress report.
+     *
+     * @authenticated
+     * @urlParam id integer required The DPR ID. Example: 1
+     * @bodyParam date string required Date of the report. Example: 2026-05-29
+     * @bodyParam machinery_id integer required Machinery ID. Example: 2
+     * @bodyParam machine_start_reading numeric nullable Start meter reading. Example: 1200
+     * @bodyParam machine_end_reading numeric nullable End meter reading. Example: 1280
+     * @bodyParam number_of_operators integer nullable Number of operators. Example: 2
+     * @bodyParam work_details string nullable Work performed. Example: Excavation work
+     * @bodyParam items array nullable Array of fuel consumption items.
+     * @bodyParam items.*.material_id integer required Material ID. Example: 10
+     * @bodyParam items.*.quantity numeric required Quantity. Example: 10
+     * @bodyParam items.*.unit string required Unit. Example: litres
+     * @bodyParam items.*.remarks string nullable Remarks. Example: For excavator
+     * @response view="daily-progress-reports.index" (redirect back)
+     */
+    public function update(Request $request, $id)
 {
     // DEBUG: Check if update method is being called
     \Log::info('DEBUG - Update Method Called:', [
@@ -1490,6 +1579,13 @@ public function update(Request $request, $id)
 //        }
 //    }
 
+    /**
+     * Delete a daily progress report.
+     *
+     * @authenticated
+     * @urlParam report integer required The DPR ID. Example: 1
+     * @response view="daily-progress-reports.index" (redirect)
+     */
     public function destroy(DailyProgressReport $report)
     {
         if (!Auth::user()->isAbleTo('machinery-dpr delete')) {

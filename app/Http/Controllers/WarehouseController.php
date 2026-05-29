@@ -20,8 +20,10 @@ use App\Events\UpdateWarehouse;
 class WarehouseController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     * @return Renderable
+     * Display a listing of warehouses.
+     *
+     * @authenticated
+     * @response view="warehouses.index"
      */
     public function index(WarehouseDataTable $dataTable)
     {
@@ -36,8 +38,10 @@ class WarehouseController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     * @return Renderable
+     * Show the form for creating a new warehouse.
+     *
+     * @authenticated
+     * @response view="warehouses.create"
      */
     public function create()
     {
@@ -57,9 +61,15 @@ class WarehouseController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Renderable
+     * Store a newly created warehouse.
+     *
+     * @authenticated
+     * @bodyParam name string required The warehouse name. Example: Main Warehouse
+     * @bodyParam city string required The city. Example: Mumbai
+     * @bodyParam address string required The address. Example: 123 Industrial Area
+     * @bodyParam city_zip string required The zip code. Example: 400001
+     * @bodyParam customField object Custom field data.
+     * @response redirect to="warehouses.index"
      */
     public function store(Request $request)
     {
@@ -106,9 +116,11 @@ class WarehouseController extends Controller
     }
 
     /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Renderable
+     * Display the specified warehouse and its products.
+     *
+     * @authenticated
+     * @urlParam warehouse integer required The warehouse ID. Example: 1
+     * @response view="warehouses.show"
      */
     public function show(warehouse $warehouse)
     {
@@ -141,9 +153,11 @@ class WarehouseController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
+     * Show the form for editing a warehouse.
+     *
+     * @authenticated
+     * @urlParam warehouse integer required The warehouse ID. Example: 1
+     * @response view="warehouses.edit"
      */
     public function edit(Warehouse $warehouse)
     {
@@ -171,10 +185,16 @@ class WarehouseController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Renderable
+     * Update the specified warehouse.
+     *
+     * @authenticated
+     * @urlParam warehouse integer required The warehouse ID. Example: 1
+     * @bodyParam name string required The warehouse name. Example: Main Warehouse
+     * @bodyParam address string The address.
+     * @bodyParam city string The city.
+     * @bodyParam city_zip string The zip code.
+     * @bodyParam customField object Custom field data.
+     * @response redirect to="warehouses.index"
      */
     public function update(Request $request, Warehouse $warehouse)
     {
@@ -219,9 +239,11 @@ class WarehouseController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Renderable
+     * Remove the specified warehouse.
+     *
+     * @authenticated
+     * @urlParam warehouse integer required The warehouse ID. Example: 1
+     * @response redirect to="warehouses.index"
      */
     public function destroy(Warehouse $warehouse)
     {
@@ -266,12 +288,25 @@ class WarehouseController extends Controller
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
+    /**
+     * Display warehouse product details for a specific product.
+     *
+     * @authenticated
+     * @urlParam id integer required The product ID. Example: 1
+     * @response view="warehouses.detail"
+     */
     public function warehouseDetail($id)
     {
         $products = WarehouseProduct::where('product_id', '=', $id)->where('created_by',creatorId())->where('workspace',getActiveWorkSpace())->get();
         return view('warehouses.detail', compact('products'));
     }
 
+    /**
+     * Show the warehouse import page.
+     *
+     * @authenticated
+     * @response view="warehouses.import"
+     */
     public function fileImportExport()
     {
         if(Auth::user()->isAbleTo('warehouse import'))
@@ -284,6 +319,13 @@ class WarehouseController extends Controller
         }
     }
 
+    /**
+     * Parse CSV file for warehouse import.
+     *
+     * @authenticated
+     * @bodyParam file file required The CSV file.
+     * @response status=200 scenario="success" {"output": "<table>...</table>", "error": ""}
+     */
     public function fileImport(Request $request)
     {
         if(Auth::user()->isAbleTo('warehouse import'))
@@ -356,6 +398,12 @@ class WarehouseController extends Controller
 
     }
 
+    /**
+     * Show the warehouse import modal page.
+     *
+     * @authenticated
+     * @response view="warehouses.import_modal"
+     */
     public function fileImportModal()
     {
         if(Auth::user()->isAbleTo('warehouse import'))
@@ -368,6 +416,16 @@ class WarehouseController extends Controller
         }
     }
 
+    /**
+     * Process and import warehouse data from parsed CSV.
+     *
+     * @authenticated
+     * @bodyParam name integer The column index for name field.
+     * @bodyParam address integer The column index for address field.
+     * @bodyParam city integer The column index for city field.
+     * @bodyParam zip_code integer The column index for zip code field.
+     * @response status=200 scenario="success" {"html": false, "response": "Data Imported Successfully"}
+     */
     public function warehouseImportdata(Request $request)
     {
         if(Auth::user()->isAbleTo('warehouse import'))

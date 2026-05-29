@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class SystemHealthController extends Controller
 {
+    /**
+     * Display the system health dashboard.
+     *
+     * @authenticated
+     * @response view="system-health.index"
+     */
     public function index()
     {
         if (!Auth::user()->isAbleTo('admin manage')) {
@@ -226,7 +232,10 @@ class SystemHealthController extends Controller
     }
 
     /**
-     * Get system health summary for dashboard widget
+     * Get system health summary for dashboard widget.
+     *
+     * @authenticated
+     * @response status=200 scenario="success" {"orphan_count": 0, "drift_count": 0, "health_status": "healthy", "block_operations": false}
      */
     public function summary()
     {
@@ -285,7 +294,10 @@ class SystemHealthController extends Controller
     }
 
     /**
-     * Get approval delay metrics
+     * Get approval delay metrics for payment requests.
+     *
+     * @authenticated
+     * @response status=200 scenario="success" {"pending_count": 3, "oldest_pending_age_hours": 12, "has_overdue_approvals": false}
      */
     public function approvalDelayMetrics()
     {
@@ -316,7 +328,10 @@ class SystemHealthController extends Controller
     }
 
     /**
-     * Get reversal rate metrics
+     * Get reversal rate metrics for machinery ledger entries.
+     *
+     * @authenticated
+     * @response status=200 scenario="success" {"total_entries": 100, "reversal_entries": 5, "reversal_rate_percent": 5.0}
      */
     public function reversalRateMetrics()
     {
@@ -370,7 +385,10 @@ class SystemHealthController extends Controller
     }
 
     /**
-     * Verify payment request hashes
+     * Verify integrity hashes of payment request audit snapshots.
+     *
+     * @authenticated
+     * @response status=200 scenario="success" {"total_count": 10, "verified_count": 10, "mismatch_count": 0}
      */
     public function verifyHashes()
     {

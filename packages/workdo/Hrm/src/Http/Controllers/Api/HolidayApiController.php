@@ -19,6 +19,26 @@ class HolidayApiController extends Controller
 {
     /**
      * List holidays with optional filters
+     *
+     * @authenticated
+     * @group HRM Holidays
+     *
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by site ID. Example: 5
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": [
+     *    {
+     *      "id": 1,
+     *      "occasion": "Diwali",
+     *      "start_date": "2024-11-01",
+     *      "end_date": "2024-11-05",
+     *      "workspace": 1,
+     *      "site_id": 5
+     *    }
+     *  ]
+     * }
      */
     public function index(Request $request)
     {
@@ -97,6 +117,24 @@ class HolidayApiController extends Controller
 
     /**
      * Show holiday details
+     *
+     * @group HRM Holidays
+     *
+     * @urlParam id integer required The ID of the holiday. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "data": {
+     *    "id": 1,
+     *    "occasion": "Diwali",
+     *    "start_date": "2024-11-01",
+     *    "end_date": "2024-11-05"
+     *  }
+     * }
+     * @response 404 {
+     *  "status": 0,
+     *  "message": "Holiday not found"
+     * }
      */
     public function show($id)
     {
@@ -116,6 +154,21 @@ class HolidayApiController extends Controller
 
     /**
      * Update holiday
+     *
+     * @authenticated
+     * @group HRM Holidays
+     *
+     * @urlParam id integer required The ID of the holiday. Example: 1
+     *
+     * @bodyParam occasion string required Holiday occasion/name. Example: Updated Diwali
+     * @bodyParam start_date date required Start date. Example: 2024-11-01
+     * @bodyParam end_date date required End date. Example: 2024-11-05
+     *
+     * @response {
+     *  "status": 1,
+     *  "message": "Holiday updated successfully",
+     *  "data": {...}
+     * }
      */
     public function update(Request $request, $id)
     {
@@ -156,6 +209,16 @@ class HolidayApiController extends Controller
 
     /**
      * Delete holiday
+     *
+     * @authenticated
+     * @group HRM Holidays
+     *
+     * @urlParam id integer required The ID of the holiday. Example: 1
+     *
+     * @response {
+     *  "status": 1,
+     *  "message": "Holiday deleted successfully"
+     * }
      */
     public function destroy($id)
     {

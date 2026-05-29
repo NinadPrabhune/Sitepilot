@@ -10,7 +10,10 @@ use Illuminate\Support\Facades\Auth;
 class MachineryMonthlyReportController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display machinery monthly report
+     *
+     * @authenticated
+     * @response view="machinery-monthly-report.index"
      */
     public function index(Request $request): Renderable
     {

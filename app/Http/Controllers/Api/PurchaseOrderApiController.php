@@ -35,11 +35,25 @@ class PurchaseOrderApiController extends Controller implements \Illuminate\Routi
             new Middleware(middleware: 'auth:sanctum', except: ['index', 'createData', 'show']),
         ];
     }
-    /**
+/**
      * Display a listing of the purchase orders.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @authenticated
+     * @requiredPermission purchase-order manage
+     *
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by site/project ID. Example: 5
+     * @queryParam invoicing_status string optional Filter by invoicing status (not_invoiced, partially_invoiced, fully_invoiced). Example: not_invoiced
+     *
+     * @response status=200 scenario="Success" {
+     *   "success": true,
+     *   "message": "Purchase orders fetched successfully",
+     *   "data": [...]
+     * }
+     * @response status=403 scenario="Permission denied" {
+     *   "success": false,
+     *   "message": "Permission denied"
+     * }
      */
     public function index(Request $request)
     {
@@ -138,12 +152,28 @@ class PurchaseOrderApiController extends Controller implements \Illuminate\Routi
         }
     }
 
-    /**
-     * Get create data for purchase order form.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+/**
+      * Get create data for purchase order form.
+      *
+      * @authenticated
+      * @requiredPermission purchase-order create
+      *
+      * @queryParam workspace_id integer optional Workspace ID to scope lookups. Example: 1
+      * @queryParam site_id integer optional Site ID to scope lookups. Example: 5
+      *
+      * @response status=200 scenario="Success" {
+      *   "success": true,
+      *   "message": "Purchase order create data fetched successfully",
+      *   "data": {
+      *     "suppliers": [...],
+      *     "materials": [...],
+      *     "sites": [...],
+      *     "indents": [...],
+      *     "gstMasters": [...]
+      *   }
+      * }
+      * @response status=403 scenario="Permission denied" {"success": false, "message": "Permission denied"}
+      */
     public function createData(Request $request)
     {
         if (!Auth::user()->isAbleTo('purchase-order create')) {
@@ -248,33 +278,48 @@ class PurchaseOrderApiController extends Controller implements \Illuminate\Routi
         }
     }
 
-    /**
-     * Store a newly created purchase order in storage.
-     *
-     * @bodyParam po_date date required PO date. Example: 2024-01-15
-     * @bodyParam supplier_id integer required Supplier ID. Example: 1
-     * @bodyParam site_id integer required Site ID. Example: 5
-     * @bodyParam indent_id integer required Indent ID. Example: 10
-     * @bodyParam tax_type string required Tax type (cgst or igst). Example: cgst
-     * @bodyParam description string optional Description. Example: Construction materials
-     * @bodyParam items array required Array of PO items.
-     * @bodyParam items.*.material_id integer required Material ID. Example: 10
-     * @bodyParam items.*.quantity number required Quantity. Example: 100
-     * @bodyParam items.*.unit string required Unit. Example: kg
-     * @bodyParam items.*.price number required Unit price. Example: 500.00
-     * @bodyParam items.*.gst_master_id integer required GST Master ID. Example: 1
-     * @bodyParam items.*.discount_amount number required Discount amount. Example: 0
-     * @bodyParam additional_charge number required Additional charge. Example: 0
-     * @bodyParam additional_deduction number required Additional deduction. Example: 0
-     * @bodyParam additional_discount number required Additional discount. Example: 0
-     * @bodyParam delivery_date date required Delivery date. Example: 2024-02-15
-     * @bodyParam delivery_address string optional Delivery address. Example: Site A, Mumbai
-     * @bodyParam delivery_terms_conditions string optional Delivery terms. Example: Within 30 days
-     * @bodyParam payment_terms_conditions string optional Payment terms. Example: Net 30 days
-     * @bodyParam remark string optional Remarks. Example: Urgent delivery
-     * @bodyParam reference_file file optional Reference document (max 10MB).
-     * @response {"success": true, "message": "Purchase order created successfully", "data": {...}}
-     */
+/**
+      * Store a newly created purchase order in storage.
+      *
+      * @authenticated
+      * @requiredPermission purchase-order create
+      *
+      * @bodyParam po_date date required PO date. Example: 2024-01-15
+      * @bodyParam supplier_id integer required Supplier ID. Example: 1
+      * @bodyParam site_id integer required Site ID. Example: 5
+      * @bodyParam indent_id integer required Indent ID. Example: 10
+      * @bodyParam tax_type string required Tax type (cgst or igst). Example: cgst
+      * @bodyParam description string optional Description. Example: Construction materials
+      * @bodyParam items array required Array of PO items (use indexed notation: items[0], items[1], etc.).
+      * @bodyParam items[0][material_id] integer required Material ID. Example: 10
+      * @bodyParam items[0][quantity] number required Quantity. Example: 100
+      * @bodyParam items[0][unit] string required Unit. Example: kg
+      * @bodyParam items[0][price] number required Unit price. Example: 500.00
+      * @bodyParam items[0][gst_master_id] integer required GST Master ID. Example: 1
+      * @bodyParam items[0][discount_amount] number required Discount amount. Example: 0
+ * @bodyParam items[0][remarks] string optional Item remarks. Example: Urgent
+      * @bodyParam items[1][material_id] integer required Material ID (if multiple items). Example: 11
+      * @bodyParam items[1][quantity] number required Quantity. Example: 200
+      * @bodyParam items[1][unit] string required Unit. Example: kg
+      * @bodyParam items[1][price] number required Unit price. Example: 450.00
+      * @bodyParam items[1][gst_master_id] integer required GST Master ID. Example: 1
+      * @bodyParam items[1][discount_amount] number required Discount amount. Example: 0
+      * @bodyParam additional_charge number required Additional charge. Example: 0
+      * @bodyParam additional_deduction number required Additional deduction. Example: 0
+      * @bodyParam additional_discount number required Additional discount. Example: 0
+      * @bodyParam delivery_date date required Delivery date. Example: 2024-02-15
+      * @bodyParam delivery_address string optional Delivery address. Example: Site A, Mumbai
+      * @bodyParam delivery_terms_conditions string optional Delivery terms. Example: Within 30 days
+      * @bodyParam payment_terms_conditions string optional Payment terms. Example: Net 30 days
+      * @bodyParam remark string optional Remarks. Example: Urgent delivery
+      * @bodyParam reference_file file optional Reference document (max 10MB, allowed: pdf,doc,docx,jpg,jpeg,png).
+      * @bodyParam assign_to array optional Array of user IDs to assign. Example: [1, 2]
+      * @bodyParam workspace_id integer optional Workspace ID. Example: 1
+      *
+      * @response status=201 scenario="Success" {"success": true, "message": "Purchase order created successfully", "data": {...}}
+      * @response status=403 scenario="Permission denied" {"success": false, "message": "Permission denied"}
+      * @response status=422 scenario="Validation error" {"success": false, "message": "Validation failed", "errors": {...}}
+      */
     public function store(Request $request)
     {
         if (!Auth::user()->isAbleTo('purchase-order create')) {
@@ -559,12 +604,18 @@ class PurchaseOrderApiController extends Controller implements \Illuminate\Routi
         }
     }
 
-    /**
-     * Display the specified purchase order.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+/**
+      * Display the specified purchase order.
+      *
+      * @authenticated
+      * @requiredPermission purchase-order show
+      *
+      * @urlParam id integer required Purchase Order ID. Example: 1
+      *
+      * @response status=200 scenario="Success" {"success": true, "message": "Purchase order fetched successfully", "data": {...}}
+      * @response status=404 scenario="Not found" {"success": false, "error_code": "PO_NOT_FOUND", "message": "Purchase order not found"}
+      * @response status=403 scenario="Permission denied" {"success": false, "message": "Permission denied"}
+      */
     public function show($id)
     {
         if (!Auth::user()->isAbleTo('purchase-order show')) {
@@ -608,13 +659,50 @@ class PurchaseOrderApiController extends Controller implements \Illuminate\Routi
         }
     }
 
-    /**
-     * Update the specified purchase order in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+/**
+      * Update the specified purchase order in storage.
+      *
+      * @authenticated
+      * @requiredPermission purchase-order edit
+      *
+      * @urlParam id integer required Purchase Order ID. Example: 1
+      * @bodyParam po_date date required PO date. Example: 2024-01-15
+      * @bodyParam supplier_id integer required Supplier ID. Example: 1
+      * @bodyParam site_id integer required Site ID. Example: 5
+      * @bodyParam indent_id integer required Indent ID. Example: 10
+      * @bodyParam tax_type string required Tax type (cgst or igst). Example: cgst
+      * @bodyParam description string optional Description. Example: Construction materials
+      * @bodyParam items array required Array of PO items (use indexed notation: items[0], items[1], etc.).
+      * @bodyParam items[0][material_id] integer required Material ID. Example: 10
+      * @bodyParam items[0][quantity] number required Quantity. Example: 100
+      * @bodyParam items[0][unit] string required Unit. Example: kg
+      * @bodyParam items[0][price] number required Unit price. Example: 500.00
+      * @bodyParam items[0][gst_master_id] integer required GST Master ID. Example: 1
+      * @bodyParam items[0][discount_amount] number required Discount amount. Example: 0
+ * @bodyParam items[0][remarks] string optional Item remarks. Example: Updated
+      * @bodyParam items[1][material_id] integer required Material ID (if multiple items). Example: 11
+      * @bodyParam items[1][quantity] number required Quantity. Example: 200
+ * @bodyParam items[1][unit] string required Unit. Example: kg
+      * @bodyParam items[1][price] number required Unit price. Example: 450.00
+      * @bodyParam items[1][gst_master_id] integer required GST Master ID. Example: 1
+      * @bodyParam items[1][discount_amount] number required Discount amount. Example: 0
+      * @bodyParam additional_charge number required Additional charge. Example: 0
+      * @bodyParam additional_deduction number required Additional deduction. Example: 0
+      * @bodyParam additional_discount number required Additional discount. Example: 0
+      * @bodyParam delivery_date date required Delivery date. Example: 2024-02-15
+      * @bodyParam delivery_address string optional Delivery address. Example: Site A, Mumbai
+      * @bodyParam delivery_terms_conditions string optional Delivery terms. Example: Within 30 days
+      * @bodyParam payment_terms_conditions string optional Payment terms. Example: Net 30 days
+      * @bodyParam remark string optional Remarks. Example: Updated delivery
+      * @bodyParam reference_file file optional Reference document (max 10MB, allowed: pdf,doc,docx,jpg,jpeg,png).
+      * @bodyParam assign_to array optional Array of user IDs to assign. Example: [1, 2]
+      * @bodyParam workspace_id integer optional Workspace ID. Example: 1
+      *
+      * @response status=200 scenario="Success" {"success": true, "message": "Purchase Order updated successfully", "data": {...}}
+      * @response status=404 scenario="Not found" {"success": false, "error_code": "PO_NOT_FOUND", "message": "Purchase order not found"}
+      * @response status=403 scenario="Permission denied" {"success": false, "message": "Permission denied"}
+      * @response status=400 scenario="Status error" {"success": false, "error_code": "PO_STATUS_ERROR", "message": "Only Draft purchase orders can be edited."}
+      */
     public function update(Request $request, $id)
     {
         if (!Auth::user()->isAbleTo('purchase-order edit')) {
@@ -890,12 +978,21 @@ class PurchaseOrderApiController extends Controller implements \Illuminate\Routi
         }
     }
 
-    /**
-     * Remove the specified purchase order from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+/**
+      * Remove the specified purchase order from storage.
+      *
+      * Only Draft purchase orders can be deleted.
+      *
+      * @authenticated
+      * @requiredPermission purchase-order delete
+      *
+      * @urlParam id integer required Purchase Order ID. Example: 1
+      *
+      * @response status=200 scenario="Success" {"success": true, "message": "Purchase Order deleted successfully"}
+      * @response status=404 scenario="Not found" {"success": false, "error_code": "PO_NOT_FOUND", "message": "Purchase order not found"}
+      * @response status=403 scenario="Permission denied" {"success": false, "message": "Permission denied"}
+      * @response status=400 scenario="Status error" {"success": false, "error_code": "PO_STATUS_ERROR", "message": "Only Draft purchase orders can be deleted."}
+      */
     public function destroy($id)
     {
         if (!Auth::user()->isAbleTo('purchase-order delete')) {
@@ -952,12 +1049,24 @@ class PurchaseOrderApiController extends Controller implements \Illuminate\Routi
         }
     }
 
-    /**
-     * Get materials for a specific indent.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+/**
+      * Get materials for a specific indent.
+      *
+      * @authenticated
+      * @requiredPermission purchase-order create
+      *
+      * @bodyParam indent_id integer required Indent ID. Example: 10
+      *
+      * @response status=200 scenario="Success" {
+      *   "success": true,
+      *   "message": "Indent materials fetched successfully",
+      *   "data": {
+      *     "indent": {...},
+      *     "materials": [...]
+      *   }
+      * }
+      * @response status=404 scenario="Not found" {"success": false, "error_code": "PO_INDENT_NOT_FOUND", "message": "Indent not found"}
+      */
     public function getIndentMaterials(Request $request)
     {
         try {
@@ -1018,13 +1127,20 @@ class PurchaseOrderApiController extends Controller implements \Illuminate\Routi
         }
     }
 
-    /**
-     * Update purchase order status.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+/**
+      * Update purchase order status.
+      *
+      * @authenticated
+      * @requiredPermission purchase-order edit
+      *
+      * @urlParam id integer required Purchase Order ID. Example: 1
+      * @bodyParam status string required New status (Approved, Rejected, Flagged, Short Closed). Example: Approved
+      * @bodyParam reason string optional Reason for status change. Example: Good quality materials
+      *
+      * @response status=200 scenario="Success" {"success": true, "message": "PO status updated", "data": {...}}
+      * @response status=403 scenario="Permission denied" {"success": false, "message": "Permission denied"}
+      * @response status=404 scenario="Not found" {"success": false, "error_code": "PO_NOT_FOUND", "message": "Purchase order not found"}
+      */
     public function updateStatus(Request $request, $id)
     {
         if (!Auth::user()->isAbleTo('purchase-order edit')) {
@@ -1130,14 +1246,19 @@ class PurchaseOrderApiController extends Controller implements \Illuminate\Routi
         }
     }
 
-    /**
-     * Short close a Purchase Order.
-     * Only Partial Received POs can be short closed.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+/**
+      * Short close a Purchase Order.
+      *
+      * @authenticated
+      * @requiredPermission purchase-order edit
+      *
+      * @urlParam id integer required Purchase Order ID. Example: 1
+      * @bodyParam reason string required Reason for short closing. Example: Project completed early
+      *
+      * @response status=200 scenario="Success" {"success": true, "message": "PO short closed successfully", "data": {...}}
+      * @response status=403 scenario="Permission denied" {"success": false, "message": "Permission denied"}
+      * @response status=400 scenario="Status error" {"success": false, "error_code": "PO_STATUS_ERROR", "message": "Only Partial Received PO can be short closed"}
+      */
     public function shortClose(Request $request, $id)
     {
         if (!Auth::user()->isAbleTo('purchase-order edit')) {
@@ -1337,15 +1458,20 @@ class PurchaseOrderApiController extends Controller implements \Illuminate\Routi
         }
     }
 
-    /**
-     * Get approve form data for a purchase order.
-     *
-     * This endpoint returns the purchase order details along with
-     * allowed status transitions for approval workflow.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+/**
+      * Get approve form data for a purchase order.
+      *
+      * This endpoint returns the purchase order details along with
+      * allowed status transitions for approval workflow.
+      *
+      * @authenticated
+      * @requiredPermission purchase-order edit
+      *
+      * @urlParam id integer required Purchase Order ID. Example: 1
+      *
+      * @response status=200 scenario="Success" {"success": true, "data": {"purchase_order": {...}, "allowed_transitions": [...]}}
+      * @response status=404 scenario="Not found" {"success": false, "error_code": "PO_NOT_FOUND", "message": "Purchase order not found"}
+      */
     public function showApproveForm($id)
     {
         try {

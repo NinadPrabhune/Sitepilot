@@ -127,8 +127,16 @@ class SupplierTransaction extends Model
             
             $class = $classMap[$this->reference_type] ?? null;
             
+            // Try primary class first, then fallback for polymorphic references
             if ($class) {
-                return $class::find($this->reference_id);
+                $model = $class::find($this->reference_id);
+                if ($model) {
+                    return $model;
+                }
+                // Fallback: SupplierAdvance for TYPE_ADVANCE when PaymentsModule not found
+                if ($this->reference_type === self::TYPE_ADVANCE) {
+                    return \App\Models\SupplierAdvance::find($this->reference_id);
+                }
             }
         }
         return null;
@@ -221,6 +229,10 @@ class SupplierTransaction extends Model
 
         if ($reference instanceof Grn) {
             return $reference->grn_number;
+        }
+
+        if ($reference instanceof \App\Models\SupplierAdvance) {
+            return $reference->advance_number;
         }
 
         return '#' . $this->reference_id;

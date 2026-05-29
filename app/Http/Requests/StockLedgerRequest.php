@@ -44,10 +44,20 @@ class StockLedgerRequest extends FormRequest
             'project_id.exists' => 'The selected project does not exist.',
             'material_id.integer' => 'Material ID must be an integer.',
             'material_id.exists' => 'The selected material does not exist.',
-            'type.in' => 'Type must be one of: opening, grn, issue, transfer_in, transfer_out, adjustment.',
+            'type.in' => 'Type must be one of: opening, grn, issue, transfer_in,transfer_out,adjustment.',
             'start_date.date' => 'Start date must be a valid date.',
             'end_date.date' => 'End date must be a valid date.',
             'end_date.after_or_equal' => 'End date must be greater than or equal to start date.',
         ];
+    }
+    
+    /**
+     * Get the body parameters for the request.
+     *
+     * @return array
+     */
+    public function bodyParameters()
+    {
+        return [];
     }
 }

@@ -16,6 +16,18 @@ use App\Models\WorkSpace;
  */
 class ActivityApiController extends Controller {
 
+    /**
+     * List Activities
+     *
+     * Retrieve a list of all activities with optional filtering by workspace and site. Returns activities separated into pending and completed categories with completion percentages.
+     *
+     * @authenticated
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by site/project ID. Example: 5
+     * @response {"status":true,"data":{"pending":[...],"completed":[...]}}
+     * @response 403 {"status":0,"message":"Permission denied"}
+     * @response 500 {"status":false,"message":"Failed to fetch activities."}
+     */
     public function index(Request $request) {
         if (!Auth::user()->isAbleTo('activity manage')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -105,6 +117,19 @@ class ActivityApiController extends Controller {
         }
     }
 
+    /**
+     * Get Activity Creation Form Data
+     *
+     * Retrieve metadata required for the activity creation form including workspaces, sites, priorities, and available users.
+     *
+     * @authenticated
+     * @queryParam workspace_id integer optional Workspace ID to filter sites. Example: 1
+     * @queryParam site_id integer optional Site ID. Example: 5
+     * @queryParam created_by integer optional Creator user ID. Example: 1
+     * @response {"status":true,"message":"Form metadata fetched successfully","workspaces":[...],"sites":[...],"priorities":[...],"users":[...]}
+     * @response 403 {"status":0,"message":"Permission denied"}
+     * @response 500 {"status":false,"message":"Failed to fetch form metadata"}
+     */
     public function createData(Request $request) {
         if (!Auth::user()->isAbleTo('activity create')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -145,8 +170,9 @@ class ActivityApiController extends Controller {
     /**
      * Create Activity
      *
-     * Create a new activity in the system
+     * Create a new activity in the system with assigned users, timeline, quantity tracking, and optional reference file.
      *
+     * @authenticated
      * @bodyParam assign_to array required Array of user IDs to assign. Example: [1, 2, 3]
      * @bodyParam title string required Activity title. Example: Foundation work
      * @bodyParam start_date date required Start date. Example: 2024-01-01
@@ -159,8 +185,11 @@ class ActivityApiController extends Controller {
      * @bodyParam created_by integer required Creator user ID. Example: 1
      * @bodyParam workspace_id integer required Workspace ID. Example: 1
      * @bodyParam site_id integer required Site/Project ID. Example: 5
-     * @bodyParam reference_file file optional Reference document (max 20MB).
+     * @bodyParam reference_file file optional Reference document (max 20MB, allowed: pdf,doc,docx,jpg,jpeg,png,xls,xlsx).
      * @response {"status": true, "message": "Activity created successfully", "data": {...}}
+     * @response 403 {"status":0,"message":"Permission denied"}
+     * @response 422 {"status":false,"message":"Total completed quantity cannot exceed the main quantity."}
+     * @response 500 {"status":false,"message":"Failed to create activity"}
      */
     public function store(Request $request) {
         if (!Auth::user()->isAbleTo('activity create')) {
@@ -269,6 +298,17 @@ class ActivityApiController extends Controller {
         }
     }
 
+    /**
+     * Get Progress Creation Form Data
+     *
+     * Retrieve metadata required for creating activity progress including workspaces, sites, activities, and already completed quantities.
+     *
+     * @queryParam workspace_id integer required Workspace ID. Example: 1
+     * @queryParam site_id integer required Site/Project ID. Example: 5
+     * @queryParam activity_id integer required Activity ID. Example: 10
+     * @response {"status":true,"message":"Progress data fetched successfully","workspaces":[...],"sites":[...],"priorities":[...],"activities":[...],"alreadyCompleted":50}
+     * @response 500 {"status":false,"message":"Failed to fetch progress data"}
+     */
     public function createProgress(Request $request) {
         try {
             // Validation
@@ -336,6 +376,24 @@ class ActivityApiController extends Controller {
         }
     }
 
+    /**
+     * Store Activity Progress
+     *
+     * Record progress for an activity by adding completed quantity with optional reference file. Validates that total completed does not exceed activity quantity.
+     *
+     * @authenticated
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam site_id integer required Site/Project ID. Example: 5
+     * @bodyParam activity_id integer required Activity ID. Example: 10
+     * @bodyParam completed_quantity integer required Quantity completed in this entry. Example: 25
+     * @bodyParam date date required Date of completion. Example: 2024-01-15
+     * @bodyParam created_by integer optional Creator user ID. Example: 1
+     * @bodyParam completed_reference_file file optional Reference document for this progress (max 20MB, allowed: pdf,doc,docx,jpg,jpeg,png,xls,xlsx).
+     * @response {"status":true,"message":"Progress stored successfully","data":{...}}
+     * @response 403 {"status":0,"message":"Permission denied"}
+     * @response 422 {"status":false,"message":"Total completed quantity cannot exceed the main quantity."}
+     * @response 500 {"status":false,"message":"Failed to store progress"}
+     */
     public function storeProgress(Request $request) {
         if (!Auth::user()->isAbleTo('activity manage')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -410,6 +468,17 @@ class ActivityApiController extends Controller {
         }
     }
 
+    /**
+     * Show Activity Details
+     *
+     * Retrieve detailed information about a specific activity including completion data, manpowers, daily progress, consumptions, and assigned users.
+     *
+     * @authenticated
+     * @urlParam activity required The activity ID. Example: 10
+     * @response {"status":true,"data":{"id":10,"title":"Foundation work","scope":"...","quantity":100,"unit":"sqft","priority":"high","status":"pending","completed_qty":25,"completion_percentage":25,"is_completed":false,"workspace":{...},"site":{...},"completeds":[...],"manpowers":[...],"daily_progress":[...],"consumptions":[...],"reference_file":"...","assign_to":[...]}}
+     * @response 403 {"status":0,"message":"Permission denied"}
+     * @response 500 {"status":false,"message":"Failed to fetch activity."}
+     */
     public function show(Activity $activity) {
         if (!Auth::user()->isAbleTo('activity show')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -481,6 +550,38 @@ class ActivityApiController extends Controller {
         }
     }
 
+    /**
+     * Update Activity
+     *
+     * Update an existing activity's details and manage its completion records. Supports updating both the main activity and individual completion entries with file uploads.
+     *
+     * @authenticated
+     * @urlParam activity required The activity ID. Example: 10
+     * @bodyParam assign_to required Array of user IDs or comma-separated string. Example: [1, 2, 3]
+     * @bodyParam title string required Activity title. Example: Foundation work
+     * @bodyParam start_date date required Start date. Example: 2024-01-01
+     * @bodyParam due_date date required Due date. Example: 2024-01-31
+     * @bodyParam scope string required Activity scope/description. Example: Building foundation for block A
+     * @bodyParam quantity integer required Total quantity. Example: 100
+     * @bodyParam unit string required Unit of measurement. Example: sqft
+     * @bodyParam priority string required Priority level (low, medium, high). Example: high
+     * @bodyParam completed_quantity integer optional Initial completed quantity (legacy format). Example: 0
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam site_id integer required Site/Project ID. Example: 5
+     * @bodyParam activity_id integer required Activity ID. Example: 10
+     * @bodyParam status string optional Activity status. Example: pending
+     * @bodyParam activities_completed array optional Array of completion records to update/create. Example: [{"id":1,"completed_quantity":25,"completed_date":"2024-01-15"}]
+     * @bodyParam activities_completed.*.id integer optional Completion record ID (null for new records). Example: 1
+     * @bodyParam activities_completed.*.completed_quantity integer required Quantity completed. Example: 25
+     * @bodyParam activities_completed.*.completed_date date required Date of completion. Example: 2024-01-15
+     * @bodyParam activities_completed.*.completed_reference_file file optional Reference document (max 5MB).
+     * @bodyParam reference_file file optional Reference document for activity (max 20MB, allowed: pdf,doc,docx,jpg,jpeg,png,xls,xlsx).
+     * @response {"status":true,"message":"Activity updated successfully","data":{...}}
+     * @response 403 {"status":0,"message":"Permission denied"}
+     * @response 422 {"status":false,"message":"Total completed quantity cannot exceed the main quantity."}
+     * @response 500 {"status":false,"message":"Failed to update activity"}
+     */
     public function update(Request $request, Activity $activity) {
         if (!Auth::user()->isAbleTo('activity edit')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -658,6 +759,17 @@ class ActivityApiController extends Controller {
         }
     }
 
+    /**
+     * Delete Activity
+     *
+     * Delete an activity from the system. Note: Completion records linked to ManPower, DPR, and Consumption are preserved for historical records.
+     *
+     * @authenticated
+     * @urlParam activity required The activity ID. Example: 10
+     * @response {"status":true,"message":"Activity deleted successfully"}
+     * @response 403 {"status":0,"message":"Permission denied"}
+     * @response 500 {"status":false,"message":"Failed to delete activity"}
+     */
     public function destroy(Activity $activity) {
         if (!Auth::user()->isAbleTo('activity delete')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);

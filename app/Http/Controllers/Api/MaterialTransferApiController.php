@@ -18,6 +18,32 @@ class MaterialTransferApiController extends Controller {
 
     /**
      * Display a paginated listing of material transfers.
+     *
+     * @authenticated
+     * @requiredPermission material-transfer manage
+     *
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by site/project ID (source site). Example: 5
+     *
+     * @response status=200 scenario="Success" {
+     *   "success": true,
+     *   "message": "Material transfers fetched successfully",
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "record_number": "MT-0001",
+     *       "record_date": "2024-01-15",
+     *       "from_site_id": 5,
+     *       "to_site_id": 6,
+     *       "total_amount": 5000.00,
+     *       "items": [...]
+     *     }
+     *   ]
+     * }
+     * @response status=403 scenario="Permission denied" {
+     *   "status": 0,
+     *   "message": "Permission denied"
+     * }
      */
     public function index(Request $request) {
         if (!Auth::user()->isAbleTo('material-transfer manage')) {
@@ -57,6 +83,31 @@ class MaterialTransferApiController extends Controller {
         }
     }
 
+    /**
+     * Get Material Transfer Creation Form Data.
+     *
+     * Retrieve metadata required for the material transfer creation form including sites and next record number.
+     *
+     * @authenticated
+     * @requiredPermission material-transfer create
+     *
+     * @queryParam workspace_id integer required Workspace ID to scope lookups. Example: 1
+     * @queryParam site_id integer optional Site/Project ID to get stock for. Example: 5
+     *
+     * @response status=200 scenario="Success" {
+     *   "success": true,
+     *   "message": "Form data fetched successfully",
+     *   "data": {
+     *     "sites": [{"id": 5, "name": "Site A"}, {"id": 6, "name": "Site B"}],
+     *     "next_record_number": "MT-0001",
+     *     "stock": {...}
+     *   }
+     * }
+     * @response status=403 scenario="Permission denied" {
+     *   "status": 0,
+     *   "message": "Permission denied"
+     * }
+     */
     public function createData(Request $request) {
         if (!Auth::user()->isAbleTo('material-transfer create')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -142,23 +193,48 @@ class MaterialTransferApiController extends Controller {
         }
     }
 
-    /**
-     * Store a newly created material transfer.
-     *
-     * @bodyParam created_by integer required Creator user ID. Example: 1
-     * @bodyParam workspace_id integer required Workspace ID. Example: 1
-     * @bodyParam record_date date required Transfer date. Example: 2024-01-15
-     * @bodyParam from_site_id integer required Source site ID. Example: 5
-     * @bodyParam to_site_id integer required Destination site ID (must be different from from_site_id). Example: 6
-     * @bodyParam items array required Array of transfer items.
-     * @bodyParam items.*.material_id integer required Material ID. Example: 10
-     * @bodyParam items.*.quantity number required Quantity. Example: 100
-     * @bodyParam items.*.unit string required Unit. Example: kg
-     * @bodyParam items.*.price number required Unit price. Example: 500.00
-     * @bodyParam invoice_file file optional Invoice document.
-     * @response {"success": true, "message": "Material transfer created successfully", "data": {...}}
-     */
-    public function store(Request $request) {
+/**
+      * Store a newly created material transfer.
+      *
+      * @authenticated
+      * @requiredPermission material-transfer create
+      *
+      * @bodyParam created_by integer required Creator user ID. Example: 1
+      * @bodyParam workspace_id integer required Workspace ID. Example: 1
+      * @bodyParam record_date date required Transfer date. Example: 2024-01-15
+      * @bodyParam from_site_id integer required Source site ID. Example: 5
+      * @bodyParam to_site_id integer required Destination site ID. Example: 6
+      * @bodyParam items array required Array of transfer items.
+      * @bodyParam items[0][material_id] integer required Material ID. Example: 10
+      * @bodyParam items[0][quantity] number required Quantity. Example: 100
+      * @bodyParam items[0][unit] string required Unit. Example: kg
+      * @bodyParam items[0][price] number required Unit price. Example: 500.00
+      * @bodyParam items[1][material_id] integer required Material ID (if multiple items). Example: 11
+      * @bodyParam items[1][quantity] number required Quantity. Example: 200
+      * @bodyParam items[1][unit] string required Unit. Example: kg
+      * @bodyParam items[1][price] number required Unit price. Example: 450.00
+      * @bodyParam invoice_file file optional Invoice document (max 20MB, allowed: pdf,doc,jpg,jpeg,png).
+      *
+      * @response status=201 scenario="Success" {
+      *   "success": true,
+      *   "message": "Material transfer created successfully",
+      *   "data": {
+      *     "id": 1,
+      *     "record_number": "MT-0001",
+      *     "items": [...]
+      *   }
+      * }
+      * @response status=403 scenario="Permission denied" {
+      *   "status": 0,
+      *   "message": "Permission denied"
+      * }
+      * @response status=422 scenario="Validation error" {
+      *   "status": 0,
+      *   "message": "The to_site_id must be different from from_site_id."
+      * }
+      */
+    public function store(Request $request)
+    {
         if (!Auth::user()->isAbleTo('material-transfer create')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
         }
@@ -228,6 +304,29 @@ class MaterialTransferApiController extends Controller {
 
     /**
      * Display the specified material transfer.
+     *
+     * @authenticated
+     * @requiredPermission material-transfer show
+     *
+     * @urlParam id integer required Material Transfer ID. Example: 1
+     *
+     * @response status=200 scenario="Success" {
+     *   "success": true,
+     *   "message": "Material transfer fetched successfully",
+     *   "data": {
+     *     "id": 1,
+     *     "record_number": "MT-0001",
+     *     "items": [...]
+     *   }
+     * }
+     * @response status=404 scenario="Not found" {
+     *   "success": false,
+     *   "message": "Material transfer not found"
+     * }
+     * @response status=403 scenario="Permission denied" {
+     *   "status": 0,
+     *   "message": "Permission denied"
+     * }
      */
     public function show($id) {
         if (!Auth::user()->isAbleTo('material-transfer show')) {
@@ -258,9 +357,43 @@ class MaterialTransferApiController extends Controller {
         }
     }
 
-    /**
-     * Update the specified material transfer.
-     */
+/**
+      * Update the specified material transfer.
+      *
+      * @authenticated
+      * @requiredPermission material-transfer edit
+      *
+      * @urlParam id integer required Material Transfer ID. Example: 1
+      * @bodyParam created_by integer required Creator user ID. Example: 1
+      * @bodyParam workspace_id integer required Workspace ID. Example: 1
+      * @bodyParam record_date date required Transfer date. Example: 2024-01-15
+      * @bodyParam from_site_id integer required Source site ID. Example: 5
+      * @bodyParam to_site_id integer required Destination site ID. Example: 6
+      * @bodyParam items array required Array of transfer items.
+      * @bodyParam items[0][material_id] integer required Material ID. Example: 10
+      * @bodyParam items[0][quantity] number required Quantity. Example: 100
+      * @bodyParam items[0][unit] string required Unit. Example: kg
+      * @bodyParam items[0][price] number required Unit price. Example: 500.00
+      * @bodyParam items[1][material_id] integer required Material ID (if multiple items). Example: 11
+      * @bodyParam items[1][quantity] number required Quantity. Example: 200
+      * @bodyParam items[1][unit] string required Unit. Example: kg
+      * @bodyParam items[1][price] number required Unit price. Example: 450.00
+      * @bodyParam invoice_file file optional Invoice document (max 20MB, allowed: pdf,doc,jpg,jpeg,png).
+      *
+      * @response status=200 scenario="Success" {
+      *   "success": true,
+      *   "message": "Material transfer updated successfully",
+      *   "data": {...}
+      * }
+      * @response status=404 scenario="Not found" {
+      *   "success": false,
+      *   "message": "Material transfer not found"
+      * }
+      * @response status=403 scenario="Permission denied" {
+      *   "status": 0,
+      *   "message": "Permission denied"
+      * }
+      */
     public function update(Request $request, $id) {
         if (!Auth::user()->isAbleTo('material-transfer edit')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -340,9 +473,27 @@ class MaterialTransferApiController extends Controller {
         }
     }
 
-    /**
-     * Remove the specified material transfer.
-     */
+/**
+      * Remove the specified material transfer.
+      *
+      * @authenticated
+      * @requiredPermission material-transfer delete
+      *
+      * @urlParam id integer required Material Transfer ID. Example: 1
+      *
+      * @response status=200 scenario="Success" {
+      *   "success": true,
+      *   "message": "Material transfer deleted successfully"
+      * }
+      * @response status=404 scenario="Not found" {
+      *   "success": false,
+      *   "message": "Material transfer not found"
+      * }
+      * @response status=403 scenario="Permission denied" {
+      *   "status": 0,
+      *   "message": "Permission denied"
+      * }
+      */
     public function destroy($id) {
         if (!Auth::user()->isAbleTo('material-transfer delete')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -377,9 +528,27 @@ class MaterialTransferApiController extends Controller {
         }
     }
 
-    /**
-     * API: get stock by site
-     */
+/**
+      * API: get stock by site.
+      *
+      * Retrieve current stock levels for a specific material at a site.
+      *
+      * @authenticated
+      * @requiredPermission material-transfer manage
+      *
+      * @queryParam site_id integer required Site/Project ID. Example: 5
+      * @queryParam material_id integer required Material ID to check stock. Example: 10
+      *
+      * @response status=200 scenario="Success" {
+      *   "success": true,
+      *   "message": "Stock fetched successfully",
+      *   "data": {...}
+      * }
+      * @response status=403 scenario="Permission denied" {
+      *   "status": 0,
+      *   "message": "Permission denied"
+      * }
+      */
     public function getStockBySite(Request $request) {
         if (!Auth::user()->isAbleTo('material-transfer manage')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);

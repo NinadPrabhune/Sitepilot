@@ -144,6 +144,60 @@ class MaterialReturnApiController extends Controller
     }
 
     /**
+     * Get data for creating a new material return (alternative endpoint).
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createData(Request $request)
+    {
+        if (!Auth::user()->isAbleTo('material-return create')) {
+            return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
+        }
+
+        try {
+            $workspaceId = $request->input('workspace_id');
+            $siteId = $request->input('site_id');
+
+            if (empty($workspaceId) && function_exists('getActiveWorkSpace')) {
+                $workspaceId = getActiveWorkSpace();
+            }
+
+            if (empty($siteId) && function_exists('getActiveProject')) {
+                $siteId = getActiveProject();
+            }
+
+            $materials = Material::with('unit')->get();
+            $issues = MaterialIssue::with(['items.material'])
+                ->forWorkspace($workspaceId)
+                ->forSite($siteId)
+                ->latestFirst()
+                ->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Material Return create data fetched successfully',
+                'data' => [
+                    'materials' => $materials,
+                    'issues' => $issues,
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Material Return CreateData API ERROR', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Internal Server Error'
+            ], 500);
+        }
+    }
+
+    /**
      * Store a newly created material return.
      *
      * @bodyParam issue_id integer required Material Issue ID. Example: 1

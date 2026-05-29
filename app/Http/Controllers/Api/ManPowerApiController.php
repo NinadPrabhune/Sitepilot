@@ -17,6 +17,28 @@ class ManPowerApiController extends Controller
 {
     /**
      * Display a listing of the resource.
+     *
+     * @authenticated
+     * @requiredPermission man-power manage
+     *
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by site/project ID. Example: 5
+     *
+     * @response status=200 scenario="Success" {
+     *   "status": "success",
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "work_date": "2024-01-15",
+     *       "total_count": 10,
+     *       "details": [...]
+     *     }
+     *   ]
+     * }
+     * @response status=403 scenario="Permission denied" {
+     *   "status": 0,
+     *   "message": "Permission denied"
+     * }
      */
     public function index(Request $request)
     {
@@ -61,8 +83,20 @@ class ManPowerApiController extends Controller
         }
     }
 
-    /**
+/**
      * Fetch data for create form.
+     *
+     * @authenticated
+     * @requiredPermission man-power create
+     *
+     * @queryParam workspace_id integer required Workspace ID to scope lookups. Example: 1
+     * @queryParam site_id integer optional Site ID to scope lookups. Example: 5
+     *
+     * @response status=200 scenario="Success" {
+     *   "manpowerTypes": {"1": "Skilled", "2": "Unskilled"},
+     *   "suppliers": {"1": "ABC Supplier"},
+     *   "sites": {"5": "Site A", "6": "Site B"}
+     * }
      */
     public function createData(Request $request)
     {
@@ -106,21 +140,32 @@ class ManPowerApiController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource.
-     *
-     * @bodyParam work_date date required Work date. Example: 2024-01-15
-     * @bodyParam site_id integer required Site ID. Example: 5
-     * @bodyParam supplier_id integer required Supplier ID. Example: 1
-     * @bodyParam created_by integer required Creator user ID. Example: 1
-     * @bodyParam workspace_id integer required Workspace ID. Example: 1
-     * @bodyParam activity_completed_id integer required Activity completed ID. Example: 10
-     * @bodyParam details array required Array of manpower details.
-     * @bodyParam details.*.man_power_type_id integer required Manpower type ID. Example: 2
-     * @bodyParam details.*.count integer required Count. Example: 5
-     * @bodyParam reference_file file optional Reference document.
-     * @response {"status": "success", "data": {...}}
-     */
+/**
+      * Store a newly created resource.
+      *
+      * @authenticated
+      * @requiredPermission man-power create
+      *
+      * @bodyParam work_date date required Work date. Example: 2024-01-15
+      * @bodyParam site_id integer required Site ID. Example: 5
+      * @bodyParam supplier_id integer required Supplier ID. Example: 1
+      * @bodyParam created_by integer required Creator user ID. Example: 1
+      * @bodyParam workspace_id integer required Workspace ID. Example: 1
+      * @bodyParam activity_completed_id integer required Activity completed ID. Example: 10
+      * @bodyParam details array required Array of manpower details (use indexed notation: details[0], details[1], etc.).
+      * @bodyParam details[0][man_power_type_id] integer required Manpower type ID. Example: 2
+      * @bodyParam details[0][count] integer required Number of workers. Example: 5
+      * @bodyParam details[1][man_power_type_id] integer required Manpower type ID (if multiple). Example: 3
+      * @bodyParam details[1][count] integer required Number of workers. Example: 10
+      * @bodyParam reference_file file optional Reference document (max 10MB).
+      *
+      * @response status=201 scenario="Success" {
+      *   "status": true,
+      *   "message": "Activity created successfully",
+      *   "data": {...}
+      * }
+      * @response status=403 scenario="Permission denied" {"status": 0, "message": "Permission denied"}
+      */
     public function store(Request $request)
     {
         if (!Auth::user()->isAbleTo('man-power create')) {
@@ -201,9 +246,22 @@ class ManPowerApiController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
+/**
+      * Display the specified resource.
+      *
+      * @authenticated
+      * @requiredPermission man-power show
+      *
+      * @urlParam manpower required ManPower ID (via route model binding). Example: 1
+      *
+      * @response status=200 scenario="Success" {
+      *   "id": 1,
+      *   "work_date": "2024-01-15",
+      *   "total_count": 10,
+      *   "details": [...]
+      * }
+      * @response status=403 scenario="Permission denied" {"status": 0, "message": "Permission denied"}
+      */
     public function show(ManPowerMaster $manpower)
     {
         if (!Auth::user()->isAbleTo('man-power show')) {
@@ -229,9 +287,32 @@ class ManPowerApiController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource.
-     */
+/**
+      * Update the specified resource.
+      *
+      * @authenticated
+      * @requiredPermission man-power edit
+      *
+      * @urlParam manpower required ManPower ID (via route model binding). Example: 1
+      * @bodyParam work_date date required Work date. Example: 2024-01-15
+      * @bodyParam site_id integer required Site ID. Example: 5
+      * @bodyParam supplier_id integer required Supplier ID. Example: 1
+      * @bodyParam created_by integer required Creator user ID. Example: 1
+      * @bodyParam workspace_id integer required Workspace ID. Example: 1
+      * @bodyParam activity_completed_id integer required Activity completed ID. Example: 10
+      * @bodyParam details array required Array of manpower details (use indexed notation: details[0], details[1], etc.).
+      * @bodyParam details[0][man_power_type_id] integer required Manpower type ID. Example: 2
+      * @bodyParam details[0][count] integer required Number of workers. Example: 5
+      * @bodyParam reference_file file optional Reference document (max 10MB).
+      *
+      * @response status=200 scenario="Success" {
+      *   "id": 1,
+      *   "work_date": "2024-01-15",
+      *   "total_count": 10,
+      *   "details": [...]
+      * }
+      * @response status=403 scenario="Permission denied" {"status": 0, "message": "Permission denied"}
+      */
     public function update(Request $request, ManPowerMaster $manpower)
     {
         if (!Auth::user()->isAbleTo('man-power edit')) {
@@ -316,9 +397,20 @@ class ManPowerApiController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource.
-     */
+/**
+      * Remove the specified resource.
+      *
+      * @authenticated
+      * @requiredPermission man-power delete
+      *
+      * @urlParam manpower required ManPower ID (via route model binding). Example: 1
+      *
+      * @response status=200 scenario="Success" {
+      *   "status": "success",
+      *   "message": "Manpower record deleted successfully"
+      * }
+      * @response status=403 scenario="Permission denied" {"status": 0, "message": "Permission denied"}
+      */
     public function destroy(ManPowerMaster $manpower)
     {
         if (!Auth::user()->isAbleTo('man-power delete')) {

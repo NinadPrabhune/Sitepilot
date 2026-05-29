@@ -14,6 +14,7 @@ class AdvanceUtilization extends Model
         'idempotency_key',
         'supplier_advance_id',
         'purchase_invoice_id',
+        'payments_module_id',
         'utilized_amount',
         'created_by',
         'status',

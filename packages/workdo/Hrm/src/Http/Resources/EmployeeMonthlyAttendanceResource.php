@@ -34,18 +34,19 @@ class EmployeeMonthlyAttendanceResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $data = $this->resource;
         return [
-            'employee_id' => $this->employee_id,
-            'employee_name' => $this->name,
-            'present_days' => (int) $this->present_days,
-            'leave_days' => (int) $this->leave_days,
-            'absent_days' => (int) $this->absent_days,
-            'late_count' => (int) $this->late_count,
-            'late_hours' => $this->late_hours,
-            'early_leaving_count' => (int) $this->early_leaving_count,
-            'early_leaving_hours' => $this->early_leaving_hours,
-            'overtime_hours' => $this->overtime_hours,
-            'attendance' => $this->attendance,
+            'employee_id' => $data['employee_id'] ?? null,
+            'employee_name' => $data['name'] ?? '',
+            'present_days' => (int) ($data['present_days'] ?? 0),
+            'leave_days' => (int) ($data['leave_days'] ?? 0),
+            'absent_days' => (int) ($data['absent_days'] ?? 0),
+            'late_count' => (int) ($data['late_count'] ?? 0),
+            'late_hours' => $data['late_hours'] ?? 0,
+            'early_leaving_count' => (int) ($data['early_leaving_count'] ?? 0),
+            'early_leaving_hours' => $data['early_leaving_hours'] ?? 0,
+            'overtime_hours' => $data['overtime_hours'] ?? 0,
+            'attendance' => (object) ($data['attendance'] ?? []),
         ];
     }
 }

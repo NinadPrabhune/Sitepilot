@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\SupplierAdvance;
-use App\Models\AdvanceUtilization;
 use App\Models\AdvanceAuditLog;
-use App\Models\PurchaseInvoice;
+use App\Models\AdvanceUtilization;
 use App\Models\PaymentRequest;
-use App\Services\FinancialPeriodService;
+use App\Models\PurchaseInvoice;
+use App\Models\SupplierAdvance;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -22,10 +21,11 @@ class AdvanceAllocationService
     public function allocateToInvoice(int $invoiceId): array
     {
         // CRITICAL: Feature flag check
-        if (!config('finance.po_locked_advance_enabled', false)) {
+        if (! config('finance.po_locked_advance_enabled', false)) {
             Log::channel('finance')->warning('PO-locked advance allocation skipped - feature flag disabled', [
                 'invoice_id' => $invoiceId,
             ]);
+
             return [
                 'success' => true,
                 'message' => 'Feature flag disabled - using legacy allocation',
@@ -40,8 +40,8 @@ class AdvanceAllocationService
             // CRITICAL: Direct GRN hard stop at service level
             if (empty($invoice->po_id)) {
                 throw new \InvalidArgumentException(
-                    'Direct GRN invoices cannot use advance allocation. ' .
-                    'This invoice is not linked to a Purchase Order. ' .
+                    'Direct GRN invoices cannot use advance allocation. '.
+                    'This invoice is not linked to a Purchase Order. '.
                     'Direct GRN requires full payment without advance.'
                 );
             }
@@ -55,7 +55,7 @@ class AdvanceAllocationService
 
             // CRITICAL: Validate financial period not closed (only if enabled)
             if (config('finance.financial_period_locking_enabled', false)) {
-                $periodService = new FinancialPeriodService();
+                $periodService = new FinancialPeriodService;
                 $periodService->validatePeriodNotClosed(
                     Carbon::parse($invoice->invoice_date),
                     $invoice->workspace_id,
@@ -112,8 +112,8 @@ class AdvanceAllocationService
                 // CRITICAL: Validate transaction flow ID match
                 if ($advance->transaction_flow_id !== $invoice->transaction_flow_id) {
                     throw new \InvalidArgumentException(
-                        'Transaction flow mismatch: Advance flow ID ' . $advance->transaction_flow_id .
-                        ' does not match Invoice flow ID ' . $invoice->transaction_flow_id
+                        'Transaction flow mismatch: Advance flow ID '.$advance->transaction_flow_id.
+                        ' does not match Invoice flow ID '.$invoice->transaction_flow_id
                     );
                 }
 
@@ -193,7 +193,7 @@ class AdvanceAllocationService
     public function reserveForPaymentRequest(int $invoiceId, int $paymentRequestId): array
     {
         // CRITICAL: Feature flag check
-        if (!config('finance.po_locked_advance_enabled', false)) {
+        if (! config('finance.po_locked_advance_enabled', false)) {
             return ['status' => 'skipped', 'payment_request_id' => $paymentRequestId];
         }
 
@@ -203,7 +203,7 @@ class AdvanceAllocationService
             // CRITICAL: Direct GRN hard stop
             if (empty($invoice->po_id)) {
                 throw new \InvalidArgumentException(
-                    'Direct GRN invoices cannot use advance allocation. ' .
+                    'Direct GRN invoices cannot use advance allocation. '.
                     'This invoice is not linked to a Purchase Order.'
                 );
             }
@@ -263,7 +263,7 @@ class AdvanceAllocationService
     public function applyReservation(int $paymentRequestId): void
     {
         // CRITICAL: Feature flag check
-        if (!config('finance.po_locked_advance_enabled', false)) {
+        if (! config('finance.po_locked_advance_enabled', false)) {
             return;
         }
 
@@ -307,7 +307,7 @@ class AdvanceAllocationService
     public function releaseReservation(int $paymentRequestId): void
     {
         // CRITICAL: Feature flag check
-        if (!config('finance.po_locked_advance_enabled', false)) {
+        if (! config('finance.po_locked_advance_enabled', false)) {
             return;
         }
 
@@ -400,21 +400,16 @@ class AdvanceAllocationService
     /**
      * Calculate available balance for a specific advance.
      * CRITICAL: Never trust stored values - always calculate.
-     *
-     * @param int $advanceId
-     * @return float
      */
     public function calculateAvailableForAllocation(int $advanceId): float
     {
         $advance = SupplierAdvance::findOrFail($advanceId);
+
         return $advance->amount - $advance->utilized_amount;  // Derived, not stored
     }
 
     /**
      * Lock all supplier advances during allocation.
-     * 
-     * @param int $supplierId
-     * @return void
      */
     public function lockAdvancesForAllocation(int $supplierId): void
     {
@@ -426,9 +421,6 @@ class AdvanceAllocationService
 
     /**
      * Unlock advances after allocation.
-     * 
-     * @param int $supplierId
-     * @return void
      */
     public function unlockAdvancesAfterAllocation(int $supplierId): void
     {
@@ -439,40 +431,30 @@ class AdvanceAllocationService
 
     /**
      * Reserve advance for invoice in process.
-     * 
-     * @param int $advanceId
-     * @param int $invoiceId
-     * @param float $amount
-     * @return bool
      */
     public function reserveAdvanceForInvoice(int $advanceId, int $invoiceId, float $amount): bool
     {
         return DB::transaction(function () use ($advanceId, $invoiceId, $amount) {
             $advance = SupplierAdvance::lockForUpdate()->findOrFail($advanceId);
+
             return $advance->reserve($amount, $invoiceId);
         });
     }
 
     /**
      * Release reservation for invoice.
-     * 
-     * @param int $advanceId
-     * @param int $invoiceId
-     * @return bool
      */
     public function unreserveAdvanceForInvoice(int $advanceId, int $invoiceId): bool
     {
-        return DB::transaction(function () use ($advanceId, $invoiceId) {
+        return DB::transaction(function () use ($advanceId) {
             $advance = SupplierAdvance::lockForUpdate()->findOrFail($advanceId);
+
             return $advance->releaseReservation($advance->reserved_amount);
         });
     }
 
     /**
      * Release expired reservations for a supplier.
-     * 
-     * @param int $supplierId
-     * @return int
      */
     public function releaseExpiredReservations(int $supplierId): int
     {
@@ -486,7 +468,7 @@ class AdvanceAllocationService
         foreach ($expiredAdvances as $advance) {
             if ($advance->releaseExpiredReservation()) {
                 $releasedCount++;
-                
+
                 SupplierAdvanceAuditLog::log(
                     $advance,
                     SupplierAdvanceAuditLog::ACTION_UNRESERVATION,
@@ -512,9 +494,6 @@ class AdvanceAllocationService
 
     /**
      * Rollback allocation if payment fails (atomic rollback).
-     * 
-     * @param int $invoiceId
-     * @return bool
      */
     public function rollbackAllocation(int $invoiceId): bool
     {
@@ -576,9 +555,6 @@ class AdvanceAllocationService
 
     /**
      * Check if advance has been allocated for an invoice.
-     * 
-     * @param int $invoiceId
-     * @return bool
      */
     public function isAdvanceAllocatedForInvoice(int $invoiceId): bool
     {
@@ -588,9 +564,6 @@ class AdvanceAllocationService
     /**
      * Calculate potential advance allocation for an invoice (dry-run).
      * Returns the amount that would be allocated without persisting any changes.
-     * 
-     * @param int $invoiceId
-     * @return array
      */
     public function calculatePotentialAllocation(int $invoiceId): array
     {
@@ -608,7 +581,7 @@ class AdvanceAllocationService
         // Get available advances (without locking for dry-run)
         $advances = SupplierAdvance::forSupplier($invoice->supplier_id)
             ->paid()
-            ->whereRaw('remaining_amount - reserved_amount - utilized_amount > 0')
+            ->withAvailableBalance()
             ->orderBy('advance_date', 'asc')
             ->orderBy('id', 'asc')
             ->get();
@@ -668,16 +641,13 @@ class AdvanceAllocationService
 
     /**
      * Get invoice balance after deducting payments and advances.
-     * 
-     * @param PurchaseInvoice $invoice
-     * @return float
      */
     private function getInvoiceBalance(PurchaseInvoice $invoice): float
     {
         $grandTotal = (float) $invoice->grand_total;
         $directPayments = $invoice->payments()->sum('amount');
         $advanceUtilized = AdvanceUtilization::getTotalUtilizedForInvoice($invoice->id);
-        
+
         return max(0, $grandTotal - $directPayments - $advanceUtilized);
     }
 }

@@ -3,20 +3,26 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdvanceUtilization;
 use App\Models\PaymentRequest;
+use App\Models\PaymentsModule;
 use App\Models\PurchaseInvoice;
 use App\Models\PurchaseOrder;
-use App\Services\NotificationService;
-use App\Services\POCalculationService;
-use App\Services\PaymentService;
+use App\Models\SupplierAdvance;
 use App\Services\AdvanceAllocationService;
+use App\Services\FinancialPeriodService;
+use App\Services\NotificationService;
+use App\Services\PaymentService;
 use App\Services\POAdvanceService;
+use App\Services\POCalculationService;
+use App\Services\SupplierAdvanceService;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * @group Payment Request
@@ -73,9 +79,13 @@ use Illuminate\Support\Facades\Config;
 class PaymentRequestApiController extends Controller
 {
     protected NotificationService $notificationService;
+
     protected POCalculationService $poCalculationService;
+
     protected PaymentService $paymentService;
+
     protected AdvanceAllocationService $advanceAllocationService;
+
     protected POAdvanceService $poAdvanceService;
 
     public function __construct(
@@ -94,14 +104,15 @@ class PaymentRequestApiController extends Controller
 
     /**
      * Get Payment Request Data (Prefill)
-     * 
+     *
      * Returns invoice details with calculated amounts for payment request creation.
      * This replicates the logic from PaymentRequestController@createModal.
-     * 
+     *
      * @urlParam invoice_id integer required The ID of the purchase invoice
+     *
      * @queryParam workspace_id integer optional Filter by workspace ID
      * @queryParam site_id integer optional Filter by site ID
-     * 
+     *
      * @response {
      *   "success": true,
      *   "message": "Payment request data retrieved successfully",
@@ -128,10 +139,10 @@ class PaymentRequestApiController extends Controller
      */
     public function getPaymentRequestData(Request $request, $invoiceId)
     {
-        if (!Auth::user()->isAbleTo('manage-payment manage')) {
+        if (! Auth::user()->isAbleTo('manage-payment manage')) {
             return response()->json([
                 'success' => false,
-                'message' => 'Permission denied.'
+                'message' => 'Permission denied.',
             ], 403);
         }
 
@@ -187,10 +198,10 @@ class PaymentRequestApiController extends Controller
                 ')
                 ->first();
 
-            if (!$invoiceData) {
+            if (! $invoiceData) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Invoice not found.'
+                    'message' => 'Invoice not found.',
                 ], 404);
             }
 
@@ -198,7 +209,7 @@ class PaymentRequestApiController extends Controller
                 'supplier',
                 'site',
                 'purchaseOrder',
-                'creator'
+                'creator',
             ])->findOrFail($invoiceId);
 
             // PO advance calculations - BEFORE allocation check
@@ -249,14 +260,14 @@ class PaymentRequestApiController extends Controller
                     if ($allocationResult && isset($allocationResult['allocated_amount'])) {
                         $advanceUtilized = $allocationResult['allocated_amount'];
                     }
-                    
+
                     // Recalculate remaining PO advance after allocation
                     $poAdvanceRemaining = max(0, $poAdvanceRemaining - ($allocationResult['allocated_amount'] ?? 0));
                 } else {
                     // Feature flag disabled: Calculate potential allocation directly from PO advances
                     $invoiceBalance = max(0, $invoiceData->grand_total - $invoiceData->paid_amount - $invoiceData->advance_used - $invoiceData->active_requests);
                     $potentialAllocation = min($poAdvanceRemaining, $invoiceBalance);
-                    
+
                     if ($potentialAllocation > 0) {
                         $advanceUtilized = $potentialAllocation;
                         // Recalculate remaining PO advance after allocation
@@ -268,7 +279,7 @@ class PaymentRequestApiController extends Controller
             // Calculate values after potential allocation
             $paidAmount = $invoiceData->paid_amount;
             $activeRequestsSum = $invoiceData->active_requests;
-            
+
             // Net payable = grand_total - paid - advance_used - active_requests
             $maxAllowedAmount = max(0, $invoiceData->grand_total - $paidAmount - $advanceUtilized - $activeRequestsSum);
             $remainingBalance = $maxAllowedAmount;
@@ -301,28 +312,28 @@ class PaymentRequestApiController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Payment request data retrieved successfully',
-                'data' => $data
+                'data' => $data,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Payment request data retrieval error', [
                 'invoice_id' => $invoiceId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error retrieving payment request data: ' . $e->getMessage()
+                'message' => 'Error retrieving payment request data: '.$e->getMessage(),
             ], 500);
         }
     }
 
     /**
      * Create Payment Request
-     * 
+     *
      * Creates a new payment request for an invoice.
      * This replicates the exact business logic from PaymentRequestController@store.
-     * 
+     *
      * @bodyParam purchase_invoice_id integer required The ID of the purchase invoice
      * @bodyParam requested_amount numeric required The amount being requested (min: 0.01)
      * @bodyParam payment_date date required The payment date
@@ -330,7 +341,7 @@ class PaymentRequestApiController extends Controller
      * @bodyParam idempotency_key string optional Unique key to prevent duplicate requests (max: 64 characters)
      * @bodyParam workspace_id integer optional Filter by workspace ID
      * @bodyParam site_id integer optional Filter by site ID
-     * 
+     *
      * @response {
      *   "success": true,
      *   "message": "Payment request created successfully",
@@ -342,10 +353,10 @@ class PaymentRequestApiController extends Controller
      */
     public function store(Request $request)
     {
-        if (!Auth::user()->isAbleTo('manage-payment manage')) {
+        if (! Auth::user()->isAbleTo('manage-payment manage')) {
             return response()->json([
                 'success' => false,
-                'message' => 'Permission denied.'
+                'message' => 'Permission denied.',
             ], 403);
         }
 
@@ -362,7 +373,7 @@ class PaymentRequestApiController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $validator->errors()->first()
+                'message' => $validator->errors()->first(),
             ], 400);
         }
 
@@ -377,7 +388,7 @@ class PaymentRequestApiController extends Controller
                     ->lockForUpdate()
                     ->first();
 
-                if (!$invoice) {
+                if (! $invoice) {
                     throw new \Exception('Invoice not found.');
                 }
 
@@ -394,14 +405,14 @@ class PaymentRequestApiController extends Controller
                 // CRITICAL: Direct GRN hard stop at controller level (only if feature flag enabled)
                 if (config('finance.po_locked_advance_enabled', false) && empty($invoice->po_id)) {
                     throw new \InvalidArgumentException(
-                        'Direct GRN invoices cannot create payment requests with advance allocation. ' .
-                        'This invoice is not linked to a Purchase Order. ' .
+                        'Direct GRN invoices cannot create payment requests with advance allocation. '.
+                        'This invoice is not linked to a Purchase Order. '.
                         'Direct GRN requires full payment without advance.'
                     );
                 }
 
                 // CRITICAL: Idempotency check
-                if (!empty($request->idempotency_key)) {
+                if (! empty($request->idempotency_key)) {
                     $existingRequest = PaymentRequest::where('idempotency_key', $request->idempotency_key)
                         ->where('workspace_id', $invoice->workspace_id)
                         ->first();
@@ -413,7 +424,7 @@ class PaymentRequestApiController extends Controller
                             'data' => [
                                 'id' => $existingRequest->id,
                                 'status' => $existingRequest->status,
-                            ]
+                            ],
                         ]);
                     }
                 }
@@ -433,9 +444,9 @@ class PaymentRequestApiController extends Controller
 
                 // CRITICAL: Validate financial period not closed (only if feature flag enabled)
                 if (config('finance.financial_period_locking_enabled', false)) {
-                    $periodService = new \App\Services\FinancialPeriodService();
+                    $periodService = new FinancialPeriodService;
                     $periodService->validatePeriodNotClosed(
-                        \Carbon\Carbon::parse($invoice->invoice_date),
+                        Carbon::parse($invoice->invoice_date),
                         $invoice->workspace_id,
                         $invoice->site_id
                     );
@@ -447,7 +458,7 @@ class PaymentRequestApiController extends Controller
 
                 // Calculate max allowed - using SAME logic as createModal to ensure consistency
                 $maxAllowed = $this->calculateMaxAllowedForPR($invoice);
-                
+
                 if ($maxAllowed <= 0) {
                     throw new \Exception('No remaining balance available for payment request.');
                 }
@@ -455,13 +466,13 @@ class PaymentRequestApiController extends Controller
                 if ($invoice->hasPendingPaymentRequest()) {
                     throw new \Exception('A pending payment request already exists for this invoice.');
                 }
-                
+
                 if ($request->requested_amount > $maxAllowed) {
-                    throw new \Exception('Requested amount cannot exceed remaining invoice amount. Maximum allowed: ₹' . number_format($maxAllowed, 2));
+                    throw new \Exception('Requested amount cannot exceed remaining invoice amount. Maximum allowed: ₹'.number_format($maxAllowed, 2));
                 }
 
                 // Allocate advance BEFORE capturing snapshots so snapshots include allocated amount
-                if ($po && !$this->advanceAllocationService->isAdvanceAllocatedForInvoice($invoice->id)) {
+                if ($po && ! $this->advanceAllocationService->isAdvanceAllocatedForInvoice($invoice->id)) {
                     if (config('finance.po_locked_advance_enabled', false)) {
                         // Use the full service with feature flag enabled
                         $this->advanceAllocationService->allocateToInvoice($invoice->id);
@@ -511,7 +522,7 @@ class PaymentRequestApiController extends Controller
                         'active_requests' => $activeRequestsSnapshot,
                     ],
                     'max_allowed' => $maxAllowed,
-                    'advance_allocated' => $po && !$this->advanceAllocationService->isAdvanceAllocatedForInvoice($invoice->id),
+                    'advance_allocated' => $po && ! $this->advanceAllocationService->isAdvanceAllocatedForInvoice($invoice->id),
                     'created_at' => $paymentRequest->created_at,
                     'source' => 'mobile_api',
                 ]);
@@ -531,7 +542,7 @@ class PaymentRequestApiController extends Controller
                     // Notification failure should not fail the payment request creation
                     Log::warning('Payment request notification failed', [
                         'payment_request_id' => $paymentRequest->id,
-                        'error' => $e->getMessage()
+                        'error' => $e->getMessage(),
                     ]);
                 }
 
@@ -541,19 +552,19 @@ class PaymentRequestApiController extends Controller
                     'data' => [
                         'id' => $paymentRequest->id,
                         'status' => $paymentRequest->status,
-                    ]
+                    ],
                 ]);
             });
         } catch (\Exception $e) {
             Log::error('Payment request creation error via API', [
                 'invoice_id' => $invoiceId,
                 'requested_amount' => $request->requested_amount,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
-            
+
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 422);
         }
     }
@@ -566,7 +577,7 @@ class PaymentRequestApiController extends Controller
         $invoiceIds = PurchaseInvoice::where('po_id', $poId)->pluck('id');
 
         if ($invoiceIds->isNotEmpty()) {
-            \App\Models\AdvanceUtilization::whereIn('purchase_invoice_id', $invoiceIds)
+            AdvanceUtilization::whereIn('purchase_invoice_id', $invoiceIds)
                 ->lockForUpdate()
                 ->get();
         }
@@ -634,7 +645,7 @@ class PaymentRequestApiController extends Controller
             $toAllocate = min($availableBalance, $invoiceBalance);
 
             // Create utilization record
-            \App\Models\AdvanceUtilization::create([
+            AdvanceUtilization::create([
                 'supplier_advance_id' => $advance->id,
                 'purchase_invoice_id' => $invoice->id,
                 'utilized_amount' => $toAllocate,
@@ -649,7 +660,7 @@ class PaymentRequestApiController extends Controller
 
         // Update advance utilized_amount using SUM (idempotent)
         foreach ($advances as $advance) {
-            $totalApplied = \App\Models\AdvanceUtilization::where('supplier_advance_id', $advance->id)
+            $totalApplied = AdvanceUtilization::where('supplier_advance_id', $advance->id)
                 ->where('status', 'applied')
                 ->sum('utilized_amount');
 
@@ -691,7 +702,7 @@ class PaymentRequestApiController extends Controller
                 $toAllocate = min($availableBalance, $invoiceBalance);
 
                 // Create utilization record linked to payments_module
-                \App\Models\AdvanceUtilization::create([
+                AdvanceUtilization::create([
                     'payments_module_id' => $legacyAdvance->id,
                     'purchase_invoice_id' => $invoice->id,
                     'utilized_amount' => $toAllocate,
@@ -756,14 +767,15 @@ class PaymentRequestApiController extends Controller
 
     /**
      * Get PO Advance Request Data (Prefill)
-     * 
+     *
      * Returns PO details with calculated amounts for PO advance request creation.
      * This replicates the logic from PurchaseOrderController@advanceRequestModal.
-     * 
+     *
      * @urlParam po_id integer required The ID of the purchase order
+     *
      * @queryParam workspace_id integer optional Filter by workspace ID
      * @queryParam site_id integer optional Filter by site ID
-     * 
+     *
      * @response {
      *   "success": true,
      *   "message": "PO advance request data retrieved successfully",
@@ -781,10 +793,10 @@ class PaymentRequestApiController extends Controller
      */
     public function getPoAdvanceRequestData(Request $request, $poId)
     {
-        if (!Auth::user()->isAbleTo('manage-payment manage')) {
+        if (! Auth::user()->isAbleTo('manage-payment manage')) {
             return response()->json([
                 'success' => false,
-                'message' => 'Permission denied.'
+                'message' => 'Permission denied.',
             ], 403);
         }
 
@@ -798,7 +810,7 @@ class PaymentRequestApiController extends Controller
             if ($workspaceId && $modalData['po']->workspace_id != $workspaceId) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'PO does not belong to the specified workspace.'
+                    'message' => 'PO does not belong to the specified workspace.',
                 ], 403);
             }
 
@@ -806,7 +818,7 @@ class PaymentRequestApiController extends Controller
             if ($siteId && $modalData['po']->site_id != $siteId) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'PO does not belong to the specified site.'
+                    'message' => 'PO does not belong to the specified site.',
                 ], 403);
             }
 
@@ -837,28 +849,28 @@ class PaymentRequestApiController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'PO advance request data retrieved successfully',
-                'data' => $data
+                'data' => $data,
             ]);
 
         } catch (\Exception $e) {
             Log::error('PO advance request data retrieval error', [
                 'po_id' => $poId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error retrieving PO advance request data: ' . $e->getMessage()
+                'message' => 'Error retrieving PO advance request data: '.$e->getMessage(),
             ], 500);
         }
     }
 
     /**
      * Create PO Advance Request
-     * 
+     *
      * Creates a new PO advance request.
      * This replicates the exact business logic from PurchaseOrderController@storeAdvanceRequest.
-     * 
+     *
      * @bodyParam po_id integer required The ID of the purchase order
      * @bodyParam percentage integer required The percentage of PO total (1-100)
      * @bodyParam advance_amount numeric required The advance amount
@@ -866,7 +878,7 @@ class PaymentRequestApiController extends Controller
      * @bodyParam notes string optional Notes for the advance request (max: 1000 characters)
      * @bodyParam workspace_id integer optional Filter by workspace ID
      * @bodyParam site_id integer optional Filter by site ID
-     * 
+     *
      * @response {
      *   "success": true,
      *   "message": "Advance request created successfully",
@@ -878,10 +890,10 @@ class PaymentRequestApiController extends Controller
      */
     public function storePoAdvanceRequest(Request $request, $poId)
     {
-        if (!Auth::user()->isAbleTo('manage-payment manage')) {
+        if (! Auth::user()->isAbleTo('manage-payment manage')) {
             return response()->json([
                 'success' => false,
-                'message' => 'Permission denied.'
+                'message' => 'Permission denied.',
             ], 403);
         }
 
@@ -897,7 +909,7 @@ class PaymentRequestApiController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $validator->errors()->first()
+                'message' => $validator->errors()->first(),
             ], 400);
         }
 
@@ -915,7 +927,7 @@ class PaymentRequestApiController extends Controller
             if ($workspaceId && $po->workspace_id != $workspaceId) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'PO does not belong to the specified workspace.'
+                    'message' => 'PO does not belong to the specified workspace.',
                 ], 403);
             }
 
@@ -923,7 +935,7 @@ class PaymentRequestApiController extends Controller
             if ($siteId && $po->site_id != $siteId) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'PO does not belong to the specified site.'
+                    'message' => 'PO does not belong to the specified site.',
                 ], 403);
             }
 
@@ -931,7 +943,7 @@ class PaymentRequestApiController extends Controller
             if ($po->isPaymentCompleted()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Payment already completed for this PO. Cannot request advance.'
+                    'message' => 'Payment already completed for this PO. Cannot request advance.',
                 ], 422);
             }
 
@@ -940,14 +952,14 @@ class PaymentRequestApiController extends Controller
             if ($po->hasActiveAdvanceRequest()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'An active advance request already exists for this PO. Only one active advance request allowed per PO.'
+                    'message' => 'An active advance request already exists for this PO. Only one active advance request allowed per PO.',
                 ], 422);
             }
 
             // Validate business rules
             $validationErrors = $this->poAdvanceService->validateAdvanceRequest($po, $percentage, $advanceAmount);
 
-            if (!empty($validationErrors)) {
+            if (! empty($validationErrors)) {
                 return response()->json([
                     'success' => false,
                     'message' => implode(' ', $validationErrors),
@@ -957,7 +969,7 @@ class PaymentRequestApiController extends Controller
             // Check pending requests
             $pendingErrors = $this->poAdvanceService->checkPendingRequests($poId, $advanceAmount);
 
-            if (!empty($pendingErrors)) {
+            if (! empty($pendingErrors)) {
                 return response()->json([
                     'success' => false,
                     'message' => implode(' ', $pendingErrors),
@@ -990,19 +1002,19 @@ class PaymentRequestApiController extends Controller
                 'data' => [
                     'id' => $paymentRequest->id,
                     'status' => $paymentRequest->status,
-                ]
+                ],
             ]);
 
         } catch (\Exception $e) {
             Log::error('PO advance request creation error via API', [
                 'po_id' => $poId,
                 'advance_amount' => $advanceAmount,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create advance request: ' . $e->getMessage()
+                'message' => 'Failed to create advance request: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -1016,10 +1028,10 @@ class PaymentRequestApiController extends Controller
 
     /**
      * List Payment Requests
-     * 
+     *
      * Returns paginated list of payment requests with filters.
      * This replicates the logic from PaymentRequestDataTable.
-     * 
+     *
      * @queryParam page integer Page number (default: 1)
      * @queryParam per_page integer Items per page (default: 10)
      * @queryParam status enum Filter by status (pending, approved, partially_approved, rejected, paid, partially_paid)
@@ -1028,7 +1040,7 @@ class PaymentRequestApiController extends Controller
      * @queryParam end_date date Filter by creation date (to)
      * @queryParam workspace_id integer Filter by workspace ID
      * @queryParam site_id integer Filter by site ID
-     * 
+     *
      * @response {
      *   "success": true,
      *   "message": "Payment requests retrieved successfully",
@@ -1043,10 +1055,10 @@ class PaymentRequestApiController extends Controller
      */
     public function list(Request $request)
     {
-        if (!Auth::user()->isAbleTo('manage-payment manage')) {
+        if (! Auth::user()->isAbleTo('manage-payment manage')) {
             return response()->json([
                 'success' => false,
-                'message' => 'Permission denied.'
+                'message' => 'Permission denied.',
             ], 403);
         }
 
@@ -1066,52 +1078,52 @@ class PaymentRequestApiController extends Controller
 
             // Add workspace filter (only if workspace is set)
             $query->when($workspaceId, function ($q) use ($workspaceId) {
-                $q->where(function ($q) {
+                $q->where(function ($q) use ($workspaceId) {
                     // Include payment requests with invoice (check workspace via invoice)
                     $q->whereHas('invoice', function ($q) use ($workspaceId) {
                         $q->where('workspace_id', $workspaceId);
                     })
                     // OR include PO advance requests (check PO's workspace_id)
-                    ->orWhere(function ($q) use ($workspaceId) {
-                        $q->where('type', PaymentRequest::TYPE_PO_ADVANCE)
-                          ->whereHas('po', function ($q) use ($workspaceId) {
-                              $q->where('workspace_id', $workspaceId);
-                          });
-                    });
+                        ->orWhere(function ($q) use ($workspaceId) {
+                            $q->where('type', PaymentRequest::TYPE_PO_ADVANCE)
+                                ->whereHas('po', function ($q) use ($workspaceId) {
+                                    $q->where('workspace_id', $workspaceId);
+                                });
+                        });
                 });
             });
 
             // Apply explicit site_id filter (overrides implicit project filter if provided)
             if ($siteId) {
                 // CRITICAL: Verify user has access to this site_id to prevent data leakage
-                $userSites = Auth::user()->projects()->pluck('id')->toArray();
-                if (!in_array($siteId, $userSites) && !Auth::user()->hasRole('admin')) {
+                $userSites = Auth::user()->projects()->pluck('projects.id')->toArray();
+                if (! in_array($siteId, $userSites) && ! Auth::user()->hasRole('admin')) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'You do not have access to this project.'
+                        'message' => 'You do not have access to this project.',
                     ], 403);
                 }
 
                 $query->where(function ($q) use ($siteId) {
                     // Filter by site for invoice-based requests
-                    $q->whereHas('invoice', fn($q) => $q->where('site_id', $siteId))
+                    $q->whereHas('invoice', fn ($q) => $q->where('site_id', $siteId))
                       // OR include PO advance requests (check PO's site_id)
-                      ->orWhere(function ($q) use ($siteId) {
-                          $q->where('type', PaymentRequest::TYPE_PO_ADVANCE)
-                            ->whereHas('po', fn($q) => $q->where('site_id', $siteId));
-                      });
+                        ->orWhere(function ($q) use ($siteId) {
+                            $q->where('type', PaymentRequest::TYPE_PO_ADVANCE)
+                                ->whereHas('po', fn ($q) => $q->where('site_id', $siteId));
+                        });
                 });
             } else {
                 // Fall back to implicit project filter if no explicit site_id
                 $query->when($siteId, function ($q) use ($siteId) {
-                    $q->where(function ($q) {
+                    $q->where(function ($q) use ($siteId) {
                         // Filter by project for invoice-based requests
-                        $q->whereHas('invoice', fn($q) => $q->where('site_id', $siteId))
+                        $q->whereHas('invoice', fn ($q) => $q->where('site_id', $siteId))
                           // OR include PO advance requests (check PO's site_id)
-                          ->orWhere(function ($q) {
-                              $q->where('type', PaymentRequest::TYPE_PO_ADVANCE)
-                                ->whereHas('po', fn($q) => $q->where('site_id', $siteId));
-                          });
+                            ->orWhere(function ($q) use ($siteId) {
+                                $q->where('type', PaymentRequest::TYPE_PO_ADVANCE)
+                                    ->whereHas('po', fn ($q) => $q->where('site_id', $siteId));
+                            });
                     });
                 });
             }
@@ -1128,34 +1140,34 @@ class PaymentRequestApiController extends Controller
             if ($supplierId) {
                 $query->where(function ($q) use ($supplierId) {
                     // Filter by supplier for invoice-based requests
-                    $q->whereHas('invoice', fn($q) => $q->where('supplier_id', $supplierId))
+                    $q->whereHas('invoice', fn ($q) => $q->where('supplier_id', $supplierId))
                       // OR include PO advance requests (check PO's supplier)
-                      ->orWhere(function ($q) use ($supplierId) {
-                          $q->where('type', PaymentRequest::TYPE_PO_ADVANCE)
-                            ->whereHas('po', fn($q) => $q->where('supplier_id', $supplierId));
-                      });
+                        ->orWhere(function ($q) use ($supplierId) {
+                            $q->where('type', PaymentRequest::TYPE_PO_ADVANCE)
+                                ->whereHas('po', fn ($q) => $q->where('supplier_id', $supplierId));
+                        });
                 });
             }
 
-            if (!empty($startDate)) {
+            if (! empty($startDate)) {
                 $query->whereDate('created_at', '>=', $startDate);
             }
 
-            if (!empty($endDate)) {
+            if (! empty($endDate)) {
                 $query->whereDate('created_at', '<=', $endDate);
             }
 
             // Search by invoice_number, po_number, or request id
             // Optimized: exact match for id, prefix search for invoice/po numbers
-            if (!empty($search)) {
+            if (! empty($search)) {
                 $query->where(function ($q) use ($search) {
                     // Exact match for numeric IDs (faster)
                     if (is_numeric($search)) {
                         $q->where('payment_requests.id', $search);
                     }
                     // Prefix search for invoice/po numbers (better performance than LIKE '%...%')
-                    $q->orWhereHas('invoice', fn($q) => $q->where('invoice_number', 'like', "{$search}%"))
-                      ->orWhereHas('po', fn($q) => $q->where('po_number', 'like', "{$search}%"));
+                    $q->orWhereHas('invoice', fn ($q) => $q->where('invoice_number', 'like', "{$search}%"))
+                        ->orWhereHas('po', fn ($q) => $q->where('po_number', 'like', "{$search}%"));
                 });
             }
 
@@ -1217,14 +1229,15 @@ class PaymentRequestApiController extends Controller
                         'invoice_date' => $invoice?->invoice_date ?? $po?->po_date,
                         'total_paid' => (float) $totalPaid,
                         'remaining_amount' => (float) $remainingAmount,
-                        'has_missing_invoice' => $pr->isInvoicePayment() && !$invoice,
-                        'has_missing_po' => $pr->isPoAdvance() && !$po,
+                        'has_missing_invoice' => $pr->isInvoicePayment() && ! $invoice,
+                        'has_missing_po' => $pr->isPoAdvance() && ! $po,
                     ];
                 } catch (\Exception $e) {
                     Log::error('Error transforming payment request', [
                         'payment_request_id' => $pr->id,
-                        'error' => $e->getMessage()
+                        'error' => $e->getMessage(),
                     ]);
+
                     // Return minimal data if transformation fails
                     return [
                         'id' => $pr->id,
@@ -1239,30 +1252,31 @@ class PaymentRequestApiController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Payment requests retrieved successfully',
-                'data' => $transformedData
+                'data' => $transformedData,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Payment request list error', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error retrieving payment requests: ' . $e->getMessage()
+                'message' => 'Error retrieving payment requests: '.$e->getMessage(),
             ], 500);
         }
     }
 
     /**
      * Get Payment Request Details
-     * 
+     *
      * Returns full payment request details including invoice/PO data, snapshots, and payment history.
-     * 
+     *
      * @urlParam id integer required The ID of the payment request
+     *
      * @queryParam workspace_id integer optional Filter by workspace ID
      * @queryParam site_id integer optional Filter by site ID
-     * 
+     *
      * @response {
      *   "success": true,
      *   "message": "Payment request details retrieved successfully",
@@ -1271,10 +1285,10 @@ class PaymentRequestApiController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if (!Auth::user()->isAbleTo('manage-payment manage')) {
+        if (! Auth::user()->isAbleTo('manage-payment manage')) {
             return response()->json([
                 'success' => false,
-                'message' => 'Permission denied.'
+                'message' => 'Permission denied.',
             ], 403);
         }
 
@@ -1292,7 +1306,7 @@ class PaymentRequestApiController extends Controller
                 'po.creator',
                 'requestedBy',
                 'approvedBy',
-                'payments'
+                'payments',
             ])->findOrFail($id);
 
             // Validate workspace if provided
@@ -1301,14 +1315,14 @@ class PaymentRequestApiController extends Controller
                     if ($paymentRequest->invoice->workspace_id != $workspaceId) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Payment request does not belong to the specified workspace.'
+                            'message' => 'Payment request does not belong to the specified workspace.',
                         ], 403);
                     }
                 } elseif ($paymentRequest->isPoAdvance() && $paymentRequest->po) {
                     if ($paymentRequest->po->workspace_id != $workspaceId) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Payment request does not belong to the specified workspace.'
+                            'message' => 'Payment request does not belong to the specified workspace.',
                         ], 403);
                     }
                 }
@@ -1320,14 +1334,14 @@ class PaymentRequestApiController extends Controller
                     if ($paymentRequest->invoice->site_id != $siteId) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Payment request does not belong to the specified site.'
+                            'message' => 'Payment request does not belong to the specified site.',
                         ], 403);
                     }
                 } elseif ($paymentRequest->isPoAdvance() && $paymentRequest->po) {
                     if ($paymentRequest->po->site_id != $siteId) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Payment request does not belong to the specified site.'
+                            'message' => 'Payment request does not belong to the specified site.',
                         ], 403);
                     }
                 }
@@ -1338,9 +1352,9 @@ class PaymentRequestApiController extends Controller
             $remainingAmount = max(0, $approvedAmount - $totalPaid);
 
             // Calculate can_perform flags for mobile UI
-            $canApprove = $paymentRequest->isPending() && !$paymentRequest->hasPayment();
-            $canReject = $paymentRequest->isPending() && !$paymentRequest->hasPayment();
-            
+            $canApprove = $paymentRequest->isPending() && ! $paymentRequest->hasPayment();
+            $canReject = $paymentRequest->isPending() && ! $paymentRequest->hasPayment();
+
             // CRITICAL: can_pay edge case checks
             // 1. Status must be in payable states
             $payableStatuses = [
@@ -1349,19 +1363,19 @@ class PaymentRequestApiController extends Controller
                 PaymentRequest::STATUS_PARTIALLY_PAID,
             ];
             $isPayableStatus = in_array($paymentRequest->status, $payableStatuses);
-            
+
             // 2. Must have approved_amount (or fallback to requested_amount)
-            $approvedAmountExists = !empty($paymentRequest->approved_amount) || !empty($paymentRequest->requested_amount);
-            
+            $approvedAmountExists = ! empty($paymentRequest->approved_amount) || ! empty($paymentRequest->requested_amount);
+
             // 3. Must not be fully paid (remaining > 0)
             $hasRemainingBalance = $remainingAmount > 0;
-            
+
             // 4. Must not be rejected or paid
-            $notRejectedOrPaid = !in_array($paymentRequest->status, [
+            $notRejectedOrPaid = ! in_array($paymentRequest->status, [
                 PaymentRequest::STATUS_REJECTED,
                 PaymentRequest::STATUS_PAID,
             ]);
-            
+
             $canPay = $isPayableStatus && $approvedAmountExists && $hasRemainingBalance && $notRejectedOrPaid;
 
             $data = [
@@ -1462,40 +1476,41 @@ class PaymentRequestApiController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Payment request details retrieved successfully',
-                'data' => $data
+                'data' => $data,
             ]);
 
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Payment request not found.'
+                'message' => 'Payment request not found.',
             ], 404);
         } catch (\Exception $e) {
             Log::error('Payment request details error', [
                 'id' => $id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error retrieving payment request details: ' . $e->getMessage()
+                'message' => 'Error retrieving payment request details: '.$e->getMessage(),
             ], 500);
         }
     }
 
     /**
      * Approve / Partial Approve / Reject Payment Request
-     * 
+     *
      * Processes approval actions on payment requests.
      * This replicates the logic from PaymentRequestController@approveSingle.
-     * 
+     *
      * @urlParam id integer required The ID of the payment request
+     *
      * @bodyParam action string required Action: approve, partial, or reject
      * @bodyParam approved_amount numeric required for approve/partial The amount to approve
      * @bodyParam rejection_reason string required for reject Reason for rejection (max 500 chars)
      * @bodyParam workspace_id integer optional Filter by workspace ID
      * @bodyParam site_id integer optional Filter by site ID
-     * 
+     *
      * @response {
      *   "success": true,
      *   "message": "Payment request approved successfully",
@@ -1508,10 +1523,10 @@ class PaymentRequestApiController extends Controller
      */
     public function approve(Request $request, $id)
     {
-        if (!Auth::user()->isAbleTo('manage-payment manage')) {
+        if (! Auth::user()->isAbleTo('manage-payment manage')) {
             return response()->json([
                 'success' => false,
-                'message' => 'Permission denied.'
+                'message' => 'Permission denied.',
             ], 403);
         }
 
@@ -1526,7 +1541,7 @@ class PaymentRequestApiController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $validator->errors()->first()
+                'message' => $validator->errors()->first(),
             ], 400);
         }
 
@@ -1567,15 +1582,15 @@ class PaymentRequestApiController extends Controller
                 if ($paymentRequest->status !== PaymentRequest::STATUS_PENDING) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'This payment request has already been processed.'
+                        'message' => 'This payment request has already been processed.',
                     ], 409);
                 }
 
                 // Validation: Only pending requests can be approved
-                if (!$paymentRequest->isPending()) {
+                if (! $paymentRequest->isPending()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'This payment request is not pending approval.'
+                        'message' => 'This payment request is not pending approval.',
                     ], 422);
                 }
 
@@ -1583,7 +1598,7 @@ class PaymentRequestApiController extends Controller
                 if ($paymentRequest->hasPayment()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'A payment has already been created for this request.'
+                        'message' => 'A payment has already been created for this request.',
                     ], 409);
                 }
 
@@ -1597,7 +1612,7 @@ class PaymentRequestApiController extends Controller
                     if ($approvedAmount <= 0) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Approved amount must be greater than 0.'
+                            'message' => 'Approved amount must be greater than 0.',
                         ], 400);
                     }
 
@@ -1605,7 +1620,7 @@ class PaymentRequestApiController extends Controller
                     if ($action === 'partial' && $approvedAmount >= $paymentRequest->requested_amount) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Partial approval amount must be less than requested amount. Use "approve" action for full approval.'
+                            'message' => 'Partial approval amount must be less than requested amount. Use "approve" action for full approval.',
                         ], 400);
                     }
 
@@ -1613,7 +1628,7 @@ class PaymentRequestApiController extends Controller
                     if ($approvedAmount > $paymentRequest->requested_amount) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Approved amount cannot exceed requested amount.'
+                            'message' => 'Approved amount cannot exceed requested amount.',
                         ], 400);
                     }
                 }
@@ -1625,20 +1640,20 @@ class PaymentRequestApiController extends Controller
 
                 return $this->approveInvoicePayment($paymentRequest, $request);
             });
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Payment request not found.'
+                'message' => 'Payment request not found.',
             ], 404);
         } catch (\Exception $e) {
             Log::error('Payment request approval error', [
                 'id' => $id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error processing approval: ' . $e->getMessage()
+                'message' => 'Error processing approval: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -1652,7 +1667,7 @@ class PaymentRequestApiController extends Controller
 
         // Lock PO
         $po = PurchaseOrder::where('id', $paymentRequest->po_id)->lockForUpdate()->first();
-        if (!$po) {
+        if (! $po) {
             throw new \Exception('Purchase Order not found for this advance request.');
         }
 
@@ -1664,7 +1679,7 @@ class PaymentRequestApiController extends Controller
 
         // PO-specific snapshots
         $netPayableSnapshot = $po->grand_total;
-        $advanceUsedSnapshot = \App\Models\SupplierAdvance::where('po_id', $po->id)->sum('amount') ?? 0;
+        $advanceUsedSnapshot = SupplierAdvance::where('po_id', $po->id)->sum('amount') ?? 0;
         $paidAmountSnapshot = $po->total_paid;
         $activeRequestsSnapshot = PaymentRequest::where('po_id', $po->id)
             ->where('type', PaymentRequest::TYPE_PO_ADVANCE)
@@ -1735,7 +1750,7 @@ class PaymentRequestApiController extends Controller
             ]);
 
             // Create supplier advance ledger entry
-            app(\App\Services\SupplierAdvanceService::class)->createFromPaymentRequest($paymentRequest);
+            app(SupplierAdvanceService::class)->createFromPaymentRequest($paymentRequest);
 
             Log::channel('payment_audit')->info('PO advance request approved via API', [
                 'payment_request_id' => $paymentRequest->id,
@@ -1763,12 +1778,12 @@ class PaymentRequestApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Advance request ' . ($action === 'reject' ? 'rejected' : 'approved') . ' successfully.',
+            'message' => 'Advance request '.($action === 'reject' ? 'rejected' : 'approved').' successfully.',
             'data' => [
                 'id' => $paymentRequest->id,
                 'status' => $paymentRequest->fresh()->status,
                 'approved_amount' => $paymentRequest->fresh()->approved_amount,
-            ]
+            ],
         ]);
     }
 
@@ -1805,7 +1820,7 @@ class PaymentRequestApiController extends Controller
         // Auto-allocate advance if not already allocated
         $advanceAlreadyAllocated = $this->advanceAllocationService->isAdvanceAllocatedForInvoice($invoice->id);
 
-        if ($po && !$advanceAlreadyAllocated) {
+        if ($po && ! $advanceAlreadyAllocated) {
             $this->advanceAllocationService->allocateToInvoice($invoice->id);
             $invoice = $invoice->fresh();
         }
@@ -1819,7 +1834,7 @@ class PaymentRequestApiController extends Controller
                 : min($request->approved_amount, $paymentRequest->requested_amount, $maxAllowedApproval);
 
             if ($approvedAmount > $maxAllowedApproval) {
-                throw new \Exception('Payment amount exceeds remaining invoice amount. Maximum allowed: ₹' . number_format($maxAllowedApproval, 2));
+                throw new \Exception('Payment amount exceeds remaining invoice amount. Maximum allowed: ₹'.number_format($maxAllowedApproval, 2));
             }
         }
 
@@ -1919,22 +1934,23 @@ class PaymentRequestApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Payment request ' . ($action === 'reject' ? 'rejected' : 'approved') . ' successfully.',
+            'message' => 'Payment request '.($action === 'reject' ? 'rejected' : 'approved').' successfully.',
             'data' => [
                 'id' => $paymentRequest->id,
                 'status' => $paymentRequest->fresh()->status,
                 'approved_amount' => $paymentRequest->fresh()->approved_amount,
-            ]
+            ],
         ]);
     }
 
     /**
      * Create Payment Against Payment Request
-     * 
+     *
      * Creates a payment against an approved payment request.
      * This uses PaymentService@createPaymentFromRequest to ensure exact business logic.
-     * 
+     *
      * @urlParam id integer required The ID of the payment request
+     *
      * @bodyParam amount numeric required The payment amount
      * @bodyParam payment_date date required The payment date
      * @bodyParam mode string optional Payment mode (default: bank_transfer)
@@ -1943,7 +1959,7 @@ class PaymentRequestApiController extends Controller
      * @bodyParam idempotency_key string optional Unique key to prevent duplicate payments
      * @bodyParam workspace_id integer optional Filter by workspace ID
      * @bodyParam site_id integer optional Filter by site ID
-     * 
+     *
      * @response {
      *   "success": true,
      *   "message": "Payment created successfully",
@@ -1962,10 +1978,10 @@ class PaymentRequestApiController extends Controller
      */
     public function createPayment(Request $request, $id)
     {
-        if (!Auth::user()->isAbleTo('manage-payment create')) {
+        if (! Auth::user()->isAbleTo('manage-payment create')) {
             return response()->json([
                 'success' => false,
-                'message' => 'Permission denied.'
+                'message' => 'Permission denied.',
             ], 403);
         }
 
@@ -1983,7 +1999,7 @@ class PaymentRequestApiController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $validator->errors()->first()
+                'message' => $validator->errors()->first(),
             ], 400);
         }
 
@@ -1999,14 +2015,14 @@ class PaymentRequestApiController extends Controller
                     if ($paymentRequest->invoice->workspace_id != $workspaceId) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Payment request does not belong to the specified workspace.'
+                            'message' => 'Payment request does not belong to the specified workspace.',
                         ], 403);
                     }
                 } elseif ($paymentRequest->isPoAdvance() && $paymentRequest->po) {
                     if ($paymentRequest->po->workspace_id != $workspaceId) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Payment request does not belong to the specified workspace.'
+                            'message' => 'Payment request does not belong to the specified workspace.',
                         ], 403);
                     }
                 }
@@ -2018,14 +2034,14 @@ class PaymentRequestApiController extends Controller
                     if ($paymentRequest->invoice->site_id != $siteId) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Payment request does not belong to the specified site.'
+                            'message' => 'Payment request does not belong to the specified site.',
                         ], 403);
                     }
                 } elseif ($paymentRequest->isPoAdvance() && $paymentRequest->po) {
                     if ($paymentRequest->po->site_id != $siteId) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'Payment request does not belong to the specified site.'
+                            'message' => 'Payment request does not belong to the specified site.',
                         ], 403);
                     }
                 }
@@ -2037,7 +2053,7 @@ class PaymentRequestApiController extends Controller
             if ($paymentAmount <= 0) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Payment amount must be greater than 0.'
+                    'message' => 'Payment amount must be greater than 0.',
                 ], 400);
             }
 
@@ -2049,14 +2065,14 @@ class PaymentRequestApiController extends Controller
             if ($remainingAmount <= 0) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Nothing left to pay for this payment request.'
+                    'message' => 'Nothing left to pay for this payment request.',
                 ], 409);
             }
 
             if ($paymentAmount > $remainingAmount) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Payment amount exceeds remaining balance. Maximum: ₹' . number_format($remainingAmount, 2)
+                    'message' => 'Payment amount exceeds remaining balance. Maximum: ₹'.number_format($remainingAmount, 2),
                 ], 400);
             }
 
@@ -2075,7 +2091,7 @@ class PaymentRequestApiController extends Controller
                 // Check if this is an idempotency replay (payment already exists)
                 if ($request->idempotency_key && str_contains($e->getMessage(), 'idempotent')) {
                     // Find the existing payment by idempotency key
-                    $existingPayment = \App\Models\PaymentsModule::where('idempotency_key', $request->idempotency_key)
+                    $existingPayment = PaymentsModule::where('idempotency_key', $request->idempotency_key)
                         ->where('payment_request_id', $paymentRequest->id)
                         ->first();
 
@@ -2111,8 +2127,8 @@ class PaymentRequestApiController extends Controller
                                     'status' => $paymentRequest->status,
                                     'total_paid' => (float) $totalPaid,
                                     'remaining_amount' => (float) $remainingAmount,
-                                ]
-                            ]
+                                ],
+                            ],
                         ]);
                     }
                 }
@@ -2173,34 +2189,34 @@ class PaymentRequestApiController extends Controller
                         'status' => $paymentRequest->status,
                         'total_paid' => (float) $totalPaid,
                         'remaining_amount' => (float) $remainingAmount,
-                    ]
-                ]
+                    ],
+                ],
             ]);
 
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Payment request not found.'
+                'message' => 'Payment request not found.',
             ], 404);
         } catch (\InvalidArgumentException $e) {
             Log::error('Payment creation validation error', [
                 'payment_request_id' => $id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 400);
         } catch (\Exception $e) {
             Log::error('Payment creation error', [
                 'payment_request_id' => $id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create payment: ' . $e->getMessage()
+                'message' => 'Failed to create payment: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -2213,6 +2229,7 @@ class PaymentRequestApiController extends Controller
      * Follows the same pattern as PO Advance Request endpoints.
      *
      * @urlParam invoice_id integer required The ID of the purchase invoice
+     *
      * @queryParam workspace_id integer optional Filter by workspace ID
      * @queryParam site_id integer optional Filter by site ID
      *
@@ -2254,10 +2271,10 @@ class PaymentRequestApiController extends Controller
      */
     public function getPurchaseInvoicePaymentRequestData(Request $request, $invoiceId)
     {
-        if (!Auth::user()->isAbleTo('manage-payment manage')) {
+        if (! Auth::user()->isAbleTo('manage-payment manage')) {
             return response()->json([
                 'success' => false,
-                'message' => 'Permission denied.'
+                'message' => 'Permission denied.',
             ], 403);
         }
 
@@ -2316,10 +2333,10 @@ class PaymentRequestApiController extends Controller
                 ')
                 ->first();
 
-            if (!$invoiceData) {
+            if (! $invoiceData) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Invoice not found.'
+                    'message' => 'Invoice not found.',
                 ], 404);
             }
 
@@ -2328,14 +2345,14 @@ class PaymentRequestApiController extends Controller
                 'site',
                 'purchaseOrder',
                 'grn',
-                'creator'
+                'creator',
             ])->findOrFail($invoiceId);
 
             // Validate workspace if provided
             if ($workspaceId && $invoice->workspace_id != $workspaceId) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Invoice does not belong to the specified workspace.'
+                    'message' => 'Invoice does not belong to the specified workspace.',
                 ], 403);
             }
 
@@ -2343,7 +2360,7 @@ class PaymentRequestApiController extends Controller
             if ($siteId && $invoice->site_id != $siteId) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Invoice does not belong to the specified site.'
+                    'message' => 'Invoice does not belong to the specified site.',
                 ], 403);
             }
 
@@ -2461,18 +2478,18 @@ class PaymentRequestApiController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Purchase invoice payment request data retrieved successfully',
-                'data' => $data
+                'data' => $data,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Purchase invoice payment request data retrieval error', [
                 'invoice_id' => $invoiceId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error retrieving purchase invoice payment request data: ' . $e->getMessage()
+                'message' => 'Error retrieving purchase invoice payment request data: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -2485,6 +2502,7 @@ class PaymentRequestApiController extends Controller
      * Follows the same pattern as PO Advance Request endpoints.
      *
      * @urlParam invoice_id integer required The ID of the purchase invoice
+     *
      * @bodyParam requested_amount numeric required The amount being requested (min: 0.01)
      * @bodyParam payment_date date required The payment date
      * @bodyParam remarks string optional Remarks for the payment request (max: 1000 characters)
@@ -2503,10 +2521,10 @@ class PaymentRequestApiController extends Controller
      */
     public function storePurchaseInvoicePaymentRequest(Request $request, $invoiceId)
     {
-        if (!Auth::user()->isAbleTo('manage-payment manage')) {
+        if (! Auth::user()->isAbleTo('manage-payment manage')) {
             return response()->json([
                 'success' => false,
-                'message' => 'Permission denied.'
+                'message' => 'Permission denied.',
             ], 403);
         }
 
@@ -2522,7 +2540,7 @@ class PaymentRequestApiController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $validator->errors()->first()
+                'message' => $validator->errors()->first(),
             ], 400);
         }
 
@@ -2536,7 +2554,7 @@ class PaymentRequestApiController extends Controller
                     ->lockForUpdate()
                     ->first();
 
-                if (!$invoice) {
+                if (! $invoice) {
                     throw new \Exception('Invoice not found.');
                 }
 
@@ -2553,14 +2571,14 @@ class PaymentRequestApiController extends Controller
                 // CRITICAL: Direct GRN hard stop at controller level (only if feature flag enabled)
                 if (config('finance.po_locked_advance_enabled', false) && empty($invoice->po_id)) {
                     throw new \InvalidArgumentException(
-                        'Direct GRN invoices cannot create payment requests with advance allocation. ' .
-                        'This invoice is not linked to a Purchase Order. ' .
+                        'Direct GRN invoices cannot create payment requests with advance allocation. '.
+                        'This invoice is not linked to a Purchase Order. '.
                         'Direct GRN requires full payment without advance.'
                     );
                 }
 
                 // CRITICAL: Idempotency check
-                if (!empty($request->idempotency_key)) {
+                if (! empty($request->idempotency_key)) {
                     $existingRequest = PaymentRequest::where('idempotency_key', $request->idempotency_key)
                         ->where('workspace_id', $invoice->workspace_id)
                         ->first();
@@ -2572,7 +2590,7 @@ class PaymentRequestApiController extends Controller
                             'data' => [
                                 'id' => $existingRequest->id,
                                 'status' => $existingRequest->status,
-                            ]
+                            ],
                         ]);
                     }
                 }
@@ -2592,9 +2610,9 @@ class PaymentRequestApiController extends Controller
 
                 // CRITICAL: Validate financial period not closed (only if feature flag enabled)
                 if (config('finance.financial_period_locking_enabled', false)) {
-                    $periodService = new \App\Services\FinancialPeriodService();
+                    $periodService = new FinancialPeriodService;
                     $periodService->validatePeriodNotClosed(
-                        \Carbon\Carbon::parse($invoice->invoice_date),
+                        Carbon::parse($invoice->invoice_date),
                         $invoice->workspace_id,
                         $invoice->site_id
                     );
@@ -2616,11 +2634,11 @@ class PaymentRequestApiController extends Controller
                 }
 
                 if ($request->requested_amount > $maxAllowed) {
-                    throw new \Exception('Requested amount cannot exceed remaining invoice amount. Maximum allowed: ₹' . number_format($maxAllowed, 2));
+                    throw new \Exception('Requested amount cannot exceed remaining invoice amount. Maximum allowed: ₹'.number_format($maxAllowed, 2));
                 }
 
                 // Allocate advance BEFORE capturing snapshots so snapshots include allocated amount
-                if ($po && !$this->advanceAllocationService->isAdvanceAllocatedForInvoice($invoice->id)) {
+                if ($po && ! $this->advanceAllocationService->isAdvanceAllocatedForInvoice($invoice->id)) {
                     if (config('finance.po_locked_advance_enabled', false)) {
                         // Use the full service with feature flag enabled
                         $this->advanceAllocationService->allocateToInvoice($invoice->id);
@@ -2670,7 +2688,7 @@ class PaymentRequestApiController extends Controller
                         'active_requests' => $activeRequestsSnapshot,
                     ],
                     'max_allowed' => $maxAllowed,
-                    'advance_allocated' => $po && !$this->advanceAllocationService->isAdvanceAllocatedForInvoice($invoice->id),
+                    'advance_allocated' => $po && ! $this->advanceAllocationService->isAdvanceAllocatedForInvoice($invoice->id),
                     'created_at' => $paymentRequest->created_at,
                     'source' => 'mobile_api',
                 ]);
@@ -2690,7 +2708,7 @@ class PaymentRequestApiController extends Controller
                     // Notification failure should not fail the payment request creation
                     Log::warning('Purchase invoice payment request notification failed', [
                         'payment_request_id' => $paymentRequest->id,
-                        'error' => $e->getMessage()
+                        'error' => $e->getMessage(),
                     ]);
                 }
 
@@ -2700,19 +2718,19 @@ class PaymentRequestApiController extends Controller
                     'data' => [
                         'id' => $paymentRequest->id,
                         'status' => $paymentRequest->status,
-                    ]
+                    ],
                 ]);
             });
         } catch (\Exception $e) {
             Log::error('Purchase invoice payment request creation error via API', [
                 'invoice_id' => $invoiceId,
                 'requested_amount' => $request->requested_amount,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 422);
         }
     }

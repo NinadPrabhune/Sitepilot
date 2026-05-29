@@ -26,11 +26,20 @@ use Workdo\Taskly\Entities\Project;
 class IndentApiController extends Controller {
 
     /**
-     * GET /api/indents
-     * 
-     * List all indents for the authenticated user's workspace
-     * Optional filters: site_id, status
-     */
+      * GET /api/indents
+      * 
+      * List all indents for the authenticated user's workspace
+      * Optional filters: site_id, status
+      *
+      * @queryParam workspace_id integer required Workspace ID. Example: 1
+      * @queryParam site_id integer optional Site/Project ID filter. Example: 5
+      * @queryParam status string optional Filter by indent status (open, partially_closed, closed). Example: open
+      * @queryParam sort_by string optional Field to sort by (created_at, indent_date, etc.). Example: created_at
+      * @queryParam sort_order string optional Sort order (asc, desc). Example: desc
+      * @response 200 {"success": true, "count": 15, "data": [{...}]}
+      * @response 403 {"success": false, "message": "Permission denied"}
+      * @response 500 {"success": false, "message": "Failed to retrieve indents"}
+      */
     public function index(Request $request)
     {
         if (!Auth::user()->isAbleTo('indent manage')) {
@@ -122,19 +131,26 @@ class IndentApiController extends Controller {
 }
 
     /**
-     * GET /api/indents/create
-     * 
-     * Get data needed to create a new indent (suppliers, materials, sites)
-     */
-    public function createData(Request $request) {
-        if (!Auth::user()->isAbleTo('indent create')) {
-            return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
-        }
+      * GET /api/indents/create
+      * 
+      * Get data needed to create a new indent (suppliers, materials, sites)
+      *
+      * @queryParam workspace_id integer required Workspace ID. Example: 1
+      * @queryParam site_id integer optional Site/Project ID. Example: 5
+      * @queryParam created_by integer optional Creator user ID. Example: 1
+      * @response 200 {"success": true, "message": "Indent creation data retrieved successfully", "data": {...}}
+      * @response 403 {"success": false, "message": "Permission denied"}
+      * @response 500 {"success": false, "message": "Failed to retrieve creation data"}
+      */
+     public function createData(Request $request) {
+         if (!Auth::check() || !Auth::user()->isAbleTo('indent create')) {
+             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
+         }
         try {
 
             $workspaceId = $request->input('workspace_id');
             $siteId = $request->input('site_id');
-            $created_by = $request->input('created_by');
+
 
             // Fetch suppliers
             $suppliers = Supplier::select('id', 'name', 'email', 'phone', 'address')
@@ -157,10 +173,14 @@ class IndentApiController extends Controller {
                     });
 
             // Fetch sites/projects for the workspace
-            $sites = Project::where('workspace', $workspaceId)
-                    ->projectonly()
-                    ->select('id', 'name', 'status')
-                    ->get();
+             if ($workspaceId !== null) {
+                 $sites = Project::where('workspace', $workspaceId)
+                         ->projectonly()
+                         ->select('id', 'name', 'status')
+                         ->get();
+             } else {
+                 $sites = collect();
+             }
 
             // Generate next indent number
             $nextIndentNumber = Indent::generateIndentNumber($request->site_id ?? null);
@@ -192,28 +212,32 @@ class IndentApiController extends Controller {
     }
 
     /**
-     * POST /api/indents
-     *
-     * Create a new indent
-     *
-     * @bodyParam indent_date date required Indent date. Example: 2024-01-15
-     * @bodyParam supplier_id integer optional Supplier ID. Example: 1
-     * @bodyParam site_id integer required Site/Project ID. Example: 5
-     * @bodyParam description string optional Description. Example: Material requisition for foundation
-     * @bodyParam assign_to string required Assigned users (comma-separated IDs). Example: 1,2,3
-     * @bodyParam delivery_date date optional Expected delivery date. Example: 2024-01-20
-     * @bodyParam remark string optional Remarks. Example: Urgent requirement
-     * @bodyParam reference_file file optional Reference document (max 10MB).
-     * @bodyParam items array required Array of indent items.
-     * @bodyParam items.*.material_id integer required Material ID. Example: 10
-     * @bodyParam items.*.quantity number required Quantity. Example: 100
-     * @bodyParam items.*.unit string required Unit. Example: kg
-     * @bodyParam items.*.price number required Unit price. Example: 500.00
-     * @bodyParam items.*.remarks string optional Item remarks. Example: High quality required
-     * @bodyParam created_by integer required Creator user ID. Example: 1
-     * @bodyParam workspace_id integer required Workspace ID. Example: 1
-     * @response {"success": true, "message": "Indent created successfully", "data": {...}}
-     */
+      * POST /api/indents
+      *
+      * Create a new indent
+      *
+      * @authenticated
+      * @bodyParam indent_date date required Indent date. Example: 2024-01-15
+      * @bodyParam supplier_id integer optional Supplier ID. Example: 1
+      * @bodyParam site_id integer required Site/Project ID. Example: 5
+      * @bodyParam description string optional Description. Example: Material requisition for foundation
+      * @bodyParam assign_to string required Assigned users (comma-separated IDs). Example: 1,2,3
+      * @bodyParam delivery_date date optional Expected delivery date. Example: 2024-01-20
+      * @bodyParam remark string optional Remarks. Example: Urgent requirement
+      * @bodyParam reference_file file optional Reference document (max 10MB).
+      * @bodyParam items array required Array of indent items.
+      * @bodyParam items[0][material_id] integer required Material ID. Example: 10
+      * @bodyParam items[0][quantity] number required Quantity. Example: 100
+      * @bodyParam items[0][unit] string required Unit. Example: kg
+      * @bodyParam items[0][price] number required Unit price. Example: 500.00
+      * @bodyParam items[0][remarks] string optional Item remarks. Example: High quality required
+      * @bodyParam created_by integer required Creator user ID. Example: 1
+      * @bodyParam workspace_id integer required Workspace ID. Example: 1
+      * @response 201 {"success": true, "message": "Indent created successfully", "data": {...}}
+      * @response 403 {"success": false, "message": "Permission denied"}
+      * @response 422 {"success": false, "message": "Validation failed", "errors": {...}}
+      * @response 500 {"success": false, "message": "Failed to create indent"}
+      */
     public function store(Request $request) {
         if (!Auth::user()->isAbleTo('indent create')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -355,10 +379,17 @@ class IndentApiController extends Controller {
     }
 
     /**
-     * GET /api/indents/{id}
-     * 
-     * Show a specific indent with all details
-     */
+      * GET /api/indents/{id}
+      * 
+      * Show a specific indent with all details
+      *
+      * @authenticated
+      * @urlParam id integer required ID of the indent. Example: 1
+      * @response 200 {"success": true, "message": "Indent retrieved successfully", "data": {...}}
+      * @response 403 {"success": false, "message": "Permission denied"}
+      * @response 404 {"success": false, "message": "Indent not found"}
+      * @response 500 {"success": false, "message": "Failed to retrieve indent"}
+      */
     public function show($id)
     {
         if (!Auth::user()->isAbleTo('indent show')) {
@@ -426,10 +457,33 @@ class IndentApiController extends Controller {
 }
 
     /**
-     * PUT /api/indents/{id}
-     * 
-     * Update an existing indent
-     */
+      * PUT /api/indents/{id}
+      * 
+      * Update an existing indent
+      *
+      * @authenticated
+      * @urlParam id integer required ID of the indent. Example: 1
+      * @bodyParam indent_date date required Indent date. Example: 2024-01-15
+      * @bodyParam supplier_id integer optional Supplier ID. Example: 1
+      * @bodyParam site_id integer required Site/Project ID. Example: 5
+      * @bodyParam description string optional Description. Example: Material requisition for foundation
+      * @bodyParam assign_to string required Assigned users (comma-separated IDs). Example: 1,2,3
+      * @bodyParam delivery_date date optional Expected delivery date. Example: 2024-01-20
+      * @bodyParam remark string optional Remarks. Example: Urgent requirement
+      * @bodyParam reference_file file optional Reference document (max 10MB).
+      * @bodyParam items array required Array of indent items.
+      * @bodyParam items[0][material_id] integer required Material ID. Example: 10
+      * @bodyParam items[0][quantity] number required Quantity. Example: 100
+      * @bodyParam items[0][unit] string required Unit. Example: kg
+      * @bodyParam items[0][price] number required Unit price. Example: 500.00
+      * @bodyParam items[0][remarks] string optional Item remarks. Example: High quality required
+      * @response 200 {"success": true, "message": "Indent updated successfully", "data": {...}}
+      * @response 403 {"success": false, "message": "Permission denied"}
+      * @response 404 {"success": false, "message": "Indent not found"}
+      * @response 409 {"success": false, "message": "Cannot update or delete this indent because it is already used in a purchase order."}
+      * @response 422 {"success": false, "message": "Validation failed", "errors": {...}}
+      * @response 500 {"success": false, "message": "Failed to update indent"}
+      */
     public function update(Request $request, $id) {
         if (!Auth::user()->isAbleTo('indent edit')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -606,10 +660,18 @@ class IndentApiController extends Controller {
     }
 
     /**
-     * DELETE /api/indents/{id}
-     * 
-     * Delete an indent
-     */
+      * DELETE /api/indents/{id}
+      * 
+      * Delete an indent
+      *
+      * @authenticated
+      * @urlParam id integer required ID of the indent. Example: 1
+      * @response 200 {"success": true, "message": "Indent deleted successfully"}
+      * @response 403 {"success": false, "message": "Permission denied"}
+      * @response 404 {"success": false, "message": "Indent not found"}
+      * @response 409 {"success": false, "message": "Cannot update or delete this indent because it is already used in a purchase order."}
+      * @response 500 {"success": false, "message": "Failed to delete indent"}
+      */
     public function destroy($id) {
         if (!Auth::user()->isAbleTo('indent delete')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -661,11 +723,18 @@ class IndentApiController extends Controller {
     }
 
     /**
-     * GET /api/indents/{id}/materials
-     * 
-     * Get materials for a specific indent (for Purchase Order selection)
-     * Optional: po_id parameter for edit mode to get available quantity for editing
-     */
+      * GET /api/indents/{id}/materials
+      * 
+      * Get materials for a specific indent (for Purchase Order selection)
+      * Optional: po_id parameter for edit mode to get available quantity for editing
+      *
+      * @authenticated
+      * @urlParam id integer required ID of the indent. Example: 1
+      * @queryParam po_id integer optional Purchase Order ID for edit mode. Example: 5
+      * @response 200 {"success": true, "message": "Indent materials retrieved successfully", "data": {...}}
+      * @response 404 {"success": false, "message": "Indent not found"}
+      * @response 500 {"success": false, "message": "Failed to retrieve indent materials"}
+      */
     public function getIndentMaterials(Request $request, $id) {
         try {
             $poId = $request->get('po_id'); // Optional: Current PO ID for edit mode
@@ -729,10 +798,15 @@ class IndentApiController extends Controller {
     }
 
     /**
-     * GET /api/indents/available/list
-     * 
-     * Get available indents (not closed) for dropdown/selection
-     */
+      * GET /api/indents/available/list
+      * 
+      * Get available indents (not closed) for dropdown/selection
+      *
+      * @authenticated
+      * @queryParam site_id integer optional Filter by site ID. Example: 5
+      * @response 200 {"success": true, "message": "Available indents retrieved successfully", "data": [{...}]}
+      * @response 500 {"success": false, "message": "Failed to retrieve available indents"}
+      */
     public function getAvailableIndents(Request $request) {
         try {
 
@@ -792,10 +866,19 @@ class IndentApiController extends Controller {
     }
 
     /**
-     * PATCH /api/indents/{id}/status
-     * 
-     * Update indent status manually
-     */
+      * PATCH /api/indents/{id}/status
+      * 
+      * Update indent status manually
+      *
+      * @authenticated
+      * @urlParam id integer required ID of the indent. Example: 1
+      * @bodyParam status string required Status to update to (open, partially_closed, closed). Example: open
+      * @response 200 {"success": true, "message": "Indent status updated successfully", "data": {...}}
+      * @response 403 {"success": false, "message": "Permission denied"}
+      * @response 404 {"success": false, "message": "Indent not found"}
+      * @response 422 {"success": false, "message": "Validation failed", "errors": {...}}
+      * @response 500 {"success": false, "message": "Failed to update indent status"}
+      */
     public function updateStatus(Request $request, $id) {
         if (!Auth::user()->isAbleTo('indent edit')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);

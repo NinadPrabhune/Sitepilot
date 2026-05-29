@@ -457,7 +457,7 @@
 <script>
 // Notification API Base URL
     if (typeof notificationApiBase === 'undefined') {
-        var notificationApiBase = '/notifications';
+        var notificationApiBase = '/api/notifications';
     }
     if (typeof authToken === 'undefined') {
         var authToken = document.querySelector('meta[name="csrf-token"]')?.content;

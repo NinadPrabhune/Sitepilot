@@ -346,7 +346,48 @@ class PaymentService
                 $this->lockAdvanceUtilizationsForInvoice($invoice->po_id);
             }
 
-            // STEP 4: Create payment with the validated amount
+            // STEP 4: Auto-allocate available SupplierAdvance against this invoice
+            $allocatedAdvance = 0;
+            $allocationPlan = [];
+            if ($invoice->po_id && $invoice->supplier_id) {
+                $supplierAdvances = \App\Models\SupplierAdvance::where('po_id', $invoice->po_id)
+                    ->where('supplier_id', $invoice->supplier_id)
+                    ->whereIn('status', [
+                        \App\Models\SupplierAdvance::STATUS_APPROVED,
+                        \App\Models\SupplierAdvance::STATUS_PAID,
+                    ])
+                    ->whereRaw('(amount - utilized_amount) > 0')
+                    ->lockForUpdate()
+                    ->orderBy('advance_date', 'asc')
+                    ->orderBy('id', 'asc')
+                    ->get();
+
+                $effectivePending = max(0, $invoice->grand_total - $invoice->getActualPaidAmount() - $invoice->getAdvanceUtilizedForInvoice());
+                $remainingOnInvoice = $effectivePending;
+
+                foreach ($supplierAdvances as $advance) {
+                    $available = $advance->amount - $advance->utilized_amount;
+                    $toAllocate = min($available, $remainingOnInvoice);
+                    if ($toAllocate > 0) {
+                        $allocationPlan[] = ['advance' => $advance, 'amount' => $toAllocate];
+                        $allocatedAdvance += $toAllocate;
+                        $remainingOnInvoice -= $toAllocate;
+
+                        Log::channel('payment_audit')->info('Advance allocation planned', [
+                            'advance_id' => $advance->id,
+                            'advance_number' => $advance->advance_number,
+                            'available' => $available,
+                            'to_allocate' => $toAllocate,
+                            'invoice_id' => $invoice->id,
+                        ]);
+                    }
+                    if ($remainingOnInvoice <= 0) break;
+                }
+            }
+
+            // STEP 5: Create payment (amount reduced by allocated advance)
+            $effectivePaymentAmount = max(0, $paymentAmount - $allocatedAdvance);
+
             $payment = PaymentsModule::create([
                 'payment_number' => PaymentsModule::generatePaymentNumber($invoice->site_id),
                 'supplier_id' => $invoice->supplier_id,
@@ -354,7 +395,7 @@ class PaymentService
                 'purchase_order_id' => $invoice->po_id,
                 'site_id' => $invoice->site_id,
                 'payment_date' => $paymentRequest->payment_date,
-                'amount' => $paymentAmount,
+                'amount' => $effectivePaymentAmount,
                 'payment_type' => PaymentsModule::PAYMENT_TYPE_AGAINST_INVOICE,
                 'mode' => $paymentRequest->mode ?? 'bank_transfer',
                 'status' => PaymentsModule::STATUS_COMPLETED,
@@ -370,6 +411,8 @@ class PaymentService
                 'payment_number' => $payment->payment_number,
                 'payment_type' => $payment->payment_type,
                 'amount' => $payment->amount,
+                'allocated_advance' => $allocatedAdvance,
+                'total_coverage' => $effectivePaymentAmount + $allocatedAdvance,
                 'purchase_invoice_id' => $payment->purchase_invoice_id,
                 'purchase_order_id' => $payment->purchase_order_id,
                 'supplier_id' => $payment->supplier_id,
@@ -381,13 +424,47 @@ class PaymentService
                 'created_at' => $payment->created_at,
             ]);
 
-            // STEP 5: Apply reservation on payment success (only if feature flag enabled)
+            // STEP 6: Apply allocation plan (create AdvanceUtilization records)
+            foreach ($allocationPlan as $plan) {
+                $advance = $plan['advance'];
+                $amount = $plan['amount'];
+
+                \App\Models\AdvanceUtilization::create([
+                    'supplier_advance_id' => $advance->id,
+                    'purchase_invoice_id' => $invoice->id,
+                    'payments_module_id' => $payment->id,
+                    'utilized_amount' => $amount,
+                    'status' => \App\Models\AdvanceUtilization::STATUS_APPLIED,
+                    'applied_at' => now(),
+                    'workspace_id' => $invoice->workspace_id,
+                    'site_id' => $invoice->site_id,
+                    'created_by' => auth()->id(),
+                ]);
+
+                $advance->increment('utilized_amount', $amount);
+
+                Log::channel('payment_audit')->info('Advance auto-allocated to invoice', [
+                    'advance_id' => $advance->id,
+                    'advance_number' => $advance->advance_number,
+                    'invoice_id' => $invoice->id,
+                    'invoice_number' => $invoice->invoice_number,
+                    'amount' => $amount,
+                    'payment_id' => $payment->id,
+                    'updated_utilized' => $advance->fresh()->utilized_amount,
+                ]);
+            }
+
+            // STEP 7: Apply reservation on payment success (only if feature flag enabled)
             if (config('finance.po_locked_advance_enabled', false)) {
                 $allocationService = new AdvanceAllocationService();
                 $allocationService->applyReservation($paymentRequest->id);
             }
 
-            // STEP 6: Update PaymentRequest status
+            // STEP 8: Update PaymentRequest status and snapshot
+            if ($allocatedAdvance > 0) {
+                $paymentRequest->advance_used_snapshot = ($paymentRequest->advance_used_snapshot ?? 0) + $allocatedAdvance;
+                $paymentRequest->saveQuietly();
+            }
             $paymentRequest->updateStatusOnPayment();
 
             $this->updateInvoicePaymentStatus($invoice);
@@ -415,6 +492,30 @@ class PaymentService
                 ]);
                 \Log::error('Failed to create supplier ledger entry for payment: ' . $e->getMessage());
                 throw $e; // Rollback transaction
+            }
+
+            // Create ledger entries for advance utilization
+            if ($allocatedAdvance > 0) {
+                try {
+                    foreach ($allocationPlan as $plan) {
+                        \App\Helpers\LedgerHelper::createAdvanceUtilizationLedgerEntry(
+                            $plan['advance'],
+                            $invoice,
+                            $plan['amount']
+                        );
+                    }
+                    Log::channel('payment_audit')->info('Advance utilization ledger entries created', [
+                        'invoice_id' => $invoice->id,
+                        'total_allocated' => $allocatedAdvance,
+                        'payment_id' => $payment->id,
+                    ]);
+                } catch (\Exception $e) {
+                    Log::channel('payment_audit')->error('Failed to create advance utilization ledger entries', [
+                        'invoice_id' => $invoice->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                    throw $e;
+                }
             }
 
             // Send payment creation notification

@@ -18,10 +18,27 @@ use Illuminate\Support\Facades\Log;
  */
 class DailyProgressReportApiController extends Controller
 {
-    /**
-     * List all reports (filtered by workspace & project).
-     */
-    
+/**
+      * List all reports (filtered by workspace & project).
+      *
+      * @authenticated
+      * @requiredPermission machinery-dpr manage
+      *
+      * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+      * @queryParam site_id integer optional Filter by site/project ID. Example: 5
+      *
+      * @response status=200 scenario="Success" {
+      *   "success": true,
+      *   "message": "Daily progress reports fetched successfully.",
+      *   "data": [
+      *     {
+      *       "id": 1,
+      *       "date": "2024-01-15",
+      *       "machinery": {...}
+      *     }
+      *   ]
+      * }
+      */
     public function index(Request $request)
 {
     try {
@@ -150,9 +167,24 @@ class DailyProgressReportApiController extends Controller
 //        }
 //    }
     
-    /**
-     * Load machinery data for creating a report.
-     */
+/**
+      * Load machinery data for creating a report.
+      *
+      * @authenticated
+      * @requiredPermission machinery-dpr create
+      *
+      * @queryParam site_id integer required Site ID to get machinery/materials. Example: 5
+      * @queryParam created_by integer required Creator user ID. Example: 1
+      * @queryParam workspace_id integer required Workspace ID. Example: 1
+      *
+      * @response status=200 scenario="Success" {
+      *   "success": true,
+      *   "message": "Data loaded successfully.",
+      *   "machinery": [...],
+      *   "materials": [...]
+      * }
+      * @response status=404 scenario="Not found" {"success": false, "message": "Machinery/Materials not found."}
+      */
     public function createData(Request $request)
 {
     if (!Auth::user()->isAbleTo('machinery-dpr create')) {
@@ -236,9 +268,43 @@ class DailyProgressReportApiController extends Controller
     }
 }
 
-    /**
-     * Store a new report.
-     */
+/**
+      * Store a new Daily Progress Report with consumption details.
+      *
+      * @authenticated
+      * @requiredPermission machinery-dpr create
+      *
+      * @bodyParam date date required Report date. Example: 2024-01-15
+      * @bodyParam machinery_id integer required Machinery ID. Example: 10
+      * @bodyParam machine_start_reading integer required Start meter reading. Example: 100
+      * @bodyParam machine_end_reading integer required End meter reading. Example: 150
+      * @bodyParam machine_idle_reading integer optional Idle meter reading. Example: 5
+      * @bodyParam number_of_operators integer optional Number of operators. Example: 2
+      * @bodyParam work_details string optional Work details description. Example: Excavation work
+      * @bodyParam diesel_consumption number optional Diesel consumption. Example: 50.5
+      * @bodyParam maintenance_notes string optional Maintenance notes. Example: Regular check
+      * @bodyParam machinery_advances string optional Advances notes. Example: Advance paid
+      * @bodyParam site_id integer required Site ID. Example: 5
+      * @bodyParam workspace_id integer required Workspace ID. Example: 1
+      * @bodyParam activity_completed_id integer required Activity completed ID. Example: 10
+      * @bodyParam consumption_type string required Consumption type (fuel or all). Example: fuel
+      * @bodyParam items array required Array of consumption items (use indexed notation).
+      * @bodyParam items[0][material_id] integer required Material ID. Example: 10
+      * @bodyParam items[0][quantity] number required Quantity. Example: 100.5
+      * @bodyParam items[0][unit] string required Unit. Example: kg
+      * @bodyParam items[0][remarks] string optional Remarks. Example: Used for mixing
+      * @bodyParam items[1][material_id] integer required Material ID (if multiple). Example: 11
+      * @bodyParam items[1][quantity] number required Quantity. Example: 50
+      * @bodyParam items[1][unit] string required Unit. Example: liter
+      * @bodyParam consumption_file file optional Consumption document (max 2MB, allowed: pdf,jpg,jpeg,png).
+      *
+      * @response status=201 scenario="Success" {
+      *   "success": true,
+      *   "message": "DPR created successfully",
+      *   "data": {...}
+      * }
+      * @response status=403 scenario="Permission denied" {"success": false, "message": "Permission denied"}
+      */
     public function store(Request $request)
 {
     Log::info('DPR Store API called', ['request' => $request->all()]);
@@ -433,9 +499,17 @@ class DailyProgressReportApiController extends Controller
     }
 }
 
-    /**
-     * Show a single report.
-     */
+/**
+      * Show a single daily progress report.
+      *
+      * @authenticated
+      * @requiredPermission machinery-dpr show
+      *
+      * @urlParam id integer required Daily Progress Report ID. Example: 1
+      *
+      * @response status=200 scenario="Success" {"success": true, "data": {...}}
+      * @response status=404 scenario="Not found" {"success": false, "message": "Report not found."}
+      */
     public function show($id)
     {
         try {
@@ -463,9 +537,35 @@ class DailyProgressReportApiController extends Controller
         }
     }
 
-    /**
-     * Update a report.
-     */
+/**
+      * Update a daily progress report.
+      *
+      * @authenticated
+      * @requiredPermission machinery-dpr edit
+      *
+      * @urlParam id integer required Daily Progress Report ID. Example: 1
+      * @bodyParam date date required Report date. Example: 2024-01-15
+      * @bodyParam machinery_id integer required Machinery ID. Example: 10
+      * @bodyParam machine_start_reading integer optional Start meter reading. Example: 100
+      * @bodyParam machine_end_reading integer optional End meter reading. Example: 150
+      * @bodyParam number_of_operators integer optional Number of operators. Example: 2
+      * @bodyParam work_details string optional Work details description. Example: Excavation work
+      * @bodyParam diesel_consumption number optional Diesel consumption. Example: 50.5
+      * @bodyParam maintenance_notes string optional Maintenance notes.
+      * @bodyParam site_id integer required Site ID. Example: 5
+      * @bodyParam workspace_id integer required Workspace ID. Example: 1
+      * @bodyParam activity_completed_id integer required Activity completed ID. Example: 10
+      * @bodyParam consumption_type string optional Consumption type (fuel or all). Example: fuel
+      * @bodyParam items optional Array of consumption items (use indexed notation).
+      * @bodyParam items[0][material_id] integer required Material ID. Example: 10
+      * @bodyParam items[0][quantity] number required Quantity. Example: 100.5
+      * @bodyParam items[0][unit] string required Unit. Example: kg
+      * @bodyParam items[0][remarks] string optional Remarks.
+      * @bodyParam consumption_file file optional Consumption document (max 2MB, allowed: pdf,jpg,jpeg,png).
+      *
+      * @response status=200 scenario="Success" {"success": true, "message": "DPR updated", "data": {...}}
+      * @response status=403 scenario="Permission denied" {"success": false, "message": "Unauthorized action."}
+      */
     public function update(Request $request, $id)
     {
         if (!Auth::user()->isAbleTo('machinery-dpr edit')) {
@@ -589,9 +689,17 @@ class DailyProgressReportApiController extends Controller
         }
     }
 
-    /**
-     * Delete a report.
-     */
+/**
+      * Delete a daily progress report.
+      *
+      * @authenticated
+      * @requiredPermission machinery-dpr delete
+      *
+      * @urlParam id integer required Daily Progress Report ID. Example: 1
+      *
+      * @response status=200 scenario="Success" {"success": true, "message": "DPR deleted successfully."}
+      * @response status=403 scenario="Permission denied" {"success": false, "message": "Unauthorized action."}
+      */
     public function destroy($id)
     {
         if (!Auth::user()->isAbleTo('machinery-dpr delete')) {

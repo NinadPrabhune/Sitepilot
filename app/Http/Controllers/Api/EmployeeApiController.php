@@ -38,6 +38,18 @@ use Illuminate\Support\Facades\DB;
  */
 class EmployeeApiController extends Controller {
 
+    /**
+     * List Employees
+     *
+     * Retrieve a list of all employees with optional filtering by workspace and site. Non-admin users can only see their own records. Returns employees with related branch, department, designation, documents, and project information.
+     *
+     * @authenticated
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by site/project ID. Example: 5
+     * @response {"status":"success","data":[{"id":1,"name":"John Doe","user_name":"John Doe","user_email":"john@example.com","user_type":"employee","role_name":"Employee","role_id":3,"branch":{...},"department":{...},"designation":{...},"documents":[...],"projects":[...]}]}
+     * @response 403 {"status":0,"message":"Permission denied"}
+     * @response 500 {"status":"error","message":"Error message"}
+     */
     public function index(Request $request) {
         if (!Auth::user()->isAbleTo('employee manage')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -148,6 +160,17 @@ class EmployeeApiController extends Controller {
     }
 }
 
+    /**
+     * Get Employee Creation Form Data
+     *
+     * Retrieve metadata required for the employee creation form including roles, document types, branches, departments, designations, employees, location types, and assignable projects.
+     *
+     * @queryParam workspace_id integer optional Workspace ID to filter employees. Example: 1
+     * @queryParam site_id integer optional Site ID to filter employees. Example: 5
+     * @queryParam created_by integer optional Creator user ID to filter employees. Example: 1
+     * @response {"status":"success","employees":[...],"employeesId":"EMP001","departments":[...],"designations":[...],"documents":[...],"branches":[...],"role":[...],"customFields":null,"location_type":[...],"assign_project":[...]}
+     * @response 500 {"status":"error","message":"Error message"}
+     */
     public function createData(Request $request) {
         try {
 
@@ -223,6 +246,45 @@ class EmployeeApiController extends Controller {
         }
     }
 
+    /**
+     * Create Employee
+     *
+     * Create a new employee with user account, profile information, bank details, emergency contacts, documents, and project assignments. Supports both creating new users and linking to existing users.
+     *
+     * @authenticated
+     * @bodyParam name string required Employee full name. Example: John Doe
+     * @bodyParam email string required Employee email (must be unique if creating new user). Example: john@example.com
+     * @bodyParam password string required User password (required if creating new user). Example: password123
+     * @bodyParam phone string required Phone number (min 9 chars). Example: +1234567890
+     * @bodyParam dob date required Date of birth (must be before today). Example: 1990-01-15
+     * @bodyParam gender string required Gender. Example: male
+     * @bodyParam address string optional Residential address. Example: 123 Main St
+     * @bodyParam branch_id integer required Branch ID. Example: 1
+     * @bodyParam department_id integer required Department ID. Example: 2
+     * @bodyParam designation_id integer required Designation ID. Example: 3
+     * @bodyParam role integer required Role ID. Example: 4
+     * @bodyParam company_doj date required Date of joining. Example: 2024-01-01
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam site_id integer required Site/Project ID. Example: 5
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     * @bodyParam project_id array required Array of project IDs to assign. Example: [5, 6, 7]
+     * @bodyParam location_type string optional Location type. Example: onsite
+     * @bodyParam account_holder_name string optional Bank account holder name. Example: John Doe
+     * @bodyParam account_number string optional Bank account number. Example: 1234567890
+     * @bodyParam bank_name string optional Bank name. Example: ABC Bank
+     * @bodyParam organisation_switch string optional Organisation switch status. Example: yes
+     * @bodyParam provident_fund_no string optional Provident fund number. Example: PF123456
+     * @bodyParam emergency_contact_no string optional Emergency contact number. Example: +9876543210
+     * @bodyParam emergency_address string optional Emergency contact address. Example: 456 Emergency St
+     * @bodyParam avatar file optional Profile image (max 2MB, allowed: jpeg,png,jpg,gif).
+     * @bodyParam document array required Array of document files keyed by document type ID. Example: {"1":file,"2":file}
+     * @bodyParam document.* file required Document file (max 5MB, allowed: pdf,jpg,jpeg,png).
+     * @bodyParam user_id integer optional Existing user ID to link (if not creating new user). Example: 10
+     * @response {"status":"success","message":"The employee has been created successfully.","data":{...}}
+     * @response 403 {"status":0,"message":"Permission denied"}
+     * @response 422 {"status":"error","message":"Validation error message","errors":{...}}
+     * @response 500 {"status":"error","message":"Error message"}
+     */
     public function store(Request $request) {
         if (!Auth::user()->isAbleTo('employee create')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -580,6 +642,21 @@ class EmployeeApiController extends Controller {
         }
     }
     
+    /**
+     * Show Employee Details
+     *
+     * Retrieve detailed information about a specific employee including user details, branch, department, designation, documents, and assigned projects.
+     *
+     * @authenticated
+     * @urlParam id required The user ID. Example: 10
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by site/project ID. Example: 5
+     * @queryParam created_by integer optional Creator user ID. Example: 1
+     * @response {"status":"success","employee":{...},"assigned_projects":[...]}
+     * @response 403 {"status":0,"message":"Permission denied"}
+     * @response 404 {"status":"error","message":"Employee not found."}
+     * @response 500 {"status":"error","message":"Error message"}
+     */
     public function show(Request $request, $id)
     {
         if (!Auth::user()->isAbleTo('employee show')) {
@@ -801,6 +878,17 @@ class EmployeeApiController extends Controller {
 //        }
 //    }
 
+    /**
+     * Get Employee Edit Form Data
+     *
+     * Retrieve metadata required for editing an employee including the employee data, user details, branches, departments, designations, document types, roles, and location types.
+     *
+     * @urlParam id required The user ID. Example: 10
+     * @queryParam workspace_id integer optional Workspace ID. Example: 1
+     * @queryParam created_by integer optional Creator user ID. Example: 1
+     * @response {"status":"success","employee":{...},"user":{...},"employeesId":"EMP001","branches":[...],"departments":[...],"designations":[...],"document_types":[...],"customFields":null,"location_type":[...],"role":[...],"selectedRoleId":3}
+     * @response 500 {"status":"error","message":"Error message"}
+     */
     public function edit(Request $request, $id) {
         try {
 
@@ -901,6 +989,37 @@ class EmployeeApiController extends Controller {
         }
     }
 
+    /**
+     * Update Employee
+     *
+     * Update an existing employee's details including profile information, bank details, emergency contacts, documents, role, and project assignments. Also handles avatar and document file uploads.
+     *
+     * @authenticated
+     * @urlParam id required The employee ID. Example: 10
+     * @bodyParam user_id integer required User ID. Example: 10
+     * @bodyParam name string required Employee full name. Example: John Doe
+     * @bodyParam dob date required Date of birth. Example: 1990-01-15
+     * @bodyParam gender string required Gender. Example: male
+     * @bodyParam phone string required Phone number (min 9 chars). Example: +1234567890
+     * @bodyParam address string required Residential address. Example: 123 Main St
+     * @bodyParam organisation_switch string optional Organisation switch status. Example: yes
+     * @bodyParam provident_fund_no string optional Provident fund number. Example: PF123456
+     * @bodyParam role integer required Role ID. Example: 4
+     * @bodyParam company_doj date required Date of joining. Example: 2024-01-01
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam site_id integer required Site/Project ID. Example: 5
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     * @bodyParam project_id array required Array of project IDs to assign. Example: [5, 6, 7]
+     * @bodyParam avatar file optional Profile image (max 2MB, allowed: jpeg,png,jpg,gif).
+     * @bodyParam document array optional Array of document files keyed by document type ID. Example: {"1":file,"2":file}
+     * @bodyParam document.* file optional Document file (max 5MB, allowed: pdf,jpg,jpeg,png).
+     * @bodyParam emergency_contact_no string optional Emergency contact number. Example: +9876543210
+     * @bodyParam emergency_address string optional Emergency contact address. Example: 456 Emergency St
+     * @response {"status":"success","message":"The employee details are updated successfully.","data":{...},"user_type":"employee","role_name":"Employee","role_id":3}
+     * @response 403 {"status":0,"message":"Permission denied"}
+     * @response 422 {"status":"error","message":"Validation error message","errors":{...}}
+     * @response 500 {"status":"error","message":"Error message"}
+     */
     public function update(Request $request, $id) {
         if (!Auth::user()->isAbleTo('employee edit')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -1138,6 +1257,19 @@ class EmployeeApiController extends Controller {
         }
     }
 
+    /**
+     * Delete Employee
+     *
+     * Delete an employee and all associated data including documents, payslips, and custom fields. Validates that no attendance records exist before deletion. The related user account is also deleted unless it's a super admin or company type.
+     *
+     * @authenticated
+     * @urlParam id required The user ID. Example: 10
+     * @response {"status":"success","message":"The employee has been deleted successfully."}
+     * @response 403 {"status":"error","message":"Permission denied."}
+     * @response 400 {"status":"error","message":"Cannot delete employee. Attendance records exist for this employee."}
+     * @response 404 {"status":"error","message":"Employee already deleted or not found."}
+     * @response 500 {"status":"error","message":"Something went wrong while deleting employee.","debug":"Error message"}
+     */
     public function destroy($id)
 {
     // ✅ Permission check (single)
@@ -1257,6 +1389,15 @@ class EmployeeApiController extends Controller {
 //        return $latest->employee_id + 1;
 //    }
 
+    /**
+     * Get Departments
+     *
+     * Retrieve a list of departments filtered by branch ID. Returns departments as a key-value array with ID as key and name as value.
+     *
+     * @queryParam workspace_id integer optional Workspace ID. Example: 1
+     * @queryParam branch_id integer optional Filter by branch ID. Example: 1
+     * @response {"1":"Engineering","2":"Marketing","3":"HR"}
+     */
     public function getdepartment(Request $request) {
         // Determine workspace
         if ($request->workspace_id && $request->workspace_id != 0) {
@@ -1291,6 +1432,15 @@ class EmployeeApiController extends Controller {
 //    }
 
 
+    /**
+     * Get Designations
+     *
+     * Retrieve a list of designations filtered by department ID. Returns designations as a key-value array with ID as key and name as value.
+     *
+     * @queryParam workspace_id integer optional Workspace ID. Example: 1
+     * @queryParam department_id integer optional Filter by department ID. Example: 1
+     * @response {"1":"Senior Engineer","2":"Junior Engineer","3":"Manager"}
+     */
     public function getdDesignation(Request $request) {
         // Determine workspace
         if ($request->workspace_id && $request->workspace_id != 0) {

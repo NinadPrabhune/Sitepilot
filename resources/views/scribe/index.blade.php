@@ -72,28 +72,28 @@
                 </li>
                                     <ul id="tocify-subheader-activities" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="activities-GETapi-activities">
-                                <a href="#activities-GETapi-activities">GET api/activities</a>
+                                <a href="#activities-GETapi-activities">List Activities</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="activities-POSTapi-activities">
                                 <a href="#activities-POSTapi-activities">Create Activity</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="activities-GETapi-activities--id-">
-                                <a href="#activities-GETapi-activities--id-">GET api/activities/{id}</a>
+                                <a href="#activities-GETapi-activities--id-">Show Activity Details</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="activities-PUTapi-activities--id-">
-                                <a href="#activities-PUTapi-activities--id-">PUT api/activities/{id}</a>
+                                <a href="#activities-PUTapi-activities--id-">Update Activity</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="activities-DELETEapi-activities--id-">
-                                <a href="#activities-DELETEapi-activities--id-">DELETE api/activities/{id}</a>
+                                <a href="#activities-DELETEapi-activities--id-">Delete Activity</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="activities-POSTapi-activities-create-data">
-                                <a href="#activities-POSTapi-activities-create-data">POST api/activities/create-data</a>
+                                <a href="#activities-POSTapi-activities-create-data">Get Activity Creation Form Data</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="activities-GETapi-activities-progress-create">
-                                <a href="#activities-GETapi-activities-progress-create">GET api/activities/progress/create</a>
+                                <a href="#activities-GETapi-activities-progress-create">Get Progress Creation Form Data</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="activities-POSTapi-activities-progress-store">
-                                <a href="#activities-POSTapi-activities-progress-store">POST api/activities/progress/store</a>
+                                <a href="#activities-POSTapi-activities-progress-store">Store Activity Progress</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -103,10 +103,13 @@
                 </li>
                                     <ul id="tocify-subheader-app-info" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="app-info-GETapi-app-info">
-                                <a href="#app-info-GETapi-app-info">GET api/app-info</a>
+                                <a href="#app-info-GETapi-app-info">Get the list of app information.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="app-info-POSTapi-app-info">
                                 <a href="#app-info-POSTapi-app-info">POST api/app-info</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="app-info-GETapi-app-info--id-">
+                                <a href="#app-info-GETapi-app-info--id-">Display the specified app information.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="app-info-PUTapi-app-info--id-">
                                 <a href="#app-info-PUTapi-app-info--id-">PUT api/app-info/{id}</a>
@@ -169,22 +172,22 @@
                 </li>
                                     <ul id="tocify-subheader-daily-consumption" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="daily-consumption-GETapi-daily-consumptions">
-                                <a href="#daily-consumption-GETapi-daily-consumptions">GET api/daily-consumptions</a>
+                                <a href="#daily-consumption-GETapi-daily-consumptions">List all daily consumption records.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="daily-consumption-POSTapi-daily-consumptions">
-                                <a href="#daily-consumption-POSTapi-daily-consumptions">POST api/daily-consumptions</a>
+                                <a href="#daily-consumption-POSTapi-daily-consumptions">Store a new consumption record.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="daily-consumption-GETapi-daily-consumptions--id-">
-                                <a href="#daily-consumption-GETapi-daily-consumptions--id-">GET api/daily-consumptions/{id}</a>
+                                <a href="#daily-consumption-GETapi-daily-consumptions--id-">Display the specified consumption record.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="daily-consumption-PUTapi-daily-consumptions--id-">
-                                <a href="#daily-consumption-PUTapi-daily-consumptions--id-">PUT api/daily-consumptions/{id}</a>
+                                <a href="#daily-consumption-PUTapi-daily-consumptions--id-">Update the specified consumption record.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="daily-consumption-DELETEapi-daily-consumptions--id-">
-                                <a href="#daily-consumption-DELETEapi-daily-consumptions--id-">DELETE api/daily-consumptions/{id}</a>
+                                <a href="#daily-consumption-DELETEapi-daily-consumptions--id-">Delete the specified consumption record.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="daily-consumption-POSTapi-daily-consumptions-create-data">
-                                <a href="#daily-consumption-POSTapi-daily-consumptions-create-data">POST api/daily-consumptions/create-data</a>
+                                <a href="#daily-consumption-POSTapi-daily-consumptions-create-data">Get data for creating a consumption record.</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -197,16 +200,16 @@
                                 <a href="#daily-progress-report-GETapi-daily-progress-reports">List all reports (filtered by workspace & project).</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="daily-progress-report-POSTapi-daily-progress-reports">
-                                <a href="#daily-progress-report-POSTapi-daily-progress-reports">Store a new report.</a>
+                                <a href="#daily-progress-report-POSTapi-daily-progress-reports">Store a new Daily Progress Report with consumption details.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="daily-progress-report-GETapi-daily-progress-reports--id-">
-                                <a href="#daily-progress-report-GETapi-daily-progress-reports--id-">Show a single report.</a>
+                                <a href="#daily-progress-report-GETapi-daily-progress-reports--id-">Show a single daily progress report.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="daily-progress-report-PUTapi-daily-progress-reports--id-">
-                                <a href="#daily-progress-report-PUTapi-daily-progress-reports--id-">Update a report.</a>
+                                <a href="#daily-progress-report-PUTapi-daily-progress-reports--id-">Update a daily progress report.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="daily-progress-report-DELETEapi-daily-progress-reports--id-">
-                                <a href="#daily-progress-report-DELETEapi-daily-progress-reports--id-">Delete a report.</a>
+                                <a href="#daily-progress-report-DELETEapi-daily-progress-reports--id-">Delete a daily progress report.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="daily-progress-report-POSTapi-daily-progress-reports-create-data">
                                 <a href="#daily-progress-report-POSTapi-daily-progress-reports-create-data">Load machinery data for creating a report.</a>
@@ -235,28 +238,28 @@
                 </li>
                                     <ul id="tocify-subheader-employees" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="employees-GETapi-employee">
-                                <a href="#employees-GETapi-employee">GET api/employee</a>
+                                <a href="#employees-GETapi-employee">List Employees</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="employees-POSTapi-employee">
-                                <a href="#employees-POSTapi-employee">POST api/employee</a>
+                                <a href="#employees-POSTapi-employee">Create Employee</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="employees-GETapi-employee--id-">
-                                <a href="#employees-GETapi-employee--id-">GET api/employee/{id}</a>
+                                <a href="#employees-GETapi-employee--id-">Show Employee Details</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="employees-PUTapi-employee--id-">
-                                <a href="#employees-PUTapi-employee--id-">PUT api/employee/{id}</a>
+                                <a href="#employees-PUTapi-employee--id-">Update Employee</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="employees-DELETEapi-employee--id-">
-                                <a href="#employees-DELETEapi-employee--id-">DELETE api/employee/{id}</a>
+                                <a href="#employees-DELETEapi-employee--id-">Delete Employee</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="employees-POSTapi-employee-create-data">
-                                <a href="#employees-POSTapi-employee-create-data">POST api/employee/create-data</a>
+                                <a href="#employees-POSTapi-employee-create-data">Get Employee Creation Form Data</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="employees-POSTapi-getdepartment">
-                                <a href="#employees-POSTapi-getdepartment">POST api/getdepartment</a>
+                                <a href="#employees-POSTapi-getdepartment">Get Departments</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="employees-POSTapi-getdDesignation">
-                                <a href="#employees-POSTapi-getdDesignation">POST api/getdDesignation</a>
+                                <a href="#employees-POSTapi-getdDesignation">Get Designations</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -486,6 +489,9 @@ NOTE: This reads from log files - for production, consider using a log aggregati
                                                     <li class="tocify-item level-2" data-unique="hrm-attendance-GETapi-Hrm-attendence-history">
                                 <a href="#hrm-attendance-GETapi-Hrm-attendence-history">GET api/Hrm/attendence-history</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="hrm-attendance-POSTapi-Hrm-clock-in-out">
+                                <a href="#hrm-attendance-POSTapi-Hrm-clock-in-out">Clock in or clock out an employee.</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="hrm-attendance-POSTapi-Hrm-admin-attendence-insert">
                                 <a href="#hrm-attendance-POSTapi-Hrm-admin-attendence-insert">Insert attendance record (admin)</a>
                             </li>
@@ -503,6 +509,9 @@ NOTE: This reads from log files - for production, consider using a log aggregati
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="hrm-attendance-GETHrm-attendence-history">
                                 <a href="#hrm-attendance-GETHrm-attendence-history">GET Hrm/attendence-history</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="hrm-attendance-POSTHrm-clock-in-out">
+                                <a href="#hrm-attendance-POSTHrm-clock-in-out">Clock in or clock out an employee.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="hrm-attendance-POSTHrm-admin-attendence-insert">
                                 <a href="#hrm-attendance-POSTHrm-admin-attendence-insert">Insert attendance record (admin)</a>
@@ -869,19 +878,19 @@ NOTE: This reads from log files - for production, consider using a log aggregati
                 </li>
                                     <ul id="tocify-subheader-machinery" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="machinery-GETapi-machineries">
-                                <a href="#machinery-GETapi-machineries">GET api/machineries</a>
+                                <a href="#machinery-GETapi-machineries">Display a listing of machineries.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="machinery-POSTapi-machineries">
-                                <a href="#machinery-POSTapi-machineries">Create Machinery</a>
+                                <a href="#machinery-POSTapi-machineries">Create a newly created machinery record.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="machinery-GETapi-machineries--id-">
-                                <a href="#machinery-GETapi-machineries--id-">GET api/machineries/{id}</a>
+                                <a href="#machinery-GETapi-machineries--id-">Display the specified machinery.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="machinery-PUTapi-machineries--id-">
-                                <a href="#machinery-PUTapi-machineries--id-">PUT api/machineries/{id}</a>
+                                <a href="#machinery-PUTapi-machineries--id-">Update the specified machinery.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="machinery-DELETEapi-machineries--id-">
-                                <a href="#machinery-DELETEapi-machineries--id-">DELETE api/machineries/{id}</a>
+                                <a href="#machinery-DELETEapi-machineries--id-">Remove the specified machinery.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="machinery-POSTapi-machineries-create-data">
                                 <a href="#machinery-POSTapi-machineries-create-data">Get data needed for creating machinery</a>
@@ -1101,6 +1110,9 @@ NOTE: This reads from log files - for production, consider using a log aggregati
                                                                                 <li class="tocify-item level-2" data-unique="material-return-DELETEapi-material-returns--id-">
                                 <a href="#material-return-DELETEapi-material-returns--id-">Remove the specified material return.</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="material-return-POSTapi-material-returns-create-data">
+                                <a href="#material-return-POSTapi-material-returns-create-data">Get data for creating a new material return (alternative endpoint).</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="material-return-POSTapi-material-returns-get-issue-details">
                                 <a href="#material-return-POSTapi-material-returns-get-issue-details">Get issue details for return form.</a>
                             </li>
@@ -1127,10 +1139,10 @@ NOTE: This reads from log files - for production, consider using a log aggregati
                                 <a href="#material-transfer-DELETEapi-material-transfer--id-">Remove the specified material transfer.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="material-transfer-POSTapi-material-transfer-create-data">
-                                <a href="#material-transfer-POSTapi-material-transfer-create-data">POST api/material-transfer/create-data</a>
+                                <a href="#material-transfer-POSTapi-material-transfer-create-data">Get Material Transfer Creation Form Data.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="material-transfer-GETapi-ajax-get-stock-by-site">
-                                <a href="#material-transfer-GETapi-ajax-get-stock-by-site">API: get stock by site</a>
+                                <a href="#material-transfer-GETapi-ajax-get-stock-by-site">API: get stock by site.</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -1858,7 +1870,7 @@ Sets payment_request_flag to 1 for unpaid invoices with no prior request</a>
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: May 27, 2026</li>
+        <li>Last updated: May 28, 2026</li>
     </ul>
 </div>
 
@@ -1884,13 +1896,13 @@ You can switch the language used with the tabs at the top right (or from the nav
 
     <p>Endpoints for activity management including creation, completion tracking, and progress monitoring</p>
 
-                                <h2 id="activities-GETapi-activities">GET api/activities</h2>
+                                <h2 id="activities-GETapi-activities">List Activities</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Retrieve a list of all activities with optional filtering by workspace and site. Returns activities separated into pending and completed categories with completion percentages.</p>
 
 <span id="example-requests-GETapi-activities">
 <blockquote>Example request:</blockquote>
@@ -1898,7 +1910,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/activities" \
+    --get "http://sitepilot/api/activities?workspace_id=1&amp;site_id=5" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1908,6 +1920,13 @@ You can switch the language used with the tabs at the top right (or from the nav
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/activities"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -1925,19 +1944,30 @@ fetch(url, {
 
 <span id="example-responses-GETapi-activities">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;:true,&quot;data&quot;:{&quot;pending&quot;:[...],&quot;completed&quot;:[...]}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/activities could not be found.&quot;
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;Failed to fetch activities.&quot;
 }</code>
  </pre>
     </span>
@@ -2024,7 +2054,32 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="GETapi-activities"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Filter by workspace ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="GETapi-activities"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Filter by site/project ID. Example: <code>5</code></p>
+            </div>
+                </form>
 
                     <h2 id="activities-POSTapi-activities">Create Activity</h2>
 
@@ -2032,7 +2087,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Create a new activity in the system</p>
+<p>Create a new activity in the system with assigned users, timeline, quantity tracking, and optional reference file.</p>
 
 <span id="example-requests-POSTapi-activities">
 <blockquote>Example request:</blockquote>
@@ -2056,7 +2111,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "created_by=1"\
     --form "workspace_id=1"\
     --form "site_id=5"\
-    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\php258.tmp" </code></pre></div>
+    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\phpEF58.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -2100,6 +2155,36 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{&quot;status&quot;: true, &quot;message&quot;: &quot;Activity created successfully&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;Total completed quantity cannot exceed the main quantity.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;Failed to create activity&quot;
+}</code>
  </pre>
     </span>
 <span id="execution-results-POSTapi-activities" hidden>
@@ -2342,17 +2427,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Reference document (max 20MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\php258.tmp</code></p>
+<p>optional Reference document (max 20MB, allowed: pdf,doc,docx,jpg,jpeg,png,xls,xlsx). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEF58.tmp</code></p>
         </div>
         </form>
 
-                    <h2 id="activities-GETapi-activities--id-">GET api/activities/{id}</h2>
+                    <h2 id="activities-GETapi-activities--id-">Show Activity Details</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Retrieve detailed information about a specific activity including completion data, manpowers, daily progress, consumptions, and assigned users.</p>
 
 <span id="example-requests-GETapi-activities--id-">
 <blockquote>Example request:</blockquote>
@@ -2387,19 +2472,30 @@ fetch(url, {
 
 <span id="example-responses-GETapi-activities--id-">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;:true,&quot;data&quot;:{&quot;id&quot;:10,&quot;title&quot;:&quot;Foundation work&quot;,&quot;scope&quot;:&quot;...&quot;,&quot;quantity&quot;:100,&quot;unit&quot;:&quot;sqft&quot;,&quot;priority&quot;:&quot;high&quot;,&quot;status&quot;:&quot;pending&quot;,&quot;completed_qty&quot;:25,&quot;completion_percentage&quot;:25,&quot;is_completed&quot;:false,&quot;workspace&quot;:{...},&quot;site&quot;:{...},&quot;completeds&quot;:[...],&quot;manpowers&quot;:[...],&quot;daily_progress&quot;:[...],&quot;consumptions&quot;:[...],&quot;reference_file&quot;:&quot;...&quot;,&quot;assign_to&quot;:[...]}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/activities/16 could not be found.&quot;
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;Failed to fetch activity.&quot;
 }</code>
  </pre>
     </span>
@@ -2499,15 +2595,27 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>The ID of the activity. Example: <code>16</code></p>
             </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>activity</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="activity"                data-endpoint="GETapi-activities--id-"
+               value="10"
+               data-component="url">
+    <br>
+<p>The activity ID. Example: <code>10</code></p>
+            </div>
                     </form>
 
-                    <h2 id="activities-PUTapi-activities--id-">PUT api/activities/{id}</h2>
+                    <h2 id="activities-PUTapi-activities--id-">Update Activity</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Update an existing activity's details and manage its completion records. Supports updating both the main activity and individual completion entries with file uploads.</p>
 
 <span id="example-requests-PUTapi-activities--id-">
 <blockquote>Example request:</blockquote>
@@ -2517,8 +2625,24 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-bash">curl --request PUT \
     "http://sitepilot/api/activities/16" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "assign_to=[1, 2, 3]"\
+    --form "title=Foundation work"\
+    --form "start_date=2024-01-01"\
+    --form "due_date=2024-01-31"\
+    --form "scope=Building foundation for block A"\
+    --form "quantity=100"\
+    --form "unit=sqft"\
+    --form "priority=high"\
+    --form "completed_quantity=0"\
+    --form "created_by=1"\
+    --form "workspace_id=1"\
+    --form "site_id=5"\
+    --form "activity_id=10"\
+    --form "status=pending"\
+    --form "activities_completed[]={"id":1,"completed_quantity":25,"completed_date":"2024-01-15"}"\
+    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\phpEF88.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -2528,20 +2652,75 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
     "Accept": "application/json",
 };
 
+const body = new FormData();
+body.append('assign_to', '[1, 2, 3]');
+body.append('title', 'Foundation work');
+body.append('start_date', '2024-01-01');
+body.append('due_date', '2024-01-31');
+body.append('scope', 'Building foundation for block A');
+body.append('quantity', '100');
+body.append('unit', 'sqft');
+body.append('priority', 'high');
+body.append('completed_quantity', '0');
+body.append('created_by', '1');
+body.append('workspace_id', '1');
+body.append('site_id', '5');
+body.append('activity_id', '10');
+body.append('status', 'pending');
+body.append('activities_completed[]', '{"id":1,"completed_quantity":25,"completed_date":"2024-01-15"}');
+body.append('reference_file', document.querySelector('input[name="reference_file"]').files[0]);
 
 fetch(url, {
     method: "PUT",
     headers,
+    body,
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-PUTapi-activities--id-">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;:true,&quot;message&quot;:&quot;Activity updated successfully&quot;,&quot;data&quot;:{...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;Total completed quantity cannot exceed the main quantity.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;Failed to update activity&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-PUTapi-activities--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-PUTapi-activities--id-"></span>:
@@ -2560,7 +2739,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <form id="form-PUTapi-activities--id-" data-method="PUT"
       data-path="api/activities/{id}"
       data-authed="1"
-      data-hasfiles="0"
+      data-hasfiles="1"
       data-isarraybody="0"
       autocomplete="off"
       onsubmit="event.preventDefault(); executeTryOut('PUTapi-activities--id-', this);">
@@ -2612,10 +2791,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="PUTapi-activities--id-"
-               value="application/json"
+               value="multipart/form-data"
                data-component="header">
     <br>
-<p>Example: <code>application/json</code></p>
+<p>Example: <code>multipart/form-data</code></p>
             </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
@@ -2642,15 +2821,280 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>The ID of the activity. Example: <code>16</code></p>
             </div>
-                    </form>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>activity</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="activity"                data-endpoint="PUTapi-activities--id-"
+               value="10"
+               data-component="url">
+    <br>
+<p>The activity ID. Example: <code>10</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>assign_to</code></b>&nbsp;&nbsp;
+<small>required</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="assign_to"                data-endpoint="PUTapi-activities--id-"
+               value="[1, 2, 3]"
+               data-component="body">
+    <br>
+<p>Array of user IDs or comma-separated string. Example: <code>[1, 2, 3]</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="title"                data-endpoint="PUTapi-activities--id-"
+               value="Foundation work"
+               data-component="body">
+    <br>
+<p>Activity title. Example: <code>Foundation work</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>start_date</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="start_date"                data-endpoint="PUTapi-activities--id-"
+               value="2024-01-01"
+               data-component="body">
+    <br>
+<p>Start date. Example: <code>2024-01-01</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>due_date</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="due_date"                data-endpoint="PUTapi-activities--id-"
+               value="2024-01-31"
+               data-component="body">
+    <br>
+<p>Due date. Example: <code>2024-01-31</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>scope</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="scope"                data-endpoint="PUTapi-activities--id-"
+               value="Building foundation for block A"
+               data-component="body">
+    <br>
+<p>Activity scope/description. Example: <code>Building foundation for block A</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>quantity</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="quantity"                data-endpoint="PUTapi-activities--id-"
+               value="100"
+               data-component="body">
+    <br>
+<p>Total quantity. Example: <code>100</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>unit</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="unit"                data-endpoint="PUTapi-activities--id-"
+               value="sqft"
+               data-component="body">
+    <br>
+<p>Unit of measurement. Example: <code>sqft</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>priority</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="priority"                data-endpoint="PUTapi-activities--id-"
+               value="high"
+               data-component="body">
+    <br>
+<p>Priority level (low, medium, high). Example: <code>high</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>completed_quantity</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="completed_quantity"                data-endpoint="PUTapi-activities--id-"
+               value="0"
+               data-component="body">
+    <br>
+<p>optional Initial completed quantity (legacy format). Example: <code>0</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="created_by"                data-endpoint="PUTapi-activities--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>Creator user ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="PUTapi-activities--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="PUTapi-activities--id-"
+               value="5"
+               data-component="body">
+    <br>
+<p>Site/Project ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>activity_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="activity_id"                data-endpoint="PUTapi-activities--id-"
+               value="10"
+               data-component="body">
+    <br>
+<p>Activity ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="PUTapi-activities--id-"
+               value="pending"
+               data-component="body">
+    <br>
+<p>optional Activity status. Example: <code>pending</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>activities_completed</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+<br>
+<p>optional Array of completion records to update/create.</p>
+            </summary>
+                                                <div style=" margin-left: 14px; clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>*</code></b>&nbsp;&nbsp;
+<small>object</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+<br>
 
-                    <h2 id="activities-DELETEapi-activities--id-">DELETE api/activities/{id}</h2>
+            </summary>
+                                                <div style="margin-left: 28px; clear: unset;">
+                        <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="activities_completed.*.id"                data-endpoint="PUTapi-activities--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>optional Completion record ID (null for new records). Example: <code>1</code></p>
+                    </div>
+                                                                <div style="margin-left: 28px; clear: unset;">
+                        <b style="line-height: 2;"><code>completed_quantity</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="activities_completed.*.completed_quantity"                data-endpoint="PUTapi-activities--id-"
+               value="25"
+               data-component="body">
+    <br>
+<p>Quantity completed. Example: <code>25</code></p>
+                    </div>
+                                                                <div style="margin-left: 28px; clear: unset;">
+                        <b style="line-height: 2;"><code>completed_date</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="activities_completed.*.completed_date"                data-endpoint="PUTapi-activities--id-"
+               value="2024-01-15"
+               data-component="body">
+    <br>
+<p>Date of completion. Example: <code>2024-01-15</code></p>
+                    </div>
+                                                                <div style="margin-left: 28px; clear: unset;">
+                        <b style="line-height: 2;"><code>completed_reference_file</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="activities_completed.*.completed_reference_file"                data-endpoint="PUTapi-activities--id-"
+               value=""
+               data-component="body">
+    <br>
+<p>optional Reference document (max 5MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEF87.tmp</code></p>
+                    </div>
+                                    </details>
+        </div>
+                                        </details>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>reference_file</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="reference_file"                data-endpoint="PUTapi-activities--id-"
+               value=""
+               data-component="body">
+    <br>
+<p>optional Reference document for activity (max 20MB, allowed: pdf,doc,docx,jpg,jpeg,png,xls,xlsx). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEF88.tmp</code></p>
+        </div>
+        </form>
+
+                    <h2 id="activities-DELETEapi-activities--id-">Delete Activity</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Delete an activity from the system. Note: Completion records linked to ManPower, DPR, and Consumption are preserved for historical records.</p>
 
 <span id="example-requests-DELETEapi-activities--id-">
 <blockquote>Example request:</blockquote>
@@ -2684,7 +3128,37 @@ fetch(url, {
 </span>
 
 <span id="example-responses-DELETEapi-activities--id-">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: true,
+    &quot;message&quot;: &quot;Activity deleted successfully&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;Failed to delete activity&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-DELETEapi-activities--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-DELETEapi-activities--id-"></span>:
@@ -2781,15 +3255,27 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>The ID of the activity. Example: <code>16</code></p>
             </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>activity</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="activity"                data-endpoint="DELETEapi-activities--id-"
+               value="10"
+               data-component="url">
+    <br>
+<p>The activity ID. Example: <code>10</code></p>
+            </div>
                     </form>
 
-                    <h2 id="activities-POSTapi-activities-create-data">POST api/activities/create-data</h2>
+                    <h2 id="activities-POSTapi-activities-create-data">Get Activity Creation Form Data</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Retrieve metadata required for the activity creation form including workspaces, sites, priorities, and available users.</p>
 
 <span id="example-requests-POSTapi-activities-create-data">
 <blockquote>Example request:</blockquote>
@@ -2797,7 +3283,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://sitepilot/api/activities/create-data" \
+    "http://sitepilot/api/activities/create-data?workspace_id=1&amp;site_id=5&amp;created_by=1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2807,6 +3293,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/activities/create-data"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+    "created_by": "1",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -2823,7 +3317,34 @@ fetch(url, {
 </span>
 
 <span id="example-responses-POSTapi-activities-create-data">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;:true,&quot;message&quot;:&quot;Form metadata fetched successfully&quot;,&quot;workspaces&quot;:[...],&quot;sites&quot;:[...],&quot;priorities&quot;:[...],&quot;users&quot;:[...]}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;Failed to fetch form metadata&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-activities-create-data" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-activities-create-data"></span>:
@@ -2907,15 +3428,52 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-activities-create-data"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Workspace ID to filter sites. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-activities-create-data"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Site ID. Example: <code>5</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="created_by"                data-endpoint="POSTapi-activities-create-data"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Creator user ID. Example: <code>1</code></p>
+            </div>
+                </form>
 
-                    <h2 id="activities-GETapi-activities-progress-create">GET api/activities/progress/create</h2>
+                    <h2 id="activities-GETapi-activities-progress-create">Get Progress Creation Form Data</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Retrieve metadata required for creating activity progress including workspaces, sites, activities, and already completed quantities.</p>
 
 <span id="example-requests-GETapi-activities-progress-create">
 <blockquote>Example request:</blockquote>
@@ -2923,7 +3481,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/activities/progress/create" \
+    --get "http://sitepilot/api/activities/progress/create?workspace_id=1&amp;site_id=5&amp;activity_id=10" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2933,6 +3491,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/activities/progress/create"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+    "activity_id": "10",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -2950,19 +3516,20 @@ fetch(url, {
 
 <span id="example-responses-GETapi-activities-progress-create">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;:true,&quot;message&quot;:&quot;Progress data fetched successfully&quot;,&quot;workspaces&quot;:[...],&quot;sites&quot;:[...],&quot;priorities&quot;:[...],&quot;activities&quot;:[...],&quot;alreadyCompleted&quot;:50}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/activities/progress/create could not be found.&quot;
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;Failed to fetch progress data&quot;
 }</code>
  </pre>
     </span>
@@ -3049,15 +3616,52 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="GETapi-activities-progress-create"
+               value="1"
+               data-component="query">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="GETapi-activities-progress-create"
+               value="5"
+               data-component="query">
+    <br>
+<p>Site/Project ID. Example: <code>5</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>activity_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="activity_id"                data-endpoint="GETapi-activities-progress-create"
+               value="10"
+               data-component="query">
+    <br>
+<p>Activity ID. Example: <code>10</code></p>
+            </div>
+                </form>
 
-                    <h2 id="activities-POSTapi-activities-progress-store">POST api/activities/progress/store</h2>
+                    <h2 id="activities-POSTapi-activities-progress-store">Store Activity Progress</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Record progress for an activity by adding completed quantity with optional reference file. Validates that total completed does not exceed activity quantity.</p>
 
 <span id="example-requests-POSTapi-activities-progress-store">
 <blockquote>Example request:</blockquote>
@@ -3067,8 +3671,15 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-bash">curl --request POST \
     "http://sitepilot/api/activities/progress/store" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "workspace_id=1"\
+    --form "site_id=5"\
+    --form "activity_id=10"\
+    --form "completed_quantity=25"\
+    --form "date=2024-01-15"\
+    --form "created_by=1"\
+    --form "completed_reference_file=@C:\Users\ninad\AppData\Local\Temp\phpEFC8.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3078,20 +3689,66 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
     "Accept": "application/json",
 };
 
+const body = new FormData();
+body.append('workspace_id', '1');
+body.append('site_id', '5');
+body.append('activity_id', '10');
+body.append('completed_quantity', '25');
+body.append('date', '2024-01-15');
+body.append('created_by', '1');
+body.append('completed_reference_file', document.querySelector('input[name="completed_reference_file"]').files[0]);
 
 fetch(url, {
     method: "POST",
     headers,
+    body,
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-POSTapi-activities-progress-store">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;:true,&quot;message&quot;:&quot;Progress stored successfully&quot;,&quot;data&quot;:{...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;Total completed quantity cannot exceed the main quantity.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: false,
+    &quot;message&quot;: &quot;Failed to store progress&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-activities-progress-store" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-activities-progress-store"></span>:
@@ -3110,7 +3767,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <form id="form-POSTapi-activities-progress-store" data-method="POST"
       data-path="api/activities/progress/store"
       data-authed="1"
-      data-hasfiles="0"
+      data-hasfiles="1"
       data-isarraybody="0"
       autocomplete="off"
       onsubmit="event.preventDefault(); executeTryOut('POSTapi-activities-progress-store', this);">
@@ -3158,10 +3815,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-activities-progress-store"
-               value="application/json"
+               value="multipart/form-data"
                data-component="header">
     <br>
-<p>Example: <code>application/json</code></p>
+<p>Example: <code>multipart/form-data</code></p>
             </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
@@ -3175,13 +3832,98 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-activities-progress-store"
+               value="1"
+               data-component="body">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-activities-progress-store"
+               value="5"
+               data-component="body">
+    <br>
+<p>Site/Project ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>activity_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="activity_id"                data-endpoint="POSTapi-activities-progress-store"
+               value="10"
+               data-component="body">
+    <br>
+<p>Activity ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>completed_quantity</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="completed_quantity"                data-endpoint="POSTapi-activities-progress-store"
+               value="25"
+               data-component="body">
+    <br>
+<p>Quantity completed in this entry. Example: <code>25</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>date</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="date"                data-endpoint="POSTapi-activities-progress-store"
+               value="2024-01-15"
+               data-component="body">
+    <br>
+<p>Date of completion. Example: <code>2024-01-15</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="created_by"                data-endpoint="POSTapi-activities-progress-store"
+               value="1"
+               data-component="body">
+    <br>
+<p>optional Creator user ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>completed_reference_file</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="completed_reference_file"                data-endpoint="POSTapi-activities-progress-store"
+               value=""
+               data-component="body">
+    <br>
+<p>optional Reference document for this progress (max 20MB, allowed: pdf,doc,docx,jpg,jpeg,png,xls,xlsx). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEFC8.tmp</code></p>
+        </div>
+        </form>
 
                 <h1 id="app-info">App Info</h1>
 
     <p>Endpoints for application information including version, contact details, and privacy policy</p>
 
-                                <h2 id="app-info-GETapi-app-info">GET api/app-info</h2>
+                                <h2 id="app-info-GETapi-app-info">Get the list of app information.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -3448,6 +4190,161 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>Example: <code>application/json</code></p>
             </div>
                         </form>
+
+                    <h2 id="app-info-GETapi-app-info--id-">Display the specified app information.</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-app-info--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://sitepilot/api/app-info/architecto" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://sitepilot/api/app-info/architecto"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-app-info--id-">
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+access-control-allow-origin: *
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;The route api/app-info/architecto could not be found.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-app-info--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-app-info--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-app-info--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-app-info--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-app-info--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-app-info--id-" data-method="GET"
+      data-path="api/app-info/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-app-info--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-app-info--id-"
+                    onclick="tryItOut('GETapi-app-info--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-app-info--id-"
+                    onclick="cancelTryOut('GETapi-app-info--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-app-info--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/app-info/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-app-info--id-"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-app-info--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-app-info--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="GETapi-app-info--id-"
+               value="architecto"
+               data-component="url">
+    <br>
+<p>The ID of the app info. Example: <code>architecto</code></p>
+            </div>
+                    </form>
 
                     <h2 id="app-info-PUTapi-app-info--id-">PUT api/app-info/{id}</h2>
 
@@ -5631,7 +6528,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
     <p>Endpoints for daily material consumption logging and tracking</p>
 
-                                <h2 id="daily-consumption-GETapi-daily-consumptions">GET api/daily-consumptions</h2>
+                                <h2 id="daily-consumption-GETapi-daily-consumptions">List all daily consumption records.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -5672,19 +6569,20 @@ fetch(url, {
 
 <span id="example-responses-GETapi-daily-consumptions">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;data&quot;: [{&quot;id&quot;: 1, &quot;consumption_date&quot;: &quot;2024-01-15&quot;, &quot;details&quot;: [...]}]}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/daily-consumptions could not be found.&quot;
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
 }</code>
  </pre>
     </span>
@@ -5773,7 +6671,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
-                    <h2 id="daily-consumption-POSTapi-daily-consumptions">POST api/daily-consumptions</h2>
+                    <h2 id="daily-consumption-POSTapi-daily-consumptions">Store a new consumption record.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -5789,8 +6687,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-bash">curl --request POST \
     "http://sitepilot/api/daily-consumptions" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "consumption_date=2024-01-15"\
+    --form "site_id=5"\
+    --form "consumption_type=all"\
+    --form "workspace_id=1"\
+    --form "created_by=1"\
+    --form "activity_completed_id=10"\
+    --form "machinery_type=rental"\
+    --form "machinery_id=10"\
+    --form "items[]=architecto"\
+    --form "items[0][material_id]=10"\
+    --form "items[0][quantity]=100.5"\
+    --form "items[0][unit]=kg"\
+    --form "items[0][remarks]=Used for construction"\
+    --form "consumption_file=@C:\Users\ninad\AppData\Local\Temp\phpE57F.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -5800,20 +6712,60 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
     "Accept": "application/json",
 };
 
+const body = new FormData();
+body.append('consumption_date', '2024-01-15');
+body.append('site_id', '5');
+body.append('consumption_type', 'all');
+body.append('workspace_id', '1');
+body.append('created_by', '1');
+body.append('activity_completed_id', '10');
+body.append('machinery_type', 'rental');
+body.append('machinery_id', '10');
+body.append('items[]', 'architecto');
+body.append('items[0][material_id]', '10');
+body.append('items[0][quantity]', '100.5');
+body.append('items[0][unit]', 'kg');
+body.append('items[0][remarks]', 'Used for construction');
+body.append('consumption_file', document.querySelector('input[name="consumption_file"]').files[0]);
 
 fetch(url, {
     method: "POST",
     headers,
+    body,
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-POSTapi-daily-consumptions">
-</span>
+            <blockquote>
+            <p>Example response (201, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, Validation error):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;errors&quot;: {...}}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-daily-consumptions" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-daily-consumptions"></span>:
@@ -5832,7 +6784,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <form id="form-POSTapi-daily-consumptions" data-method="POST"
       data-path="api/daily-consumptions"
       data-authed="1"
-      data-hasfiles="0"
+      data-hasfiles="1"
       data-isarraybody="0"
       autocomplete="off"
       onsubmit="event.preventDefault(); executeTryOut('POSTapi-daily-consumptions', this);">
@@ -5880,10 +6832,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-daily-consumptions"
-               value="application/json"
+               value="multipart/form-data"
                data-component="header">
     <br>
-<p>Example: <code>application/json</code></p>
+<p>Example: <code>multipart/form-data</code></p>
             </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
@@ -5897,9 +6849,180 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>consumption_date</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="consumption_date"                data-endpoint="POSTapi-daily-consumptions"
+               value="2024-01-15"
+               data-component="body">
+    <br>
+<p>Consumption date. Example: <code>2024-01-15</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-daily-consumptions"
+               value="5"
+               data-component="body">
+    <br>
+<p>Site ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>consumption_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="consumption_type"                data-endpoint="POSTapi-daily-consumptions"
+               value="all"
+               data-component="body">
+    <br>
+<p>Type (all or fuel). Example: <code>all</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-daily-consumptions"
+               value="1"
+               data-component="body">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="created_by"                data-endpoint="POSTapi-daily-consumptions"
+               value="1"
+               data-component="body">
+    <br>
+<p>Creator user ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>activity_completed_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="activity_completed_id"                data-endpoint="POSTapi-daily-consumptions"
+               value="10"
+               data-component="body">
+    <br>
+<p>Activity completed ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>machinery_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="machinery_type"                data-endpoint="POSTapi-daily-consumptions"
+               value="rental"
+               data-component="body">
+    <br>
+<p>optional Type (own or rental). Example: <code>rental</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>machinery_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="machinery_id"                data-endpoint="POSTapi-daily-consumptions"
+               value="10"
+               data-component="body">
+    <br>
+<p>optional Machinery ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0]"                data-endpoint="POSTapi-daily-consumptions"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="items[1]"                data-endpoint="POSTapi-daily-consumptions"
+               data-component="body">
+    <br>
+<p>Array of consumption items (use indexed notation).</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][material_id]"                data-endpoint="POSTapi-daily-consumptions"
+               value="10"
+               data-component="body">
+    <br>
+<p>Material ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][quantity]"                data-endpoint="POSTapi-daily-consumptions"
+               value="100.5"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>100.5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][unit]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][unit]"                data-endpoint="POSTapi-daily-consumptions"
+               value="kg"
+               data-component="body">
+    <br>
+<p>Unit. Example: <code>kg</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][remarks]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][remarks]"                data-endpoint="POSTapi-daily-consumptions"
+               value="Used for construction"
+               data-component="body">
+    <br>
+<p>optional Remarks. Example: <code>Used for construction</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>consumption_file</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="consumption_file"                data-endpoint="POSTapi-daily-consumptions"
+               value=""
+               data-component="body">
+    <br>
+<p>optional Consumption document (max 2MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE57F.tmp</code></p>
+        </div>
+        </form>
 
-                    <h2 id="daily-consumption-GETapi-daily-consumptions--id-">GET api/daily-consumptions/{id}</h2>
+                    <h2 id="daily-consumption-GETapi-daily-consumptions--id-">Display the specified consumption record.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -5940,19 +7063,20 @@ fetch(url, {
 
 <span id="example-responses-GETapi-daily-consumptions--id-">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;id&quot;: 1, &quot;consumption_date&quot;: &quot;2024-01-15&quot;, &quot;details&quot;: [...]}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/daily-consumptions/16 could not be found.&quot;
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
 }</code>
  </pre>
     </span>
@@ -6052,9 +7176,21 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>The ID of the daily consumption. Example: <code>16</code></p>
             </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>dailyConsumption</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="dailyConsumption"                data-endpoint="GETapi-daily-consumptions--id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>Daily Consumption ID (via route model binding). Example: <code>1</code></p>
+            </div>
                     </form>
 
-                    <h2 id="daily-consumption-PUTapi-daily-consumptions--id-">PUT api/daily-consumptions/{id}</h2>
+                    <h2 id="daily-consumption-PUTapi-daily-consumptions--id-">Update the specified consumption record.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -6070,8 +7206,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-bash">curl --request PUT \
     "http://sitepilot/api/daily-consumptions/16" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "consumption_date=2024-01-15"\
+    --form "site_id=5"\
+    --form "consumption_type=all"\
+    --form "workspace_id=1"\
+    --form "created_by=1"\
+    --form "activity_completed_id=10"\
+    --form "machinery_type=rental"\
+    --form "machinery_id=10"\
+    --form "items[]=architecto"\
+    --form "items[0][material_id]=10"\
+    --form "items[0][quantity]=100.5"\
+    --form "items[0][unit]=kg"\
+    --form "items[0][remarks]=Used for construction"\
+    --form "consumption_file=@C:\Users\ninad\AppData\Local\Temp\phpE5CE.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -6081,20 +7231,53 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
     "Accept": "application/json",
 };
 
+const body = new FormData();
+body.append('consumption_date', '2024-01-15');
+body.append('site_id', '5');
+body.append('consumption_type', 'all');
+body.append('workspace_id', '1');
+body.append('created_by', '1');
+body.append('activity_completed_id', '10');
+body.append('machinery_type', 'rental');
+body.append('machinery_id', '10');
+body.append('items[]', 'architecto');
+body.append('items[0][material_id]', '10');
+body.append('items[0][quantity]', '100.5');
+body.append('items[0][unit]', 'kg');
+body.append('items[0][remarks]', 'Used for construction');
+body.append('consumption_file', document.querySelector('input[name="consumption_file"]').files[0]);
 
 fetch(url, {
     method: "PUT",
     headers,
+    body,
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-PUTapi-daily-consumptions--id-">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;id&quot;: 1, &quot;consumption_date&quot;: &quot;2024-01-15&quot;, &quot;details&quot;: [...]}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-PUTapi-daily-consumptions--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-PUTapi-daily-consumptions--id-"></span>:
@@ -6113,7 +7296,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <form id="form-PUTapi-daily-consumptions--id-" data-method="PUT"
       data-path="api/daily-consumptions/{id}"
       data-authed="1"
-      data-hasfiles="0"
+      data-hasfiles="1"
       data-isarraybody="0"
       autocomplete="off"
       onsubmit="event.preventDefault(); executeTryOut('PUTapi-daily-consumptions--id-', this);">
@@ -6165,10 +7348,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="PUTapi-daily-consumptions--id-"
-               value="application/json"
+               value="multipart/form-data"
                data-component="header">
     <br>
-<p>Example: <code>application/json</code></p>
+<p>Example: <code>multipart/form-data</code></p>
             </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
@@ -6195,9 +7378,192 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>The ID of the daily consumption. Example: <code>16</code></p>
             </div>
-                    </form>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>dailyConsumption</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="dailyConsumption"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>Daily Consumption ID (via route model binding). Example: <code>1</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>consumption_date</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="consumption_date"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value="2024-01-15"
+               data-component="body">
+    <br>
+<p>Consumption date. Example: <code>2024-01-15</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value="5"
+               data-component="body">
+    <br>
+<p>Site ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>consumption_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="consumption_type"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value="all"
+               data-component="body">
+    <br>
+<p>Type (all or fuel). Example: <code>all</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="created_by"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>Creator user ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>activity_completed_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="activity_completed_id"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value="10"
+               data-component="body">
+    <br>
+<p>Activity completed ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>machinery_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="machinery_type"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value="rental"
+               data-component="body">
+    <br>
+<p>optional Type (own or rental). Example: <code>rental</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>machinery_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="machinery_id"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value="10"
+               data-component="body">
+    <br>
+<p>optional Machinery ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0]"                data-endpoint="PUTapi-daily-consumptions--id-"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="items[1]"                data-endpoint="PUTapi-daily-consumptions--id-"
+               data-component="body">
+    <br>
+<p>Array of consumption items (use indexed notation).</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][material_id]"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value="10"
+               data-component="body">
+    <br>
+<p>Material ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][quantity]"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value="100.5"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>100.5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][unit]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][unit]"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value="kg"
+               data-component="body">
+    <br>
+<p>Unit. Example: <code>kg</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][remarks]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][remarks]"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value="Used for construction"
+               data-component="body">
+    <br>
+<p>optional Remarks. Example: <code>Used for construction</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>consumption_file</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="consumption_file"                data-endpoint="PUTapi-daily-consumptions--id-"
+               value=""
+               data-component="body">
+    <br>
+<p>optional Consumption document (max 2MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE5CE.tmp</code></p>
+        </div>
+        </form>
 
-                    <h2 id="daily-consumption-DELETEapi-daily-consumptions--id-">DELETE api/daily-consumptions/{id}</h2>
+                    <h2 id="daily-consumption-DELETEapi-daily-consumptions--id-">Delete the specified consumption record.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -6237,7 +7603,26 @@ fetch(url, {
 </span>
 
 <span id="example-responses-DELETEapi-daily-consumptions--id-">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Deleted successfully&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-DELETEapi-daily-consumptions--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-DELETEapi-daily-consumptions--id-"></span>:
@@ -6334,9 +7719,21 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>The ID of the daily consumption. Example: <code>16</code></p>
             </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>dailyConsumption</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="dailyConsumption"                data-endpoint="DELETEapi-daily-consumptions--id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>Daily Consumption ID (via route model binding). Example: <code>1</code></p>
+            </div>
                     </form>
 
-                    <h2 id="daily-consumption-POSTapi-daily-consumptions-create-data">POST api/daily-consumptions/create-data</h2>
+                    <h2 id="daily-consumption-POSTapi-daily-consumptions-create-data">Get data for creating a consumption record.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -6350,7 +7747,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://sitepilot/api/daily-consumptions/create-data" \
+    "http://sitepilot/api/daily-consumptions/create-data?workspace_id=1&amp;site_id=5" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6360,6 +7757,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/daily-consumptions/create-data"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -6376,7 +7780,19 @@ fetch(url, {
 </span>
 
 <span id="example-responses-POSTapi-daily-consumptions-create-data">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+  &quot;materials_fuels&quot;: {...},
+  &quot;materials_all&quot;: {...},
+  &quot;sites&quot;: [...],
+  &quot;next_consumption_number&quot;: &quot;DCM-0001&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-daily-consumptions-create-data" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-daily-consumptions-create-data"></span>:
@@ -6460,7 +7876,32 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-daily-consumptions-create-data"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Workspace ID for lookups. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-daily-consumptions-create-data"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Site ID for lookups. Example: <code>5</code></p>
+            </div>
+                </form>
 
                 <h1 id="daily-progress-report">Daily Progress Report</h1>
 
@@ -6480,7 +7921,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/daily-progress-reports" \
+    --get "http://sitepilot/api/daily-progress-reports?workspace_id=1&amp;site_id=5" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6490,6 +7931,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/daily-progress-reports"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -6507,19 +7955,20 @@ fetch(url, {
 
 <span id="example-responses-GETapi-daily-progress-reports">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/daily-progress-reports could not be found.&quot;
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;Daily progress reports fetched successfully.&quot;,
+  &quot;data&quot;: [
+    {
+      &quot;id&quot;: 1,
+      &quot;date&quot;: &quot;2024-01-15&quot;,
+      &quot;machinery&quot;: {...}
+    }
+  ]
 }</code>
  </pre>
     </span>
@@ -6606,9 +8055,34 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="GETapi-daily-progress-reports"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Filter by workspace ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="GETapi-daily-progress-reports"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Filter by site/project ID. Example: <code>5</code></p>
+            </div>
+                </form>
 
-                    <h2 id="daily-progress-report-POSTapi-daily-progress-reports">Store a new report.</h2>
+                    <h2 id="daily-progress-report-POSTapi-daily-progress-reports">Store a new Daily Progress Report with consumption details.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -6624,8 +8098,31 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-bash">curl --request POST \
     "http://sitepilot/api/daily-progress-reports" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "date=2024-01-15"\
+    --form "machinery_id=10"\
+    --form "machine_start_reading=100"\
+    --form "machine_end_reading=150"\
+    --form "machine_idle_reading=5"\
+    --form "number_of_operators=2"\
+    --form "work_details=Excavation work"\
+    --form "diesel_consumption=50.5"\
+    --form "maintenance_notes=Regular check"\
+    --form "machinery_advances=Advance paid"\
+    --form "site_id=5"\
+    --form "workspace_id=1"\
+    --form "activity_completed_id=10"\
+    --form "consumption_type=fuel"\
+    --form "items[]=architecto"\
+    --form "items[0][material_id]=10"\
+    --form "items[0][quantity]=100.5"\
+    --form "items[0][unit]=kg"\
+    --form "items[0][remarks]=Used for mixing"\
+    --form "items[1][material_id]=11"\
+    --form "items[1][quantity]=50"\
+    --form "items[1][unit]=liter"\
+    --form "consumption_file=@C:\Users\ninad\AppData\Local\Temp\phpEEE8.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -6635,20 +8132,66 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
     "Accept": "application/json",
 };
 
+const body = new FormData();
+body.append('date', '2024-01-15');
+body.append('machinery_id', '10');
+body.append('machine_start_reading', '100');
+body.append('machine_end_reading', '150');
+body.append('machine_idle_reading', '5');
+body.append('number_of_operators', '2');
+body.append('work_details', 'Excavation work');
+body.append('diesel_consumption', '50.5');
+body.append('maintenance_notes', 'Regular check');
+body.append('machinery_advances', 'Advance paid');
+body.append('site_id', '5');
+body.append('workspace_id', '1');
+body.append('activity_completed_id', '10');
+body.append('consumption_type', 'fuel');
+body.append('items[]', 'architecto');
+body.append('items[0][material_id]', '10');
+body.append('items[0][quantity]', '100.5');
+body.append('items[0][unit]', 'kg');
+body.append('items[0][remarks]', 'Used for mixing');
+body.append('items[1][material_id]', '11');
+body.append('items[1][quantity]', '50');
+body.append('items[1][unit]', 'liter');
+body.append('consumption_file', document.querySelector('input[name="consumption_file"]').files[0]);
 
 fetch(url, {
     method: "POST",
     headers,
+    body,
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-POSTapi-daily-progress-reports">
-</span>
+            <blockquote>
+            <p>Example response (201, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;DPR created successfully&quot;,
+  &quot;data&quot;: {...}
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-daily-progress-reports" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-daily-progress-reports"></span>:
@@ -6667,7 +8210,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <form id="form-POSTapi-daily-progress-reports" data-method="POST"
       data-path="api/daily-progress-reports"
       data-authed="1"
-      data-hasfiles="0"
+      data-hasfiles="1"
       data-isarraybody="0"
       autocomplete="off"
       onsubmit="event.preventDefault(); executeTryOut('POSTapi-daily-progress-reports', this);">
@@ -6715,10 +8258,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-daily-progress-reports"
-               value="application/json"
+               value="multipart/form-data"
                data-component="header">
     <br>
-<p>Example: <code>application/json</code></p>
+<p>Example: <code>multipart/form-data</code></p>
             </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
@@ -6732,9 +8275,288 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>date</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="date"                data-endpoint="POSTapi-daily-progress-reports"
+               value="2024-01-15"
+               data-component="body">
+    <br>
+<p>Report date. Example: <code>2024-01-15</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>machinery_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="machinery_id"                data-endpoint="POSTapi-daily-progress-reports"
+               value="10"
+               data-component="body">
+    <br>
+<p>Machinery ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>machine_start_reading</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="machine_start_reading"                data-endpoint="POSTapi-daily-progress-reports"
+               value="100"
+               data-component="body">
+    <br>
+<p>Start meter reading. Example: <code>100</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>machine_end_reading</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="machine_end_reading"                data-endpoint="POSTapi-daily-progress-reports"
+               value="150"
+               data-component="body">
+    <br>
+<p>End meter reading. Example: <code>150</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>machine_idle_reading</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="machine_idle_reading"                data-endpoint="POSTapi-daily-progress-reports"
+               value="5"
+               data-component="body">
+    <br>
+<p>optional Idle meter reading. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>number_of_operators</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="number_of_operators"                data-endpoint="POSTapi-daily-progress-reports"
+               value="2"
+               data-component="body">
+    <br>
+<p>optional Number of operators. Example: <code>2</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>work_details</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="work_details"                data-endpoint="POSTapi-daily-progress-reports"
+               value="Excavation work"
+               data-component="body">
+    <br>
+<p>optional Work details description. Example: <code>Excavation work</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>diesel_consumption</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="diesel_consumption"                data-endpoint="POSTapi-daily-progress-reports"
+               value="50.5"
+               data-component="body">
+    <br>
+<p>optional Diesel consumption. Example: <code>50.5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>maintenance_notes</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="maintenance_notes"                data-endpoint="POSTapi-daily-progress-reports"
+               value="Regular check"
+               data-component="body">
+    <br>
+<p>optional Maintenance notes. Example: <code>Regular check</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>machinery_advances</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="machinery_advances"                data-endpoint="POSTapi-daily-progress-reports"
+               value="Advance paid"
+               data-component="body">
+    <br>
+<p>optional Advances notes. Example: <code>Advance paid</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-daily-progress-reports"
+               value="5"
+               data-component="body">
+    <br>
+<p>Site ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-daily-progress-reports"
+               value="1"
+               data-component="body">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>activity_completed_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="activity_completed_id"                data-endpoint="POSTapi-daily-progress-reports"
+               value="10"
+               data-component="body">
+    <br>
+<p>Activity completed ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>consumption_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="consumption_type"                data-endpoint="POSTapi-daily-progress-reports"
+               value="fuel"
+               data-component="body">
+    <br>
+<p>Consumption type (fuel or all). Example: <code>fuel</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0]"                data-endpoint="POSTapi-daily-progress-reports"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="items[1]"                data-endpoint="POSTapi-daily-progress-reports"
+               data-component="body">
+    <br>
+<p>Array of consumption items (use indexed notation).</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][material_id]"                data-endpoint="POSTapi-daily-progress-reports"
+               value="10"
+               data-component="body">
+    <br>
+<p>Material ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][quantity]"                data-endpoint="POSTapi-daily-progress-reports"
+               value="100.5"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>100.5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][unit]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][unit]"                data-endpoint="POSTapi-daily-progress-reports"
+               value="kg"
+               data-component="body">
+    <br>
+<p>Unit. Example: <code>kg</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][remarks]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][remarks]"                data-endpoint="POSTapi-daily-progress-reports"
+               value="Used for mixing"
+               data-component="body">
+    <br>
+<p>optional Remarks. Example: <code>Used for mixing</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][material_id]"                data-endpoint="POSTapi-daily-progress-reports"
+               value="11"
+               data-component="body">
+    <br>
+<p>Material ID (if multiple). Example: <code>11</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][quantity]"                data-endpoint="POSTapi-daily-progress-reports"
+               value="50"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>50</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][unit]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[1][unit]"                data-endpoint="POSTapi-daily-progress-reports"
+               value="liter"
+               data-component="body">
+    <br>
+<p>Unit. Example: <code>liter</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>consumption_file</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="consumption_file"                data-endpoint="POSTapi-daily-progress-reports"
+               value=""
+               data-component="body">
+    <br>
+<p>optional Consumption document (max 2MB, allowed: pdf,jpg,jpeg,png). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEEE8.tmp</code></p>
+        </div>
+        </form>
 
-                    <h2 id="daily-progress-report-GETapi-daily-progress-reports--id-">Show a single report.</h2>
+                    <h2 id="daily-progress-report-GETapi-daily-progress-reports--id-">Show a single daily progress report.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -6748,7 +8570,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/daily-progress-reports/architecto" \
+    --get "http://sitepilot/api/daily-progress-reports/1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6756,7 +8578,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://sitepilot/api/daily-progress-reports/architecto"
+    "http://sitepilot/api/daily-progress-reports/1"
 );
 
 const headers = {
@@ -6775,19 +8597,20 @@ fetch(url, {
 
 <span id="example-responses-GETapi-daily-progress-reports--id-">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not found):</p>
+        </blockquote>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/daily-progress-reports/architecto could not be found.&quot;
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Report not found.&quot;
 }</code>
  </pre>
     </span>
@@ -6877,19 +8700,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
-                <input type="text" style="display: none"
-                              name="id"                data-endpoint="GETapi-daily-progress-reports--id-"
-               value="architecto"
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="GETapi-daily-progress-reports--id-"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the daily progress report. Example: <code>architecto</code></p>
+<p>Daily Progress Report ID. Example: <code>1</code></p>
             </div>
                     </form>
 
-                    <h2 id="daily-progress-report-PUTapi-daily-progress-reports--id-">Update a report.</h2>
+                    <h2 id="daily-progress-report-PUTapi-daily-progress-reports--id-">Update a daily progress report.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -6903,33 +8726,88 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://sitepilot/api/daily-progress-reports/architecto" \
+    "http://sitepilot/api/daily-progress-reports/1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "date=2024-01-15"\
+    --form "machinery_id=10"\
+    --form "machine_start_reading=100"\
+    --form "machine_end_reading=150"\
+    --form "number_of_operators=2"\
+    --form "work_details=Excavation work"\
+    --form "diesel_consumption=50.5"\
+    --form "maintenance_notes=architecto"\
+    --form "site_id=5"\
+    --form "workspace_id=1"\
+    --form "activity_completed_id=10"\
+    --form "consumption_type=fuel"\
+    --form "items=architecto"\
+    --form "items[0][material_id]=10"\
+    --form "items[0][quantity]=100.5"\
+    --form "items[0][unit]=kg"\
+    --form "items[0][remarks]=architecto"\
+    --form "consumption_file=@C:\Users\ninad\AppData\Local\Temp\phpEF08.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://sitepilot/api/daily-progress-reports/architecto"
+    "http://sitepilot/api/daily-progress-reports/1"
 );
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
     "Accept": "application/json",
 };
 
+const body = new FormData();
+body.append('date', '2024-01-15');
+body.append('machinery_id', '10');
+body.append('machine_start_reading', '100');
+body.append('machine_end_reading', '150');
+body.append('number_of_operators', '2');
+body.append('work_details', 'Excavation work');
+body.append('diesel_consumption', '50.5');
+body.append('maintenance_notes', 'architecto');
+body.append('site_id', '5');
+body.append('workspace_id', '1');
+body.append('activity_completed_id', '10');
+body.append('consumption_type', 'fuel');
+body.append('items', 'architecto');
+body.append('items[0][material_id]', '10');
+body.append('items[0][quantity]', '100.5');
+body.append('items[0][unit]', 'kg');
+body.append('items[0][remarks]', 'architecto');
+body.append('consumption_file', document.querySelector('input[name="consumption_file"]').files[0]);
 
 fetch(url, {
     method: "PUT",
     headers,
+    body,
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-PUTapi-daily-progress-reports--id-">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;DPR updated&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Unauthorized action.&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-PUTapi-daily-progress-reports--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-PUTapi-daily-progress-reports--id-"></span>:
@@ -6948,7 +8826,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <form id="form-PUTapi-daily-progress-reports--id-" data-method="PUT"
       data-path="api/daily-progress-reports/{id}"
       data-authed="1"
-      data-hasfiles="0"
+      data-hasfiles="1"
       data-isarraybody="0"
       autocomplete="off"
       onsubmit="event.preventDefault(); executeTryOut('PUTapi-daily-progress-reports--id-', this);">
@@ -7000,10 +8878,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="PUTapi-daily-progress-reports--id-"
-               value="application/json"
+               value="multipart/form-data"
                data-component="header">
     <br>
-<p>Example: <code>application/json</code></p>
+<p>Example: <code>multipart/form-data</code></p>
             </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
@@ -7020,19 +8898,236 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>Daily Progress Report ID. Example: <code>1</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>date</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="date"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="2024-01-15"
+               data-component="body">
+    <br>
+<p>Report date. Example: <code>2024-01-15</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>machinery_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="machinery_id"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="10"
+               data-component="body">
+    <br>
+<p>Machinery ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>machine_start_reading</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="machine_start_reading"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="100"
+               data-component="body">
+    <br>
+<p>optional Start meter reading. Example: <code>100</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>machine_end_reading</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="machine_end_reading"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="150"
+               data-component="body">
+    <br>
+<p>optional End meter reading. Example: <code>150</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>number_of_operators</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="number_of_operators"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="2"
+               data-component="body">
+    <br>
+<p>optional Number of operators. Example: <code>2</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>work_details</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="work_details"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="Excavation work"
+               data-component="body">
+    <br>
+<p>optional Work details description. Example: <code>Excavation work</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>diesel_consumption</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="diesel_consumption"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="50.5"
+               data-component="body">
+    <br>
+<p>optional Diesel consumption. Example: <code>50.5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>maintenance_notes</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="maintenance_notes"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>optional Maintenance notes. Example: <code>architecto</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="5"
+               data-component="body">
+    <br>
+<p>Site ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>activity_completed_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="activity_completed_id"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="10"
+               data-component="body">
+    <br>
+<p>Activity completed ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>consumption_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="consumption_type"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="fuel"
+               data-component="body">
+    <br>
+<p>optional Consumption type (fuel or all). Example: <code>fuel</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items</code></b>&nbsp;&nbsp;
+<small>optional</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>Array of consumption items (use indexed notation). Example: <code>architecto</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][material_id]"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="10"
+               data-component="body">
+    <br>
+<p>Material ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][quantity]"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="100.5"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>100.5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][unit]</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="id"                data-endpoint="PUTapi-daily-progress-reports--id-"
-               value="architecto"
-               data-component="url">
+                              name="items[0][unit]"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="kg"
+               data-component="body">
     <br>
-<p>The ID of the daily progress report. Example: <code>architecto</code></p>
-            </div>
-                    </form>
+<p>Unit. Example: <code>kg</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][remarks]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][remarks]"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value="architecto"
+               data-component="body">
+    <br>
+<p>optional Remarks. Example: <code>architecto</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>consumption_file</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="consumption_file"                data-endpoint="PUTapi-daily-progress-reports--id-"
+               value=""
+               data-component="body">
+    <br>
+<p>optional Consumption document (max 2MB, allowed: pdf,jpg,jpeg,png). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEF08.tmp</code></p>
+        </div>
+        </form>
 
-                    <h2 id="daily-progress-report-DELETEapi-daily-progress-reports--id-">Delete a report.</h2>
+                    <h2 id="daily-progress-report-DELETEapi-daily-progress-reports--id-">Delete a daily progress report.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -7046,7 +9141,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://sitepilot/api/daily-progress-reports/architecto" \
+    "http://sitepilot/api/daily-progress-reports/1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7054,7 +9149,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://sitepilot/api/daily-progress-reports/architecto"
+    "http://sitepilot/api/daily-progress-reports/1"
 );
 
 const headers = {
@@ -7072,7 +9167,27 @@ fetch(url, {
 </span>
 
 <span id="example-responses-DELETEapi-daily-progress-reports--id-">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: true,
+    &quot;message&quot;: &quot;DPR deleted successfully.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Unauthorized action.&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-DELETEapi-daily-progress-reports--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-DELETEapi-daily-progress-reports--id-"></span>:
@@ -7159,15 +9274,15 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
-                <input type="text" style="display: none"
-                              name="id"                data-endpoint="DELETEapi-daily-progress-reports--id-"
-               value="architecto"
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="DELETEapi-daily-progress-reports--id-"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the daily progress report. Example: <code>architecto</code></p>
+<p>Daily Progress Report ID. Example: <code>1</code></p>
             </div>
                     </form>
 
@@ -7185,7 +9300,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://sitepilot/api/daily-progress-reports/create-data" \
+    "http://sitepilot/api/daily-progress-reports/create-data?site_id=5&amp;created_by=1&amp;workspace_id=1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7195,6 +9310,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/daily-progress-reports/create-data"
 );
+
+const params = {
+    "site_id": "5",
+    "created_by": "1",
+    "workspace_id": "1",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -7211,7 +9334,29 @@ fetch(url, {
 </span>
 
 <span id="example-responses-POSTapi-daily-progress-reports-create-data">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;Data loaded successfully.&quot;,
+  &quot;machinery&quot;: [...],
+  &quot;materials&quot;: [...]
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Machinery/Materials not found.&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-daily-progress-reports-create-data" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-daily-progress-reports-create-data"></span>:
@@ -7295,7 +9440,44 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-daily-progress-reports-create-data"
+               value="5"
+               data-component="query">
+    <br>
+<p>Site ID to get machinery/materials. Example: <code>5</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="created_by"                data-endpoint="POSTapi-daily-progress-reports-create-data"
+               value="1"
+               data-component="query">
+    <br>
+<p>Creator user ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-daily-progress-reports-create-data"
+               value="1"
+               data-component="query">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+            </div>
+                </form>
 
                 <h1 id="device-token">Device Token</h1>
 
@@ -7463,7 +9645,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"token\": \"architecto\",
-    \"platform\": \"android\",
+    \"platform\": \"ios\",
     \"device_name\": \"architecto\",
     \"app_version\": \"architecto\"
 }"
@@ -7483,7 +9665,7 @@ const headers = {
 
 let body = {
     "token": "architecto",
-    "platform": "android",
+    "platform": "ios",
     "device_name": "architecto",
     "app_version": "architecto"
 };
@@ -7601,10 +9783,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="platform"                data-endpoint="POSTapi-device-token"
-               value="android"
+               value="ios"
                data-component="body">
     <br>
-<p>Example: <code>android</code></p>
+<p>Example: <code>ios</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>android</code></li> <li><code>ios</code></li> <li><code>web</code></li></ul>
         </div>
@@ -7785,13 +9967,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
     <p>Endpoints for employee management including CRUD operations and documents</p>
 
-                                <h2 id="employees-GETapi-employee">GET api/employee</h2>
+                                <h2 id="employees-GETapi-employee">List Employees</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Retrieve a list of all employees with optional filtering by workspace and site. Non-admin users can only see their own records. Returns employees with related branch, department, designation, documents, and project information.</p>
 
 <span id="example-requests-GETapi-employee">
 <blockquote>Example request:</blockquote>
@@ -7799,7 +9981,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/employee" \
+    --get "http://sitepilot/api/employee?workspace_id=1&amp;site_id=5" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7809,6 +9991,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/employee"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -7826,19 +10015,30 @@ fetch(url, {
 
 <span id="example-responses-GETapi-employee">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;:&quot;success&quot;,&quot;data&quot;:[{&quot;id&quot;:1,&quot;name&quot;:&quot;John Doe&quot;,&quot;user_name&quot;:&quot;John Doe&quot;,&quot;user_email&quot;:&quot;john@example.com&quot;,&quot;user_type&quot;:&quot;employee&quot;,&quot;role_name&quot;:&quot;Employee&quot;,&quot;role_id&quot;:3,&quot;branch&quot;:{...},&quot;department&quot;:{...},&quot;designation&quot;:{...},&quot;documents&quot;:[...],&quot;projects&quot;:[...]}]}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/employee could not be found.&quot;
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error message&quot;
 }</code>
  </pre>
     </span>
@@ -7925,15 +10125,40 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="GETapi-employee"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Filter by workspace ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="GETapi-employee"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Filter by site/project ID. Example: <code>5</code></p>
+            </div>
+                </form>
 
-                    <h2 id="employees-POSTapi-employee">POST api/employee</h2>
+                    <h2 id="employees-POSTapi-employee">Create Employee</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Create a new employee with user account, profile information, bank details, emergency contacts, documents, and project assignments. Supports both creating new users and linking to existing users.</p>
 
 <span id="example-requests-POSTapi-employee">
 <blockquote>Example request:</blockquote>
@@ -7943,8 +10168,35 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-bash">curl --request POST \
     "http://sitepilot/api/employee" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "name=John Doe"\
+    --form "email=john@example.com"\
+    --form "password=password123"\
+    --form "phone=+1234567890"\
+    --form "dob=1990-01-15"\
+    --form "gender=male"\
+    --form "address=123 Main St"\
+    --form "branch_id=1"\
+    --form "department_id=2"\
+    --form "designation_id=3"\
+    --form "role=4"\
+    --form "company_doj=2024-01-01"\
+    --form "workspace_id=1"\
+    --form "site_id=5"\
+    --form "created_by=1"\
+    --form "project_id[]=5"\
+    --form "location_type=onsite"\
+    --form "account_holder_name=John Doe"\
+    --form "account_number=1234567890"\
+    --form "bank_name=ABC Bank"\
+    --form "organisation_switch=yes"\
+    --form "provident_fund_no=PF123456"\
+    --form "emergency_contact_no=+9876543210"\
+    --form "emergency_address=456 Emergency St"\
+    --form "document="\
+    --form "user_id=10"\
+    --form "avatar=@C:\Users\ninad\AppData\Local\Temp\phpEDCA.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -7954,20 +10206,83 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
     "Accept": "application/json",
 };
 
+const body = new FormData();
+body.append('name', 'John Doe');
+body.append('email', 'john@example.com');
+body.append('password', 'password123');
+body.append('phone', '+1234567890');
+body.append('dob', '1990-01-15');
+body.append('gender', 'male');
+body.append('address', '123 Main St');
+body.append('branch_id', '1');
+body.append('department_id', '2');
+body.append('designation_id', '3');
+body.append('role', '4');
+body.append('company_doj', '2024-01-01');
+body.append('workspace_id', '1');
+body.append('site_id', '5');
+body.append('created_by', '1');
+body.append('project_id[]', '5');
+body.append('location_type', 'onsite');
+body.append('account_holder_name', 'John Doe');
+body.append('account_number', '1234567890');
+body.append('bank_name', 'ABC Bank');
+body.append('organisation_switch', 'yes');
+body.append('provident_fund_no', 'PF123456');
+body.append('emergency_contact_no', '+9876543210');
+body.append('emergency_address', '456 Emergency St');
+body.append('document', '');
+body.append('user_id', '10');
+body.append('avatar', document.querySelector('input[name="avatar"]').files[0]);
 
 fetch(url, {
     method: "POST",
     headers,
+    body,
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-POSTapi-employee">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;:&quot;success&quot;,&quot;message&quot;:&quot;The employee has been created successfully.&quot;,&quot;data&quot;:{...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;:&quot;error&quot;,&quot;message&quot;:&quot;Validation error message&quot;,&quot;errors&quot;:{...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error message&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-employee" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-employee"></span>:
@@ -7986,7 +10301,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <form id="form-POSTapi-employee" data-method="POST"
       data-path="api/employee"
       data-authed="1"
-      data-hasfiles="0"
+      data-hasfiles="1"
       data-isarraybody="0"
       autocomplete="off"
       onsubmit="event.preventDefault(); executeTryOut('POSTapi-employee', this);">
@@ -8034,10 +10349,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-employee"
-               value="application/json"
+               value="multipart/form-data"
                data-component="header">
     <br>
-<p>Example: <code>application/json</code></p>
+<p>Example: <code>multipart/form-data</code></p>
             </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
@@ -8051,15 +10366,354 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="name"                data-endpoint="POSTapi-employee"
+               value="John Doe"
+               data-component="body">
+    <br>
+<p>Employee full name. Example: <code>John Doe</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="email"                data-endpoint="POSTapi-employee"
+               value="john@example.com"
+               data-component="body">
+    <br>
+<p>Employee email (must be unique if creating new user). Example: <code>john@example.com</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="password"                data-endpoint="POSTapi-employee"
+               value="password123"
+               data-component="body">
+    <br>
+<p>User password (required if creating new user). Example: <code>password123</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="phone"                data-endpoint="POSTapi-employee"
+               value="+1234567890"
+               data-component="body">
+    <br>
+<p>Phone number (min 9 chars). Example: <code>+1234567890</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>dob</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="dob"                data-endpoint="POSTapi-employee"
+               value="1990-01-15"
+               data-component="body">
+    <br>
+<p>Date of birth (must be before today). Example: <code>1990-01-15</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>gender</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="gender"                data-endpoint="POSTapi-employee"
+               value="male"
+               data-component="body">
+    <br>
+<p>Gender. Example: <code>male</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>address</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="address"                data-endpoint="POSTapi-employee"
+               value="123 Main St"
+               data-component="body">
+    <br>
+<p>optional Residential address. Example: <code>123 Main St</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>branch_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="branch_id"                data-endpoint="POSTapi-employee"
+               value="1"
+               data-component="body">
+    <br>
+<p>Branch ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>department_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="department_id"                data-endpoint="POSTapi-employee"
+               value="2"
+               data-component="body">
+    <br>
+<p>Department ID. Example: <code>2</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>designation_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="designation_id"                data-endpoint="POSTapi-employee"
+               value="3"
+               data-component="body">
+    <br>
+<p>Designation ID. Example: <code>3</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>role</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="role"                data-endpoint="POSTapi-employee"
+               value="4"
+               data-component="body">
+    <br>
+<p>Role ID. Example: <code>4</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>company_doj</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="company_doj"                data-endpoint="POSTapi-employee"
+               value="2024-01-01"
+               data-component="body">
+    <br>
+<p>Date of joining. Example: <code>2024-01-01</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-employee"
+               value="1"
+               data-component="body">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-employee"
+               value="5"
+               data-component="body">
+    <br>
+<p>Site/Project ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="created_by"                data-endpoint="POSTapi-employee"
+               value="1"
+               data-component="body">
+    <br>
+<p>Creator user ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>project_id</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="project_id[0]"                data-endpoint="POSTapi-employee"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="project_id[1]"                data-endpoint="POSTapi-employee"
+               data-component="body">
+    <br>
+<p>Array of project IDs to assign.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>location_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="location_type"                data-endpoint="POSTapi-employee"
+               value="onsite"
+               data-component="body">
+    <br>
+<p>optional Location type. Example: <code>onsite</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>account_holder_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="account_holder_name"                data-endpoint="POSTapi-employee"
+               value="John Doe"
+               data-component="body">
+    <br>
+<p>optional Bank account holder name. Example: <code>John Doe</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>account_number</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="account_number"                data-endpoint="POSTapi-employee"
+               value="1234567890"
+               data-component="body">
+    <br>
+<p>optional Bank account number. Example: <code>1234567890</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>bank_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="bank_name"                data-endpoint="POSTapi-employee"
+               value="ABC Bank"
+               data-component="body">
+    <br>
+<p>optional Bank name. Example: <code>ABC Bank</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>organisation_switch</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="organisation_switch"                data-endpoint="POSTapi-employee"
+               value="yes"
+               data-component="body">
+    <br>
+<p>optional Organisation switch status. Example: <code>yes</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>provident_fund_no</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="provident_fund_no"                data-endpoint="POSTapi-employee"
+               value="PF123456"
+               data-component="body">
+    <br>
+<p>optional Provident fund number. Example: <code>PF123456</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>emergency_contact_no</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="emergency_contact_no"                data-endpoint="POSTapi-employee"
+               value="+9876543210"
+               data-component="body">
+    <br>
+<p>optional Emergency contact number. Example: <code>+9876543210</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>emergency_address</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="emergency_address"                data-endpoint="POSTapi-employee"
+               value="456 Emergency St"
+               data-component="body">
+    <br>
+<p>optional Emergency contact address. Example: <code>456 Emergency St</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>avatar</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="avatar"                data-endpoint="POSTapi-employee"
+               value=""
+               data-component="body">
+    <br>
+<p>optional Profile image (max 2MB, allowed: jpeg,png,jpg,gif). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEDCA.tmp</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>document</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+<br>
+<p>Array of document files keyed by document type ID.</p>
+            </summary>
+                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>*</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="document.*"                data-endpoint="POSTapi-employee"
+               value=""
+               data-component="body">
+    <br>
+<p>Document file (max 5MB, allowed: pdf,jpg,jpeg,png). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEDCB.tmp</code></p>
+                    </div>
+                                    </details>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="user_id"                data-endpoint="POSTapi-employee"
+               value="10"
+               data-component="body">
+    <br>
+<p>optional Existing user ID to link (if not creating new user). Example: <code>10</code></p>
+        </div>
+        </form>
 
-                    <h2 id="employees-GETapi-employee--id-">GET api/employee/{id}</h2>
+                    <h2 id="employees-GETapi-employee--id-">Show Employee Details</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Retrieve detailed information about a specific employee including user details, branch, department, designation, documents, and assigned projects.</p>
 
 <span id="example-requests-GETapi-employee--id-">
 <blockquote>Example request:</blockquote>
@@ -8067,7 +10721,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/employee/architecto" \
+    --get "http://sitepilot/api/employee/10?workspace_id=1&amp;site_id=5&amp;created_by=1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -8075,8 +10729,16 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://sitepilot/api/employee/architecto"
+    "http://sitepilot/api/employee/10"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+    "created_by": "1",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -8094,19 +10756,40 @@ fetch(url, {
 
 <span id="example-responses-GETapi-employee--id-">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;:&quot;success&quot;,&quot;employee&quot;:{...},&quot;assigned_projects&quot;:[...]}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/employee/architecto could not be found.&quot;
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Employee not found.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error message&quot;
 }</code>
  </pre>
     </span>
@@ -8201,20 +10884,57 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="GETapi-employee--id-"
-               value="architecto"
+               value="10"
                data-component="url">
     <br>
-<p>The ID of the employee. Example: <code>architecto</code></p>
+<p>The user ID. Example: <code>10</code></p>
             </div>
-                    </form>
+                        <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="GETapi-employee--id-"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Filter by workspace ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="GETapi-employee--id-"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Filter by site/project ID. Example: <code>5</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="created_by"                data-endpoint="GETapi-employee--id-"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Creator user ID. Example: <code>1</code></p>
+            </div>
+                </form>
 
-                    <h2 id="employees-PUTapi-employee--id-">PUT api/employee/{id}</h2>
+                    <h2 id="employees-PUTapi-employee--id-">Update Employee</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Update an existing employee's details including profile information, bank details, emergency contacts, documents, role, and project assignments. Also handles avatar and document file uploads.</p>
 
 <span id="example-requests-PUTapi-employee--id-">
 <blockquote>Example request:</blockquote>
@@ -8222,33 +10942,105 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://sitepilot/api/employee/architecto" \
+    "http://sitepilot/api/employee/10" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "user_id=10"\
+    --form "name=John Doe"\
+    --form "dob=1990-01-15"\
+    --form "gender=male"\
+    --form "phone=+1234567890"\
+    --form "address=123 Main St"\
+    --form "organisation_switch=yes"\
+    --form "provident_fund_no=PF123456"\
+    --form "role=4"\
+    --form "company_doj=2024-01-01"\
+    --form "workspace_id=1"\
+    --form "site_id=5"\
+    --form "created_by=1"\
+    --form "project_id[]=5"\
+    --form "document="\
+    --form "emergency_contact_no=+9876543210"\
+    --form "emergency_address=456 Emergency St"\
+    --form "avatar=@C:\Users\ninad\AppData\Local\Temp\phpEDEC.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://sitepilot/api/employee/architecto"
+    "http://sitepilot/api/employee/10"
 );
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
     "Accept": "application/json",
 };
 
+const body = new FormData();
+body.append('user_id', '10');
+body.append('name', 'John Doe');
+body.append('dob', '1990-01-15');
+body.append('gender', 'male');
+body.append('phone', '+1234567890');
+body.append('address', '123 Main St');
+body.append('organisation_switch', 'yes');
+body.append('provident_fund_no', 'PF123456');
+body.append('role', '4');
+body.append('company_doj', '2024-01-01');
+body.append('workspace_id', '1');
+body.append('site_id', '5');
+body.append('created_by', '1');
+body.append('project_id[]', '5');
+body.append('document', '');
+body.append('emergency_contact_no', '+9876543210');
+body.append('emergency_address', '456 Emergency St');
+body.append('avatar', document.querySelector('input[name="avatar"]').files[0]);
 
 fetch(url, {
     method: "PUT",
     headers,
+    body,
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-PUTapi-employee--id-">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;:&quot;success&quot;,&quot;message&quot;:&quot;The employee details are updated successfully.&quot;,&quot;data&quot;:{...},&quot;user_type&quot;:&quot;employee&quot;,&quot;role_name&quot;:&quot;Employee&quot;,&quot;role_id&quot;:3}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;:&quot;error&quot;,&quot;message&quot;:&quot;Validation error message&quot;,&quot;errors&quot;:{...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error message&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-PUTapi-employee--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-PUTapi-employee--id-"></span>:
@@ -8267,7 +11059,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <form id="form-PUTapi-employee--id-" data-method="PUT"
       data-path="api/employee/{id}"
       data-authed="1"
-      data-hasfiles="0"
+      data-hasfiles="1"
       data-isarraybody="0"
       autocomplete="off"
       onsubmit="event.preventDefault(); executeTryOut('PUTapi-employee--id-', this);">
@@ -8319,10 +11111,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="PUTapi-employee--id-"
-               value="application/json"
+               value="multipart/form-data"
                data-component="header">
     <br>
-<p>Example: <code>application/json</code></p>
+<p>Example: <code>multipart/form-data</code></p>
             </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
@@ -8344,20 +11136,251 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="PUTapi-employee--id-"
-               value="architecto"
+               value="10"
                data-component="url">
     <br>
-<p>The ID of the employee. Example: <code>architecto</code></p>
+<p>The employee ID. Example: <code>10</code></p>
             </div>
-                    </form>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="user_id"                data-endpoint="PUTapi-employee--id-"
+               value="10"
+               data-component="body">
+    <br>
+<p>User ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="name"                data-endpoint="PUTapi-employee--id-"
+               value="John Doe"
+               data-component="body">
+    <br>
+<p>Employee full name. Example: <code>John Doe</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>dob</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="dob"                data-endpoint="PUTapi-employee--id-"
+               value="1990-01-15"
+               data-component="body">
+    <br>
+<p>Date of birth. Example: <code>1990-01-15</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>gender</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="gender"                data-endpoint="PUTapi-employee--id-"
+               value="male"
+               data-component="body">
+    <br>
+<p>Gender. Example: <code>male</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="phone"                data-endpoint="PUTapi-employee--id-"
+               value="+1234567890"
+               data-component="body">
+    <br>
+<p>Phone number (min 9 chars). Example: <code>+1234567890</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>address</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="address"                data-endpoint="PUTapi-employee--id-"
+               value="123 Main St"
+               data-component="body">
+    <br>
+<p>Residential address. Example: <code>123 Main St</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>organisation_switch</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="organisation_switch"                data-endpoint="PUTapi-employee--id-"
+               value="yes"
+               data-component="body">
+    <br>
+<p>optional Organisation switch status. Example: <code>yes</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>provident_fund_no</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="provident_fund_no"                data-endpoint="PUTapi-employee--id-"
+               value="PF123456"
+               data-component="body">
+    <br>
+<p>optional Provident fund number. Example: <code>PF123456</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>role</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="role"                data-endpoint="PUTapi-employee--id-"
+               value="4"
+               data-component="body">
+    <br>
+<p>Role ID. Example: <code>4</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>company_doj</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="company_doj"                data-endpoint="PUTapi-employee--id-"
+               value="2024-01-01"
+               data-component="body">
+    <br>
+<p>Date of joining. Example: <code>2024-01-01</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="PUTapi-employee--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="PUTapi-employee--id-"
+               value="5"
+               data-component="body">
+    <br>
+<p>Site/Project ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="created_by"                data-endpoint="PUTapi-employee--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>Creator user ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>project_id</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="project_id[0]"                data-endpoint="PUTapi-employee--id-"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="project_id[1]"                data-endpoint="PUTapi-employee--id-"
+               data-component="body">
+    <br>
+<p>Array of project IDs to assign.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>avatar</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="avatar"                data-endpoint="PUTapi-employee--id-"
+               value=""
+               data-component="body">
+    <br>
+<p>optional Profile image (max 2MB, allowed: jpeg,png,jpg,gif). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEDEC.tmp</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+        <details>
+            <summary style="padding-bottom: 10px;">
+                <b style="line-height: 2;"><code>document</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+<br>
+<p>optional Array of document files keyed by document type ID.</p>
+            </summary>
+                                                <div style="margin-left: 14px; clear: unset;">
+                        <b style="line-height: 2;"><code>*</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="document.*"                data-endpoint="PUTapi-employee--id-"
+               value=""
+               data-component="body">
+    <br>
+<p>optional Document file (max 5MB, allowed: pdf,jpg,jpeg,png). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEDED.tmp</code></p>
+                    </div>
+                                    </details>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>emergency_contact_no</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="emergency_contact_no"                data-endpoint="PUTapi-employee--id-"
+               value="+9876543210"
+               data-component="body">
+    <br>
+<p>optional Emergency contact number. Example: <code>+9876543210</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>emergency_address</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="emergency_address"                data-endpoint="PUTapi-employee--id-"
+               value="456 Emergency St"
+               data-component="body">
+    <br>
+<p>optional Emergency contact address. Example: <code>456 Emergency St</code></p>
+        </div>
+        </form>
 
-                    <h2 id="employees-DELETEapi-employee--id-">DELETE api/employee/{id}</h2>
+                    <h2 id="employees-DELETEapi-employee--id-">Delete Employee</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Delete an employee and all associated data including documents, payslips, and custom fields. Validates that no attendance records exist before deletion. The related user account is also deleted unless it's a super admin or company type.</p>
 
 <span id="example-requests-DELETEapi-employee--id-">
 <blockquote>Example request:</blockquote>
@@ -8365,7 +11388,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://sitepilot/api/employee/architecto" \
+    "http://sitepilot/api/employee/10" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -8373,7 +11396,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://sitepilot/api/employee/architecto"
+    "http://sitepilot/api/employee/10"
 );
 
 const headers = {
@@ -8391,7 +11414,58 @@ fetch(url, {
 </span>
 
 <span id="example-responses-DELETEapi-employee--id-">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;The employee has been deleted successfully.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (400):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Cannot delete employee. Attendance records exist for this employee.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Permission denied.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Employee already deleted or not found.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Something went wrong while deleting employee.&quot;,
+    &quot;debug&quot;: &quot;Error message&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-DELETEapi-employee--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-DELETEapi-employee--id-"></span>:
@@ -8483,20 +11557,20 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="id"                data-endpoint="DELETEapi-employee--id-"
-               value="architecto"
+               value="10"
                data-component="url">
     <br>
-<p>The ID of the employee. Example: <code>architecto</code></p>
+<p>The user ID. Example: <code>10</code></p>
             </div>
                     </form>
 
-                    <h2 id="employees-POSTapi-employee-create-data">POST api/employee/create-data</h2>
+                    <h2 id="employees-POSTapi-employee-create-data">Get Employee Creation Form Data</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Retrieve metadata required for the employee creation form including roles, document types, branches, departments, designations, employees, location types, and assignable projects.</p>
 
 <span id="example-requests-POSTapi-employee-create-data">
 <blockquote>Example request:</blockquote>
@@ -8504,7 +11578,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://sitepilot/api/employee/create-data" \
+    "http://sitepilot/api/employee/create-data?workspace_id=1&amp;site_id=5&amp;created_by=1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -8514,6 +11588,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/employee/create-data"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+    "created_by": "1",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -8530,7 +11612,24 @@ fetch(url, {
 </span>
 
 <span id="example-responses-POSTapi-employee-create-data">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;:&quot;success&quot;,&quot;employees&quot;:[...],&quot;employeesId&quot;:&quot;EMP001&quot;,&quot;departments&quot;:[...],&quot;designations&quot;:[...],&quot;documents&quot;:[...],&quot;branches&quot;:[...],&quot;role&quot;:[...],&quot;customFields&quot;:null,&quot;location_type&quot;:[...],&quot;assign_project&quot;:[...]}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;error&quot;,
+    &quot;message&quot;: &quot;Error message&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-employee-create-data" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-employee-create-data"></span>:
@@ -8614,15 +11713,52 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-employee-create-data"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Workspace ID to filter employees. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-employee-create-data"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Site ID to filter employees. Example: <code>5</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="created_by"                data-endpoint="POSTapi-employee-create-data"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Creator user ID to filter employees. Example: <code>1</code></p>
+            </div>
+                </form>
 
-                    <h2 id="employees-POSTapi-getdepartment">POST api/getdepartment</h2>
+                    <h2 id="employees-POSTapi-getdepartment">Get Departments</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Retrieve a list of departments filtered by branch ID. Returns departments as a key-value array with ID as key and name as value.</p>
 
 <span id="example-requests-POSTapi-getdepartment">
 <blockquote>Example request:</blockquote>
@@ -8630,7 +11766,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://sitepilot/api/getdepartment" \
+    "http://sitepilot/api/getdepartment?workspace_id=1&amp;branch_id=1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -8640,6 +11776,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/getdepartment"
 );
+
+const params = {
+    "workspace_id": "1",
+    "branch_id": "1",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -8656,7 +11799,18 @@ fetch(url, {
 </span>
 
 <span id="example-responses-POSTapi-getdepartment">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;1&quot;: &quot;Engineering&quot;,
+    &quot;2&quot;: &quot;Marketing&quot;,
+    &quot;3&quot;: &quot;HR&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-getdepartment" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-getdepartment"></span>:
@@ -8740,15 +11894,40 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-getdepartment"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Workspace ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>branch_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="branch_id"                data-endpoint="POSTapi-getdepartment"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Filter by branch ID. Example: <code>1</code></p>
+            </div>
+                </form>
 
-                    <h2 id="employees-POSTapi-getdDesignation">POST api/getdDesignation</h2>
+                    <h2 id="employees-POSTapi-getdDesignation">Get Designations</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Retrieve a list of designations filtered by department ID. Returns designations as a key-value array with ID as key and name as value.</p>
 
 <span id="example-requests-POSTapi-getdDesignation">
 <blockquote>Example request:</blockquote>
@@ -8756,7 +11935,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://sitepilot/api/getdDesignation" \
+    "http://sitepilot/api/getdDesignation?workspace_id=1&amp;department_id=1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -8766,6 +11945,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/getdDesignation"
 );
+
+const params = {
+    "workspace_id": "1",
+    "department_id": "1",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -8782,7 +11968,18 @@ fetch(url, {
 </span>
 
 <span id="example-responses-POSTapi-getdDesignation">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;1&quot;: &quot;Senior Engineer&quot;,
+    &quot;2&quot;: &quot;Junior Engineer&quot;,
+    &quot;3&quot;: &quot;Manager&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-getdDesignation" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-getdDesignation"></span>:
@@ -8866,7 +12063,32 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-getdDesignation"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Workspace ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>department_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="department_id"                data-endpoint="POSTapi-getdDesignation"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Filter by department ID. Example: <code>1</code></p>
+            </div>
+                </form>
 
                 <h1 id="endpoints">Endpoints</h1>
 
@@ -9320,9 +12542,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"project_id\": 16,
     \"material_id\": 16,
-    \"type\": \"issue\",
-    \"start_date\": \"2026-05-27T20:45:07\",
-    \"end_date\": \"2052-06-19\"
+    \"type\": \"transfer_out\",
+    \"start_date\": \"2026-05-28T14:34:59\",
+    \"end_date\": \"2052-06-20\"
 }"
 </code></pre></div>
 
@@ -9351,9 +12573,9 @@ const headers = {
 let body = {
     "project_id": 16,
     "material_id": 16,
-    "type": "issue",
-    "start_date": "2026-05-27T20:45:07",
-    "end_date": "2052-06-19"
+    "type": "transfer_out",
+    "start_date": "2026-05-28T14:34:59",
+    "end_date": "2052-06-20"
 };
 
 fetch(url, {
@@ -9577,10 +12799,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="type"                data-endpoint="GETapi-stock-ledger"
-               value="issue"
+               value="transfer_out"
                data-component="body">
     <br>
-<p>Example: <code>issue</code></p>
+<p>Example: <code>transfer_out</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>opening</code></li> <li><code>grn</code></li> <li><code>issue</code></li> <li><code>transfer_in</code></li> <li><code>transfer_out</code></li> <li><code>adjustment</code></li></ul>
         </div>
@@ -9591,10 +12813,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="start_date"                data-endpoint="GETapi-stock-ledger"
-               value="2026-05-27T20:45:07"
+               value="2026-05-28T14:34:59"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-05-27T20:45:07</code></p>
+<p>Must be a valid date. Example: <code>2026-05-28T14:34:59</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>end_date</code></b>&nbsp;&nbsp;
@@ -9603,10 +12825,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="end_date"                data-endpoint="GETapi-stock-ledger"
-               value="2052-06-19"
+               value="2052-06-20"
                data-component="body">
     <br>
-<p>Must be a valid date. Must be a date after or equal to <code>start_date</code>. Example: <code>2052-06-19</code></p>
+<p>Must be a valid date. Must be a date after or equal to <code>start_date</code>. Example: <code>2052-06-20</code></p>
         </div>
         </form>
 
@@ -9631,9 +12853,9 @@ Must be one of:
     --data "{
     \"project_id\": 16,
     \"material_id\": 16,
-    \"type\": \"adjustment\",
-    \"start_date\": \"2026-05-27T20:45:07\",
-    \"end_date\": \"2052-06-19\"
+    \"type\": \"transfer_out\",
+    \"start_date\": \"2026-05-28T14:34:59\",
+    \"end_date\": \"2052-06-20\"
 }"
 </code></pre></div>
 
@@ -9662,9 +12884,9 @@ const headers = {
 let body = {
     "project_id": 16,
     "material_id": 16,
-    "type": "adjustment",
-    "start_date": "2026-05-27T20:45:07",
-    "end_date": "2052-06-19"
+    "type": "transfer_out",
+    "start_date": "2026-05-28T14:34:59",
+    "end_date": "2052-06-20"
 };
 
 fetch(url, {
@@ -9881,10 +13103,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="type"                data-endpoint="GETapi-stock-ledger-export"
-               value="adjustment"
+               value="transfer_out"
                data-component="body">
     <br>
-<p>Example: <code>adjustment</code></p>
+<p>Example: <code>transfer_out</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>opening</code></li> <li><code>grn</code></li> <li><code>issue</code></li> <li><code>transfer_in</code></li> <li><code>transfer_out</code></li> <li><code>adjustment</code></li></ul>
         </div>
@@ -9895,10 +13117,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="start_date"                data-endpoint="GETapi-stock-ledger-export"
-               value="2026-05-27T20:45:07"
+               value="2026-05-28T14:34:59"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-05-27T20:45:07</code></p>
+<p>Must be a valid date. Example: <code>2026-05-28T14:34:59</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>end_date</code></b>&nbsp;&nbsp;
@@ -9907,10 +13129,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="end_date"                data-endpoint="GETapi-stock-ledger-export"
-               value="2052-06-19"
+               value="2052-06-20"
                data-component="body">
     <br>
-<p>Must be a valid date. Must be a date after or equal to <code>start_date</code>. Example: <code>2052-06-19</code></p>
+<p>Must be a valid date. Must be a date after or equal to <code>start_date</code>. Example: <code>2052-06-20</code></p>
         </div>
         </form>
 
@@ -10085,7 +13307,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --form "type=architecto"\
     --form "message=architecto"\
-    --form "file=@C:\Users\ninad\AppData\Local\Temp\phpA2D.tmp" </code></pre></div>
+    --form "file=@C:\Users\ninad\AppData\Local\Temp\phpF7BC.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -10232,7 +13454,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Must be a file. Must not be greater than 153600 kilobytes. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpA2D.tmp</code></p>
+<p>Must be a file. Must not be greater than 153600 kilobytes. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpF7BC.tmp</code></p>
         </div>
         </form>
 
@@ -15025,8 +18247,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "supplier_invoice_number=INV-001"\
     --form "supplier_invoice_date=2024-01-15"\
     --form "tax_type=cgst"\
-    --form "delivery_challan_file=@C:\Users\ninad\AppData\Local\Temp\phpF4CE.tmp" \
-    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\phpF4CF.tmp" </code></pre></div>
+    --form "delivery_challan_file=@C:\Users\ninad\AppData\Local\Temp\phpE3B5.tmp" \
+    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\phpE3B6.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -15374,7 +18596,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Delivery challan document (max 10MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpF4CE.tmp</code></p>
+<p>optional Delivery challan document (max 10MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE3B5.tmp</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>reference_file</code></b>&nbsp;&nbsp;
@@ -15386,7 +18608,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Reference document (max 10MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpF4CF.tmp</code></p>
+<p>optional Reference document (max 10MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE3B6.tmp</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>po_id</code></b>&nbsp;&nbsp;
@@ -18868,6 +22090,302 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
+                    <h2 id="hrm-attendance-POSTapi-Hrm-clock-in-out">Clock in or clock out an employee.</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-Hrm-clock-in-out">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://sitepilot/api/Hrm/clock-in-out" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "type=clockout"\
+    --form "latitude=18.5204"\
+    --form "longitude=73.8567"\
+    --form "user_id=5"\
+    --form "employee_id=5"\
+    --form "site_id=1"\
+    --form "workspace_id=1"\
+    --form "attendence_id=10"\
+    --form "clock_out_image=@C:\Users\ninad\AppData\Local\Temp\phpFABB.tmp" \
+    --form "clock_in_image=@C:\Users\ninad\AppData\Local\Temp\phpFABC.tmp" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://sitepilot/api/Hrm/clock-in-out"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('type', 'clockout');
+body.append('latitude', '18.5204');
+body.append('longitude', '73.8567');
+body.append('user_id', '5');
+body.append('employee_id', '5');
+body.append('site_id', '1');
+body.append('workspace_id', '1');
+body.append('attendence_id', '10');
+body.append('clock_out_image', document.querySelector('input[name="clock_out_image"]').files[0]);
+body.append('clock_in_image', document.querySelector('input[name="clock_in_image"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-Hrm-clock-in-out">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;: 1, &quot;message&quot;: &quot;Employee Successfully Clock Out.&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Validation error&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Something went wrong!&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-Hrm-clock-in-out" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-Hrm-clock-in-out"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-Hrm-clock-in-out"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-Hrm-clock-in-out" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-Hrm-clock-in-out">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-Hrm-clock-in-out" data-method="POST"
+      data-path="api/Hrm/clock-in-out"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-Hrm-clock-in-out', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-Hrm-clock-in-out"
+                    onclick="tryItOut('POSTapi-Hrm-clock-in-out');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-Hrm-clock-in-out"
+                    onclick="cancelTryOut('POSTapi-Hrm-clock-in-out');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-Hrm-clock-in-out"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/Hrm/clock-in-out</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-Hrm-clock-in-out"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-Hrm-clock-in-out"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-Hrm-clock-in-out"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="type"                data-endpoint="POSTapi-Hrm-clock-in-out"
+               value="clockout"
+               data-component="body">
+    <br>
+<p>Type of action (clockin/clockout). Example: <code>clockout</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>latitude</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="latitude"                data-endpoint="POSTapi-Hrm-clock-in-out"
+               value="18.5204"
+               data-component="body">
+    <br>
+<p>Latitude coordinate. Example: <code>18.5204</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>longitude</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="longitude"                data-endpoint="POSTapi-Hrm-clock-in-out"
+               value="73.8567"
+               data-component="body">
+    <br>
+<p>Longitude coordinate. Example: <code>73.8567</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="user_id"                data-endpoint="POSTapi-Hrm-clock-in-out"
+               value="5"
+               data-component="body">
+    <br>
+<p>User ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>employee_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="employee_id"                data-endpoint="POSTapi-Hrm-clock-in-out"
+               value="5"
+               data-component="body">
+    <br>
+<p>Employee ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-Hrm-clock-in-out"
+               value="1"
+               data-component="body">
+    <br>
+<p>Site ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-Hrm-clock-in-out"
+               value="1"
+               data-component="body">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>attendence_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="attendence_id"                data-endpoint="POSTapi-Hrm-clock-in-out"
+               value="10"
+               data-component="body">
+    <br>
+<p>Attendance ID (for clockout). Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>clock_out_image</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="clock_out_image"                data-endpoint="POSTapi-Hrm-clock-in-out"
+               value=""
+               data-component="body">
+    <br>
+<p>Image for clock out. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpFABB.tmp</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>clock_in_image</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="clock_in_image"                data-endpoint="POSTapi-Hrm-clock-in-out"
+               value=""
+               data-component="body">
+    <br>
+<p>Image for clock in. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpFABC.tmp</code></p>
+        </div>
+        </form>
+
                     <h2 id="hrm-attendance-POSTapi-Hrm-admin-attendence-insert">Insert attendance record (admin)</h2>
 
 <p>
@@ -19819,6 +23337,302 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>Example: <code>application/json</code></p>
             </div>
                         </form>
+
+                    <h2 id="hrm-attendance-POSTHrm-clock-in-out">Clock in or clock out an employee.</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTHrm-clock-in-out">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://sitepilot/Hrm/clock-in-out" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "type=clockout"\
+    --form "latitude=18.5204"\
+    --form "longitude=73.8567"\
+    --form "user_id=5"\
+    --form "employee_id=5"\
+    --form "site_id=1"\
+    --form "workspace_id=1"\
+    --form "attendence_id=10"\
+    --form "clock_out_image=@C:\Users\ninad\AppData\Local\Temp\phpFE59.tmp" \
+    --form "clock_in_image=@C:\Users\ninad\AppData\Local\Temp\phpFE5A.tmp" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://sitepilot/Hrm/clock-in-out"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('type', 'clockout');
+body.append('latitude', '18.5204');
+body.append('longitude', '73.8567');
+body.append('user_id', '5');
+body.append('employee_id', '5');
+body.append('site_id', '1');
+body.append('workspace_id', '1');
+body.append('attendence_id', '10');
+body.append('clock_out_image', document.querySelector('input[name="clock_out_image"]').files[0]);
+body.append('clock_in_image', document.querySelector('input[name="clock_in_image"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTHrm-clock-in-out">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;status&quot;: 1, &quot;message&quot;: &quot;Employee Successfully Clock Out.&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Validation error&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Something went wrong!&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTHrm-clock-in-out" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTHrm-clock-in-out"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTHrm-clock-in-out"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTHrm-clock-in-out" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTHrm-clock-in-out">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTHrm-clock-in-out" data-method="POST"
+      data-path="Hrm/clock-in-out"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTHrm-clock-in-out', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTHrm-clock-in-out"
+                    onclick="tryItOut('POSTHrm-clock-in-out');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTHrm-clock-in-out"
+                    onclick="cancelTryOut('POSTHrm-clock-in-out');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTHrm-clock-in-out"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>Hrm/clock-in-out</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTHrm-clock-in-out"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTHrm-clock-in-out"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTHrm-clock-in-out"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="type"                data-endpoint="POSTHrm-clock-in-out"
+               value="clockout"
+               data-component="body">
+    <br>
+<p>Type of action (clockin/clockout). Example: <code>clockout</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>latitude</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="latitude"                data-endpoint="POSTHrm-clock-in-out"
+               value="18.5204"
+               data-component="body">
+    <br>
+<p>Latitude coordinate. Example: <code>18.5204</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>longitude</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="longitude"                data-endpoint="POSTHrm-clock-in-out"
+               value="73.8567"
+               data-component="body">
+    <br>
+<p>Longitude coordinate. Example: <code>73.8567</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="user_id"                data-endpoint="POSTHrm-clock-in-out"
+               value="5"
+               data-component="body">
+    <br>
+<p>User ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>employee_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="employee_id"                data-endpoint="POSTHrm-clock-in-out"
+               value="5"
+               data-component="body">
+    <br>
+<p>Employee ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTHrm-clock-in-out"
+               value="1"
+               data-component="body">
+    <br>
+<p>Site ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTHrm-clock-in-out"
+               value="1"
+               data-component="body">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>attendence_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="attendence_id"                data-endpoint="POSTHrm-clock-in-out"
+               value="10"
+               data-component="body">
+    <br>
+<p>Attendance ID (for clockout). Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>clock_out_image</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="clock_out_image"                data-endpoint="POSTHrm-clock-in-out"
+               value=""
+               data-component="body">
+    <br>
+<p>Image for clock out. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpFE59.tmp</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>clock_in_image</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="clock_in_image"                data-endpoint="POSTHrm-clock-in-out"
+               value=""
+               data-component="body">
+    <br>
+<p>Image for clock in. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpFE5A.tmp</code></p>
+        </div>
+        </form>
 
                     <h2 id="hrm-attendance-POSTHrm-admin-attendence-insert">Insert attendance record (admin)</h2>
 
@@ -23574,8 +27388,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"title\": \"architecto\",
-    \"start_date\": \"2026-05-27T20:45:10\",
-    \"end_date\": \"2052-06-19\",
+    \"start_date\": \"2026-05-28T14:35:02\",
+    \"end_date\": \"2052-06-20\",
     \"color\": \"architecto\",
     \"workspace_id\": \"architecto\",
     \"site_id\": \"architecto\",
@@ -23597,8 +27411,8 @@ const headers = {
 
 let body = {
     "title": "architecto",
-    "start_date": "2026-05-27T20:45:10",
-    "end_date": "2052-06-19",
+    "start_date": "2026-05-28T14:35:02",
+    "end_date": "2052-06-20",
     "color": "architecto",
     "workspace_id": "architecto",
     "site_id": "architecto",
@@ -23731,10 +27545,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="start_date"                data-endpoint="PUTapi-Hrm-events--id-"
-               value="2026-05-27T20:45:10"
+               value="2026-05-28T14:35:02"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-05-27T20:45:10</code></p>
+<p>Must be a valid date. Example: <code>2026-05-28T14:35:02</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>end_date</code></b>&nbsp;&nbsp;
@@ -23743,10 +27557,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="end_date"                data-endpoint="PUTapi-Hrm-events--id-"
-               value="2052-06-19"
+               value="2052-06-20"
                data-component="body">
     <br>
-<p>Must be a date after or equal to <code>start_date</code>. Example: <code>2052-06-19</code></p>
+<p>Must be a date after or equal to <code>start_date</code>. Example: <code>2052-06-20</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>color</code></b>&nbsp;&nbsp;
@@ -24558,8 +28372,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"title\": \"architecto\",
-    \"start_date\": \"2026-05-27T20:45:11\",
-    \"end_date\": \"2052-06-19\",
+    \"start_date\": \"2026-05-28T14:35:03\",
+    \"end_date\": \"2052-06-20\",
     \"color\": \"architecto\",
     \"workspace_id\": \"architecto\",
     \"site_id\": \"architecto\",
@@ -24581,8 +28395,8 @@ const headers = {
 
 let body = {
     "title": "architecto",
-    "start_date": "2026-05-27T20:45:11",
-    "end_date": "2052-06-19",
+    "start_date": "2026-05-28T14:35:03",
+    "end_date": "2052-06-20",
     "color": "architecto",
     "workspace_id": "architecto",
     "site_id": "architecto",
@@ -24715,10 +28529,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="start_date"                data-endpoint="PUTHrm-events--id-"
-               value="2026-05-27T20:45:11"
+               value="2026-05-28T14:35:03"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-05-27T20:45:11</code></p>
+<p>Must be a valid date. Example: <code>2026-05-28T14:35:03</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>end_date</code></b>&nbsp;&nbsp;
@@ -24727,10 +28541,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="end_date"                data-endpoint="PUTHrm-events--id-"
-               value="2052-06-19"
+               value="2052-06-20"
                data-component="body">
     <br>
-<p>Must be a date after or equal to <code>start_date</code>. Example: <code>2052-06-19</code></p>
+<p>Must be a date after or equal to <code>start_date</code>. Example: <code>2052-06-20</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>color</code></b>&nbsp;&nbsp;
@@ -32488,7 +36302,7 @@ Optional filters: site_id, status</p>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/indents" \
+    --get "http://sitepilot/api/indents?workspace_id=1&amp;site_id=5&amp;status=open&amp;sort_by=created_at&amp;sort_order=desc" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -32498,6 +36312,16 @@ Optional filters: site_id, status</p>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/indents"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+    "status": "open",
+    "sort_by": "created_at",
+    "sort_order": "desc",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -32515,19 +36339,30 @@ fetch(url, {
 
 <span id="example-responses-GETapi-indents">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;count&quot;: 15, &quot;data&quot;: [{...}]}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/indents could not be found.&quot;
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Failed to retrieve indents&quot;
 }</code>
  </pre>
     </span>
@@ -32614,7 +36449,68 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="GETapi-indents"
+               value="1"
+               data-component="query">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="GETapi-indents"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Site/Project ID filter. Example: <code>5</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="GETapi-indents"
+               value="open"
+               data-component="query">
+    <br>
+<p>optional Filter by indent status (open, partially_closed, closed). Example: <code>open</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>sort_by</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="sort_by"                data-endpoint="GETapi-indents"
+               value="created_at"
+               data-component="query">
+    <br>
+<p>optional Field to sort by (created_at, indent_date, etc.). Example: <code>created_at</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>sort_order</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="sort_order"                data-endpoint="GETapi-indents"
+               value="desc"
+               data-component="query">
+    <br>
+<p>optional Sort order (asc, desc). Example: <code>desc</code></p>
+            </div>
+                </form>
 
                     <h2 id="indents-POSTapi-indents">POST /api/indents</h2>
 
@@ -32644,7 +36540,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "items[]=architecto"\
     --form "created_by=1"\
     --form "workspace_id=1"\
-    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\phpFA82.tmp" </code></pre></div>
+    --form "items[0][material_id]=10"\
+    --form "items[0][quantity]=100"\
+    --form "items[0][unit]=kg"\
+    --form "items[0][price]=500"\
+    --form "items[0][remarks]=High quality required"\
+    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\phpE854.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -32669,6 +36570,11 @@ body.append('remark', 'Urgent requirement');
 body.append('items[]', 'architecto');
 body.append('created_by', '1');
 body.append('workspace_id', '1');
+body.append('items[0][material_id]', '10');
+body.append('items[0][quantity]', '100');
+body.append('items[0][unit]', 'kg');
+body.append('items[0][price]', '500');
+body.append('items[0][remarks]', 'High quality required');
 body.append('reference_file', document.querySelector('input[name="reference_file"]').files[0]);
 
 fetch(url, {
@@ -32681,11 +36587,38 @@ fetch(url, {
 
 <span id="example-responses-POSTapi-indents">
             <blockquote>
-            <p>Example response (200):</p>
+            <p>Example response (201):</p>
         </blockquote>
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;Indent created successfully&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: false, &quot;message&quot;: &quot;Validation failed&quot;, &quot;errors&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Failed to create indent&quot;
+}</code>
  </pre>
     </span>
 <span id="execution-results-POSTapi-indents" hidden>
@@ -32866,7 +36799,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Reference document (max 10MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpFA82.tmp</code></p>
+<p>optional Reference document (max 10MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE854.tmp</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
         <details>
@@ -32938,79 +36871,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Must not be greater than 500 characters. Example: <code>m</code></p>
                     </div>
-                                                                <div style=" margin-left: 14px; clear: unset;">
-        <details>
-            <summary style="padding-bottom: 10px;">
-                <b style="line-height: 2;"><code>*</code></b>&nbsp;&nbsp;
-<small>object</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-<br>
-
-            </summary>
-                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>material_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="items.*.material_id"                data-endpoint="POSTapi-indents"
-               value="10"
-               data-component="body">
-    <br>
-<p>Material ID. Example: <code>10</code></p>
-                    </div>
-                                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>quantity</code></b>&nbsp;&nbsp;
-<small>number</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="items.*.quantity"                data-endpoint="POSTapi-indents"
-               value="100"
-               data-component="body">
-    <br>
-<p>Quantity. Example: <code>100</code></p>
-                    </div>
-                                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>unit</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="items.*.unit"                data-endpoint="POSTapi-indents"
-               value="kg"
-               data-component="body">
-    <br>
-<p>Unit. Example: <code>kg</code></p>
-                    </div>
-                                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>price</code></b>&nbsp;&nbsp;
-<small>number</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="items.*.price"                data-endpoint="POSTapi-indents"
-               value="500"
-               data-component="body">
-    <br>
-<p>Unit price. Example: <code>500</code></p>
-                    </div>
-                                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>remarks</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="items.*.remarks"                data-endpoint="POSTapi-indents"
-               value="High quality required"
-               data-component="body">
-    <br>
-<p>optional Item remarks. Example: <code>High quality required</code></p>
-                    </div>
                                     </details>
-        </div>
-                                        </details>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
@@ -33035,6 +36896,66 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>Workspace ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][material_id]"                data-endpoint="POSTapi-indents"
+               value="10"
+               data-component="body">
+    <br>
+<p>Material ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][quantity]"                data-endpoint="POSTapi-indents"
+               value="100"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>100</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][unit]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][unit]"                data-endpoint="POSTapi-indents"
+               value="kg"
+               data-component="body">
+    <br>
+<p>Unit. Example: <code>kg</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][price]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][price]"                data-endpoint="POSTapi-indents"
+               value="500"
+               data-component="body">
+    <br>
+<p>Unit price. Example: <code>500</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][remarks]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][remarks]"                data-endpoint="POSTapi-indents"
+               value="High quality required"
+               data-component="body">
+    <br>
+<p>optional Item remarks. Example: <code>High quality required</code></p>
         </div>
         </form>
 
@@ -33079,19 +37000,40 @@ fetch(url, {
 
 <span id="example-responses-GETapi-indents--id-">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;Indent retrieved successfully&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/indents/1 could not be found.&quot;
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Indent not found&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Failed to retrieve indent&quot;
 }</code>
  </pre>
     </span>
@@ -33189,7 +37131,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="1"
                data-component="url">
     <br>
-<p>The ID of the indent. Example: <code>1</code></p>
+<p>ID of the indent. Example: <code>1</code></p>
             </div>
                     </form>
 
@@ -33209,8 +37151,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-bash">curl --request PUT \
     "http://sitepilot/api/indents/1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "indent_date=2024-01-15"\
+    --form "supplier_id=1"\
+    --form "site_id=5"\
+    --form "description=Material requisition for foundation"\
+    --form "assign_to=1,2,3"\
+    --form "delivery_date=2024-01-20"\
+    --form "remark=Urgent requirement"\
+    --form "items[]=architecto"\
+    --form "items[0][material_id]=10"\
+    --form "items[0][quantity]=100"\
+    --form "items[0][unit]=kg"\
+    --form "items[0][price]=500"\
+    --form "items[0][remarks]=High quality required"\
+    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\phpE875.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -33220,20 +37176,90 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
     "Accept": "application/json",
 };
 
+const body = new FormData();
+body.append('indent_date', '2024-01-15');
+body.append('supplier_id', '1');
+body.append('site_id', '5');
+body.append('description', 'Material requisition for foundation');
+body.append('assign_to', '1,2,3');
+body.append('delivery_date', '2024-01-20');
+body.append('remark', 'Urgent requirement');
+body.append('items[]', 'architecto');
+body.append('items[0][material_id]', '10');
+body.append('items[0][quantity]', '100');
+body.append('items[0][unit]', 'kg');
+body.append('items[0][price]', '500');
+body.append('items[0][remarks]', 'High quality required');
+body.append('reference_file', document.querySelector('input[name="reference_file"]').files[0]);
 
 fetch(url, {
     method: "PUT",
     headers,
+    body,
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-PUTapi-indents--id-">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;Indent updated successfully&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Indent not found&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (409):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Cannot update or delete this indent because it is already used in a purchase order.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: false, &quot;message&quot;: &quot;Validation failed&quot;, &quot;errors&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Failed to update indent&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-PUTapi-indents--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-PUTapi-indents--id-"></span>:
@@ -33252,7 +37278,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <form id="form-PUTapi-indents--id-" data-method="PUT"
       data-path="api/indents/{id}"
       data-authed="1"
-      data-hasfiles="0"
+      data-hasfiles="1"
       data-isarraybody="0"
       autocomplete="off"
       onsubmit="event.preventDefault(); executeTryOut('PUTapi-indents--id-', this);">
@@ -33304,10 +37330,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="PUTapi-indents--id-"
-               value="application/json"
+               value="multipart/form-data"
                data-component="header">
     <br>
-<p>Example: <code>application/json</code></p>
+<p>Example: <code>multipart/form-data</code></p>
             </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
@@ -33332,9 +37358,180 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="1"
                data-component="url">
     <br>
-<p>The ID of the indent. Example: <code>1</code></p>
+<p>ID of the indent. Example: <code>1</code></p>
             </div>
-                    </form>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>indent_date</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="indent_date"                data-endpoint="PUTapi-indents--id-"
+               value="2024-01-15"
+               data-component="body">
+    <br>
+<p>Indent date. Example: <code>2024-01-15</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>supplier_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="supplier_id"                data-endpoint="PUTapi-indents--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>optional Supplier ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="PUTapi-indents--id-"
+               value="5"
+               data-component="body">
+    <br>
+<p>Site/Project ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="description"                data-endpoint="PUTapi-indents--id-"
+               value="Material requisition for foundation"
+               data-component="body">
+    <br>
+<p>optional Description. Example: <code>Material requisition for foundation</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>assign_to</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="assign_to"                data-endpoint="PUTapi-indents--id-"
+               value="1,2,3"
+               data-component="body">
+    <br>
+<p>Assigned users (comma-separated IDs). Example: <code>1,2,3</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>delivery_date</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="delivery_date"                data-endpoint="PUTapi-indents--id-"
+               value="2024-01-20"
+               data-component="body">
+    <br>
+<p>optional Expected delivery date. Example: <code>2024-01-20</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>remark</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="remark"                data-endpoint="PUTapi-indents--id-"
+               value="Urgent requirement"
+               data-component="body">
+    <br>
+<p>optional Remarks. Example: <code>Urgent requirement</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>reference_file</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="reference_file"                data-endpoint="PUTapi-indents--id-"
+               value=""
+               data-component="body">
+    <br>
+<p>optional Reference document (max 10MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE875.tmp</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0]"                data-endpoint="PUTapi-indents--id-"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="items[1]"                data-endpoint="PUTapi-indents--id-"
+               data-component="body">
+    <br>
+<p>Array of indent items.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][material_id]"                data-endpoint="PUTapi-indents--id-"
+               value="10"
+               data-component="body">
+    <br>
+<p>Material ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][quantity]"                data-endpoint="PUTapi-indents--id-"
+               value="100"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>100</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][unit]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][unit]"                data-endpoint="PUTapi-indents--id-"
+               value="kg"
+               data-component="body">
+    <br>
+<p>Unit. Example: <code>kg</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][price]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][price]"                data-endpoint="PUTapi-indents--id-"
+               value="500"
+               data-component="body">
+    <br>
+<p>Unit price. Example: <code>500</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][remarks]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][remarks]"                data-endpoint="PUTapi-indents--id-"
+               value="High quality required"
+               data-component="body">
+    <br>
+<p>optional Item remarks. Example: <code>High quality required</code></p>
+        </div>
+        </form>
 
                     <h2 id="indents-DELETEapi-indents--id-">DELETE /api/indents/{id}</h2>
 
@@ -33376,7 +37573,57 @@ fetch(url, {
 </span>
 
 <span id="example-responses-DELETEapi-indents--id-">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: true,
+    &quot;message&quot;: &quot;Indent deleted successfully&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Indent not found&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (409):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Cannot update or delete this indent because it is already used in a purchase order.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Failed to delete indent&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-DELETEapi-indents--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-DELETEapi-indents--id-"></span>:
@@ -33471,7 +37718,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="1"
                data-component="url">
     <br>
-<p>The ID of the indent. Example: <code>1</code></p>
+<p>ID of the indent. Example: <code>1</code></p>
             </div>
                     </form>
 
@@ -33489,7 +37736,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://sitepilot/api/indents/create-data" \
+    "http://sitepilot/api/indents/create-data?workspace_id=1&amp;site_id=5&amp;created_by=1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -33499,6 +37746,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/indents/create-data"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+    "created_by": "1",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -33515,7 +37770,34 @@ fetch(url, {
 </span>
 
 <span id="example-responses-POSTapi-indents-create-data">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;Indent creation data retrieved successfully&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Failed to retrieve creation data&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-indents-create-data" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-indents-create-data"></span>:
@@ -33599,7 +37881,44 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-indents-create-data"
+               value="1"
+               data-component="query">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-indents-create-data"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Site/Project ID. Example: <code>5</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="created_by"                data-endpoint="POSTapi-indents-create-data"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Creator user ID. Example: <code>1</code></p>
+            </div>
+                </form>
 
                     <h2 id="indents-GETapi-indents--id--materials">GET /api/indents/{id}/materials</h2>
 
@@ -33616,7 +37935,7 @@ Optional: po_id parameter for edit mode to get available quantity for editing</p
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/indents/1/materials" \
+    --get "http://sitepilot/api/indents/1/materials?po_id=5" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -33626,6 +37945,12 @@ Optional: po_id parameter for edit mode to get available quantity for editing</p
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/indents/1/materials"
 );
+
+const params = {
+    "po_id": "5",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -33643,19 +37968,30 @@ fetch(url, {
 
 <span id="example-responses-GETapi-indents--id--materials">
             <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;Indent materials retrieved successfully&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
             <p>Example response (404):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/indents/1/materials could not be found.&quot;
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Indent not found&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Failed to retrieve indent materials&quot;
 }</code>
  </pre>
     </span>
@@ -33753,9 +38089,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="1"
                data-component="url">
     <br>
-<p>The ID of the indent. Example: <code>1</code></p>
+<p>ID of the indent. Example: <code>1</code></p>
             </div>
-                    </form>
+                        <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>po_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="po_id"                data-endpoint="GETapi-indents--id--materials"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Purchase Order ID for edit mode. Example: <code>5</code></p>
+            </div>
+                </form>
 
                     <h2 id="indents-GETapi-indents-available-list">GET /api/indents/available/list</h2>
 
@@ -33771,7 +38120,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/indents/available/list" \
+    --get "http://sitepilot/api/indents/available/list?site_id=5" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -33781,6 +38130,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/indents/available/list"
 );
+
+const params = {
+    "site_id": "5",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -33798,19 +38153,20 @@ fetch(url, {
 
 <span id="example-responses-GETapi-indents-available-list">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;Available indents retrieved successfully&quot;, &quot;data&quot;: [{...}]}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/indents/available/list could not be found.&quot;
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Failed to retrieve available indents&quot;
 }</code>
  </pre>
     </span>
@@ -33897,7 +38253,20 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="GETapi-indents-available-list"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Filter by site ID. Example: <code>5</code></p>
+            </div>
+                </form>
 
                     <h2 id="indents-PATCHapi-indents--id--status">PATCH /api/indents/{id}/status</h2>
 
@@ -33916,7 +38285,11 @@ You can check the Dev Tools console for debugging information.</code></pre>
     "http://sitepilot/api/indents/1/status" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"status\": \"open\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -33930,16 +38303,64 @@ const headers = {
     "Accept": "application/json",
 };
 
+let body = {
+    "status": "open"
+};
 
 fetch(url, {
     method: "PATCH",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-PATCHapi-indents--id--status">
-</span>
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;Indent status updated successfully&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Indent not found&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: false, &quot;message&quot;: &quot;Validation failed&quot;, &quot;errors&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Failed to update indent status&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-PATCHapi-indents--id--status" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-PATCHapi-indents--id--status"></span>:
@@ -34034,9 +38455,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="1"
                data-component="url">
     <br>
-<p>The ID of the indent. Example: <code>1</code></p>
+<p>ID of the indent. Example: <code>1</code></p>
             </div>
-                    </form>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="PATCHapi-indents--id--status"
+               value="open"
+               data-component="body">
+    <br>
+<p>Status to update to (open, partially_closed, closed). Example: <code>open</code></p>
+        </div>
+        </form>
 
                 <h1 id="lead-home">Lead Home</h1>
 
@@ -34550,7 +38984,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"subject\": \"Product Inquiry\",
     \"name\": \"John Doe\",
     \"email\": \"john@example.com\",
-    \"follow_up_date\": \"2026-05-27\"
+    \"follow_up_date\": \"2026-05-28\"
 }"
 </code></pre></div>
 
@@ -34573,7 +39007,7 @@ let body = {
     "subject": "Product Inquiry",
     "name": "John Doe",
     "email": "john@example.com",
-    "follow_up_date": "2026-05-27"
+    "follow_up_date": "2026-05-28"
 };
 
 fetch(url, {
@@ -34756,10 +39190,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="follow_up_date"                data-endpoint="POSTapi-Lead-lead-create-update"
-               value="2026-05-27"
+               value="2026-05-28"
                data-component="body">
     <br>
-<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-27</code></p>
+<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-28</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>lead_id</code></b>&nbsp;&nbsp;
@@ -36012,13 +40446,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
     <p>Endpoints for machinery management including CRUD operations</p>
 
-                                <h2 id="machinery-GETapi-machineries">GET api/machineries</h2>
+                                <h2 id="machinery-GETapi-machineries">Display a listing of machineries.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Returns a paginated list of all active machineries. Supports optional filtering
+by workspace and site. Only returns machineries with status = 0.</p>
 
 <span id="example-requests-GETapi-machineries">
 <blockquote>Example request:</blockquote>
@@ -36026,7 +40461,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/machineries" \
+    --get "http://sitepilot/api/machineries?workspace_id=1&amp;site_id=5" \
     --header "Authorization: Bearer {token} Required authentication token" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -36036,6 +40471,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/machineries"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {token} Required authentication token",
@@ -36053,19 +40495,32 @@ fetch(url, {
 
 <span id="example-responses-GETapi-machineries">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/machineries could not be found.&quot;
+  &quot;status&quot;: 1,
+  &quot;data&quot;: [
+    {
+      &quot;id&quot;: 1,
+      &quot;name&quot;: &quot;Excavator JCB&quot;,
+      &quot;vehicle_number&quot;: &quot;MH-01-AB-1234&quot;,
+      &quot;operational_status&quot;: &quot;active&quot;,
+      &quot;owned_by&quot;: &quot;rental&quot;,
+      ...
+    }
+  ]
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
 }</code>
  </pre>
     </span>
@@ -36152,15 +40607,41 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="GETapi-machineries"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Filter by workspace ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="GETapi-machineries"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Filter by site/project ID. Example: <code>5</code></p>
+            </div>
+                </form>
 
-                    <h2 id="machinery-POSTapi-machineries">Create Machinery</h2>
+                    <h2 id="machinery-POSTapi-machineries">Create a newly created machinery record.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Create a new machinery record</p>
+<p>Create a new machinery record with file uploads for rental agreement and ownership documents.
+Supports both owned and rental machinery with conditional validation for each type.</p>
 
 <span id="example-requests-POSTapi-machineries">
 <blockquote>Example request:</blockquote>
@@ -36170,38 +40651,39 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-bash">curl --request POST \
     "http://sitepilot/api/machineries" \
     --header "Authorization: Bearer {token} Required authentication token" \
-    --header "Content-Type: multipart/form-data" \
+    --header "Content-Type: application/json" \
     --header "Accept: application/json" \
-    --form "name=Excavator JCB"\
-    --form "category_id=1"\
-    --form "model_number=JCB 3DX"\
-    --form "manufacturer=JCB"\
-    --form "purchase_date=2024-01-15"\
-    --form "capacity=10 tons"\
-    --form "maintenance_schedule=2024-06-15"\
-    --form "remarks=Regular maintenance required"\
-    --form "description=Heavy duty excavator"\
-    --form "vehicle_number=MH-01-AB-1234"\
-    --form "operational_status=active"\
-    --form "site_id=5"\
-    --form "status=0"\
-    --form "created_by=1"\
-    --form "workspace_id=1"\
-    --form "owned_by=owned"\
-    --form "supplier_id=5"\
-    --form "rate=1500.00"\
-    --form "rate_type=hourly"\
-    --form "minimum_billing_hours=8"\
-    --form "diesel_by_company="\
-    --form "operator_by_supplier=1"\
-    --form "number_of_operators=2"\
-    --form "purchase_value=2500000.00"\
-    --form "insurance_due_date=2024-12-31"\
-    --form "puc_due_date=2024-11-30"\
-    --form "fitness_due_date=2024-10-31"\
-    --form "last_service_date=2024-05-01"\
-    --form "rental_agreement_file=@C:\Users\ninad\AppData\Local\Temp\phpEE51.tmp" \
-    --form "ownership_documents_file=@C:\Users\ninad\AppData\Local\Temp\phpEE62.tmp" </code></pre></div>
+    --data "{
+    \"name\": \"Excavator JCB\",
+    \"category_id\": 1,
+    \"model_number\": \"JCB 3DX\",
+    \"manufacturer\": \"JCB\",
+    \"purchase_date\": \"2024-01-15\",
+    \"capacity\": \"10 tons\",
+    \"maintenance_schedule\": \"2024-06-15\",
+    \"remarks\": \"Regular maintenance required\",
+    \"description\": \"Heavy duty excavator\",
+    \"vehicle_number\": \"MH-01-AB-1234\",
+    \"operational_status\": \"active\",
+    \"site_id\": 5,
+    \"status\": \"0\",
+    \"created_by\": 1,
+    \"workspace_id\": 1,
+    \"owned_by\": \"owned\",
+    \"supplier_id\": 5,
+    \"rate\": \"1500.00\",
+    \"rate_type\": \"hourly\",
+    \"minimum_billing_hours\": \"8\",
+    \"diesel_by_company\": false,
+    \"operator_by_supplier\": true,
+    \"number_of_operators\": 2,
+    \"purchase_value\": \"2500000.00\",
+    \"insurance_due_date\": \"2024-12-31\",
+    \"puc_due_date\": \"2024-11-30\",
+    \"fitness_due_date\": \"2024-10-31\",
+    \"last_service_date\": \"2024-05-01\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -36211,57 +40693,86 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 const headers = {
     "Authorization": "Bearer {token} Required authentication token",
-    "Content-Type": "multipart/form-data",
+    "Content-Type": "application/json",
     "Accept": "application/json",
 };
 
-const body = new FormData();
-body.append('name', 'Excavator JCB');
-body.append('category_id', '1');
-body.append('model_number', 'JCB 3DX');
-body.append('manufacturer', 'JCB');
-body.append('purchase_date', '2024-01-15');
-body.append('capacity', '10 tons');
-body.append('maintenance_schedule', '2024-06-15');
-body.append('remarks', 'Regular maintenance required');
-body.append('description', 'Heavy duty excavator');
-body.append('vehicle_number', 'MH-01-AB-1234');
-body.append('operational_status', 'active');
-body.append('site_id', '5');
-body.append('status', '0');
-body.append('created_by', '1');
-body.append('workspace_id', '1');
-body.append('owned_by', 'owned');
-body.append('supplier_id', '5');
-body.append('rate', '1500.00');
-body.append('rate_type', 'hourly');
-body.append('minimum_billing_hours', '8');
-body.append('diesel_by_company', '');
-body.append('operator_by_supplier', '1');
-body.append('number_of_operators', '2');
-body.append('purchase_value', '2500000.00');
-body.append('insurance_due_date', '2024-12-31');
-body.append('puc_due_date', '2024-11-30');
-body.append('fitness_due_date', '2024-10-31');
-body.append('last_service_date', '2024-05-01');
-body.append('rental_agreement_file', document.querySelector('input[name="rental_agreement_file"]').files[0]);
-body.append('ownership_documents_file', document.querySelector('input[name="ownership_documents_file"]').files[0]);
+let body = {
+    "name": "Excavator JCB",
+    "category_id": 1,
+    "model_number": "JCB 3DX",
+    "manufacturer": "JCB",
+    "purchase_date": "2024-01-15",
+    "capacity": "10 tons",
+    "maintenance_schedule": "2024-06-15",
+    "remarks": "Regular maintenance required",
+    "description": "Heavy duty excavator",
+    "vehicle_number": "MH-01-AB-1234",
+    "operational_status": "active",
+    "site_id": 5,
+    "status": "0",
+    "created_by": 1,
+    "workspace_id": 1,
+    "owned_by": "owned",
+    "supplier_id": 5,
+    "rate": "1500.00",
+    "rate_type": "hourly",
+    "minimum_billing_hours": "8",
+    "diesel_by_company": false,
+    "operator_by_supplier": true,
+    "number_of_operators": 2,
+    "purchase_value": "2500000.00",
+    "insurance_due_date": "2024-12-31",
+    "puc_due_date": "2024-11-30",
+    "fitness_due_date": "2024-10-31",
+    "last_service_date": "2024-05-01"
+};
 
 fetch(url, {
     method: "POST",
     headers,
-    body,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-POSTapi-machineries">
             <blockquote>
-            <p>Example response (200):</p>
+            <p>Example response (201, Success):</p>
         </blockquote>
                 <pre>
 
-<code class="language-json" style="max-height: 300px;">{&quot;status&quot;: 1, &quot;data&quot;: {...}, &quot;message&quot;: &quot;Machinery created successfully&quot;}</code>
+<code class="language-json" style="max-height: 300px;">{
+  &quot;status&quot;: 1,
+  &quot;data&quot;: {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Excavator JCB&quot;,
+    &quot;vehicle_number&quot;: &quot;MH-01-AB-1234&quot;,
+    &quot;operational_status&quot;: &quot;active&quot;,
+    ...
+  },
+  &quot;message&quot;: &quot;Machinery created successfully&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, Validation error):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;The name field is required.&quot;
+}</code>
  </pre>
     </span>
 <span id="execution-results-POSTapi-machineries" hidden>
@@ -36282,7 +40793,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <form id="form-POSTapi-machineries" data-method="POST"
       data-path="api/machineries"
       data-authed="1"
-      data-hasfiles="1"
+      data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
       onsubmit="event.preventDefault(); executeTryOut('POSTapi-machineries', this);">
@@ -36330,10 +40841,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-machineries"
-               value="multipart/form-data"
+               value="application/json"
                data-component="header">
     <br>
-<p>Example: <code>multipart/form-data</code></p>
+<p>Example: <code>application/json</code></p>
             </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
@@ -36538,7 +41049,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="owned"
                data-component="body">
     <br>
-<p>Ownership type (owned, rental). Example: <code>owned</code></p>
+<p>Ownership type (owned or rental). Example: <code>owned</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>supplier_id</code></b>&nbsp;&nbsp;
@@ -36714,7 +41225,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Rental agreement file (PDF/DOC/DOCX max 10MB) Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEE51.tmp</code></p>
+<p>optional Rental agreement file (PDF/DOC/DOCX max 10MB).</p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>ownership_documents_file</code></b>&nbsp;&nbsp;
@@ -36726,17 +41237,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Ownership documents file (PDF/DOC/DOCX/IMG max 10MB) Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEE62.tmp</code></p>
+<p>optional Ownership documents file (PDF/DOC/DOCX/IMG max 10MB).</p>
         </div>
         </form>
 
-                    <h2 id="machinery-GETapi-machineries--id-">GET api/machineries/{id}</h2>
+                    <h2 id="machinery-GETapi-machineries--id-">Display the specified machinery.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Returns a single machinery record with all related data by its ID.</p>
 
 <span id="example-requests-GETapi-machineries--id-">
 <blockquote>Example request:</blockquote>
@@ -36744,7 +41255,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/machineries/architecto" \
+    --get "http://sitepilot/api/machineries/1" \
     --header "Authorization: Bearer {token} Required authentication token" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -36752,7 +41263,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://sitepilot/api/machineries/architecto"
+    "http://sitepilot/api/machineries/1"
 );
 
 const headers = {
@@ -36771,19 +41282,39 @@ fetch(url, {
 
 <span id="example-responses-GETapi-machineries--id-">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/machineries/architecto could not be found.&quot;
+  &quot;status&quot;: 1,
+  &quot;data&quot;: {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Excavator JCB&quot;,
+    &quot;vehicle_number&quot;: &quot;MH-01-AB-1234&quot;,
+    &quot;operational_status&quot;: &quot;active&quot;,
+    ...
+  }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Machinery not found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Machinery not found&quot;
 }</code>
  </pre>
     </span>
@@ -36873,25 +41404,25 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
-                <input type="text" style="display: none"
-                              name="id"                data-endpoint="GETapi-machineries--id-"
-               value="architecto"
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="GETapi-machineries--id-"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the machinery. Example: <code>architecto</code></p>
+<p>Machinery ID. Example: <code>1</code></p>
             </div>
                     </form>
 
-                    <h2 id="machinery-PUTapi-machineries--id-">PUT api/machineries/{id}</h2>
+                    <h2 id="machinery-PUTapi-machineries--id-">Update the specified machinery.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Update an existing machinery record with file uploads for rental agreement and ownership documents.</p>
 
 <span id="example-requests-PUTapi-machineries--id-">
 <blockquote>Example request:</blockquote>
@@ -36899,46 +41430,46 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://sitepilot/api/machineries/architecto" \
+    "http://sitepilot/api/machineries/1" \
     --header "Authorization: Bearer {token} Required authentication token" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"category_id\": 16,
-    \"model_number\": \"n\",
-    \"manufacturer\": \"g\",
-    \"purchase_date\": \"2026-05-27T20:45:01\",
+    \"name\": \"Excavator JCB\",
+    \"category_id\": 1,
+    \"model_number\": \"JCB 3DX\",
+    \"manufacturer\": \"JCB\",
+    \"purchase_date\": \"2024-01-15\",
     \"capacity\": \"z\",
-    \"maintenance_schedule\": \"2026-05-27T20:45:01\",
+    \"maintenance_schedule\": \"2026-05-28T14:34:54\",
     \"remarks\": \"architecto\",
     \"description\": \"Eius et animi quos velit et.\",
-    \"vehicle_number\": \"v\",
-    \"operational_status\": \"breakdown\",
+    \"vehicle_number\": \"MH-01-AB-1234\",
+    \"operational_status\": \"active\",
     \"site_id\": 16,
     \"status\": \"n\",
     \"created_by\": 16,
-    \"workspace_id\": 16,
+    \"workspace_id\": 1,
     \"owned_by\": \"owned\",
-    \"rate\": 39,
+    \"supplier_id\": 5,
+    \"rate\": \"1500.00\",
     \"rate_type\": \"daily\",
     \"minimum_billing_hours\": 84,
-    \"diesel_by_company\": true,
+    \"diesel_by_company\": false,
     \"operator_by_supplier\": true,
     \"number_of_operators\": 66,
     \"purchase_value\": 77,
-    \"insurance_due_date\": \"2026-05-27T20:45:01\",
-    \"puc_due_date\": \"2026-05-27T20:45:01\",
-    \"fitness_due_date\": \"2026-05-27T20:45:01\",
-    \"last_service_date\": \"2026-05-27T20:45:01\",
-    \"rental_agreement_file\": \"i\",
-    \"ownership_documents_file\": \"y\"
+    \"insurance_due_date\": \"2026-05-28T14:34:54\",
+    \"puc_due_date\": \"2026-05-28T14:34:54\",
+    \"fitness_due_date\": \"2026-05-28T14:34:54\",
+    \"last_service_date\": \"2026-05-28T14:34:54\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://sitepilot/api/machineries/architecto"
+    "http://sitepilot/api/machineries/1"
 );
 
 const headers = {
@@ -36948,34 +41479,34 @@ const headers = {
 };
 
 let body = {
-    "category_id": 16,
-    "model_number": "n",
-    "manufacturer": "g",
-    "purchase_date": "2026-05-27T20:45:01",
+    "name": "Excavator JCB",
+    "category_id": 1,
+    "model_number": "JCB 3DX",
+    "manufacturer": "JCB",
+    "purchase_date": "2024-01-15",
     "capacity": "z",
-    "maintenance_schedule": "2026-05-27T20:45:01",
+    "maintenance_schedule": "2026-05-28T14:34:54",
     "remarks": "architecto",
     "description": "Eius et animi quos velit et.",
-    "vehicle_number": "v",
-    "operational_status": "breakdown",
+    "vehicle_number": "MH-01-AB-1234",
+    "operational_status": "active",
     "site_id": 16,
     "status": "n",
     "created_by": 16,
-    "workspace_id": 16,
+    "workspace_id": 1,
     "owned_by": "owned",
-    "rate": 39,
+    "supplier_id": 5,
+    "rate": "1500.00",
     "rate_type": "daily",
     "minimum_billing_hours": 84,
-    "diesel_by_company": true,
+    "diesel_by_company": false,
     "operator_by_supplier": true,
     "number_of_operators": 66,
     "purchase_value": 77,
-    "insurance_due_date": "2026-05-27T20:45:01",
-    "puc_due_date": "2026-05-27T20:45:01",
-    "fitness_due_date": "2026-05-27T20:45:01",
-    "last_service_date": "2026-05-27T20:45:01",
-    "rental_agreement_file": "i",
-    "ownership_documents_file": "y"
+    "insurance_due_date": "2026-05-28T14:34:54",
+    "puc_due_date": "2026-05-28T14:34:54",
+    "fitness_due_date": "2026-05-28T14:34:54",
+    "last_service_date": "2026-05-28T14:34:54"
 };
 
 fetch(url, {
@@ -36987,7 +41518,38 @@ fetch(url, {
 </span>
 
 <span id="example-responses-PUTapi-machineries--id-">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+  &quot;status&quot;: 1,
+  &quot;data&quot;: { &quot;id&quot;: 1, &quot;name&quot;: &quot;Excavator JCB&quot;, ... },
+  &quot;message&quot;: &quot;Machinery updated successfully&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Machinery not found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Machinery not found&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-PUTapi-machineries--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-PUTapi-machineries--id-"></span>:
@@ -37078,28 +41640,28 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
-                <input type="text" style="display: none"
-                              name="id"                data-endpoint="PUTapi-machineries--id-"
-               value="architecto"
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="PUTapi-machineries--id-"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the machinery. Example: <code>architecto</code></p>
+<p>Machinery ID. Example: <code>1</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
-<i>optional</i> &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="name"                data-endpoint="PUTapi-machineries--id-"
-               value=""
+               value="Excavator JCB"
                data-component="body">
     <br>
-<p>Basic fields.</p>
+<p>Machinery name. Example: <code>Excavator JCB</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>category_id</code></b>&nbsp;&nbsp;
@@ -37108,10 +41670,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="category_id"                data-endpoint="PUTapi-machineries--id-"
-               value="16"
+               value="1"
                data-component="body">
     <br>
-<p>The <code>id</code> of an existing record in the machinery_categories table. Example: <code>16</code></p>
+<p>Machinery category ID. Example: <code>1</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>model_number</code></b>&nbsp;&nbsp;
@@ -37120,10 +41682,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="model_number"                data-endpoint="PUTapi-machineries--id-"
-               value="n"
+               value="JCB 3DX"
                data-component="body">
     <br>
-<p>Must not be greater than 255 characters. Example: <code>n</code></p>
+<p>optional Model number. Example: <code>JCB 3DX</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>manufacturer</code></b>&nbsp;&nbsp;
@@ -37132,22 +41694,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="manufacturer"                data-endpoint="PUTapi-machineries--id-"
-               value="g"
+               value="JCB"
                data-component="body">
     <br>
-<p>Must not be greater than 255 characters. Example: <code>g</code></p>
+<p>optional Manufacturer. Example: <code>JCB</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>purchase_date</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>date</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="purchase_date"                data-endpoint="PUTapi-machineries--id-"
-               value="2026-05-27T20:45:01"
+               value="2024-01-15"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-05-27T20:45:01</code></p>
+<p>optional Purchase date. Example: <code>2024-01-15</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>capacity</code></b>&nbsp;&nbsp;
@@ -37168,10 +41730,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="maintenance_schedule"                data-endpoint="PUTapi-machineries--id-"
-               value="2026-05-27T20:45:01"
+               value="2026-05-28T14:34:54"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-05-27T20:45:01</code></p>
+<p>Must be a valid date. Example: <code>2026-05-28T14:34:54</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>remarks</code></b>&nbsp;&nbsp;
@@ -37204,10 +41766,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="vehicle_number"                data-endpoint="PUTapi-machineries--id-"
-               value="v"
+               value="MH-01-AB-1234"
                data-component="body">
     <br>
-<p>Must not be greater than 255 characters. Example: <code>v</code></p>
+<p>Vehicle registration number. Example: <code>MH-01-AB-1234</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>operational_status</code></b>&nbsp;&nbsp;
@@ -37216,12 +41778,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="operational_status"                data-endpoint="PUTapi-machineries--id-"
-               value="breakdown"
+               value="active"
                data-component="body">
     <br>
-<p>Example: <code>breakdown</code></p>
-Must be one of:
-<ul style="list-style-type: square;"><li><code>active</code></li> <li><code>breakdown</code></li> <li><code>scrap</code></li></ul>
+<p>Status (active, breakdown, scrap). Example: <code>active</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
@@ -37266,10 +41826,10 @@ Must be one of:
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="workspace_id"                data-endpoint="PUTapi-machineries--id-"
-               value="16"
+               value="1"
                data-component="body">
     <br>
-<p>Example: <code>16</code></p>
+<p>Workspace ID. Example: <code>1</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>owned_by</code></b>&nbsp;&nbsp;
@@ -37281,33 +41841,31 @@ Must be one of:
                value="owned"
                data-component="body">
     <br>
-<p>Ownership and rate fields. Example: <code>owned</code></p>
-Must be one of:
-<ul style="list-style-type: square;"><li><code>owned</code></li> <li><code>rental</code></li></ul>
+<p>Ownership type (owned or rental). Example: <code>owned</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>supplier_id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="supplier_id"                data-endpoint="PUTapi-machineries--id-"
-               value=""
-               data-component="body">
-    <br>
-<p>This field is required when <code>owned_by</code> is <code>rental</code>. The <code>id</code> of an existing record in the suppliers table.</p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>rate</code></b>&nbsp;&nbsp;
-<small>number</small>&nbsp;
+<small>integer</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
-               step="any"               name="rate"                data-endpoint="PUTapi-machineries--id-"
-               value="39"
+               step="any"               name="supplier_id"                data-endpoint="PUTapi-machineries--id-"
+               value="5"
                data-component="body">
     <br>
-<p>This field is required when <code>owned_by</code> is <code>rental</code>. Must be at least 0. Example: <code>39</code></p>
+<p>required_if:owned_by,rental Supplier ID for rental machinery. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>rate</code></b>&nbsp;&nbsp;
+<small>numeric</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="rate"                data-endpoint="PUTapi-machineries--id-"
+               value="1500.00"
+               data-component="body">
+    <br>
+<p>Rate value. Example: <code>1500.00</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>rate_type</code></b>&nbsp;&nbsp;
@@ -37355,7 +41913,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>operator_by_supplier</code></b>&nbsp;&nbsp;
@@ -37410,10 +41968,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="insurance_due_date"                data-endpoint="PUTapi-machineries--id-"
-               value="2026-05-27T20:45:01"
+               value="2026-05-28T14:34:54"
                data-component="body">
     <br>
-<p>This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date. Example: <code>2026-05-27T20:45:01</code></p>
+<p>This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date. Example: <code>2026-05-28T14:34:54</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>puc_due_date</code></b>&nbsp;&nbsp;
@@ -37422,10 +41980,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="puc_due_date"                data-endpoint="PUTapi-machineries--id-"
-               value="2026-05-27T20:45:01"
+               value="2026-05-28T14:34:54"
                data-component="body">
     <br>
-<p>This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date. Example: <code>2026-05-27T20:45:01</code></p>
+<p>This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date. Example: <code>2026-05-28T14:34:54</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>fitness_due_date</code></b>&nbsp;&nbsp;
@@ -37434,10 +41992,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="fitness_due_date"                data-endpoint="PUTapi-machineries--id-"
-               value="2026-05-27T20:45:01"
+               value="2026-05-28T14:34:54"
                data-component="body">
     <br>
-<p>This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date. Example: <code>2026-05-27T20:45:01</code></p>
+<p>This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date. Example: <code>2026-05-28T14:34:54</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>last_service_date</code></b>&nbsp;&nbsp;
@@ -37446,44 +42004,44 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="last_service_date"                data-endpoint="PUTapi-machineries--id-"
-               value="2026-05-27T20:45:01"
+               value="2026-05-28T14:34:54"
                data-component="body">
     <br>
-<p>This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date. Example: <code>2026-05-27T20:45:01</code></p>
+<p>This field is required when <code>owned_by</code> is <code>owned</code>. Must be a valid date. Example: <code>2026-05-28T14:34:54</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>rental_agreement_file</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>file</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
-                <input type="text" style="display: none"
+                <input type="file" style="display: none"
                               name="rental_agreement_file"                data-endpoint="PUTapi-machineries--id-"
-               value="i"
+               value=""
                data-component="body">
     <br>
-<p>File uploads. Must not be greater than 10240 characters. Example: <code>i</code></p>
+<p>optional Rental agreement file (PDF/DOC/DOCX max 10MB).</p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>ownership_documents_file</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>file</small>&nbsp;
 <i>optional</i> &nbsp;
  &nbsp;
-                <input type="text" style="display: none"
+                <input type="file" style="display: none"
                               name="ownership_documents_file"                data-endpoint="PUTapi-machineries--id-"
-               value="y"
+               value=""
                data-component="body">
     <br>
-<p>Must not be greater than 10240 characters. Example: <code>y</code></p>
+<p>optional Ownership documents file (PDF/DOC/DOCX/IMG max 10MB).</p>
         </div>
         </form>
 
-                    <h2 id="machinery-DELETEapi-machineries--id-">DELETE api/machineries/{id}</h2>
+                    <h2 id="machinery-DELETEapi-machineries--id-">Remove the specified machinery.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Delete a machinery record by its ID.</p>
 
 <span id="example-requests-DELETEapi-machineries--id-">
 <blockquote>Example request:</blockquote>
@@ -37491,7 +42049,7 @@ Must be one of:
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://sitepilot/api/machineries/architecto" \
+    "http://sitepilot/api/machineries/1" \
     --header "Authorization: Bearer {token} Required authentication token" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -37499,7 +42057,7 @@ Must be one of:
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://sitepilot/api/machineries/architecto"
+    "http://sitepilot/api/machineries/1"
 );
 
 const headers = {
@@ -37517,7 +42075,37 @@ fetch(url, {
 </span>
 
 <span id="example-responses-DELETEapi-machineries--id-">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 1,
+    &quot;message&quot;: &quot;Machinery deleted successfully&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Machinery not found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Machinery not found&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-DELETEapi-machineries--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-DELETEapi-machineries--id-"></span>:
@@ -37604,15 +42192,15 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
-                <input type="text" style="display: none"
-                              name="id"                data-endpoint="DELETEapi-machineries--id-"
-               value="architecto"
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="DELETEapi-machineries--id-"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the machinery. Example: <code>architecto</code></p>
+<p>Machinery ID. Example: <code>1</code></p>
             </div>
                     </form>
 
@@ -37630,16 +42218,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://sitepilot/api/machineries/create-data" \
+    "http://sitepilot/api/machineries/create-data?workspace_id=1&amp;site_id=5&amp;created_by=1" \
     --header "Authorization: Bearer {token} Required authentication token" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json" \
-    --data "{
-    \"site_id\": 1,
-    \"workspace_id\": 1,
-    \"created_by\": 1
-}"
-</code></pre></div>
+    --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
@@ -37647,29 +42229,31 @@ You can check the Dev Tools console for debugging information.</code></pre>
     "http://sitepilot/api/machineries/create-data"
 );
 
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+    "created_by": "1",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
+
 const headers = {
     "Authorization": "Bearer {token} Required authentication token",
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
 
-let body = {
-    "site_id": 1,
-    "workspace_id": 1,
-    "created_by": 1
-};
 
 fetch(url, {
     method: "POST",
     headers,
-    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-POSTapi-machineries-create-data">
             <blockquote>
-            <p>Example response (200):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
                 <pre>
 
@@ -37714,6 +42298,16 @@ fetch(url, {
         ]
     },
     &quot;message&quot;: &quot;Create data fetched successfully&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
 }</code>
  </pre>
     </span>
@@ -37800,44 +42394,44 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="site_id"                data-endpoint="POSTapi-machineries-create-data"
-               value="1"
-               data-component="body">
-    <br>
-<p>Site ID. Example: <code>1</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="workspace_id"                data-endpoint="POSTapi-machineries-create-data"
                value="1"
-               data-component="body">
+               data-component="query">
     <br>
-<p>Workspace ID. Example: <code>1</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
+<p>Workspace ID for lookups. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-machineries-create-data"
+               value="5"
+               data-component="query">
+    <br>
+<p>Site ID for lookups. Example: <code>5</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="created_by"                data-endpoint="POSTapi-machineries-create-data"
                value="1"
-               data-component="body">
+               data-component="query">
     <br>
 <p>Creator user ID. Example: <code>1</code></p>
-        </div>
-        </form>
+            </div>
+                </form>
 
                 <h1 id="machinery-category">Machinery Category</h1>
 
@@ -39190,8 +43784,8 @@ and the closing balance (last entry in the range).</p>
     --header "Accept: application/json" \
     --data "{
     \"machinery_id\": 16,
-    \"date_from\": \"2026-05-27T20:45:07\",
-    \"date_to\": \"2052-06-19\"
+    \"date_from\": \"2026-05-28T14:34:59\",
+    \"date_to\": \"2052-06-20\"
 }"
 </code></pre></div>
 
@@ -39217,8 +43811,8 @@ const headers = {
 
 let body = {
     "machinery_id": 16,
-    "date_from": "2026-05-27T20:45:07",
-    "date_to": "2052-06-19"
+    "date_from": "2026-05-28T14:34:59",
+    "date_to": "2052-06-20"
 };
 
 fetch(url, {
@@ -39408,10 +44002,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="date_from"                data-endpoint="GETapi-ledger-balance"
-               value="2026-05-27T20:45:07"
+               value="2026-05-28T14:34:59"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-05-27T20:45:07</code></p>
+<p>Must be a valid date. Example: <code>2026-05-28T14:34:59</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>date_to</code></b>&nbsp;&nbsp;
@@ -39420,10 +44014,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="date_to"                data-endpoint="GETapi-ledger-balance"
-               value="2052-06-19"
+               value="2052-06-20"
                data-component="body">
     <br>
-<p>Must be a valid date. Must be a date after or equal to <code>date_from</code>. Example: <code>2052-06-19</code></p>
+<p>Must be a valid date. Must be a date after or equal to <code>date_from</code>. Example: <code>2052-06-20</code></p>
         </div>
         </form>
 
@@ -41211,7 +45805,7 @@ and handles payment proof file upload.</p>
     --form "amount=15000.5"\
     --form "payment_mode=bank_transfer"\
     --form "remarks=Paid via HDFC bank."\
-    --form "payment_proof=@C:\Users\ninad\AppData\Local\Temp\phpFF75.tmp" </code></pre></div>
+    --form "payment_proof=@C:\Users\ninad\AppData\Local\Temp\phpECDC.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -41397,7 +45991,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The payment confirmation document (PDF, JPG, PNG). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpFF75.tmp</code></p>
+<p>The payment confirmation document (PDF, JPG, PNG). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpECDC.tmp</code></p>
         </div>
         </form>
 
@@ -41419,7 +46013,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "invoice_file=@C:\Users\ninad\AppData\Local\Temp\phpFF97.tmp" </code></pre></div>
+    --form "invoice_file=@C:\Users\ninad\AppData\Local\Temp\phpECFD.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -41553,7 +46147,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The invoice document (PDF, JPG, PNG). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpFF97.tmp</code></p>
+<p>The invoice document (PDF, JPG, PNG). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpECFD.tmp</code></p>
         </div>
         </form>
 
@@ -42055,7 +46649,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/manpower" \
+    --get "http://sitepilot/api/manpower?workspace_id=1&amp;site_id=5" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -42065,6 +46659,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/manpower"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -42082,19 +46683,30 @@ fetch(url, {
 
 <span id="example-responses-GETapi-manpower">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/manpower could not be found.&quot;
+  &quot;status&quot;: &quot;success&quot;,
+  &quot;data&quot;: [
+    {
+      &quot;id&quot;: 1,
+      &quot;work_date&quot;: &quot;2024-01-15&quot;,
+      &quot;total_count&quot;: 10,
+      &quot;details&quot;: [...]
+    }
+  ]
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
 }</code>
  </pre>
     </span>
@@ -42181,7 +46793,32 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="GETapi-manpower"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Filter by workspace ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="GETapi-manpower"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Filter by site/project ID. Example: <code>5</code></p>
+            </div>
+                </form>
 
                     <h2 id="manpower-POSTapi-manpower">Store a newly created resource.</h2>
 
@@ -42208,7 +46845,11 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "workspace_id=1"\
     --form "activity_completed_id=10"\
     --form "details[]=architecto"\
-    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\phpF627.tmp" </code></pre></div>
+    --form "details[0][man_power_type_id]=2"\
+    --form "details[0][count]=5"\
+    --form "details[1][man_power_type_id]=3"\
+    --form "details[1][count]=10"\
+    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\phpE50F.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -42230,6 +46871,10 @@ body.append('created_by', '1');
 body.append('workspace_id', '1');
 body.append('activity_completed_id', '10');
 body.append('details[]', 'architecto');
+body.append('details[0][man_power_type_id]', '2');
+body.append('details[0][count]', '5');
+body.append('details[1][man_power_type_id]', '3');
+body.append('details[1][count]', '10');
 body.append('reference_file', document.querySelector('input[name="reference_file"]').files[0]);
 
 fetch(url, {
@@ -42242,11 +46887,25 @@ fetch(url, {
 
 <span id="example-responses-POSTapi-manpower">
             <blockquote>
-            <p>Example response (200):</p>
+            <p>Example response (201, Success):</p>
         </blockquote>
                 <pre>
 
-<code class="language-json" style="max-height: 300px;">{&quot;status&quot;: &quot;success&quot;, &quot;data&quot;: {...}}</code>
+<code class="language-json" style="max-height: 300px;">{
+  &quot;status&quot;: true,
+  &quot;message&quot;: &quot;Activity created successfully&quot;,
+  &quot;data&quot;: {...}
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
  </pre>
     </span>
 <span id="execution-results-POSTapi-manpower" hidden>
@@ -42406,52 +47065,66 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>Activity completed ID. Example: <code>10</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
-        <details>
-            <summary style="padding-bottom: 10px;">
-                <b style="line-height: 2;"><code>details</code></b>&nbsp;&nbsp;
+            <b style="line-height: 2;"><code>details</code></b>&nbsp;&nbsp;
 <small>string[]</small>&nbsp;
  &nbsp;
  &nbsp;
-<br>
-<p>Array of manpower details.</p>
-            </summary>
-                                                <div style=" margin-left: 14px; clear: unset;">
-        <details>
-            <summary style="padding-bottom: 10px;">
-                <b style="line-height: 2;"><code>*</code></b>&nbsp;&nbsp;
-<small>object</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-<br>
-
-            </summary>
-                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>man_power_type_id</code></b>&nbsp;&nbsp;
+                <input type="text" style="display: none"
+                              name="details[0]"                data-endpoint="POSTapi-manpower"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="details[1]"                data-endpoint="POSTapi-manpower"
+               data-component="body">
+    <br>
+<p>Array of manpower details (use indexed notation: details[0], details[1], etc.).</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>details[0][man_power_type_id]</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
-               step="any"               name="details.*.man_power_type_id"                data-endpoint="POSTapi-manpower"
+               step="any"               name="details[0][man_power_type_id]"                data-endpoint="POSTapi-manpower"
                value="2"
                data-component="body">
     <br>
 <p>Manpower type ID. Example: <code>2</code></p>
-                    </div>
-                                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>count</code></b>&nbsp;&nbsp;
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>details[0][count]</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
-               step="any"               name="details.*.count"                data-endpoint="POSTapi-manpower"
+               step="any"               name="details[0][count]"                data-endpoint="POSTapi-manpower"
                value="5"
                data-component="body">
     <br>
-<p>Count. Example: <code>5</code></p>
-                    </div>
-                                    </details>
+<p>Number of workers. Example: <code>5</code></p>
         </div>
-                                        </details>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>details[1][man_power_type_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="details[1][man_power_type_id]"                data-endpoint="POSTapi-manpower"
+               value="3"
+               data-component="body">
+    <br>
+<p>Manpower type ID (if multiple). Example: <code>3</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>details[1][count]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="details[1][count]"                data-endpoint="POSTapi-manpower"
+               value="10"
+               data-component="body">
+    <br>
+<p>Number of workers. Example: <code>10</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>reference_file</code></b>&nbsp;&nbsp;
@@ -42463,7 +47136,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Reference document. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpF627.tmp</code></p>
+<p>optional Reference document (max 10MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE50F.tmp</code></p>
         </div>
         </form>
 
@@ -42508,19 +47181,25 @@ fetch(url, {
 
 <span id="example-responses-GETapi-manpower--id-">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/manpower/16 could not be found.&quot;
+  &quot;id&quot;: 1,
+  &quot;work_date&quot;: &quot;2024-01-15&quot;,
+  &quot;total_count&quot;: 10,
+  &quot;details&quot;: [...]
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
 }</code>
  </pre>
     </span>
@@ -42620,6 +47299,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>The ID of the manpower. Example: <code>16</code></p>
             </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>manpower</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="manpower"                data-endpoint="GETapi-manpower--id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>ManPower ID (via route model binding). Example: <code>1</code></p>
+            </div>
                     </form>
 
                     <h2 id="manpower-PUTapi-manpower--id-">Update the specified resource.</h2>
@@ -42638,8 +47329,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-bash">curl --request PUT \
     "http://sitepilot/api/manpower/16" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "work_date=2024-01-15"\
+    --form "site_id=5"\
+    --form "supplier_id=1"\
+    --form "created_by=1"\
+    --form "workspace_id=1"\
+    --form "activity_completed_id=10"\
+    --form "details[]=architecto"\
+    --form "details[0][man_power_type_id]=2"\
+    --form "details[0][count]=5"\
+    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\phpE52F.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -42649,20 +47350,54 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
     "Accept": "application/json",
 };
 
+const body = new FormData();
+body.append('work_date', '2024-01-15');
+body.append('site_id', '5');
+body.append('supplier_id', '1');
+body.append('created_by', '1');
+body.append('workspace_id', '1');
+body.append('activity_completed_id', '10');
+body.append('details[]', 'architecto');
+body.append('details[0][man_power_type_id]', '2');
+body.append('details[0][count]', '5');
+body.append('reference_file', document.querySelector('input[name="reference_file"]').files[0]);
 
 fetch(url, {
     method: "PUT",
     headers,
+    body,
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-PUTapi-manpower--id-">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+  &quot;id&quot;: 1,
+  &quot;work_date&quot;: &quot;2024-01-15&quot;,
+  &quot;total_count&quot;: 10,
+  &quot;details&quot;: [...]
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-PUTapi-manpower--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-PUTapi-manpower--id-"></span>:
@@ -42681,7 +47416,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <form id="form-PUTapi-manpower--id-" data-method="PUT"
       data-path="api/manpower/{id}"
       data-authed="1"
-      data-hasfiles="0"
+      data-hasfiles="1"
       data-isarraybody="0"
       autocomplete="off"
       onsubmit="event.preventDefault(); executeTryOut('PUTapi-manpower--id-', this);">
@@ -42733,10 +47468,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="PUTapi-manpower--id-"
-               value="application/json"
+               value="multipart/form-data"
                data-component="header">
     <br>
-<p>Example: <code>application/json</code></p>
+<p>Example: <code>multipart/form-data</code></p>
             </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
@@ -42763,7 +47498,142 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>The ID of the manpower. Example: <code>16</code></p>
             </div>
-                    </form>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>manpower</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="manpower"                data-endpoint="PUTapi-manpower--id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>ManPower ID (via route model binding). Example: <code>1</code></p>
+            </div>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>work_date</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="work_date"                data-endpoint="PUTapi-manpower--id-"
+               value="2024-01-15"
+               data-component="body">
+    <br>
+<p>Work date. Example: <code>2024-01-15</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="PUTapi-manpower--id-"
+               value="5"
+               data-component="body">
+    <br>
+<p>Site ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>supplier_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="supplier_id"                data-endpoint="PUTapi-manpower--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>Supplier ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="created_by"                data-endpoint="PUTapi-manpower--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>Creator user ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="PUTapi-manpower--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>Workspace ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>activity_completed_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="activity_completed_id"                data-endpoint="PUTapi-manpower--id-"
+               value="10"
+               data-component="body">
+    <br>
+<p>Activity completed ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>details</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="details[0]"                data-endpoint="PUTapi-manpower--id-"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="details[1]"                data-endpoint="PUTapi-manpower--id-"
+               data-component="body">
+    <br>
+<p>Array of manpower details (use indexed notation: details[0], details[1], etc.).</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>details[0][man_power_type_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="details[0][man_power_type_id]"                data-endpoint="PUTapi-manpower--id-"
+               value="2"
+               data-component="body">
+    <br>
+<p>Manpower type ID. Example: <code>2</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>details[0][count]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="details[0][count]"                data-endpoint="PUTapi-manpower--id-"
+               value="5"
+               data-component="body">
+    <br>
+<p>Number of workers. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>reference_file</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="reference_file"                data-endpoint="PUTapi-manpower--id-"
+               value=""
+               data-component="body">
+    <br>
+<p>optional Reference document (max 10MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE52F.tmp</code></p>
+        </div>
+        </form>
 
                     <h2 id="manpower-DELETEapi-manpower--id-">Remove the specified resource.</h2>
 
@@ -42805,7 +47675,27 @@ fetch(url, {
 </span>
 
 <span id="example-responses-DELETEapi-manpower--id-">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;message&quot;: &quot;Manpower record deleted successfully&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-DELETEapi-manpower--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-DELETEapi-manpower--id-"></span>:
@@ -42902,6 +47792,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>The ID of the manpower. Example: <code>16</code></p>
             </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>manpower</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="manpower"                data-endpoint="DELETEapi-manpower--id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>ManPower ID (via route model binding). Example: <code>1</code></p>
+            </div>
                     </form>
 
                     <h2 id="manpower-POSTapi-manpower-create-data">Fetch data for create form.</h2>
@@ -42918,7 +47820,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://sitepilot/api/manpower/create-data" \
+    "http://sitepilot/api/manpower/create-data?workspace_id=1&amp;site_id=5" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -42928,6 +47830,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/manpower/create-data"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -42944,7 +47853,26 @@ fetch(url, {
 </span>
 
 <span id="example-responses-POSTapi-manpower-create-data">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;manpowerTypes&quot;: {
+        &quot;1&quot;: &quot;Skilled&quot;,
+        &quot;2&quot;: &quot;Unskilled&quot;
+    },
+    &quot;suppliers&quot;: {
+        &quot;1&quot;: &quot;ABC Supplier&quot;
+    },
+    &quot;sites&quot;: {
+        &quot;5&quot;: &quot;Site A&quot;,
+        &quot;6&quot;: &quot;Site B&quot;
+    }
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-manpower-create-data" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-manpower-create-data"></span>:
@@ -43028,7 +47956,32 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-manpower-create-data"
+               value="1"
+               data-component="query">
+    <br>
+<p>Workspace ID to scope lookups. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-manpower-create-data"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Site ID to scope lookups. Example: <code>5</code></p>
+            </div>
+                </form>
 
                 <h1 id="manpower-type">Manpower Type</h1>
 
@@ -45090,9 +50043,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"issue_to_type\": \"supplier\",
+    \"issue_to_type\": \"user\",
     \"issue_to_id\": 16,
-    \"issue_date\": \"2026-05-27T20:45:04\",
+    \"issue_date\": \"2026-05-28T14:34:57\",
     \"remarks\": \"architecto\",
     \"items\": [
         {
@@ -45118,9 +50071,9 @@ const headers = {
 };
 
 let body = {
-    "issue_to_type": "supplier",
+    "issue_to_type": "user",
     "issue_to_id": 16,
-    "issue_date": "2026-05-27T20:45:04",
+    "issue_date": "2026-05-28T14:34:57",
     "remarks": "architecto",
     "items": [
         {
@@ -45250,10 +50203,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="issue_to_type"                data-endpoint="PUTapi-material-issues--id-"
-               value="supplier"
+               value="user"
                data-component="body">
     <br>
-<p>Example: <code>supplier</code></p>
+<p>Example: <code>user</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>user</code></li> <li><code>supplier</code></li></ul>
         </div>
@@ -45276,10 +50229,10 @@ Must be one of:
  &nbsp;
                 <input type="text" style="display: none"
                               name="issue_date"                data-endpoint="PUTapi-material-issues--id-"
-               value="2026-05-27T20:45:04"
+               value="2026-05-28T14:34:57"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-05-27T20:45:04</code></p>
+<p>Must be a valid date. Example: <code>2026-05-28T14:34:57</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>remarks</code></b>&nbsp;&nbsp;
@@ -46538,7 +51491,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"issue_id\": \"architecto\",
-    \"return_date\": \"2026-05-27T20:45:04\",
+    \"return_date\": \"2026-05-28T14:34:57\",
     \"remarks\": \"architecto\",
     \"items\": [
         {
@@ -46565,7 +51518,7 @@ const headers = {
 
 let body = {
     "issue_id": "architecto",
-    "return_date": "2026-05-27T20:45:04",
+    "return_date": "2026-05-28T14:34:57",
     "remarks": "architecto",
     "items": [
         {
@@ -46707,10 +51660,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="return_date"                data-endpoint="PUTapi-material-returns--id-"
-               value="2026-05-27T20:45:04"
+               value="2026-05-28T14:34:57"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-05-27T20:45:04</code></p>
+<p>Must be a valid date. Example: <code>2026-05-28T14:34:57</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>remarks</code></b>&nbsp;&nbsp;
@@ -46925,6 +51878,132 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                     </form>
 
+                    <h2 id="material-return-POSTapi-material-returns-create-data">Get data for creating a new material return (alternative endpoint).</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-material-returns-create-data">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://sitepilot/api/material-returns/create-data" \
+    --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://sitepilot/api/material-returns/create-data"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-material-returns-create-data">
+</span>
+<span id="execution-results-POSTapi-material-returns-create-data" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-material-returns-create-data"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-material-returns-create-data"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-material-returns-create-data" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-material-returns-create-data">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-material-returns-create-data" data-method="POST"
+      data-path="api/material-returns/create-data"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-material-returns-create-data', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-material-returns-create-data"
+                    onclick="tryItOut('POSTapi-material-returns-create-data');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-material-returns-create-data"
+                    onclick="cancelTryOut('POSTapi-material-returns-create-data');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-material-returns-create-data"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/material-returns/create-data</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-material-returns-create-data"
+               value="Bearer {YOUR_AUTH_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="POSTapi-material-returns-create-data"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="POSTapi-material-returns-create-data"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
                     <h2 id="material-return-POSTapi-material-returns-get-issue-details">Get issue details for return form.</h2>
 
 <p>
@@ -47090,7 +52169,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/material-transfer" \
+    --get "http://sitepilot/api/material-transfer?workspace_id=1&amp;site_id=5" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -47100,6 +52179,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/material-transfer"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -47117,19 +52203,34 @@ fetch(url, {
 
 <span id="example-responses-GETapi-material-transfer">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/material-transfer could not be found.&quot;
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;Material transfers fetched successfully&quot;,
+  &quot;data&quot;: [
+    {
+      &quot;id&quot;: 1,
+      &quot;record_number&quot;: &quot;MT-0001&quot;,
+      &quot;record_date&quot;: &quot;2024-01-15&quot;,
+      &quot;from_site_id&quot;: 5,
+      &quot;to_site_id&quot;: 6,
+      &quot;total_amount&quot;: 5000.00,
+      &quot;items&quot;: [...]
+    }
+  ]
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
 }</code>
  </pre>
     </span>
@@ -47216,7 +52317,32 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="GETapi-material-transfer"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Filter by workspace ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="GETapi-material-transfer"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Filter by site/project ID (source site). Example: <code>5</code></p>
+            </div>
+                </form>
 
                     <h2 id="material-transfer-POSTapi-material-transfer">Store a newly created material transfer.</h2>
 
@@ -47242,7 +52368,15 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "from_site_id=5"\
     --form "to_site_id=6"\
     --form "items[]=architecto"\
-    --form "invoice_file=@C:\Users\ninad\AppData\Local\Temp\phpF791.tmp" </code></pre></div>
+    --form "items[0][material_id]=10"\
+    --form "items[0][quantity]=100"\
+    --form "items[0][unit]=kg"\
+    --form "items[0][price]=500"\
+    --form "items[1][material_id]=11"\
+    --form "items[1][quantity]=200"\
+    --form "items[1][unit]=kg"\
+    --form "items[1][price]=450"\
+    --form "invoice_file=@C:\Users\ninad\AppData\Local\Temp\phpE61E.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -47263,6 +52397,14 @@ body.append('record_date', '2024-01-15');
 body.append('from_site_id', '5');
 body.append('to_site_id', '6');
 body.append('items[]', 'architecto');
+body.append('items[0][material_id]', '10');
+body.append('items[0][quantity]', '100');
+body.append('items[0][unit]', 'kg');
+body.append('items[0][price]', '500');
+body.append('items[1][material_id]', '11');
+body.append('items[1][quantity]', '200');
+body.append('items[1][unit]', 'kg');
+body.append('items[1][price]', '450');
 body.append('invoice_file', document.querySelector('input[name="invoice_file"]').files[0]);
 
 fetch(url, {
@@ -47275,11 +52417,39 @@ fetch(url, {
 
 <span id="example-responses-POSTapi-material-transfer">
             <blockquote>
-            <p>Example response (200):</p>
+            <p>Example response (201, Success):</p>
         </blockquote>
                 <pre>
 
-<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;Material transfer created successfully&quot;, &quot;data&quot;: {...}}</code>
+<code class="language-json" style="max-height: 300px;">{
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;Material transfer created successfully&quot;,
+  &quot;data&quot;: {
+    &quot;id&quot;: 1,
+    &quot;record_number&quot;: &quot;MT-0001&quot;,
+    &quot;items&quot;: [...]
+  }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, Validation error):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;The to_site_id must be different from from_site_id.&quot;
+}</code>
  </pre>
     </span>
 <span id="execution-results-POSTapi-material-transfer" hidden>
@@ -47424,7 +52594,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="6"
                data-component="body">
     <br>
-<p>Destination site ID (must be different from from_site_id). Example: <code>6</code></p>
+<p>Destination site ID. Example: <code>6</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
         <details>
@@ -47484,67 +52654,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Must be at least 0. Example: <code>39</code></p>
                     </div>
-                                                                <div style=" margin-left: 14px; clear: unset;">
-        <details>
-            <summary style="padding-bottom: 10px;">
-                <b style="line-height: 2;"><code>*</code></b>&nbsp;&nbsp;
-<small>object</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-<br>
-
-            </summary>
-                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>material_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="items.*.material_id"                data-endpoint="POSTapi-material-transfer"
-               value="10"
-               data-component="body">
-    <br>
-<p>Material ID. Example: <code>10</code></p>
-                    </div>
-                                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>quantity</code></b>&nbsp;&nbsp;
-<small>number</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="items.*.quantity"                data-endpoint="POSTapi-material-transfer"
-               value="100"
-               data-component="body">
-    <br>
-<p>Quantity. Example: <code>100</code></p>
-                    </div>
-                                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>unit</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="items.*.unit"                data-endpoint="POSTapi-material-transfer"
-               value="kg"
-               data-component="body">
-    <br>
-<p>Unit. Example: <code>kg</code></p>
-                    </div>
-                                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>price</code></b>&nbsp;&nbsp;
-<small>number</small>&nbsp;
- &nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="items.*.price"                data-endpoint="POSTapi-material-transfer"
-               value="500"
-               data-component="body">
-    <br>
-<p>Unit price. Example: <code>500</code></p>
-                    </div>
                                     </details>
-        </div>
-                                        </details>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>invoice_file</code></b>&nbsp;&nbsp;
@@ -47556,7 +52666,103 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Invoice document. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpF791.tmp</code></p>
+<p>optional Invoice document (max 20MB, allowed: pdf,doc,jpg,jpeg,png). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE61E.tmp</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][material_id]"                data-endpoint="POSTapi-material-transfer"
+               value="10"
+               data-component="body">
+    <br>
+<p>Material ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][quantity]"                data-endpoint="POSTapi-material-transfer"
+               value="100"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>100</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][unit]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][unit]"                data-endpoint="POSTapi-material-transfer"
+               value="kg"
+               data-component="body">
+    <br>
+<p>Unit. Example: <code>kg</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][price]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][price]"                data-endpoint="POSTapi-material-transfer"
+               value="500"
+               data-component="body">
+    <br>
+<p>Unit price. Example: <code>500</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][material_id]"                data-endpoint="POSTapi-material-transfer"
+               value="11"
+               data-component="body">
+    <br>
+<p>Material ID (if multiple items). Example: <code>11</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][quantity]"                data-endpoint="POSTapi-material-transfer"
+               value="200"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>200</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][unit]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[1][unit]"                data-endpoint="POSTapi-material-transfer"
+               value="kg"
+               data-component="body">
+    <br>
+<p>Unit. Example: <code>kg</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][price]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][price]"                data-endpoint="POSTapi-material-transfer"
+               value="450"
+               data-component="body">
+    <br>
+<p>Unit price. Example: <code>450</code></p>
         </div>
         </form>
 
@@ -47574,7 +52780,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/material-transfer/architecto" \
+    --get "http://sitepilot/api/material-transfer/1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -47582,7 +52788,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://sitepilot/api/material-transfer/architecto"
+    "http://sitepilot/api/material-transfer/1"
 );
 
 const headers = {
@@ -47601,19 +52807,38 @@ fetch(url, {
 
 <span id="example-responses-GETapi-material-transfer--id-">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/material-transfer/architecto could not be found.&quot;
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;Material transfer fetched successfully&quot;,
+  &quot;data&quot;: {
+    &quot;id&quot;: 1,
+    &quot;record_number&quot;: &quot;MT-0001&quot;,
+    &quot;items&quot;: [...]
+  }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Material transfer not found&quot;
 }</code>
  </pre>
     </span>
@@ -47703,15 +52928,15 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
-                <input type="text" style="display: none"
-                              name="id"                data-endpoint="GETapi-material-transfer--id-"
-               value="architecto"
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="GETapi-material-transfer--id-"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the material transfer. Example: <code>architecto</code></p>
+<p>Material Transfer ID. Example: <code>1</code></p>
             </div>
                     </form>
 
@@ -47729,25 +52954,30 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://sitepilot/api/material-transfer/architecto" \
+    "http://sitepilot/api/material-transfer/1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "created_by=16"\
-    --form "workspace_id=16"\
-    --form "record_date=2026-05-27T20:45:04"\
-    --form "from_site_id=16"\
-    --form "to_site_id=16"\
-    --form "items[][material_id]=16"\
-    --form "items[][quantity]=39"\
-    --form "items[][unit]=architecto"\
-    --form "items[][price]=39"\
-    --form "invoice_file=@C:\Users\ninad\AppData\Local\Temp\phpF7D0.tmp" </code></pre></div>
+    --form "created_by=1"\
+    --form "workspace_id=1"\
+    --form "record_date=2024-01-15"\
+    --form "from_site_id=5"\
+    --form "to_site_id=6"\
+    --form "items[]=architecto"\
+    --form "items[0][material_id]=10"\
+    --form "items[0][quantity]=100"\
+    --form "items[0][unit]=kg"\
+    --form "items[0][price]=500"\
+    --form "items[1][material_id]=11"\
+    --form "items[1][quantity]=200"\
+    --form "items[1][unit]=kg"\
+    --form "items[1][price]=450"\
+    --form "invoice_file=@C:\Users\ninad\AppData\Local\Temp\phpE63F.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://sitepilot/api/material-transfer/architecto"
+    "http://sitepilot/api/material-transfer/1"
 );
 
 const headers = {
@@ -47757,15 +52987,20 @@ const headers = {
 };
 
 const body = new FormData();
-body.append('created_by', '16');
-body.append('workspace_id', '16');
-body.append('record_date', '2026-05-27T20:45:04');
-body.append('from_site_id', '16');
-body.append('to_site_id', '16');
-body.append('items[][material_id]', '16');
-body.append('items[][quantity]', '39');
-body.append('items[][unit]', 'architecto');
-body.append('items[][price]', '39');
+body.append('created_by', '1');
+body.append('workspace_id', '1');
+body.append('record_date', '2024-01-15');
+body.append('from_site_id', '5');
+body.append('to_site_id', '6');
+body.append('items[]', 'architecto');
+body.append('items[0][material_id]', '10');
+body.append('items[0][quantity]', '100');
+body.append('items[0][unit]', 'kg');
+body.append('items[0][price]', '500');
+body.append('items[1][material_id]', '11');
+body.append('items[1][quantity]', '200');
+body.append('items[1][unit]', 'kg');
+body.append('items[1][price]', '450');
 body.append('invoice_file', document.querySelector('input[name="invoice_file"]').files[0]);
 
 fetch(url, {
@@ -47777,7 +53012,38 @@ fetch(url, {
 </span>
 
 <span id="example-responses-PUTapi-material-transfer--id-">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;Material transfer updated successfully&quot;,
+  &quot;data&quot;: {...}
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Material transfer not found&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-PUTapi-material-transfer--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-PUTapi-material-transfer--id-"></span>:
@@ -47868,15 +53134,15 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
-                <input type="text" style="display: none"
-                              name="id"                data-endpoint="PUTapi-material-transfer--id-"
-               value="architecto"
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="PUTapi-material-transfer--id-"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the material transfer. Example: <code>architecto</code></p>
+<p>Material Transfer ID. Example: <code>1</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -47886,10 +53152,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="created_by"                data-endpoint="PUTapi-material-transfer--id-"
-               value="16"
+               value="1"
                data-component="body">
     <br>
-<p>Example: <code>16</code></p>
+<p>Creator user ID. Example: <code>1</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
@@ -47898,22 +53164,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="workspace_id"                data-endpoint="PUTapi-material-transfer--id-"
-               value="16"
+               value="1"
                data-component="body">
     <br>
-<p>Example: <code>16</code></p>
+<p>Workspace ID. Example: <code>1</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>record_date</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>date</small>&nbsp;
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="record_date"                data-endpoint="PUTapi-material-transfer--id-"
-               value="2026-05-27T20:45:04"
+               value="2024-01-15"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-05-27T20:45:04</code></p>
+<p>Transfer date. Example: <code>2024-01-15</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>from_site_id</code></b>&nbsp;&nbsp;
@@ -47922,10 +53188,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="from_site_id"                data-endpoint="PUTapi-material-transfer--id-"
-               value="16"
+               value="5"
                data-component="body">
     <br>
-<p>Example: <code>16</code></p>
+<p>Source site ID. Example: <code>5</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>to_site_id</code></b>&nbsp;&nbsp;
@@ -47934,20 +53200,20 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="to_site_id"                data-endpoint="PUTapi-material-transfer--id-"
-               value="16"
+               value="6"
                data-component="body">
     <br>
-<p>The value and <code>from_site_id</code> must be different. Example: <code>16</code></p>
+<p>Destination site ID. Example: <code>6</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
         <details>
             <summary style="padding-bottom: 10px;">
                 <b style="line-height: 2;"><code>items</code></b>&nbsp;&nbsp;
-<small>object[]</small>&nbsp;
+<small>string[]</small>&nbsp;
  &nbsp;
  &nbsp;
 <br>
-<p>Must have at least 1 items.</p>
+<p>Array of transfer items.</p>
             </summary>
                                                 <div style="margin-left: 14px; clear: unset;">
                         <b style="line-height: 2;"><code>material_id</code></b>&nbsp;&nbsp;
@@ -48009,7 +53275,103 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Must be a file. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpF7D0.tmp</code></p>
+<p>optional Invoice document (max 20MB, allowed: pdf,doc,jpg,jpeg,png). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE63F.tmp</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][material_id]"                data-endpoint="PUTapi-material-transfer--id-"
+               value="10"
+               data-component="body">
+    <br>
+<p>Material ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][quantity]"                data-endpoint="PUTapi-material-transfer--id-"
+               value="100"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>100</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][unit]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][unit]"                data-endpoint="PUTapi-material-transfer--id-"
+               value="kg"
+               data-component="body">
+    <br>
+<p>Unit. Example: <code>kg</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][price]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][price]"                data-endpoint="PUTapi-material-transfer--id-"
+               value="500"
+               data-component="body">
+    <br>
+<p>Unit price. Example: <code>500</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][material_id]"                data-endpoint="PUTapi-material-transfer--id-"
+               value="11"
+               data-component="body">
+    <br>
+<p>Material ID (if multiple items). Example: <code>11</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][quantity]"                data-endpoint="PUTapi-material-transfer--id-"
+               value="200"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>200</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][unit]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[1][unit]"                data-endpoint="PUTapi-material-transfer--id-"
+               value="kg"
+               data-component="body">
+    <br>
+<p>Unit. Example: <code>kg</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][price]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][price]"                data-endpoint="PUTapi-material-transfer--id-"
+               value="450"
+               data-component="body">
+    <br>
+<p>Unit price. Example: <code>450</code></p>
         </div>
         </form>
 
@@ -48027,7 +53389,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://sitepilot/api/material-transfer/architecto" \
+    "http://sitepilot/api/material-transfer/1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -48035,7 +53397,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://sitepilot/api/material-transfer/architecto"
+    "http://sitepilot/api/material-transfer/1"
 );
 
 const headers = {
@@ -48053,7 +53415,37 @@ fetch(url, {
 </span>
 
 <span id="example-responses-DELETEapi-material-transfer--id-">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: true,
+    &quot;message&quot;: &quot;Material transfer deleted successfully&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Material transfer not found&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-DELETEapi-material-transfer--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-DELETEapi-material-transfer--id-"></span>:
@@ -48140,25 +53532,25 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
+<small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
-                <input type="text" style="display: none"
-                              name="id"                data-endpoint="DELETEapi-material-transfer--id-"
-               value="architecto"
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="DELETEapi-material-transfer--id-"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the material transfer. Example: <code>architecto</code></p>
+<p>Material Transfer ID. Example: <code>1</code></p>
             </div>
                     </form>
 
-                    <h2 id="material-transfer-POSTapi-material-transfer-create-data">POST api/material-transfer/create-data</h2>
+                    <h2 id="material-transfer-POSTapi-material-transfer-create-data">Get Material Transfer Creation Form Data.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Retrieve metadata required for the material transfer creation form including sites and next record number.</p>
 
 <span id="example-requests-POSTapi-material-transfer-create-data">
 <blockquote>Example request:</blockquote>
@@ -48166,7 +53558,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://sitepilot/api/material-transfer/create-data" \
+    "http://sitepilot/api/material-transfer/create-data?workspace_id=1&amp;site_id=5" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -48176,6 +53568,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/material-transfer/create-data"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -48192,7 +53591,32 @@ fetch(url, {
 </span>
 
 <span id="example-responses-POSTapi-material-transfer-create-data">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;Form data fetched successfully&quot;,
+  &quot;data&quot;: {
+    &quot;sites&quot;: [{&quot;id&quot;: 5, &quot;name&quot;: &quot;Site A&quot;}, {&quot;id&quot;: 6, &quot;name&quot;: &quot;Site B&quot;}],
+    &quot;next_record_number&quot;: &quot;MT-0001&quot;,
+    &quot;stock&quot;: {...}
+  }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-material-transfer-create-data" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-material-transfer-create-data"></span>:
@@ -48276,15 +53700,40 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-material-transfer-create-data"
+               value="1"
+               data-component="query">
+    <br>
+<p>Workspace ID to scope lookups. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-material-transfer-create-data"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Site/Project ID to get stock for. Example: <code>5</code></p>
+            </div>
+                </form>
 
-                    <h2 id="material-transfer-GETapi-ajax-get-stock-by-site">API: get stock by site</h2>
+                    <h2 id="material-transfer-GETapi-ajax-get-stock-by-site">API: get stock by site.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Retrieve current stock levels for a specific material at a site.</p>
 
 <span id="example-requests-GETapi-ajax-get-stock-by-site">
 <blockquote>Example request:</blockquote>
@@ -48292,7 +53741,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/ajax/get-stock-by-site" \
+    --get "http://sitepilot/api/ajax/get-stock-by-site?site_id=5&amp;material_id=10" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -48302,6 +53751,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/ajax/get-stock-by-site"
 );
+
+const params = {
+    "site_id": "5",
+    "material_id": "10",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -48319,19 +53775,24 @@ fetch(url, {
 
 <span id="example-responses-GETapi-ajax-get-stock-by-site">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/ajax/get-stock-by-site could not be found.&quot;
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;Stock fetched successfully&quot;,
+  &quot;data&quot;: {...}
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;status&quot;: 0,
+    &quot;message&quot;: &quot;Permission denied&quot;
 }</code>
  </pre>
     </span>
@@ -48418,7 +53879,32 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="GETapi-ajax-get-stock-by-site"
+               value="5"
+               data-component="query">
+    <br>
+<p>Site/Project ID. Example: <code>5</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>material_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="material_id"                data-endpoint="GETapi-ajax-get-stock-by-site"
+               value="10"
+               data-component="query">
+    <br>
+<p>Material ID to check stock. Example: <code>10</code></p>
+            </div>
+                </form>
 
                 <h1 id="materials">Materials</h1>
 
@@ -48860,7 +54346,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "reorder_level=100"\
     --form "status=active"\
     --form "created_by=1"\
-    --form "image=@C:\Users\ninad\AppData\Local\Temp\phpEBFE.tmp" </code></pre></div>
+    --form "image=@C:\Users\ninad\AppData\Local\Temp\phpDA1B.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -49137,7 +54623,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Material image, max 2 MB, JPEG / PNG. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEBFE.tmp</code></p>
+<p>optional Material image, max 2 MB, JPEG / PNG. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpDA1B.tmp</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
@@ -50172,7 +55658,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "reorder_level=150"\
     --form "status=active"\
     --form "created_by=1"\
-    --form "image=@C:\Users\ninad\AppData\Local\Temp\phpEC1E.tmp" </code></pre></div>
+    --form "image=@C:\Users\ninad\AppData\Local\Temp\phpDA5B.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -50446,7 +55932,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Replacement material image, max 2 MB. Omit to keep current image. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpEC1E.tmp</code></p>
+<p>optional Replacement material image, max 2 MB. Omit to keep current image. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpDA5B.tmp</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>created_by</code></b>&nbsp;&nbsp;
@@ -55338,7 +60824,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "notes=Partial payment for invoice"\
     --form "ac_payment_status=pending"\
     --form "rejection_reason=Invalid proof"\
-    --form "payment_proff_file=@C:\Users\ninad\AppData\Local\Temp\phpFBEA.tmp" </code></pre></div>
+    --form "payment_proff_file=@C:\Users\ninad\AppData\Local\Temp\phpE950.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -55624,7 +61110,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Payment proof document. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpFBEA.tmp</code></p>
+<p>optional Payment proof document. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE950.tmp</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>ac_payment_status</code></b>&nbsp;&nbsp;
@@ -61280,7 +66766,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "invoice_type=general_po"\
     --form "total_amount=50000"\
     --form "items[]=architecto"\
-    --form "invoice_file=@C:\Users\ninad\AppData\Local\Temp\phpF19F.tmp" </code></pre></div>
+    --form "invoice_file=@C:\Users\ninad\AppData\Local\Temp\phpE086.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -61476,7 +66962,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Invoice document (PDF, JPG, JPEG, PNG, max 2MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpF19F.tmp</code></p>
+<p>optional Invoice document (PDF, JPG, JPEG, PNG, max 2MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE086.tmp</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>invoice_type</code></b>&nbsp;&nbsp;
@@ -63146,7 +68632,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://sitepilot/api/purchase-orders/create-data" \
+    "http://sitepilot/api/purchase-orders/create-data?workspace_id=1&amp;site_id=5" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -63156,6 +68642,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/purchase-orders/create-data"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -63172,7 +68665,34 @@ fetch(url, {
 </span>
 
 <span id="example-responses-POSTapi-purchase-orders-create-data">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;Purchase order create data fetched successfully&quot;,
+  &quot;data&quot;: {
+    &quot;suppliers&quot;: [...],
+    &quot;materials&quot;: [...],
+    &quot;sites&quot;: [...],
+    &quot;indents&quot;: [...],
+    &quot;gstMasters&quot;: [...]
+  }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-purchase-orders-create-data" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-purchase-orders-create-data"></span>:
@@ -63256,7 +68776,32 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-purchase-orders-create-data"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Workspace ID to scope lookups. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="POSTapi-purchase-orders-create-data"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Site ID to scope lookups. Example: <code>5</code></p>
+            </div>
+                </form>
 
                     <h2 id="purchase-orders-GETapi-purchase-orders--id--indent-materials">Get materials for a specific indent.</h2>
 
@@ -63275,7 +68820,11 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --get "http://sitepilot/api/purchase-orders/1/indent-materials" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"indent_id\": 10
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -63289,29 +68838,42 @@ const headers = {
     "Accept": "application/json",
 };
 
+let body = {
+    "indent_id": 10
+};
 
 fetch(url, {
     method: "GET",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-GETapi-purchase-orders--id--indent-materials">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/purchase-orders/1/indent-materials could not be found.&quot;
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;Indent materials fetched successfully&quot;,
+  &quot;data&quot;: {
+    &quot;indent&quot;: {...},
+    &quot;materials&quot;: [...]
+  }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;error_code&quot;: &quot;PO_INDENT_NOT_FOUND&quot;,
+    &quot;message&quot;: &quot;Indent not found&quot;
 }</code>
  </pre>
     </span>
@@ -63411,7 +68973,20 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>The ID of the purchase order. Example: <code>1</code></p>
             </div>
-                    </form>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>indent_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="indent_id"                data-endpoint="GETapi-purchase-orders--id--indent-materials"
+               value="10"
+               data-component="body">
+    <br>
+<p>Indent ID. Example: <code>10</code></p>
+        </div>
+        </form>
 
                     <h2 id="purchase-orders-GETapi-purchase-orders--id--approve">Get approve form data for a purchase order.</h2>
 
@@ -63455,19 +69030,21 @@ fetch(url, {
 
 <span id="example-responses-GETapi-purchase-orders--id--approve">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;data&quot;: {&quot;purchase_order&quot;: {...}, &quot;allowed_transitions&quot;: [...]}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not found):</p>
+        </blockquote>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/purchase-orders/1/approve could not be found.&quot;
+    &quot;success&quot;: false,
+    &quot;error_code&quot;: &quot;PO_NOT_FOUND&quot;,
+    &quot;message&quot;: &quot;Purchase order not found&quot;
 }</code>
  </pre>
     </span>
@@ -63565,7 +69142,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="1"
                data-component="url">
     <br>
-<p>The ID of the purchase order. Example: <code>1</code></p>
+<p>Purchase Order ID. Example: <code>1</code></p>
             </div>
                     </form>
 
@@ -63586,7 +69163,12 @@ You can check the Dev Tools console for debugging information.</code></pre>
     "http://sitepilot/api/purchase-orders/1/status" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"status\": \"Approved\",
+    \"reason\": \"Good quality materials\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -63600,16 +69182,49 @@ const headers = {
     "Accept": "application/json",
 };
 
+let body = {
+    "status": "Approved",
+    "reason": "Good quality materials"
+};
 
 fetch(url, {
     method: "PUT",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-PUTapi-purchase-orders--id--status">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;PO status updated&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;error_code&quot;: &quot;PO_NOT_FOUND&quot;,
+    &quot;message&quot;: &quot;Purchase order not found&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-PUTapi-purchase-orders--id--status" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-PUTapi-purchase-orders--id--status"></span>:
@@ -63704,9 +69319,34 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="1"
                data-component="url">
     <br>
-<p>The ID of the purchase order. Example: <code>1</code></p>
+<p>Purchase Order ID. Example: <code>1</code></p>
             </div>
-                    </form>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="status"                data-endpoint="PUTapi-purchase-orders--id--status"
+               value="Approved"
+               data-component="body">
+    <br>
+<p>New status (Approved, Rejected, Flagged, Short Closed). Example: <code>Approved</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>reason</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="reason"                data-endpoint="PUTapi-purchase-orders--id--status"
+               value="Good quality materials"
+               data-component="body">
+    <br>
+<p>optional Reason for status change. Example: <code>Good quality materials</code></p>
+        </div>
+        </form>
 
                     <h2 id="purchase-orders-POSTapi-purchase-orders--id--short-close">Short close a Purchase Order.</h2>
 
@@ -63714,7 +69354,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-<p>Only Partial Received POs can be short closed.</p>
+
 
 <span id="example-requests-POSTapi-purchase-orders--id--short-close">
 <blockquote>Example request:</blockquote>
@@ -63725,7 +69365,11 @@ You can check the Dev Tools console for debugging information.</code></pre>
     "http://sitepilot/api/purchase-orders/1/short-close" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"reason\": \"Project completed early\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
@@ -63739,16 +69383,48 @@ const headers = {
     "Accept": "application/json",
 };
 
+let body = {
+    "reason": "Project completed early"
+};
 
 fetch(url, {
     method: "POST",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-POSTapi-purchase-orders--id--short-close">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;PO short closed successfully&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (400, Status error):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;error_code&quot;: &quot;PO_STATUS_ERROR&quot;,
+    &quot;message&quot;: &quot;Only Partial Received PO can be short closed&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-POSTapi-purchase-orders--id--short-close" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-purchase-orders--id--short-close"></span>:
@@ -63843,9 +69519,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="1"
                data-component="url">
     <br>
-<p>The ID of the purchase order. Example: <code>1</code></p>
+<p>Purchase Order ID. Example: <code>1</code></p>
             </div>
-                    </form>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>reason</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="reason"                data-endpoint="POSTapi-purchase-orders--id--short-close"
+               value="Project completed early"
+               data-component="body">
+    <br>
+<p>Reason for short closing. Example: <code>Project completed early</code></p>
+        </div>
+        </form>
 
                     <h2 id="purchase-orders-GETapi-purchase-orders">Display a listing of the purchase orders.</h2>
 
@@ -63861,7 +69550,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://sitepilot/api/purchase-orders" \
+    --get "http://sitepilot/api/purchase-orders?workspace_id=1&amp;site_id=5&amp;invoicing_status=not_invoiced" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -63871,6 +69560,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-javascript">const url = new URL(
     "http://sitepilot/api/purchase-orders"
 );
+
+const params = {
+    "workspace_id": "1",
+    "site_id": "5",
+    "invoicing_status": "not_invoiced",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
@@ -63888,19 +69585,24 @@ fetch(url, {
 
 <span id="example-responses-GETapi-purchase-orders">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/purchase-orders could not be found.&quot;
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;Purchase orders fetched successfully&quot;,
+  &quot;data&quot;: [...]
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
 }</code>
  </pre>
     </span>
@@ -63987,7 +69689,44 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                            <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="GETapi-purchase-orders"
+               value="1"
+               data-component="query">
+    <br>
+<p>optional Filter by workspace ID. Example: <code>1</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="GETapi-purchase-orders"
+               value="5"
+               data-component="query">
+    <br>
+<p>optional Filter by site/project ID. Example: <code>5</code></p>
+            </div>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>invoicing_status</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="invoicing_status"                data-endpoint="GETapi-purchase-orders"
+               value="not_invoiced"
+               data-component="query">
+    <br>
+<p>optional Filter by invoicing status (not_invoiced, partially_invoiced, fully_invoiced). Example: <code>not_invoiced</code></p>
+            </div>
+                </form>
 
                     <h2 id="purchase-orders-POSTapi-purchase-orders">Store a newly created purchase order in storage.</h2>
 
@@ -64014,6 +69753,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "tax_type=cgst"\
     --form "description=Construction materials"\
     --form "items[]=architecto"\
+    --form "items[0][material_id]=10"\
+    --form "items[0][quantity]=100"\
+    --form "items[0][unit]=kg"\
+    --form "items[0][price]=500"\
+    --form "items[0][gst_master_id]=1"\
+    --form "items[0][discount_amount]=0"\
+    --form "items[0][remarks]=Urgent"\
+    --form "items[1][material_id]=11"\
+    --form "items[1][quantity]=200"\
+    --form "items[1][unit]=kg"\
+    --form "items[1][price]=450"\
+    --form "items[1][gst_master_id]=1"\
+    --form "items[1][discount_amount]=0"\
     --form "additional_charge=0"\
     --form "additional_deduction=0"\
     --form "additional_discount=0"\
@@ -64022,7 +69774,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "delivery_terms_conditions=Within 30 days"\
     --form "payment_terms_conditions=Net 30 days"\
     --form "remark=Urgent delivery"\
-    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\phpF3B3.tmp" </code></pre></div>
+    --form "assign_to[]=1"\
+    --form "workspace_id=1"\
+    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\phpE28B.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -64044,6 +69798,19 @@ body.append('indent_id', '10');
 body.append('tax_type', 'cgst');
 body.append('description', 'Construction materials');
 body.append('items[]', 'architecto');
+body.append('items[0][material_id]', '10');
+body.append('items[0][quantity]', '100');
+body.append('items[0][unit]', 'kg');
+body.append('items[0][price]', '500');
+body.append('items[0][gst_master_id]', '1');
+body.append('items[0][discount_amount]', '0');
+body.append('items[0][remarks]', 'Urgent');
+body.append('items[1][material_id]', '11');
+body.append('items[1][quantity]', '200');
+body.append('items[1][unit]', 'kg');
+body.append('items[1][price]', '450');
+body.append('items[1][gst_master_id]', '1');
+body.append('items[1][discount_amount]', '0');
 body.append('additional_charge', '0');
 body.append('additional_deduction', '0');
 body.append('additional_discount', '0');
@@ -64052,6 +69819,8 @@ body.append('delivery_address', 'Site A, Mumbai');
 body.append('delivery_terms_conditions', 'Within 30 days');
 body.append('payment_terms_conditions', 'Net 30 days');
 body.append('remark', 'Urgent delivery');
+body.append('assign_to[]', '1');
+body.append('workspace_id', '1');
 body.append('reference_file', document.querySelector('input[name="reference_file"]').files[0]);
 
 fetch(url, {
@@ -64064,11 +69833,28 @@ fetch(url, {
 
 <span id="example-responses-POSTapi-purchase-orders">
             <blockquote>
-            <p>Example response (200):</p>
+            <p>Example response (201, Success):</p>
         </blockquote>
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;Purchase order created successfully&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, Validation error):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: false, &quot;message&quot;: &quot;Validation failed&quot;, &quot;errors&quot;: {...}}</code>
  </pre>
     </span>
 <span id="execution-results-POSTapi-purchase-orders" hidden>
@@ -64228,100 +70014,174 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>optional Description. Example: <code>Construction materials</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
-        <details>
-            <summary style="padding-bottom: 10px;">
-                <b style="line-height: 2;"><code>items</code></b>&nbsp;&nbsp;
+            <b style="line-height: 2;"><code>items</code></b>&nbsp;&nbsp;
 <small>string[]</small>&nbsp;
  &nbsp;
  &nbsp;
-<br>
-<p>Array of PO items.</p>
-            </summary>
-                                                <div style=" margin-left: 14px; clear: unset;">
-        <details>
-            <summary style="padding-bottom: 10px;">
-                <b style="line-height: 2;"><code>*</code></b>&nbsp;&nbsp;
-<small>object</small>&nbsp;
-<i>optional</i> &nbsp;
- &nbsp;
-<br>
-
-            </summary>
-                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>material_id</code></b>&nbsp;&nbsp;
+                <input type="text" style="display: none"
+                              name="items[0]"                data-endpoint="POSTapi-purchase-orders"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="items[1]"                data-endpoint="POSTapi-purchase-orders"
+               data-component="body">
+    <br>
+<p>Array of PO items (use indexed notation: items[0], items[1], etc.).</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][material_id]</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
-               step="any"               name="items.*.material_id"                data-endpoint="POSTapi-purchase-orders"
+               step="any"               name="items[0][material_id]"                data-endpoint="POSTapi-purchase-orders"
                value="10"
                data-component="body">
     <br>
 <p>Material ID. Example: <code>10</code></p>
-                    </div>
-                                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>quantity</code></b>&nbsp;&nbsp;
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][quantity]</code></b>&nbsp;&nbsp;
 <small>number</small>&nbsp;
  &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
-               step="any"               name="items.*.quantity"                data-endpoint="POSTapi-purchase-orders"
+               step="any"               name="items[0][quantity]"                data-endpoint="POSTapi-purchase-orders"
                value="100"
                data-component="body">
     <br>
 <p>Quantity. Example: <code>100</code></p>
-                    </div>
-                                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>unit</code></b>&nbsp;&nbsp;
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][unit]</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="items.*.unit"                data-endpoint="POSTapi-purchase-orders"
+                              name="items[0][unit]"                data-endpoint="POSTapi-purchase-orders"
                value="kg"
                data-component="body">
     <br>
 <p>Unit. Example: <code>kg</code></p>
-                    </div>
-                                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>price</code></b>&nbsp;&nbsp;
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][price]</code></b>&nbsp;&nbsp;
 <small>number</small>&nbsp;
  &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
-               step="any"               name="items.*.price"                data-endpoint="POSTapi-purchase-orders"
+               step="any"               name="items[0][price]"                data-endpoint="POSTapi-purchase-orders"
                value="500"
                data-component="body">
     <br>
 <p>Unit price. Example: <code>500</code></p>
-                    </div>
-                                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>gst_master_id</code></b>&nbsp;&nbsp;
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][gst_master_id]</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
  &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
-               step="any"               name="items.*.gst_master_id"                data-endpoint="POSTapi-purchase-orders"
+               step="any"               name="items[0][gst_master_id]"                data-endpoint="POSTapi-purchase-orders"
                value="1"
                data-component="body">
     <br>
 <p>GST Master ID. Example: <code>1</code></p>
-                    </div>
-                                                                <div style="margin-left: 28px; clear: unset;">
-                        <b style="line-height: 2;"><code>discount_amount</code></b>&nbsp;&nbsp;
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][discount_amount]</code></b>&nbsp;&nbsp;
 <small>number</small>&nbsp;
  &nbsp;
  &nbsp;
                 <input type="number" style="display: none"
-               step="any"               name="items.*.discount_amount"                data-endpoint="POSTapi-purchase-orders"
+               step="any"               name="items[0][discount_amount]"                data-endpoint="POSTapi-purchase-orders"
                value="0"
                data-component="body">
     <br>
 <p>Discount amount. Example: <code>0</code></p>
-                    </div>
-                                    </details>
         </div>
-                                        </details>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][remarks]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][remarks]"                data-endpoint="POSTapi-purchase-orders"
+               value="Urgent"
+               data-component="body">
+    <br>
+<p>optional Item remarks. Example: <code>Urgent</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][material_id]"                data-endpoint="POSTapi-purchase-orders"
+               value="11"
+               data-component="body">
+    <br>
+<p>Material ID (if multiple items). Example: <code>11</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][quantity]"                data-endpoint="POSTapi-purchase-orders"
+               value="200"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>200</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][unit]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[1][unit]"                data-endpoint="POSTapi-purchase-orders"
+               value="kg"
+               data-component="body">
+    <br>
+<p>Unit. Example: <code>kg</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][price]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][price]"                data-endpoint="POSTapi-purchase-orders"
+               value="450"
+               data-component="body">
+    <br>
+<p>Unit price. Example: <code>450</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][gst_master_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][gst_master_id]"                data-endpoint="POSTapi-purchase-orders"
+               value="1"
+               data-component="body">
+    <br>
+<p>GST Master ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][discount_amount]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][discount_amount]"                data-endpoint="POSTapi-purchase-orders"
+               value="0"
+               data-component="body">
+    <br>
+<p>Discount amount. Example: <code>0</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>additional_charge</code></b>&nbsp;&nbsp;
@@ -64429,7 +70289,33 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>optional Reference document (max 10MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpF3B3.tmp</code></p>
+<p>optional Reference document (max 10MB, allowed: pdf,doc,docx,jpg,jpeg,png). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE28B.tmp</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>assign_to</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="assign_to[0]"                data-endpoint="POSTapi-purchase-orders"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="assign_to[1]"                data-endpoint="POSTapi-purchase-orders"
+               data-component="body">
+    <br>
+<p>optional Array of user IDs to assign.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="POSTapi-purchase-orders"
+               value="1"
+               data-component="body">
+    <br>
+<p>optional Workspace ID. Example: <code>1</code></p>
         </div>
         </form>
 
@@ -64474,19 +70360,31 @@ fetch(url, {
 
 <span id="example-responses-GETapi-purchase-orders--id-">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200, Success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;Purchase order fetched successfully&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;The route api/purchase-orders/1 could not be found.&quot;
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;error_code&quot;: &quot;PO_NOT_FOUND&quot;,
+    &quot;message&quot;: &quot;Purchase order not found&quot;
 }</code>
  </pre>
     </span>
@@ -64584,7 +70482,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="1"
                data-component="url">
     <br>
-<p>The ID of the purchase order. Example: <code>1</code></p>
+<p>Purchase Order ID. Example: <code>1</code></p>
             </div>
                     </form>
 
@@ -64604,8 +70502,39 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <pre><code class="language-bash">curl --request PUT \
     "http://sitepilot/api/purchase-orders/1" \
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "po_date=2024-01-15"\
+    --form "supplier_id=1"\
+    --form "site_id=5"\
+    --form "indent_id=10"\
+    --form "tax_type=cgst"\
+    --form "description=Construction materials"\
+    --form "items[]=architecto"\
+    --form "items[0][material_id]=10"\
+    --form "items[0][quantity]=100"\
+    --form "items[0][unit]=kg"\
+    --form "items[0][price]=500"\
+    --form "items[0][gst_master_id]=1"\
+    --form "items[0][discount_amount]=0"\
+    --form "items[0][remarks]=Updated"\
+    --form "items[1][material_id]=11"\
+    --form "items[1][quantity]=200"\
+    --form "items[1][unit]=kg"\
+    --form "items[1][price]=450"\
+    --form "items[1][gst_master_id]=1"\
+    --form "items[1][discount_amount]=0"\
+    --form "additional_charge=0"\
+    --form "additional_deduction=0"\
+    --form "additional_discount=0"\
+    --form "delivery_date=2024-02-15"\
+    --form "delivery_address=Site A, Mumbai"\
+    --form "delivery_terms_conditions=Within 30 days"\
+    --form "payment_terms_conditions=Net 30 days"\
+    --form "remark=Updated delivery"\
+    --form "assign_to[]=1"\
+    --form "workspace_id=1"\
+    --form "reference_file=@C:\Users\ninad\AppData\Local\Temp\phpE2BA.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -64615,20 +70544,92 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 const headers = {
     "Authorization": "Bearer {YOUR_AUTH_KEY}",
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
     "Accept": "application/json",
 };
 
+const body = new FormData();
+body.append('po_date', '2024-01-15');
+body.append('supplier_id', '1');
+body.append('site_id', '5');
+body.append('indent_id', '10');
+body.append('tax_type', 'cgst');
+body.append('description', 'Construction materials');
+body.append('items[]', 'architecto');
+body.append('items[0][material_id]', '10');
+body.append('items[0][quantity]', '100');
+body.append('items[0][unit]', 'kg');
+body.append('items[0][price]', '500');
+body.append('items[0][gst_master_id]', '1');
+body.append('items[0][discount_amount]', '0');
+body.append('items[0][remarks]', 'Updated');
+body.append('items[1][material_id]', '11');
+body.append('items[1][quantity]', '200');
+body.append('items[1][unit]', 'kg');
+body.append('items[1][price]', '450');
+body.append('items[1][gst_master_id]', '1');
+body.append('items[1][discount_amount]', '0');
+body.append('additional_charge', '0');
+body.append('additional_deduction', '0');
+body.append('additional_discount', '0');
+body.append('delivery_date', '2024-02-15');
+body.append('delivery_address', 'Site A, Mumbai');
+body.append('delivery_terms_conditions', 'Within 30 days');
+body.append('payment_terms_conditions', 'Net 30 days');
+body.append('remark', 'Updated delivery');
+body.append('assign_to[]', '1');
+body.append('workspace_id', '1');
+body.append('reference_file', document.querySelector('input[name="reference_file"]').files[0]);
 
 fetch(url, {
     method: "PUT",
     headers,
+    body,
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
 <span id="example-responses-PUTapi-purchase-orders--id-">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;success&quot;: true, &quot;message&quot;: &quot;Purchase Order updated successfully&quot;, &quot;data&quot;: {...}}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (400, Status error):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;error_code&quot;: &quot;PO_STATUS_ERROR&quot;,
+    &quot;message&quot;: &quot;Only Draft purchase orders can be edited.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;error_code&quot;: &quot;PO_NOT_FOUND&quot;,
+    &quot;message&quot;: &quot;Purchase order not found&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-PUTapi-purchase-orders--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-PUTapi-purchase-orders--id-"></span>:
@@ -64647,7 +70648,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <form id="form-PUTapi-purchase-orders--id-" data-method="PUT"
       data-path="api/purchase-orders/{id}"
       data-authed="1"
-      data-hasfiles="0"
+      data-hasfiles="1"
       data-isarraybody="0"
       autocomplete="off"
       onsubmit="event.preventDefault(); executeTryOut('PUTapi-purchase-orders--id-', this);">
@@ -64699,10 +70700,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="PUTapi-purchase-orders--id-"
-               value="application/json"
+               value="multipart/form-data"
                data-component="header">
     <br>
-<p>Example: <code>application/json</code></p>
+<p>Example: <code>multipart/form-data</code></p>
             </div>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
@@ -64727,9 +70728,386 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="1"
                data-component="url">
     <br>
-<p>The ID of the purchase order. Example: <code>1</code></p>
+<p>Purchase Order ID. Example: <code>1</code></p>
             </div>
-                    </form>
+                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>po_date</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="po_date"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="2024-01-15"
+               data-component="body">
+    <br>
+<p>PO date. Example: <code>2024-01-15</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>supplier_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="supplier_id"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>Supplier ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>site_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="site_id"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="5"
+               data-component="body">
+    <br>
+<p>Site ID. Example: <code>5</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>indent_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="indent_id"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="10"
+               data-component="body">
+    <br>
+<p>Indent ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>tax_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="tax_type"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="cgst"
+               data-component="body">
+    <br>
+<p>Tax type (cgst or igst). Example: <code>cgst</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="description"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="Construction materials"
+               data-component="body">
+    <br>
+<p>optional Description. Example: <code>Construction materials</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0]"                data-endpoint="PUTapi-purchase-orders--id-"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="items[1]"                data-endpoint="PUTapi-purchase-orders--id-"
+               data-component="body">
+    <br>
+<p>Array of PO items (use indexed notation: items[0], items[1], etc.).</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][material_id]"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="10"
+               data-component="body">
+    <br>
+<p>Material ID. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][quantity]"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="100"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>100</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][unit]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][unit]"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="kg"
+               data-component="body">
+    <br>
+<p>Unit. Example: <code>kg</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][price]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][price]"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="500"
+               data-component="body">
+    <br>
+<p>Unit price. Example: <code>500</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][gst_master_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][gst_master_id]"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>GST Master ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][discount_amount]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[0][discount_amount]"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="0"
+               data-component="body">
+    <br>
+<p>Discount amount. Example: <code>0</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[0][remarks]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[0][remarks]"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="Updated"
+               data-component="body">
+    <br>
+<p>optional Item remarks. Example: <code>Updated</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][material_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][material_id]"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="11"
+               data-component="body">
+    <br>
+<p>Material ID (if multiple items). Example: <code>11</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][quantity]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][quantity]"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="200"
+               data-component="body">
+    <br>
+<p>Quantity. Example: <code>200</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][unit]</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="items[1][unit]"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="kg"
+               data-component="body">
+    <br>
+<p>Unit. Example: <code>kg</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][price]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][price]"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="450"
+               data-component="body">
+    <br>
+<p>Unit price. Example: <code>450</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][gst_master_id]</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][gst_master_id]"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>GST Master ID. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>items[1][discount_amount]</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="items[1][discount_amount]"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="0"
+               data-component="body">
+    <br>
+<p>Discount amount. Example: <code>0</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>additional_charge</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="additional_charge"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="0"
+               data-component="body">
+    <br>
+<p>Additional charge. Example: <code>0</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>additional_deduction</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="additional_deduction"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="0"
+               data-component="body">
+    <br>
+<p>Additional deduction. Example: <code>0</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>additional_discount</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="additional_discount"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="0"
+               data-component="body">
+    <br>
+<p>Additional discount. Example: <code>0</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>delivery_date</code></b>&nbsp;&nbsp;
+<small>date</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="delivery_date"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="2024-02-15"
+               data-component="body">
+    <br>
+<p>Delivery date. Example: <code>2024-02-15</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>delivery_address</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="delivery_address"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="Site A, Mumbai"
+               data-component="body">
+    <br>
+<p>optional Delivery address. Example: <code>Site A, Mumbai</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>delivery_terms_conditions</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="delivery_terms_conditions"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="Within 30 days"
+               data-component="body">
+    <br>
+<p>optional Delivery terms. Example: <code>Within 30 days</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>payment_terms_conditions</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="payment_terms_conditions"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="Net 30 days"
+               data-component="body">
+    <br>
+<p>optional Payment terms. Example: <code>Net 30 days</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>remark</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="remark"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="Updated delivery"
+               data-component="body">
+    <br>
+<p>optional Remarks. Example: <code>Updated delivery</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>reference_file</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+                              name="reference_file"                data-endpoint="PUTapi-purchase-orders--id-"
+               value=""
+               data-component="body">
+    <br>
+<p>optional Reference document (max 10MB, allowed: pdf,doc,docx,jpg,jpeg,png). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpE2BA.tmp</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>assign_to</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="assign_to[0]"                data-endpoint="PUTapi-purchase-orders--id-"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="assign_to[1]"                data-endpoint="PUTapi-purchase-orders--id-"
+               data-component="body">
+    <br>
+<p>optional Array of user IDs to assign.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>workspace_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="workspace_id"                data-endpoint="PUTapi-purchase-orders--id-"
+               value="1"
+               data-component="body">
+    <br>
+<p>optional Workspace ID. Example: <code>1</code></p>
+        </div>
+        </form>
 
                     <h2 id="purchase-orders-DELETEapi-purchase-orders--id-">Remove the specified purchase order from storage.</h2>
 
@@ -64737,7 +71115,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <small class="badge badge-darkred">requires authentication</small>
 </p>
 
-
+<p>Only Draft purchase orders can be deleted.</p>
 
 <span id="example-requests-DELETEapi-purchase-orders--id-">
 <blockquote>Example request:</blockquote>
@@ -64771,7 +71149,49 @@ fetch(url, {
 </span>
 
 <span id="example-responses-DELETEapi-purchase-orders--id-">
-</span>
+            <blockquote>
+            <p>Example response (200, Success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: true,
+    &quot;message&quot;: &quot;Purchase Order deleted successfully&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (400, Status error):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;error_code&quot;: &quot;PO_STATUS_ERROR&quot;,
+    &quot;message&quot;: &quot;Only Draft purchase orders can be deleted.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (403, Permission denied):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Permission denied&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;error_code&quot;: &quot;PO_NOT_FOUND&quot;,
+    &quot;message&quot;: &quot;Purchase order not found&quot;
+}</code>
+ </pre>
+    </span>
 <span id="execution-results-DELETEapi-purchase-orders--id-" hidden>
     <blockquote>Received response<span
                 id="execution-response-status-DELETEapi-purchase-orders--id-"></span>:
@@ -64866,7 +71286,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="1"
                data-component="url">
     <br>
-<p>The ID of the purchase order. Example: <code>1</code></p>
+<p>Purchase Order ID. Example: <code>1</code></p>
             </div>
                     </form>
 
@@ -66307,7 +72727,7 @@ API Rule 5: Idempotency support</p>
     --header "Accept: application/json" \
     --data "{
     \"amount\": 27,
-    \"advance_date\": \"2026-05-27T20:45:03\",
+    \"advance_date\": \"2026-05-28T14:34:56\",
     \"source\": \"po\",
     \"remarks\": \"architecto\"
 }"
@@ -66327,7 +72747,7 @@ const headers = {
 
 let body = {
     "amount": 27,
-    "advance_date": "2026-05-27T20:45:03",
+    "advance_date": "2026-05-28T14:34:56",
     "source": "po",
     "remarks": "architecto"
 };
@@ -66470,10 +72890,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="advance_date"                data-endpoint="POSTapi-suppliers--supplierId--advances"
-               value="2026-05-27T20:45:03"
+               value="2026-05-28T14:34:56"
                data-component="body">
     <br>
-<p>Must be a valid date. Example: <code>2026-05-27T20:45:03</code></p>
+<p>Must be a valid date. Example: <code>2026-05-28T14:34:56</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>source</code></b>&nbsp;&nbsp;
@@ -68148,8 +74568,8 @@ Transactions include: Purchase Orders (<code>po</code>), Invoices (<code>invoice
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"from_date\": \"2026-05-27\",
-    \"to_date\": \"2026-05-27\",
+    \"from_date\": \"2026-05-28\",
+    \"to_date\": \"2026-05-28\",
     \"per_page\": 1,
     \"page\": 22
 }"
@@ -68178,8 +74598,8 @@ const headers = {
 };
 
 let body = {
-    "from_date": "2026-05-27",
-    "to_date": "2026-05-27",
+    "from_date": "2026-05-28",
+    "to_date": "2026-05-28",
     "per_page": 1,
     "page": 22
 };
@@ -68422,10 +74842,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="from_date"                data-endpoint="GETapi-reports-supplier-ledger"
-               value="2026-05-27"
+               value="2026-05-28"
                data-component="body">
     <br>
-<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-27</code></p>
+<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-28</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>to_date</code></b>&nbsp;&nbsp;
@@ -68434,10 +74854,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="to_date"                data-endpoint="GETapi-reports-supplier-ledger"
-               value="2026-05-27"
+               value="2026-05-28"
                data-component="body">
     <br>
-<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-27</code></p>
+<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-28</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>per_page</code></b>&nbsp;&nbsp;
@@ -68858,8 +75278,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"from_date\": \"2026-05-27\",
-    \"to_date\": \"2026-05-27\"
+    \"from_date\": \"2026-05-28\",
+    \"to_date\": \"2026-05-28\"
 }"
 </code></pre></div>
 
@@ -68885,8 +75305,8 @@ const headers = {
 };
 
 let body = {
-    "from_date": "2026-05-27",
-    "to_date": "2026-05-27"
+    "from_date": "2026-05-28",
+    "to_date": "2026-05-28"
 };
 
 fetch(url, {
@@ -69074,10 +75494,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="from_date"                data-endpoint="GETapi-reports-supplier-ledger-export-pdf"
-               value="2026-05-27"
+               value="2026-05-28"
                data-component="body">
     <br>
-<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-27</code></p>
+<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-28</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>to_date</code></b>&nbsp;&nbsp;
@@ -69086,10 +75506,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="to_date"                data-endpoint="GETapi-reports-supplier-ledger-export-pdf"
-               value="2026-05-27"
+               value="2026-05-28"
                data-component="body">
     <br>
-<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-27</code></p>
+<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-28</code></p>
         </div>
         </form>
 
@@ -69112,8 +75532,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"from_date\": \"2026-05-27\",
-    \"to_date\": \"2026-05-27\"
+    \"from_date\": \"2026-05-28\",
+    \"to_date\": \"2026-05-28\"
 }"
 </code></pre></div>
 
@@ -69139,8 +75559,8 @@ const headers = {
 };
 
 let body = {
-    "from_date": "2026-05-27",
-    "to_date": "2026-05-27"
+    "from_date": "2026-05-28",
+    "to_date": "2026-05-28"
 };
 
 fetch(url, {
@@ -69332,10 +75752,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="from_date"                data-endpoint="GETapi-reports-supplier-ledger-export-excel"
-               value="2026-05-27"
+               value="2026-05-28"
                data-component="body">
     <br>
-<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-27</code></p>
+<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-28</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>to_date</code></b>&nbsp;&nbsp;
@@ -69344,10 +75764,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="to_date"                data-endpoint="GETapi-reports-supplier-ledger-export-excel"
-               value="2026-05-27"
+               value="2026-05-28"
                data-component="body">
     <br>
-<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-27</code></p>
+<p>Must be a valid date in the format <code>Y-m-d</code>. Example: <code>2026-05-28</code></p>
         </div>
         </form>
 
@@ -75190,7 +81610,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "avatar=@C:\Users\ninad\AppData\Local\Temp\php864.tmp" </code></pre></div>
+    --form "avatar=@C:\Users\ninad\AppData\Local\Temp\phpF5C4.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -75344,7 +81764,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>Profile image (jpeg/png/jpg/gif, max 2 MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\php864.tmp</code></p>
+<p>Profile image (jpeg/png/jpg/gif, max 2 MB). Example: <code>C:\Users\ninad\AppData\Local\Temp\phpF5C4.tmp</code></p>
         </div>
         </form>
 
@@ -76307,7 +82727,7 @@ before submitting the actual import.</p>
     --header "Authorization: Bearer {YOUR_AUTH_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "file=@C:\Users\ninad\AppData\Local\Temp\php8D3.tmp" </code></pre></div>
+    --form "file=@C:\Users\ninad\AppData\Local\Temp\phpF634.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -76469,7 +82889,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>CSV file to preview. Example: <code>C:\Users\ninad\AppData\Local\Temp\php8D3.tmp</code></p>
+<p>CSV file to preview. Example: <code>C:\Users\ninad\AppData\Local\Temp\phpF634.tmp</code></p>
         </div>
         </form>
 

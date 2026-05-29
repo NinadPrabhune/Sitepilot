@@ -226,8 +226,21 @@ class SupplierAdvanceService
                 auth()->id()
             );
 
-            // Trigger ledger entry (will be implemented in LedgerHelper)
-            // LedgerHelper::createAdvancePaymentLedgerEntry($advance, $paymentData);
+            // Create supplier_transactions ledger entry for this advance payment
+            try {
+                LedgerHelper::createAdvancePaymentLedgerEntry($advance, $paymentData);
+                Log::info('Ledger entry created for advance payment', [
+                    'advance_id' => $advance->id,
+                    'advance_number' => $advance->advance_number,
+                    'amount' => $advance->amount,
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Failed to create ledger entry for advance payment', [
+                    'advance_id' => $advance->id,
+                    'error' => $e->getMessage(),
+                ]);
+                throw $e;
+            }
 
             Log::info('Advance payment recorded', [
                 'advance_id' => $advance->id,

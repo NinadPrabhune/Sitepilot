@@ -7,24 +7,49 @@ use App\Models\AppInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-/**
- * @group App Info
- * Endpoints for application information including version, contact details, and privacy policy
- */
-class AppInfoApiController extends Controller
-{
-    public function index(Request $request)
+    /**
+     * @group App Info
+     * Endpoints for application information including version, contact details, and privacy policy
+     */
+    class AppInfoApiController extends Controller
     {
-        try {
-            $appInfo = AppInfo::orderBy('id', 'desc')->get();
+        /**
+         * Get the list of app information.
+         *
+         * @param  \Illuminate\Http\Request  $request
+         * @return \Illuminate\Http\JsonResponse
+         */
+        public function index(Request $request)
+        {
+            try {
+                $appInfo = AppInfo::orderBy('id', 'desc')->get();
 
-            return $this->jsonResponse(true, 'App info retrieved successfully', [
-                'app_info' => $appInfo
-            ]);
-        } catch (\Exception $e) {
-            return $this->jsonResponse(false, $e->getMessage(), [], 500);
+                return $this->jsonResponse(true, 'App info retrieved successfully', [
+                    'app_info' => $appInfo
+                ]);
+            } catch (\Exception $e) {
+                return $this->jsonResponse(false, $e->getMessage(), [], 500);
+            }
         }
-    }
+
+        /**
+         * Display the specified app information.
+         *
+         * @param  int  $id
+         * @return \Illuminate\Http\JsonResponse
+         */
+        public function show($id)
+        {
+            try {
+                $appInfo = AppInfo::findOrFail($id);
+
+                return $this->jsonResponse(true, 'App info retrieved successfully', [
+                    'app_info' => $appInfo
+                ]);
+            } catch (\Exception $e) {
+                return $this->jsonResponse(false, $e->getMessage(), [], 500);
+            }
+        }
 
     public function store(Request $request)
     {

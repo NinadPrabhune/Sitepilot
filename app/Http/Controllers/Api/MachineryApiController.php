@@ -20,6 +20,36 @@ use Illuminate\Support\Facades\Storage;
  */
 class MachineryApiController extends Controller
 {
+    /**
+     * Display a listing of machineries.
+     *
+     * Returns a paginated list of all active machineries. Supports optional filtering
+     * by workspace and site. Only returns machineries with status = 0.
+     *
+     * @authenticated
+     * @requiredPermission machinery manage
+     *
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by site/project ID. Example: 5
+     *
+     * @response status=200 scenario="Success" {
+     *   "status": 1,
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "name": "Excavator JCB",
+     *       "vehicle_number": "MH-01-AB-1234",
+     *       "operational_status": "active",
+     *       "owned_by": "rental",
+     *       ...
+     *     }
+     *   ]
+     * }
+     * @response status=403 scenario="Permission denied" {
+     *   "status": 0,
+     *   "message": "Permission denied"
+     * }
+     */
     public function index(Request $request)
     {
         if (!Auth::user()->isAbleTo('machinery manage')) {
@@ -60,43 +90,215 @@ class MachineryApiController extends Controller
         }
     }
 
+/**
+      * Get data needed for creating machinery
+      *
+      * @authenticated
+      * @requiredPermission machinery create
+      *
+      * @queryParam workspace_id integer required Workspace ID for lookups. Example: 1
+      * @queryParam site_id integer required Site ID for lookups. Example: 5
+      * @queryParam created_by integer required Creator user ID. Example: 1
+      *
+      * @response status=200 scenario="Success" {
+      *   "status": 1,
+      *   "data": {
+      *     "categories": [{"id": 1, "name": "Excavators"}],
+      *     "suppliers": [{"id": 1, "name": "ABC Rentals"}],
+      *     "sites": [{"id": 1, "name": "Project Site A"}],
+      *     "rate_types": [{"value": "hourly", "label": "Hourly"}],
+      *     "operational_statuses": [{"value": "active", "label": "Active"}],
+      *     "ownership_types": [{"value": "owned", "label": "Owned"}]
+      *   },
+      *   "message": "Create data fetched successfully"
+      * }
+      * @response status=403 scenario="Permission denied" {"status": 0, "message": "Permission denied"}
+      */
+    public function createData(Request $request)
+    {
+        if (!Auth::user()->isAbleTo('machinery create')) {
+            return response()->json([
+                'status' => 0,
+                'message' => 'Permission denied'
+            ], 403);
+        }
+
+        try {
+            $request->validate([
+                'site_id' => 'required|integer',
+                'workspace_id' => 'required|integer',
+                'created_by' => 'required|integer',
+            ]);
+
+            $workspaceId = $request->workspace_id;
+            $siteId = $request->site_id;
+
+            // Get machinery categories
+            $categories = \App\Models\MachineryCategory::select('id', 'name')
+                ->where('status', 0)
+                ->orderBy('name')
+                ->get();
+
+            // Get suppliers for rental machinery
+            $suppliers = \App\Models\Supplier::select('id', 'name')
+                ->where('status', 0)
+                ->orderBy('name')
+                ->get();
+
+            // Get sites for the workspace
+            $sites = \Workdo\Taskly\Entities\Project::select('id', 'name')
+                ->where('workspace', $workspaceId)
+                ->orderBy('name')
+                ->get();
+
+            // Get available rate types
+            $rateTypes = [
+                ['value' => 'hourly', 'label' => 'Hourly'],
+                ['value' => 'daily', 'label' => 'Daily'],
+                ['value' => 'monthly', 'label' => 'Monthly']
+            ];
+
+            // Get operational statuses
+            $operationalStatuses = [
+                ['value' => 'active', 'label' => 'Active'],
+                ['value' => 'breakdown', 'label' => 'Breakdown'],
+                ['value' => 'scrap', 'label' => 'Scrap']
+            ];
+
+            // Get ownership types
+            $ownershipTypes = [
+                ['value' => 'owned', 'label' => 'Owned'],
+                ['value' => 'rental', 'label' => 'Rental']
+            ];
+
+            return response()->json([
+                'status' => 1,
+                'data' => [
+                    'categories' => $categories,
+                    'suppliers' => $suppliers,
+                    'sites' => $sites,
+                    'rate_types' => $rateTypes,
+                    'operational_statuses' => $operationalStatuses,
+                    'ownership_types' => $ownershipTypes,
+                    'workspace_id' => $workspaceId,
+                    'site_id' => $siteId
+                ],
+                'message' => 'Create data fetched successfully'
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Error fetching machinery create data: ' . $e->getMessage());
+
+            return response()->json([
+                'status' => 0,
+                'message' => 'Failed to fetch create data.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+/**
+      * Display the specified machinery.
+      *
+      * Returns a single machinery record with all related data by its ID.
+      *
+      * @authenticated
+      * @requiredPermission machinery show
+      *
+      * @urlParam id integer required Machinery ID. Example: 1
+      *
+      * @response status=200 scenario="Success" {
+      *   "status": 1,
+      *   "data": {
+      *     "id": 1,
+      *     "name": "Excavator JCB",
+      *     "vehicle_number": "MH-01-AB-1234",
+      *     "operational_status": "active",
+      *     ...
+      *   }
+      * }
+      * @response status=404 scenario="Machinery not found" {
+      *   "status": 0,
+      *   "message": "Machinery not found"
+      * }
+      * @response status=403 scenario="Permission denied" {
+      *   "status": 0,
+      *   "message": "Permission denied"
+      * }
+      */
+    public function show($id)
+    {
+        if (!Auth::user()->isAbleTo('machinery show')) {
+            return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
+        }
+        $machinery = Machinery::find($id);
+        if (!$machinery) {
+            return response()->json(['status' => 0, 'message' => 'Machinery not found'], 404);
+        }
+
+        return response()->json(['status' => 1, 'data' => new MachineryResource($machinery)]);
+    }
+
     /**
-     * Create Machinery
-     *
-     * Create a new machinery record
-     *
-     * @bodyParam name string required Machinery name. Example: Excavator JCB
-     * @bodyParam category_id integer required Machinery category ID. Example: 1
-     * @bodyParam model_number string optional Model number. Example: JCB 3DX
-     * @bodyParam manufacturer string optional Manufacturer. Example: JCB
-     * @bodyParam purchase_date date optional Purchase date. Example: 2024-01-15
-     * @bodyParam capacity string optional Capacity. Example: 10 tons
-     * @bodyParam maintenance_schedule date optional Next maintenance date. Example: 2024-06-15
-     * @bodyParam remarks string optional Remarks. Example: Regular maintenance required
-     * @bodyParam description string optional Description. Example: Heavy duty excavator
-     * @bodyParam vehicle_number string required Vehicle registration number. Example: MH-01-AB-1234
-     * @bodyParam owned_by string required Ownership type (owned, rental). Example: owned
-     * @bodyParam supplier_id integer required_if:owned_by,rental Supplier ID for rental machinery. Example: 5
-     * @bodyParam rate numeric required Rate value. Example: 1500.00
-     * @bodyParam rate_type string required_if:owned_by,rental Rate type (hourly, daily, monthly). Example: hourly
-     * @bodyParam minimum_billing_hours numeric required_if:owned_by,rental Minimum billing hours. Example: 8
-     * @bodyParam diesel_by_company boolean optional Diesel provided by company. Example: false
-     * @bodyParam operator_by_supplier boolean optional Operator provided by supplier. Example: true
-     * @bodyParam number_of_operators integer required_if:operator_by_supplier,1 Number of operators. Example: 2
-     * @bodyParam purchase_value numeric required_if:owned_by,owned Purchase value. Example: 2500000.00
-     * @bodyParam insurance_due_date date required_if:owned_by,owned Insurance due date. Example: 2024-12-31
-     * @bodyParam puc_due_date date required_if:owned_by,owned PUC due date. Example: 2024-11-30
-     * @bodyParam fitness_due_date date required_if:owned_by,owned Fitness due date. Example: 2024-10-31
-     * @bodyParam last_service_date date required_if:owned_by,owned Last service date. Example: 2024-05-01
-     * @bodyParam operational_status string required Status (active, breakdown, scrap). Example: active
-     * @bodyParam site_id integer required Site ID. Example: 5
-     * @bodyParam status string optional Status. Example: 0
-     * @bodyParam created_by integer required Creator user ID. Example: 1
-     * @bodyParam workspace_id integer required Workspace ID. Example: 1
-     * @bodyParam rental_agreement_file file optional Rental agreement file (PDF/DOC/DOCX max 10MB)
-     * @bodyParam ownership_documents_file file optional Ownership documents file (PDF/DOC/DOCX/IMG max 10MB)
-     * @response {"status": 1, "data": {...}, "message": "Machinery created successfully"}
-     */
+      * Create a newly created machinery record.
+      *
+      * Create a new machinery record with file uploads for rental agreement and ownership documents.
+      * Supports both owned and rental machinery with conditional validation for each type.
+      *
+      * @authenticated
+      * @requiredPermission machinery create
+      *
+      * @bodyParam name string required Machinery name. Example: Excavator JCB
+      * @bodyParam category_id integer required Machinery category ID. Example: 1
+      * @bodyParam model_number string optional Model number. Example: JCB 3DX
+      * @bodyParam manufacturer string optional Manufacturer. Example: JCB
+      * @bodyParam purchase_date date optional Purchase date. Example: 2024-01-15
+      * @bodyParam capacity string optional Capacity. Example: 10 tons
+      * @bodyParam maintenance_schedule date optional Next maintenance date. Example: 2024-06-15
+      * @bodyParam remarks string optional Remarks. Example: Regular maintenance required
+      * @bodyParam description string optional Description. Example: Heavy duty excavator
+      * @bodyParam vehicle_number string required Vehicle registration number. Example: MH-01-AB-1234
+      * @bodyParam owned_by string required Ownership type (owned or rental). Example: owned
+      * @bodyParam supplier_id integer required_if:owned_by,rental Supplier ID for rental machinery. Example: 5
+      * @bodyParam rate numeric required Rate value. Example: 1500.00
+      * @bodyParam rate_type string required_if:owned_by,rental Rate type (hourly, daily, monthly). Example: hourly
+      * @bodyParam minimum_billing_hours numeric required_if:owned_by,rental Minimum billing hours. Example: 8
+      * @bodyParam diesel_by_company boolean optional Diesel provided by company. Example: false
+      * @bodyParam operator_by_supplier boolean optional Operator provided by supplier. Example: true
+      * @bodyParam number_of_operators integer required_if:operator_by_supplier,1 Number of operators. Example: 2
+      * @bodyParam purchase_value numeric required_if:owned_by,owned Purchase value. Example: 2500000.00
+      * @bodyParam insurance_due_date date required_if:owned_by,owned Insurance due date. Example: 2024-12-31
+      * @bodyParam puc_due_date date required_if:owned_by,owned PUC due date. Example: 2024-11-30
+      * @bodyParam fitness_due_date date required_if:owned_by,owned Fitness due date. Example: 2024-10-31
+      * @bodyParam last_service_date date required_if:owned_by,owned Last service date. Example: 2024-05-01
+      * @bodyParam operational_status string required Status (active, breakdown, scrap). Example: active
+      * @bodyParam site_id integer required Site ID. Example: 5
+      * @bodyParam status string optional Status. Example: 0
+      * @bodyParam created_by integer required Creator user ID. Example: 1
+      * @bodyParam workspace_id integer required Workspace ID. Example: 1
+      * @bodyParam rental_agreement_file file optional Rental agreement file (PDF/DOC/DOCX max 10MB). No-example
+      * @bodyParam ownership_documents_file file optional Ownership documents file (PDF/DOC/DOCX/IMG max 10MB). No-example
+      *
+      * @response status=201 scenario="Success" {
+      *   "status": 1,
+      *   "data": {
+      *     "id": 1,
+      *     "name": "Excavator JCB",
+      *     "vehicle_number": "MH-01-AB-1234",
+      *     "operational_status": "active",
+      *     ...
+      *   },
+      *   "message": "Machinery created successfully"
+      * }
+      * @response status=403 scenario="Permission denied" {
+      *   "status": 0,
+      *   "message": "Permission denied"
+      * }
+      * @response status=422 scenario="Validation error" {
+      *   "status": 0,
+      *   "message": "The name field is required."
+      * }
+      */
     public function store(Request $request)
     {
         if (!Auth::user()->isAbleTo('machinery create')) {
@@ -203,8 +405,8 @@ class MachineryApiController extends Controller
     }
 
     /**
-     * Handle file upload for machinery documents
-     */
+      * Handle file upload for machinery documents
+      */
     private function handleFileUpload($file, $machineId)
     {
         $uuid = \Illuminate\Support\Str::uuid()->toString();
@@ -214,121 +416,43 @@ class MachineryApiController extends Controller
     }
 
     /**
-     * Get data needed for creating machinery
+     * Update the specified machinery.
      *
-     * @group Machinery
-     * @bodyParam site_id integer required Site ID. Example: 1
+     * Update an existing machinery record with file uploads for rental agreement and ownership documents.
+     *
+     * @authenticated
+     * @requiredPermission machinery edit
+     *
+     * @urlParam id integer required Machinery ID. Example: 1
+     *
+     * @bodyParam name string required Machinery name. Example: Excavator JCB
+     * @bodyParam category_id integer required Machinery category ID. Example: 1
+     * @bodyParam model_number string optional Model number. Example: JCB 3DX
+     * @bodyParam manufacturer string optional Manufacturer. Example: JCB
+     * @bodyParam purchase_date date optional Purchase date. Example: 2024-01-15
+     * @bodyParam vehicle_number string required Vehicle registration number. Example: MH-01-AB-1234
+     * @bodyParam owned_by string required Ownership type (owned or rental). Example: owned
+     * @bodyParam supplier_id integer required_if:owned_by,rental Supplier ID for rental machinery. Example: 5
+     * @bodyParam rate numeric required Rate value. Example: 1500.00
+     * @bodyParam operational_status string required Status (active, breakdown, scrap). Example: active
      * @bodyParam workspace_id integer required Workspace ID. Example: 1
-     * @bodyParam created_by integer required Creator user ID. Example: 1
-     * @response {
+     * @bodyParam rental_agreement_file file optional Rental agreement file (PDF/DOC/DOCX max 10MB). No-example
+     * @bodyParam ownership_documents_file file optional Ownership documents file (PDF/DOC/DOCX/IMG max 10MB). No-example
+     *
+     * @response status=200 scenario="Success" {
      *   "status": 1,
-     *   "data": {
-     *     "categories": [{"id": 1, "name": "Excavators"}],
-     *     "suppliers": [{"id": 1, "name": "ABC Rentals"}],
-     *     "sites": [{"id": 1, "name": "Project Site A"}],
-     *     "rate_types": [{"value": "hourly", "label": "Hourly"}],
-     *     "operational_statuses": [{"value": "active", "label": "Active"}],
-     *     "ownership_types": [{"value": "owned", "label": "Owned"}]
-     *   },
-     *   "message": "Create data fetched successfully"
+     *   "data": { "id": 1, "name": "Excavator JCB", ... },
+     *   "message": "Machinery updated successfully"
+     * }
+     * @response status=404 scenario="Machinery not found" {
+     *   "status": 0,
+     *   "message": "Machinery not found"
+     * }
+     * @response status=403 scenario="Permission denied" {
+     *   "status": 0,
+     *   "message": "Permission denied"
      * }
      */
-    public function createData(Request $request)
-    {
-        if (!Auth::user()->isAbleTo('machinery create')) {
-            return response()->json([
-                'status' => 0,
-                'message' => 'Permission denied'
-            ], 403);
-        }
-
-        try {
-            $request->validate([
-                'site_id' => 'required|integer',
-                'workspace_id' => 'required|integer',
-                'created_by' => 'required|integer',
-            ]);
-
-            $workspaceId = $request->workspace_id;
-            $siteId = $request->site_id;
-
-            // Get machinery categories
-            $categories = \App\Models\MachineryCategory::select('id', 'name')
-                ->where('status', 0)
-                ->orderBy('name')
-                ->get();
-
-            // Get suppliers for rental machinery
-            $suppliers = \App\Models\Supplier::select('id', 'name')
-                ->where('status', 0)
-                ->orderBy('name')
-                ->get();
-
-            // Get sites for the workspace
-            $sites = \Workdo\Taskly\Entities\Project::select('id', 'name')
-                ->where('workspace', $workspaceId)
-                ->orderBy('name')
-                ->get();
-
-            // Get available rate types
-            $rateTypes = [
-                ['value' => 'hourly', 'label' => 'Hourly'],
-                ['value' => 'daily', 'label' => 'Daily'],
-                ['value' => 'monthly', 'label' => 'Monthly']
-            ];
-
-            // Get operational statuses
-            $operationalStatuses = [
-                ['value' => 'active', 'label' => 'Active'],
-                ['value' => 'breakdown', 'label' => 'Breakdown'],
-                ['value' => 'scrap', 'label' => 'Scrap']
-            ];
-
-            // Get ownership types
-            $ownershipTypes = [
-                ['value' => 'owned', 'label' => 'Owned'],
-                ['value' => 'rental', 'label' => 'Rental']
-            ];
-
-            return response()->json([
-                'status' => 1,
-                'data' => [
-                    'categories' => $categories,
-                    'suppliers' => $suppliers,
-                    'sites' => $sites,
-                    'rate_types' => $rateTypes,
-                    'operational_statuses' => $operationalStatuses,
-                    'ownership_types' => $ownershipTypes,
-                    'workspace_id' => $workspaceId,
-                    'site_id' => $siteId
-                ],
-                'message' => 'Create data fetched successfully'
-            ], 200);
-
-        } catch (\Exception $e) {
-            Log::error('Error fetching machinery create data: ' . $e->getMessage());
-
-            return response()->json([
-                'status' => 0,
-                'message' => 'Failed to fetch create data.',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function show($id)
-    {
-        if (!Auth::user()->isAbleTo('machinery show')) {
-            return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
-        }
-        $machinery = Machinery::find($id);
-        if (!$machinery) {
-            return response()->json(['status' => 0, 'message' => 'Machinery not found'], 404);
-        }
-
-        return response()->json(['status' => 1, 'data' => new MachineryResource($machinery)]);
-    }
-
     public function update(Request $request, $id)
     {
         if (!Auth::user()->isAbleTo('machinery edit')) {
@@ -447,6 +571,29 @@ class MachineryApiController extends Controller
         return response()->json(['status' => 1, 'data' => new MachineryResource($machinery), 'message' => 'Machinery updated successfully']);
     }
 
+    /**
+     * Remove the specified machinery.
+     *
+     * Delete a machinery record by its ID.
+     *
+     * @authenticated
+     * @requiredPermission machinery delete
+     *
+     * @urlParam id integer required Machinery ID. Example: 1
+     *
+     * @response status=200 scenario="Success" {
+     *   "status": 1,
+     *   "message": "Machinery deleted successfully"
+     * }
+     * @response status=404 scenario="Machinery not found" {
+     *   "status": 0,
+     *   "message": "Machinery not found"
+     * }
+     * @response status=403 scenario="Permission denied" {
+     *   "status": 0,
+     *   "message": "Permission denied"
+     * }
+     */
     public function destroy($id)
     {
         if (!Auth::user()->isAbleTo('machinery delete')) {

@@ -14,10 +14,22 @@ use Illuminate\Support\Facades\Validator;
     class AppInfoApiController extends Controller
     {
         /**
-         * Get the list of app information.
+         * List App Info
          *
-         * @param  \Illuminate\Http\Request  $request
-         * @return \Illuminate\Http\JsonResponse
+         * Returns all application information records ordered by ID descending.
+         *
+         * @authenticated
+         *
+         * @response status=200 scenario="Success"
+         * {
+         *   "status": true,
+         *   "message": "App info retrieved successfully",
+         *   "data": {
+         *     "app_info": [
+         *       {"id": 1, "call_us": "+1234567890", "email_us": "support@example.com", "whatsapp": "+1234567890", "version": "1.0.0", "last_updated": "2025-01-01", "privacy_policy": "https://example.com/privacy"}
+         *     ]
+         *   }
+         * }
          */
         public function index(Request $request)
         {
@@ -33,10 +45,24 @@ use Illuminate\Support\Facades\Validator;
         }
 
         /**
-         * Display the specified app information.
+         * Show App Info
          *
-         * @param  int  $id
-         * @return \Illuminate\Http\JsonResponse
+         * Retrieve a specific application information record by ID.
+         *
+         * @authenticated
+         *
+         * @urlParam id integer required App info record ID. Example: 1
+         *
+         * @response status=200 scenario="Success"
+         * {
+         *   "status": true,
+         *   "message": "App info retrieved successfully",
+         *   "data": {
+         *     "app_info": {"id": 1, "call_us": "+1234567890", "email_us": "support@example.com", "version": "1.0.0"}
+         *   }
+         * }
+         * @response status=404 scenario="Not found"
+         * { "status": false, "message": "App info not found", "data": [] }
          */
         public function show($id)
         {
@@ -51,6 +77,31 @@ use Illuminate\Support\Facades\Validator;
             }
         }
 
+    /**
+     * Create App Info
+     *
+     * Create a new application information record with contact details, version, and privacy policy.
+     *
+     * @authenticated
+     *
+     * @bodyParam call_us string optional Phone number for calls. Example: +1234567890
+     * @bodyParam email_us string optional Support email address. Example: support@example.com
+     * @bodyParam whatsapp string optional WhatsApp number. Example: +1234567890
+     * @bodyParam version string optional App version. Example: 1.0.0
+     * @bodyParam last_updated date optional Last updated date (YYYY-MM-DD). Example: 2025-01-01
+     * @bodyParam privacy_policy string optional URL to privacy policy. Example: https://example.com/privacy
+     *
+     * @response status=201 scenario="Created successfully"
+     * {
+     *   "status": true,
+     *   "message": "App info created successfully",
+     *   "data": {
+     *     "app_info": {"id": 1, "call_us": "+1234567890", "version": "1.0.0", ...}
+     *   }
+     * }
+     * @response status=422 scenario="Validation error"
+     * { "status": false, "message": "Validation error", "data": {"call_us": ["..."]} }
+     */
     public function store(Request $request)
     {
         try {
@@ -86,6 +137,35 @@ use Illuminate\Support\Facades\Validator;
         }
     }
 
+    /**
+     * Update App Info
+     *
+     * Update an existing application information record by ID.
+     *
+     * @authenticated
+     *
+     * @urlParam id integer required App info record ID. Example: 1
+     *
+     * @bodyParam call_us string optional Updated phone number for calls. Example: +1234567890
+     * @bodyParam email_us string optional Updated support email. Example: support@example.com
+     * @bodyParam whatsapp string optional Updated WhatsApp number. Example: +1234567890
+     * @bodyParam version string optional Updated app version. Example: 1.1.0
+     * @bodyParam last_updated date optional Updated last updated date (YYYY-MM-DD). Example: 2025-06-01
+     * @bodyParam privacy_policy string optional Updated privacy policy URL. Example: https://example.com/privacy
+     *
+     * @response status=200 scenario="Updated successfully"
+     * {
+     *   "status": true,
+     *   "message": "App info updated successfully",
+     *   "data": {
+     *     "app_info": {"id": 1, "call_us": "+1234567890", "version": "1.1.0", ...}
+     *   }
+     * }
+     * @response status=404 scenario="Not found"
+     * { "status": false, "message": "App info not found", "data": [] }
+     * @response status=422 scenario="Validation error"
+     * { "status": false, "message": "Validation error", "data": {...} }
+     */
     public function update(Request $request, $id)
     {
         try {
@@ -126,6 +206,24 @@ use Illuminate\Support\Facades\Validator;
         }
     }
 
+    /**
+     * Delete App Info
+     *
+     * Permanently delete an application information record by ID.
+     *
+     * @authenticated
+     *
+     * @urlParam id integer required App info record ID. Example: 1
+     *
+     * @response status=200 scenario="Deleted successfully"
+     * {
+     *   "status": true,
+     *   "message": "App info deleted successfully",
+     *   "data": []
+     * }
+     * @response status=404 scenario="Not found"
+     * { "status": false, "message": "App info not found", "data": [] }
+     */
     public function destroy(Request $request, $id)
     {
         try {

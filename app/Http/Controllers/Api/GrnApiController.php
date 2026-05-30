@@ -26,10 +26,29 @@ use Dompdf\Options;
 class GrnApiController extends Controller
 {
     /**
-     * Display a listing of the GRNs.
+     * List GRNs
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * Returns all Goods Received Notes filtered by workspace, site, PO, and status.
+     *
+     * @authenticated
+     * @requiredPermission grn manage
+     *
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by site/project ID. Example: 1
+     * @queryParam po_id integer optional Filter by purchase order ID. Example: 5
+     * @queryParam status string optional Filter by GRN status. Example: completed
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": true,
+     *   "message": "GRNs fetched successfully",
+     *   "data": [
+     *     {"id": 1, "grn_number": "GRN-00001", "po_id": 5, "grn_date": "2025-01-15", ...}
+     *   ],
+     *   "grn_number": ["GRN-00001"]
+     * }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function index(Request $request)
     {
@@ -101,10 +120,31 @@ class GrnApiController extends Controller
     }
 
     /**
-     * Get data for creating a new GRN.
+     * Get GRN Create Data
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * Retrieve reference data (purchase orders, suppliers, materials, GST masters) needed for creating a new GRN.
+     *
+     * @authenticated
+     * @requiredPermission grn create
+     *
+     * @queryParam workspace_id integer optional Workspace ID. Example: 1
+     * @queryParam site_id integer optional Site/project ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": true,
+     *   "message": "GRN create data fetched successfully",
+     *   "data": {
+     *     "purchase_orders": [...],
+     *     "suppliers": [{"id": 1, "name": "ABC Corp"}],
+     *     "materials": [...],
+     *     "gst_masters": [...],
+     *     "selected_site_id": 1,
+     *     "users": [...]
+     *   }
+     * }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function create(Request $request)
     {
@@ -168,10 +208,30 @@ class GrnApiController extends Controller
     }
 
     /**
-     * Fetch PO details via AJAX.
+     * Get PO Details for GRN
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * Fetch Purchase Order details with item-level remaining quantities for GRN creation.
+     *
+     * @authenticated
+     * @requiredPermission grn manage
+     *
+     * @bodyParam po_id integer required Purchase Order ID. Example: 5
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": true,
+     *   "message": "PO details fetched successfully",
+     *   "data": {
+     *     "po": {"id": 5, "po_number": "PO-00001", "supplier_name": "ABC Corp", ...},
+     *     "items": [
+     *       {"id": 10, "material_id": 3, "material_name": "Cement", "ordered_qty": 100, "received_qty": 50, "remaining_qty": 50, ...}
+     *     ]
+     *   }
+     * }
+     * @response status=422 scenario="Validation error"
+     * { "status": false, "message": "Validation failed", "errors": {...} }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function getPoDetails(Request $request)
     {
@@ -262,22 +322,22 @@ class GrnApiController extends Controller
      * @bodyParam description string optional Description. Example: Material delivery
      * @bodyParam received_by string optional Received by. Example: John Doe
      * @bodyParam remarks string optional Remarks. Example: Received in good condition
-     * @bodyParam items array required Array of GRN items.
-     * @bodyParam items.*.received_qty number required Received quantity. Example: 100
-     * @bodyParam items.*.accepted_qty number required Accepted quantity. Example: 95
-     * @bodyParam items.*.rejected_qty number required Rejected quantity. Example: 5
+     * @bodyParam items[0][received_qty] number required Received quantity. Example: 100
+     * @bodyParam items[0][accepted_qty] number required Accepted quantity. Example: 95
+     * @bodyParam items[0][rejected_qty] number required Rejected quantity. Example: 5
      * @bodyParam delivery_challan_file file optional Delivery challan document (max 10MB).
      * @bodyParam reference_file file optional Reference document (max 10MB).
      * @bodyParam po_id integer required if grn_type=against_po Purchase Order ID. Example: 1
-     * @bodyParam items.*.po_item_id integer required if grn_type=against_po PO Item ID. Example: 5
+     * @bodyParam items[0][po_item_id] integer required if grn_type=against_po PO Item ID. Example: 5
      * @bodyParam supplier_id integer required if grn_type=direct Supplier ID. Example: 3
      * @bodyParam site_id integer required if grn_type=direct Site ID. Example: 5
      * @bodyParam supplier_invoice_number string required if grn_type=direct Supplier invoice number. Example: INV-001
      * @bodyParam supplier_invoice_date date optional if grn_type=direct Supplier invoice date. Example: 2024-01-15
      * @bodyParam tax_type string required if grn_type=direct Tax type (cgst or igst). Example: cgst
-     * @bodyParam items.*.material_id integer required if grn_type=direct Material ID. Example: 10
-     * @bodyParam items.*.price number required if grn_type=direct Unit price. Example: 500.00
-     * @bodyParam items.*.gst_master_id integer optional if grn_type=direct GST Master ID. Example: 1
+     * @bodyParam items[0][material_id] integer required if grn_type=direct Material ID. Example: 10
+     * @bodyParam items[0][price] number required if grn_type=direct Unit price. Example: 500.00
+     * @bodyParam items[0][gst_master_id] integer optional if grn_type=direct GST Master ID. Example: 1
+     * @bodyParam assign_to[] integer optional Array of user IDs assigned to this GRN. Example: 1
      * @response {"status": true, "message": "GRN created successfully", "data": {...}}
      */
     public function store(Request $request)
@@ -623,10 +683,26 @@ class GrnApiController extends Controller
     }
 
     /**
-     * Display the specified GRN.
+     * Show GRN
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * Retrieve a specific Goods Received Note by ID with all related items.
+     *
+     * @authenticated
+     * @requiredPermission grn show
+     *
+     * @urlParam id integer required GRN ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": true,
+     *   "message": "GRN fetched successfully",
+     *   "data": {"id": 1, "grn_number": "GRN-00001", "po_id": 5, "items": [...], ...},
+     *   "grn_number": "GRN-00001"
+     * }
+     * @response status=404 scenario="Not found"
+     * { "status": false, "message": "GRN not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function show($id)
     {
@@ -672,10 +748,24 @@ class GrnApiController extends Controller
     }
 
     /**
-     * Remove the specified GRN from storage.
+     * Delete GRN
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * Permanently delete a Goods Received Note. Reverses inventory, PO received quantities, stock transactions, and supplier ledger entries.
+     * Locked GRNs cannot be deleted.
+     *
+     * @authenticated
+     * @requiredPermission grn delete
+     *
+     * @urlParam id integer required GRN ID. Example: 1
+     *
+     * @response status=200 scenario="Deleted successfully"
+     * { "status": true, "message": "GRN deleted successfully" }
+     * @response status=404 scenario="Not found"
+     * { "status": false, "message": "GRN not found" }
+     * @response status=422 scenario="GRN is locked"
+     * { "status": false, "message": "Cannot delete a locked GRN" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function destroy($id)
     {
@@ -797,10 +887,26 @@ class GrnApiController extends Controller
     }
 
     /**
-     * Get data for editing the specified GRN.
+     * Get GRN Edit Data
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * Retrieve a GRN with full relations for editing purposes.
+     *
+     * @authenticated
+     * @requiredPermission grn edit
+     *
+     * @urlParam id integer required GRN ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": true,
+     *   "message": "GRN data fetched successfully",
+     *   "data": {"id": 1, "grn_number": "GRN-00001", "items": [...], ...},
+     *   "grn_number": "GRN-00001"
+     * }
+     * @response status=404 scenario="Not found"
+     * { "status": false, "message": "GRN not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function edit($id)
     {
@@ -841,11 +947,37 @@ class GrnApiController extends Controller
     }
 
     /**
-     * Update the specified GRN in storage.
+     * Update GRN
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * Update a Goods Received Note's header details. Does not update items.
+     *
+     * @authenticated
+     * @requiredPermission grn edit
+     *
+     * @urlParam id integer required GRN ID. Example: 1
+     *
+     * @bodyParam grn_date date required GRN date (YYYY-MM-DD). Example: 2025-01-15
+     * @bodyParam delivery_challan_number string optional Delivery challan number. Example: DC-123
+     * @bodyParam vehicle_number string optional Vehicle number. Example: MH-01-AB-1234
+     * @bodyParam gate_entry_number string optional Gate entry number. Example: GE-456
+     * @bodyParam description string optional Description. Example: Material delivery
+     * @bodyParam received_by string optional Received by name. Example: John Doe
+     * @bodyParam remarks string optional Remarks. Example: Received in good condition
+     * @bodyParam assign_to[] integer optional User ID. Example: 1
+     *
+     * @response status=200 scenario="Updated successfully"
+     * {
+     *   "status": true,
+     *   "message": "GRN updated successfully",
+     *   "data": {"id": 1, "grn_number": "GRN-00001", ...},
+     *   "grn_number": "GRN-00001"
+     * }
+     * @response status=404 scenario="Not found"
+     * { "status": false, "message": "GRN not found" }
+     * @response status=422 scenario="Validation error"
+     * { "status": false, "message": "Validation failed", "errors": {...} }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function update(Request $request, $id)
     {
@@ -928,16 +1060,46 @@ class GrnApiController extends Controller
     }
 
     /**
-     * Create a Direct GRN (without Purchase Order).
-     * Simplified endpoint for mobile integration.
+     * Store Direct GRN
      *
-     * Automatically sets:
-     * - received_qty = quantity
-     * - accepted_qty = quantity
-     * - rejected_qty = 0
+     * Create a Goods Received Note without a Purchase Order. Simplified endpoint for mobile integration.
+     * Automatically sets received_qty = accepted_qty = quantity, rejected_qty = 0.
+     * Uses multipart/form-data when uploading files.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @authenticated
+     * @requiredPermission grn create
+     *
+     * @bodyParam supplier_id integer required Supplier ID. Example: 3
+     * @bodyParam site_id integer required Site/project ID. Example: 5
+     * @bodyParam grn_date date required GRN date (YYYY-MM-DD). Example: 2025-01-15
+     * @bodyParam supplier_invoice_number string required Supplier invoice number. Example: INV-001
+     * @bodyParam supplier_invoice_date date optional Supplier invoice date (YYYY-MM-DD). Example: 2025-01-15
+     * @bodyParam tax_type string required Tax type. Allowed: cgst, igst. Example: cgst
+     * @bodyParam delivery_challan_number string optional Delivery challan number. Example: DC-123
+     * @bodyParam vehicle_number string optional Vehicle number. Example: MH-01-AB-1234
+     * @bodyParam gate_entry_number string optional Gate entry number. Example: GE-456
+     * @bodyParam description string optional Description. Example: Direct material purchase
+     * @bodyParam received_by string optional Received by name. Example: John Doe
+     * @bodyParam remarks string optional Remarks. Example: Received in good condition
+     * @bodyParam items array required Array of GRN items (indexed notation for multipart).
+     * @bodyParam items[0][material_id] integer required Material ID. Example: 10
+     * @bodyParam items[0][quantity] number required Received quantity. Example: 100
+     * @bodyParam items[0][price] number required Unit price. Example: 500.00
+     * @bodyParam items[0][gst_master_id] integer optional GST Master ID. Example: 1
+     * @bodyParam items[0][remarks] string optional Item remarks. Example: Good quality
+     * @bodyParam delivery_challan_file file optional Delivery challan document (pdf,doc,docx,jpg,jpeg,png, max 10MB). No-example
+     * @bodyParam reference_file file optional Reference document (pdf,doc,docx,jpg,jpeg,png, max 10MB). No-example
+     *
+     * @response status=200 scenario="Created successfully"
+     * {
+     *   "status": true,
+     *   "message": "Direct GRN created successfully",
+     *   "data": {"grn_id": 1, "grn_number": "GRN-00001", "grn_pdf": "https://..."}
+     * }
+     * @response status=422 scenario="Validation error"
+     * { "status": false, "message": "Validation failed", "errors": {...} }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function storeDirectGrn(Request $request)
     {
@@ -1082,11 +1244,29 @@ class GrnApiController extends Controller
     }
 
     /**
-     * Legacy function - Create GRN from mobile application.
-     * Use store() method instead.
+     * Get GRN Create Data (Legacy)
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * Legacy endpoint to retrieve purchase orders, suppliers, materials, and GST masters for GRN creation.
+     * Use create() instead.
+     *
+     * @authenticated
+     *
+     * @queryParam workspace_id integer optional Workspace ID. Example: 1
+     * @queryParam site_id integer optional Site/project ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": true,
+     *   "message": "GRN create data fetched successfully",
+     *   "data": {
+     *     "purchase_orders": [...],
+     *     "suppliers": [...],
+     *     "materials": [...],
+     *     "gst_masters": [...],
+     *     "selected_site_id": 1,
+     *     "nextGRNno": "GRN-00002"
+     *   }
+     * }
      */
     public function createData(Request $request)
     {

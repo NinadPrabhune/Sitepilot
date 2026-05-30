@@ -23,8 +23,21 @@ class ProjectApiController extends Controller
 {
     
     /**
-     * Get workspace users for project creation
-     * GET /api/projects/create-data
+     * Get project creation data
+     *
+     * Returns workspace users available for project assignment.
+     *
+     * @authenticated
+     * @requiredPermission project create
+     *
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "workspace_users": [{"name": "John", "email": "john@example.com"}] }
+     * @response status=422 scenario="Validation error"
+     * { "error": "The workspace_id field is required." }
+     * @response status=403 scenario="Permission denied"
+     * { "error": "Permission denied" }
      */
     public function createData(Request $request)
     {
@@ -60,6 +73,24 @@ class ProjectApiController extends Controller
         }
     }
 
+    /**
+     * List projects
+     *
+     * Returns all projects for the authenticated user with optional filters.
+     *
+     * @authenticated
+     * @requiredPermission project manage
+     *
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam site_id integer required Site/Project ID filter. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "projects": [{"id": 1, "name": "Construction Site A", ...}] }
+     * @response status=422 scenario="Validation error"
+     * { "error": "The workspace_id field is required." }
+     * @response status=403 scenario="Permission denied"
+     * { "error": "Permission denied" }
+     */
     public function index(Request $request)
     {
         if (!Auth::user()->isAbleTo('project manage')) {
@@ -292,6 +323,23 @@ class ProjectApiController extends Controller
         }
     }
 
+    /**
+     * Get project
+     *
+     * Returns a single project by ID.
+     *
+     * @authenticated
+     * @requiredPermission project show
+     *
+     * @urlParam id integer required Project ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "project": {"id": 1, "name": "Construction Site A", ...} }
+     * @response status=404 scenario="Not found"
+     * { "error": "Project not found." }
+     * @response status=403 scenario="Permission denied"
+     * { "error": "Permission denied" }
+     */
     public function show($id)
     {
         if (!Auth::user()->isAbleTo('project show')) {
@@ -311,6 +359,35 @@ class ProjectApiController extends Controller
         }
     }
 
+    /**
+     * Update project
+     *
+     * @authenticated
+     * @requiredPermission project edit
+     *
+     * @urlParam id integer required Project ID. Example: 1
+     * @bodyParam name string required Project name. Example: Construction Site A
+     * @bodyParam status string optional Status. Example: active
+     * @bodyParam description string optional Description. Example: Building construction project
+     * @bodyParam start_date date optional Start date. Example: 2024-01-01
+     * @bodyParam end_date date optional End date (must be after or equal to start_date). Example: 2024-12-31
+     * @bodyParam budget number optional Budget amount. Example: 5000000.00
+     * @bodyParam workspace integer required Workspace ID. Example: 1
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     * @bodyParam is_active boolean optional Active status. Example: true
+     * @bodyParam latitude string optional Latitude. Example: 19.0760
+     * @bodyParam longitude string optional Longitude. Example: 72.8777
+     * @bodyParam address string optional Address. Example: Mumbai, India
+     *
+     * @response status=200 scenario="Updated"
+     * { "success": "Project updated successfully.", "project": {...} }
+     * @response status=422 scenario="Validation error"
+     * { "error": "The name field is required." }
+     * @response status=404 scenario="Not found"
+     * { "error": "Project not found." }
+     * @response status=403 scenario="Permission denied"
+     * { "error": "Permission denied" }
+     */
     public function update(Request $request, $id)
     {
         if (!Auth::user()->isAbleTo('project edit')) {
@@ -413,6 +490,25 @@ class ProjectApiController extends Controller
         }
     }
 
+    /**
+     * Delete project
+     *
+     * Deletes a project after checking for linked records.
+     *
+     * @authenticated
+     * @requiredPermission project delete
+     *
+     * @urlParam id integer required Project ID. Example: 1
+     *
+     * @response status=200 scenario="Deleted"
+     * { "success": "Project deleted successfully." }
+     * @response status=400 scenario="Has linked records"
+     * { "status": 0, "message": "Site cannot be deleted because it is used in Indents." }
+     * @response status=404 scenario="Not found"
+     * { "error": "Project not found." }
+     * @response status=403 scenario="Permission denied"
+     * { "status": "error", "message": "Permission denied." }
+     */
     public function destroy($id)
     {
         try {
@@ -526,8 +622,21 @@ class ProjectApiController extends Controller
     }
 
     /**
-     * Get project dashboard data for mobile API
-     * GET /api/projects/{project_id}/dashboard
+     * Get project dashboard
+     *
+     * Returns dashboard summary data including alerts for a specific project.
+     *
+     * @authenticated
+     *
+     * @urlParam projectId integer required Project ID. Example: 1
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "status": true, "data": {...}, "alerts": [...] }
+     * @response status=404 scenario="Not found"
+     * { "status": false, "error": "Project not found." }
+     * @response status=422 scenario="Validation error"
+     * { "status": false, "error": "The workspace_id field is required." }
      */
     public function dashboard(Request $request, $projectId)
     {

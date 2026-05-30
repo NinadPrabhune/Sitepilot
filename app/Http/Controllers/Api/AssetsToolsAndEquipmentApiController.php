@@ -16,6 +16,24 @@ use Illuminate\Support\Facades\Auth;
  */
 class AssetsToolsAndEquipmentApiController extends Controller {
 
+    /**
+     * List Tools & Equipment
+     *
+     * Returns all assets, tools, and equipment filtered by site and workspace.
+     *
+     * @authenticated
+     * @requiredPermission tools-and-equipment manage
+     *
+     * @queryParam site_id integer optional Filter by site/project ID. Example: 1
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * [
+     *   {"id": 1, "material_id": 5, "quantity": 10, "operational_status": "active", "site_id": 1, "workspace_id": 1, ...}
+     * ]
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     public function index(Request $request) {
         if (!Auth::user()->isAbleTo('tools-and-equipment manage')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -42,6 +60,27 @@ class AssetsToolsAndEquipmentApiController extends Controller {
         }
     }
 
+    /**
+     * Get Tools & Equipment Create Data
+     *
+     * Retrieve tools and equipment records matching specific criteria.
+     *
+     * @authenticated
+     * @requiredPermission tools-and-equipment create
+     *
+     * @bodyParam material_id integer required Material ID to filter by. Example: 5
+     * @bodyParam site_id integer required Site/Project ID. Example: 1
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     *
+     * @response status=200 scenario="Data found"
+     * { "status": 1, "data": [{"id": 1, "material_id": 5, "quantity": 10, ...}] }
+     * @response status=404 scenario="No tools found"
+     * { "status": 0, "message": "No tools found for given criteria", "data": [] }
+     * @response status=422 scenario="Validation error"
+     * { "status": 0, "message": "Validation error message" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     public function createData(Request $request) {
         if (!Auth::user()->isAbleTo('tools-and-equipment create')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -176,6 +215,21 @@ class AssetsToolsAndEquipmentApiController extends Controller {
         }
     }
 
+    /**
+     * Show Tool/Equipment
+     *
+     * Retrieve a specific tool or equipment record by ID.
+     *
+     * @authenticated
+     * @requiredPermission tools-and-equipment show
+     *
+     * @urlParam id integer required Tool/Equipment ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * {"id": 1, "material_id": 5, "quantity": 10, "operational_status": "active", ...}
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     public function show($id) {
         if (!Auth::user()->isAbleTo('tools-and-equipment show')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -188,6 +242,32 @@ class AssetsToolsAndEquipmentApiController extends Controller {
         }
     }
 
+    /**
+     * Update Tool/Equipment
+     *
+     * Update an existing tool or equipment record. If a record with the same material+site+workspace exists, quantities are merged.
+     *
+     * @authenticated
+     * @requiredPermission tools-and-equipment edit
+     *
+     * @urlParam id integer required Tool/Equipment ID. Example: 1
+     *
+     * @bodyParam material_id integer required Material ID (must exist in materials). Example: 5
+     * @bodyParam quantity integer required Quantity (minimum 1). Example: 10
+     * @bodyParam operational_status string required Status. Allowed: active, breakdown, scrap. Example: active
+     * @bodyParam site_id integer required Site/Project ID. Example: 1
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     *
+     * @response status=200 scenario="Updated successfully"
+     * { "message": "Tool/Equipment updated successfully.", "data": {...} }
+     * @response status=200 scenario="Merged with existing"
+     * { "message": "Tool/Equipment merged and updated successfully.", "data": {...} }
+     * @response status=422 scenario="Validation error"
+     * { "error": "Validation error message" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     public function update(Request $request, $id) {
         if (!Auth::user()->isAbleTo('tools-and-equipment edit')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -253,6 +333,21 @@ class AssetsToolsAndEquipmentApiController extends Controller {
         }
     }
 
+    /**
+     * Delete Tool/Equipment
+     *
+     * Permanently delete a tool or equipment record by ID.
+     *
+     * @authenticated
+     * @requiredPermission tools-and-equipment delete
+     *
+     * @urlParam id integer required Tool/Equipment ID. Example: 1
+     *
+     * @response status=200 scenario="Deleted successfully"
+     * { "message": "Tool/Equipment deleted successfully." }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     public function destroy($id) {
         if (!Auth::user()->isAbleTo('tools-and-equipment delete')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);

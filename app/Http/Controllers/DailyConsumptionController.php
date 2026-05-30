@@ -114,13 +114,16 @@ class DailyConsumptionController extends Controller
                 ->mapWithKeys(fn($i)=>[$i->id=>$i->name.'('.$i->vehicle_number.')'])
                 ->toArray();
 
+            $categories = \App\Models\MaterialCategory::select('id', 'name')->get();
+
             $maxId = DailyConsumptionMaster::max('id');
             $i = $maxId ? $maxId+1 : 1;
             $nextConsumptionNumber = 'DCM-'.str_pad($i,4,'0',STR_PAD_LEFT);
 
             return view('daily-consumption.create', compact(
                 'materials_fules','materials_all','sites',
-                'nextConsumptionNumber','machineryOptions','activity_id','activity_completed_id','defaultSiteId'
+                'nextConsumptionNumber','machineryOptions','categories',
+                'activity_id','activity_completed_id','defaultSiteId'
             ));
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Unable to load create form: '.$e->getMessage()]);
@@ -487,12 +490,11 @@ class DailyConsumptionController extends Controller
                 ->toArray();
             $daily_consumption_masters_id=$daily_consumption->id;
 
-            
-//            dd($daily_consumption);
+            $categories = \App\Models\MaterialCategory::select('id', 'name')->get();
             
             return view('daily-consumption.edit', compact(
                 'daily_consumption','materials','materials_fules','materials_all',
-                'sites','machineryOptions','daily_consumption_masters_id'
+                'sites','machineryOptions','daily_consumption_masters_id','categories'
             ));
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Unable to load edit form: '.$e->getMessage()]);

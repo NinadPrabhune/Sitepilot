@@ -290,8 +290,8 @@ if ($validator->fails()) {
      * @bodyParam site_id integer required Site ID. Example: 1
      * @bodyParam workspace_id integer required Workspace ID. Example: 1
      * @bodyParam attendence_id integer required Attendance ID (for clockout). Example: 10
-     * @bodyParam clock_out_image file required Image for clock out. Example: image.jpg
-     * @bodyParam clock_in_image file required Image for clock in. Example: image.jpg
+     * @bodyParam clock_out_image file required Image file (jpg, jpeg, png) for clock out.
+     * @bodyParam clock_in_image file required Image file (jpg, jpeg, png) for clock in.
      *
      * @response {"status": 1, "message": "Employee Successfully Clock Out.", "data": {...}}
      * @response 422 {"status": 0, "message": "Validation error"}

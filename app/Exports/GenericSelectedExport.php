@@ -144,6 +144,19 @@ class GenericSelectedExport implements FromQuery, WithHeadings, WithMapping
             if ((in_array('created_by', $this->columns) || in_array('created_by_name', $this->columns)) && method_exists($model, 'createdBy')) {
                 $query->with('createdBy');
             }
+
+            // Load PaymentRequest relationships for computed columns
+            if (in_array('invoice_number', $this->columns) || in_array('supplier', $this->columns)) {
+                if (method_exists($model, 'invoice')) {
+                    $query->with('invoice.supplier');
+                }
+                if (method_exists($model, 'po')) {
+                    $query->with('po.supplier');
+                }
+            }
+            if (in_array('requested_by', $this->columns) && method_exists($model, 'requestedBy')) {
+                $query->with('requestedBy');
+            }
         }
 
         if (!$this->exportAll && !empty($this->ids)) {
@@ -325,6 +338,41 @@ class GenericSelectedExport implements FromQuery, WithHeadings, WithMapping
                     return optional($model->createdBy)->name ?? '';
                 case 'ledger_name':
                     return optional($model->spentLedger)->name ?? '';
+            }
+        }
+
+        if ($model instanceof \App\Models\PaymentRequest) {
+            switch ($column) {
+                case 'invoice_number':
+                    if ($model->isPoAdvance()) {
+                        return optional($model->po)->po_number ?? '-';
+                    }
+                    return optional($model->invoice)->invoice_number ?? '-';
+                case 'supplier':
+                    if ($model->isPoAdvance()) {
+                        return optional(optional($model->po)->supplier)->name ?? '-';
+                    }
+                    return optional(optional($model->invoice)->supplier)->name ?? '-';
+                case 'requested_by':
+                    return optional($model->requestedBy)->name ?? '-';
+                case 'requested_date':
+                    if ($model->payment_date) {
+                        return $model->payment_date->format('d M Y');
+                    }
+                    return '-';
+                case 'overdue':
+                    if (!$model->payment_date || in_array($model->status, ['paid', 'rejected'])) {
+                        return '-';
+                    }
+                    $now = now();
+                    $paymentDate = \Carbon\Carbon::parse($model->payment_date);
+                    if ($now->gt($paymentDate)) {
+                        return 'Overdue (' . $now->diffInDays($paymentDate) . ' days)';
+                    }
+                    if ($now->isSameDay($paymentDate)) {
+                        return 'Today';
+                    }
+                    return 'On Time';
             }
         }
 

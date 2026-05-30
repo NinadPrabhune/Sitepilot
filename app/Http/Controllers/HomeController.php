@@ -2,51 +2,61 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
+use App\Classes\Menu;
+use App\Events\CompanyMenuEvent;
+use App\Facades\ModuleFacade as Module;
 use App\Models\AddOn;
+use App\Models\Order;
 use App\Models\Plan;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Routing\Controller;
-use App\Facades\ModuleFacade as Module;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 
-class HomeController extends Controller {
-
+class HomeController extends Controller
+{
     /**
      * Show the application home page / landing page.
      *
      * @response view="landingpage::layouts.landingpage" or "marketplace.landing" or "login"
      */
-    public function index() {
-        
+    public function index()
+    {
 
         if (Auth::check()) {
 
-//            if (Auth::user()->type == 'super admin') {
-//                return redirect('dashboard');
-//            } else {
-////                return redirect()->route('taskly.dashboard');
-//
-////                return redirect('taskly.dashboard');
-//            }
+            //            if (Auth::user()->type == 'super admin') {
+            //                return redirect('dashboard');
+            //            } else {
+            // //                return redirect()->route('taskly.dashboard');
+            //
+            // //                return redirect('taskly.dashboard');
+            //            }
 
             return redirect('dashboard');
-//            
+            //
         } else {
-            if (!file_exists(storage_path() . "/installed")) {
+            if (! file_exists(storage_path().'/installed')) {
                 header('location:install');
-                die;
+                exit;
             } else {
-                $migrationPath = '/database/migrations/2024_07_17_120445_add_image_to_add_ons_table.php';
-                Artisan::call('migrate', [
-                    '--path' => $migrationPath,
-                ]);
+                if (Schema::hasTable('add_ons') && ! Schema::hasColumn('add_ons', 'image')) {
+                    Schema::table('add_ons', function (Blueprint $table) {
+                        $table->string('image')->nullable()->after('yearly_price');
+                        $table->boolean('is_enable')->default(0)->after('image');
+                        $table->string('package_name')->nullable()->after('is_enable');
+                    });
+                    Artisan::call('db:seed', [
+                        '--class' => 'PackagesName',
+                    ]);
+                }
                 if (admin_setting('landing_page') == 'on') {
                     if (module_is_active('LandingPage')) {
-//                        dd('if');
+                        //                        dd('if');
                         return view('landingpage::layouts.landingpage');
                     } else {
                         return view('marketplace.landing');
@@ -62,31 +72,28 @@ class HomeController extends Controller {
      * Show the main dashboard for authenticated users.
      *
      * @authenticated
+     *
      * @response view="dashboard.dashboard" or "dashboard"
      */
-    public function Dashboard() {
-        
-        
-//        dd(Auth::check());
-        
-        
-        
-        
-        if (Auth::check()) {
-            
-           if (Auth::user()->isAbleTo('project manage')) {
-            return redirect()->route('projects.index');
-        }
+    public function Dashboard()
+    {
 
-            
-//            if (Auth::user()->isAbleTo('taskly dashboard manage')) { 
-//                
-//                
-//               
-//                return redirect()->route('taskly.dashboard'); 
-//                
-//            }
-            
+        //        dd(Auth::check());
+
+        if (Auth::check()) {
+
+            if (Auth::user()->isAbleTo('project manage')) {
+                return redirect()->route('projects.index');
+            }
+
+            //            if (Auth::user()->isAbleTo('taskly dashboard manage')) {
+            //
+            //
+            //
+            //                return redirect()->route('taskly.dashboard');
+            //
+            //            }
+
             if (Auth::user()->type == 'super admin') {
                 // Update wizard
                 // DISABLED: Redirect to update check
@@ -113,7 +120,6 @@ class HomeController extends Controller {
                 //     return redirect()->route('LaravelUpdater::welcome');
                 // }
 
-
                 $user = Auth::user();
                 $user['total_user'] = $user->countCompany();
                 $user['total_paid_user'] = $user->countPaidCompany();
@@ -123,20 +129,20 @@ class HomeController extends Controller {
                 $user['total_plans'] = Plan::all()->count();
 
                 $popular_plan = DB::table('orders')
-                        ->select('orders.plan_id', 'plans.*', DB::raw('count(*) as count'))
-                        ->join('plans', 'orders.plan_id', '=', 'plans.id')
-                        ->groupBy('orders.plan_id')
-                        ->orderByDesc('count')
-                        ->first();
+                    ->select('orders.plan_id', 'plans.*', DB::raw('count(*) as count'))
+                    ->join('plans', 'orders.plan_id', '=', 'plans.id')
+                    ->groupBy('orders.plan_id')
+                    ->orderByDesc('count')
+                    ->first();
 
                 $user['popular_plan'] = $popular_plan;
-              
+
                 return view('dashboard.dashboard', compact('user', 'chartData'));
             } else {
                 $user = auth()->user();
-               
-                $menu = new \App\Classes\Menu($user);
-                event(new \App\Events\CompanyMenuEvent($menu));
+
+                $menu = new Menu($user);
+                event(new CompanyMenuEvent($menu));
                 $menu_items = $menu->menu;
                 $dashboardItem = collect($menu_items)->first(function ($item) {
                     return $item['parent'] === 'dashboard';
@@ -148,6 +154,7 @@ class HomeController extends Controller {
                         return redirect()->route($route);
                     }
                 }
+
                 return view('dashboard');
             }
         } else {
@@ -159,17 +166,20 @@ class HomeController extends Controller {
      * Get order chart data for the dashboard.
      *
      * @authenticated
+     *
      * @bodyParam duration string required Chart duration. Example: week
+     *
      * @response view="json" (returns chart data array)
      */
-    public function getOrderChart($arrParam) {
+    public function getOrderChart($arrParam)
+    {
         $arrDuration = [];
         if ($arrParam['duration']) {
             if ($arrParam['duration'] == 'week') {
-                $previous_week = strtotime("-2 week +1 day");
+                $previous_week = strtotime('-2 week +1 day');
                 for ($i = 0; $i < 14; $i++) {
                     $arrDuration[date('Y-m-d', $previous_week)] = date('d-M', $previous_week);
-                    $previous_week = strtotime(date('Y-m-d', $previous_week) . " +1 day");
+                    $previous_week = strtotime(date('Y-m-d', $previous_week).' +1 day');
                 }
             }
         }
@@ -187,12 +197,12 @@ class HomeController extends Controller {
         $dates = array_keys($arrDuration);
 
         $orders = Order::select(
-                        DB::raw('DATE(created_at) as date'),
-                        DB::raw('count(*) as total')
-                )
-                ->whereIn(DB::raw('DATE(created_at)'), $dates)
-                ->groupBy(DB::raw('DATE(created_at)'))
-                ->get();
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('count(*) as total')
+        )
+            ->whereIn(DB::raw('DATE(created_at)'), $dates)
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->get();
         // Initialize an empty $arrTask array
         $arrTask = ['label' => [], 'data' => []];
 
@@ -210,6 +220,7 @@ class HomeController extends Controller {
             $arrTask['label'][] = $label;
             $arrTask['data'][] = $total;
         }
+
         return $arrTask;
     }
 
@@ -217,31 +228,33 @@ class HomeController extends Controller {
      * Show software/module details page.
      *
      * @urlParam slug string required Module slug. Example: taskly
+     *
      * @response view="marketplace.detail_not_found" or module-specific view
      */
-    public function SoftwareDetails($slug) {
+    public function SoftwareDetails($slug)
+    {
         $modules_all = Module::all();
         $modules = [];
         if (count($modules_all) > 0) {
 
             $modules = array_intersect_key(
-                    $modules_all, // the array with all keys
-                    array_flip(array_rand($modules_all, (count($modules_all) < 6) ? count($modules_all) : 6)) // keys to be extracted
+                $modules_all, // the array with all keys
+                array_flip(array_rand($modules_all, (count($modules_all) < 6) ? count($modules_all) : 6)) // keys to be extracted
             );
         }
         $plan = Plan::first();
         $addon = AddOn::where('name', $slug)->first();
-        if (!empty($addon) && !empty($addon->module)) {
+        if (! empty($addon) && ! empty($addon->module)) {
             $module = Module::find($addon->module);
-            if (!empty($module)) {
+            if (! empty($module)) {
                 try {
                     if (module_is_active('LandingPage')) {
                         return view('landingpage::marketplace.index', compact('modules', 'module', 'plan'));
                     } else {
-                        return view($module->package_name . '::marketplace.index', compact('modules', 'module', 'plan'));
+                        return view($module->package_name.'::marketplace.index', compact('modules', 'module', 'plan'));
                     }
                 } catch (\Throwable $th) {
-                    
+
                 }
             }
         }
@@ -259,9 +272,11 @@ class HomeController extends Controller {
      * Show the software marketplace listing.
      *
      * @queryParam query string Search term for filtering modules. Example: task
+     *
      * @response view="marketplace.software"
      */
-    public function Software(Request $request) {
+    public function Software(Request $request)
+    {
         // Get the query parameter from the request
         $query = $request->query('query');
         // Get all modules (assuming Module::all() returns all modules)
@@ -289,7 +304,8 @@ class HomeController extends Controller {
      *
      * @response view="marketplace.pricing" or "landingpage::layouts.pricing"
      */
-    public function Pricing() {
+    public function Pricing()
+    {
         $admin_settings = getAdminAllSetting();
         if (module_is_active('GoogleCaptcha') && (isset($admin_settings['google_recaptcha_is_on']) ? $admin_settings['google_recaptcha_is_on'] : 'off') == 'on') {
             config(['captcha.secret' => isset($admin_settings['google_recaptcha_secret']) ? $admin_settings['google_recaptcha_secret'] : '']);
@@ -307,6 +323,7 @@ class HomeController extends Controller {
 
             if (module_is_active('LandingPage')) {
                 $layout = 'landingpage::layouts.marketplace';
+
                 return view('landingpage::layouts.pricing', compact('modules', 'plan', 'layout'));
             } else {
                 $layout = 'marketplace.marketplace';
@@ -321,12 +338,14 @@ class HomeController extends Controller {
      *
      * @response view="marketplace.pricing" or "landingpage::layouts.pricing-plans"
      */
-    public function PricingPlans() {
+    public function PricingPlans()
+    {
         $plan = Plan::where('custom_plan', 0)->get();
         $modules = Module::all();
 
         if (module_is_active('LandingPage')) {
             $layout = 'landingpage::layouts.marketplace';
+
             return view('landingpage::layouts.pricing-plans', compact('modules', 'plan', 'layout'));
         } else {
             $layout = 'marketplace.marketplace';
@@ -339,9 +358,11 @@ class HomeController extends Controller {
      * Show a custom page (terms & conditions or privacy policy).
      *
      * @queryParam page string required Page name. Example: terms_and_conditions
+     *
      * @response view="custompage.terms_and_conditions" or "custompage.privacy_policy"
      */
-    public function CustomPage(Request $request) {
+    public function CustomPage(Request $request)
+    {
         $modules = Module::all();
 
         if (module_is_active('LandingPage')) {
@@ -350,7 +371,7 @@ class HomeController extends Controller {
             $layout = 'marketplace.marketplace';
         }
         if ($request['page'] == 'terms_and_conditions' || $request['page'] == 'privacy_policy') {
-            return view('custompage.' . $request['page'], compact('modules', 'layout'));
+            return view('custompage.'.$request['page'], compact('modules', 'layout'));
         } else {
             return view('marketplace.detail_not_found', compact('modules', 'layout'));
         }

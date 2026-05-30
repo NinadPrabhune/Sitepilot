@@ -15,6 +15,19 @@ use Illuminate\Support\Facades\Auth;
  */
 class MaterialCategoryApiController extends Controller {
 
+    /**
+     * List Material Categories
+     *
+     * Returns all material categories.
+     *
+     * @authenticated
+     * @requiredPermission material-category manage
+     *
+     * @response status=200 scenario="Success"
+     * { "data": [{"id": 1, "name": "Steel", ...}] }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     public function index() {
         if (!Auth::user()->isAbleTo('material-category manage')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -23,6 +36,24 @@ class MaterialCategoryApiController extends Controller {
         return response()->json(['data' => $categories], 200);
     }
 
+    /**
+     * Create Material Category
+     *
+     * @authenticated
+     * @requiredPermission material-category create
+     *
+     * @bodyParam name string required Category name. Example: Steel
+     * @bodyParam site_id integer required Site ID. Example: 1
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     *
+     * @response status=201 scenario="Created"
+     * { "status": 1, "data": {"id": 1, "name": "Steel", ...}, "message": "Material Category created successfully" }
+     * @response status=422 scenario="Validation error"
+     * { "error": "The name field is required." }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     public function store(Request $request) {
         if (!Auth::user()->isAbleTo('material-category create')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -53,6 +84,21 @@ class MaterialCategoryApiController extends Controller {
         }
     }
 
+    /**
+     * Get Material Category
+     *
+     * @authenticated
+     * @requiredPermission material-category show
+     *
+     * @urlParam id integer required Category ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "status": 1, "data": {"id": 1, "name": "Steel", ...} }
+     * @response status=404 scenario="Not found"
+     * { "status": 0, "message": "Material Category not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     public function show($id) {
         if (!Auth::user()->isAbleTo('material-category show')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -68,6 +114,25 @@ class MaterialCategoryApiController extends Controller {
         }
     }
 
+    /**
+     * Update Material Category
+     *
+     * @authenticated
+     * @requiredPermission material-category edit
+     *
+     * @urlParam materialCategory integer required Category ID. Example: 1
+     * @bodyParam name string required Category name. Example: Structural Steel
+     * @bodyParam site_id integer required Site ID. Example: 1
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     *
+     * @response status=200 scenario="Updated"
+     * { "status": 1, "data": {"id": 1, ...}, "message": "Material Category Updated successfully" }
+     * @response status=422 scenario="Validation error"
+     * { "error": "The name field is required." }
+     * @response status=403 scenario="Cannot update system category"
+     * { "status": 0, "message": "This category cannot be updated as it is a system category..." }
+     */
     public function update(Request $request, MaterialCategory $materialCategory) {
         if (!Auth::user()->isAbleTo('material-category edit')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -102,6 +167,23 @@ class MaterialCategoryApiController extends Controller {
         }
     }
 
+    /**
+     * Delete Material Category
+     *
+     * @authenticated
+     * @requiredPermission material-category delete
+     *
+     * @urlParam id integer required Category ID. Example: 1
+     *
+     * @response status=200 scenario="Deleted"
+     * { "status": 1, "message": "Material Category deleted successfully" }
+     * @response status=400 scenario="In use"
+     * { "status": 0, "message": "Material Category cannot be deleted as it is used in the Material Master" }
+     * @response status=403 scenario="Cannot delete system category"
+     * { "status": 0, "message": "This category cannot be deleted as it is a system category..." }
+     * @response status=404 scenario="Not found"
+     * { "status": 0, "message": "Material Category not found" }
+     */
     public function destroy($id) {
         if (!Auth::user()->isAbleTo('material-category delete')) {
             return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);

@@ -70,6 +70,8 @@ class AdvanceUtilizationService
                     'utilized_amount' => $deductAmount,
                     'status' => AdvanceUtilization::STATUS_RESERVED,
                     'reserved_at' => now(),
+                    'workspace_id' => $invoice->workspace_id,
+                    'site_id' => $invoice->site_id,
                     'created_by' => auth()->id(),
                 ]);
 

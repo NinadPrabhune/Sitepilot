@@ -7,6 +7,7 @@ use App\Models\Indent;
 use App\Models\IndentItem;
 use App\Models\Supplier;
 use App\Models\Material;
+use App\Models\MaterialCategory;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -130,18 +131,18 @@ class IndentApiController extends Controller {
     }
 }
 
-    /**
-      * GET /api/indents/create
-      * 
-      * Get data needed to create a new indent (suppliers, materials, sites)
-      *
-      * @queryParam workspace_id integer required Workspace ID. Example: 1
-      * @queryParam site_id integer optional Site/Project ID. Example: 5
-      * @queryParam created_by integer optional Creator user ID. Example: 1
-      * @response 200 {"success": true, "message": "Indent creation data retrieved successfully", "data": {...}}
-      * @response 403 {"success": false, "message": "Permission denied"}
-      * @response 500 {"success": false, "message": "Failed to retrieve creation data"}
-      */
+/**
+       * GET /api/indents/create
+       * 
+       * Get data needed to create a new indent (suppliers, materials, categories, sites)
+       *
+       * @queryParam workspace_id integer required Workspace ID. Example: 1
+       * @queryParam site_id integer optional Site/Project ID. Example: 5
+       * @queryParam created_by integer optional Creator user ID. Example: 1
+       * @response 200 {"success": true, "message": "Indent creation data retrieved successfully", "data": {...}}
+       * @response 403 {"success": false, "message": "Permission denied"}
+       * @response 500 {"success": false, "message": "Failed to retrieve creation data"}
+       */
      public function createData(Request $request) {
          if (!Auth::check() || !Auth::user()->isAbleTo('indent create')) {
              return response()->json(['status' => 0, 'message' => 'Permission denied'], 403);
@@ -149,38 +150,39 @@ class IndentApiController extends Controller {
         try {
 
             $workspaceId = $request->input('workspace_id');
-            $siteId = $request->input('site_id');
-
 
             // Fetch suppliers
             $suppliers = Supplier::select('id', 'name', 'email', 'phone', 'address')
-                    ->get();
+                ->get();
 
             // Fetch materials with category and unit
             $materials = Material::with(['category:id,name', 'unit:id,name'])
-                    ->get()
-                    ->map(function ($material) {
-                        return [
-                            'id' => $material->id,
-                            'name' => $material->name,
-                            'sku' => $material->sku ?? '',
-                            'price' => $material->price ?? 0,
-                            'category_id' => $material->category_id,
-                            'category_name' => $material->category?->name,
-                            'unit_id' => $material->unit?->id,
-                            'unit_name' => $material->unit?->name ?? '',
-                        ];
-                    });
+                ->get()
+                ->map(function ($material) {
+                    return [
+                        'id' => $material->id,
+                        'name' => $material->name,
+                        'sku' => $material->sku ?? '',
+                        'price' => $material->price ?? 0,
+                        'category_id' => $material->category_id,
+                        'category_name' => $material->category?->name,
+                        'unit_id' => $material->unit?->id,
+                        'unit_name' => $material->unit?->name ?? '',
+                    ];
+                });
+
+            // Fetch all material categories for dropdown
+            $categories = MaterialCategory::select('id', 'name')->get();
 
             // Fetch sites/projects for the workspace
-             if ($workspaceId !== null) {
-                 $sites = Project::where('workspace', $workspaceId)
-                         ->projectonly()
-                         ->select('id', 'name', 'status')
-                         ->get();
-             } else {
-                 $sites = collect();
-             }
+            if ($workspaceId !== null) {
+                $sites = Project::where('workspace', $workspaceId)
+                    ->projectonly()
+                    ->select('id', 'name', 'status')
+                    ->get();
+            } else {
+                $sites = collect();
+            }
 
             // Generate next indent number
             $nextIndentNumber = Indent::generateIndentNumber($request->site_id ?? null);
@@ -188,26 +190,27 @@ class IndentApiController extends Controller {
             $users = getActiveProjectEmployees();
 
             return response()->json([
-                        'success' => true,
-                        'message' => 'Indent creation data retrieved successfully',
-                        'data' => [
-                            'suppliers' => $suppliers,
-                            'users' => $users,
-                            'materials' => $materials,
-                            'sites' => $sites,
-                            'next_indent_number' => $nextIndentNumber,
-                        ]
-                            ], 200);
+                'success' => true,
+                'message' => 'Indent creation data retrieved successfully',
+                'data' => [
+                    'suppliers' => $suppliers,
+                    'users' => $users,
+                    'materials' => $materials,
+                    'categories' => $categories,
+                    'sites' => $sites,
+                    'next_indent_number' => $nextIndentNumber,
+                ]
+            ], 200);
         } catch (\Exception $e) {
             Log::error('Error fetching indent creation data: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([
-                        'success' => false,
-                        'message' => 'Failed to retrieve creation data',
-                        'error' => 'An error occurred while fetching creation data'
-                            ], 500);
+                'success' => false,
+                'message' => 'Failed to retrieve creation data',
+                'error' => 'An error occurred while fetching creation data'
+            ], 500);
         }
     }
 

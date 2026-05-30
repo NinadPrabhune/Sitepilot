@@ -13,7 +13,21 @@ use Illuminate\Http\Request;
 class StockReportApiController extends Controller
 {
     /**
-     * Return stock report data as JSON for Flutter app.
+     * Get stock report
+     *
+     * Returns stock report data with optional filtering by site, date range, and material.
+     *
+     * @authenticated
+     *
+     * @bodyParam site_id integer required Site/Project ID. Example: 1
+     * @bodyParam start_date string optional Start date (Y-m-d). Example: 2024-01-01
+     * @bodyParam end_date string optional End date (Y-m-d). Example: 2024-12-31
+     * @bodyParam material_id integer optional Material ID. Example: 5
+     *
+     * @response status=200 scenario="Success"
+     * { "status": true, "message": "Stock report fetched successfully", "data": [...] }
+     * @response status=500 scenario="Error"
+     * { "status": false, "message": "Error fetching stock report", "error": "..." }
      */
     public function index(Request $request)
     {

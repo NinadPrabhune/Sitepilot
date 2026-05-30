@@ -35,12 +35,24 @@ class SupplierAdvanceApiController extends Controller
     }
 
     /**
-     * Create advance for supplier.
-     * API Rule 2: API-driven service
-     * API Rule 5: Idempotency support
-     * 
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * Create supplier advance
+     *
+     * Creates a new advance payment for a supplier with idempotency support.
+     *
+     * @authenticated
+     *
+     * @urlParam supplierId integer required Supplier ID. Example: 1
+     * @bodyParam po_id integer optional Purchase Order ID. Example: 5
+     * @bodyParam amount numeric required Advance amount. Example: 50000.00
+     * @bodyParam advance_date date required Advance date. Example: 2024-01-15
+     * @bodyParam source string required Source (po or manual). Example: po
+     * @bodyParam remarks string optional Remarks. Example: Advance for materials
+     * @header Idempotency-Key string optional Idempotency key for safe retries.
+     *
+     * @response status=201 scenario="Created"
+     * { "id": 1, "advance_number": "ADV-001", "amount": 50000, "status": "paid", "message": "Advance request created successfully" }
+     * @response status=400 scenario="Error"
+     * { "error": "Failed to create advance: ..." }
      */
     public function createAdvance(Request $request, $supplierId)
     {
@@ -108,11 +120,18 @@ class SupplierAdvanceApiController extends Controller
     }
 
     /**
-     * Get supplier advance summary.
-     * API Rule 1: Simplified response (no internal ledger logic)
-     * 
-     * @param int $supplierId
-     * @return \Illuminate\Http\JsonResponse
+     * Get supplier advance summary
+     *
+     * Returns a simplified financial summary of advances for a supplier.
+     *
+     * @authenticated
+     *
+     * @urlParam supplierId integer required Supplier ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "supplier_id": 1, "total_advance": 100000, "available_advance": 50000, "allocated_to_invoice": 30000, "utilized_amount": 20000 }
+     * @response status=500 scenario="Error"
+     * { "error": "Failed to retrieve advance summary" }
      */
     public function getSupplierAdvanceSummary($supplierId)
     {
@@ -155,14 +174,20 @@ class SupplierAdvanceApiController extends Controller
     }
 
     /**
-     * Allocate advance to invoice.
-     * API Rule 3: Mobile sends only intent (invoice_id, amount), backend controls FIFO
-     * API Rule 4: Transaction-safe
-     * API Rule 5: Idempotency support
-     * 
-     * @param Request $request
-     * @param int $invoiceId
-     * @return \Illuminate\Http\JsonResponse
+     * Allocate advance to invoice
+     *
+     * Allocates available advance amounts to an invoice using FIFO.
+     *
+     * @authenticated
+     *
+     * @urlParam invoiceId integer required Invoice ID. Example: 5
+     * @bodyParam amount numeric optional Specific amount to allocate. If omitted, allocates maximum available. Example: 25000
+     * @header Idempotency-Key string optional Idempotency key for safe retries.
+     *
+     * @response status=200 scenario="Success"
+     * { "invoice_id": 5, "success": true, "message": "...", "advance_allocated": 25000, "net_payable": 75000, "allocation_breakdown": [...] }
+     * @response status=400 scenario="Failed"
+     * { "invoice_id": 5, "success": false, "message": "...", "advance_allocated": 0 }
      */
     public function allocateAdvanceToInvoice(Request $request, $invoiceId)
     {
@@ -200,13 +225,19 @@ class SupplierAdvanceApiController extends Controller
     }
 
     /**
-     * Release advance allocation (if invoice changes).
-     * API Rule 4: Transaction-safe
-     * API Rule 5: Idempotency support
-     * 
-     * @param Request $request
-     * @param int $invoiceId
-     * @return \Illuminate\Http\JsonResponse
+     * Release advance allocation
+     *
+     * Releases advance allocation for an invoice (e.g., when invoice changes).
+     *
+     * @authenticated
+     *
+     * @urlParam invoiceId integer required Invoice ID. Example: 5
+     * @header Idempotency-Key string optional Idempotency key for safe retries.
+     *
+     * @response status=200 scenario="Released"
+     * { "invoice_id": 5, "allocation_released": true, "message": "Allocation released successfully" }
+     * @response status=400 scenario="Failed"
+     * { "invoice_id": 5, "allocation_released": false, "message": "Failed to release allocation" }
      */
     public function releaseAdvanceAllocation(Request $request, $invoiceId)
     {
@@ -237,11 +268,18 @@ class SupplierAdvanceApiController extends Controller
     }
 
     /**
-     * Get invoice net payable with advance breakdown.
-     * API Rule 1: Simplified response
-     * 
-     * @param int $invoiceId
-     * @return \Illuminate\Http\JsonResponse
+     * Get invoice net payable
+     *
+     * Returns the net payable for an invoice with advance breakdown.
+     *
+     * @authenticated
+     *
+     * @urlParam invoiceId integer required Invoice ID. Example: 5
+     *
+     * @response status=200 scenario="Success"
+     * { "invoice_id": 5, "invoice_number": "INV-001", "invoice_total": 100000, "direct_payments": 20000, "advance_utilized": 30000, "net_payable": 50000, "advance_breakdown": [...] }
+     * @response status=500 scenario="Error"
+     * { "error": "Failed to retrieve invoice payable information" }
      */
     public function getInvoiceNetPayable($invoiceId)
     {
@@ -271,10 +309,18 @@ class SupplierAdvanceApiController extends Controller
     }
 
     /**
-     * Finalize invoice (convert reserved to utilized).
-     * 
-     * @param int $invoiceId
-     * @return \Illuminate\Http\JsonResponse
+     * Finalize invoice
+     *
+     * Converts reserved advance amounts to utilized for an invoice.
+     *
+     * @authenticated
+     *
+     * @urlParam invoiceId integer required Invoice ID. Example: 5
+     *
+     * @response status=200 scenario="Finalized"
+     * { "invoice_id": 5, "message": "Invoice finalized successfully", "advances_converted": 2 }
+     * @response status=400 scenario="Failed"
+     * { "error": "Failed to finalize invoice" }
      */
     public function finalizeInvoice($invoiceId)
     {

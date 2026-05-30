@@ -38,7 +38,20 @@ class PaymentsModuleApiController extends Controller
     }
 
     /**
-     * Return paginated list of payments (JSON).
+     * List payments
+     *
+     * Returns paginated list of payments with optional filters.
+     *
+     * @authenticated
+     *
+     * @bodyParam supplier_id integer optional Filter by supplier ID. Example: 1
+     * @bodyParam site_id integer optional Filter by site ID. Example: 1
+     * @bodyParam workspace_id integer optional Filter by workspace ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "message": "Payments retrieved successfully", "data": [...] }
+     * @response status=500 scenario="Error"
+     * { "success": false, "message": "Failed to fetch payments", "data": null }
      */
     public function index(Request $request)
     {
@@ -115,6 +128,21 @@ class PaymentsModuleApiController extends Controller
     }
 
 
+    /**
+     * Get payment creation data
+     *
+     * Returns suppliers, invoices, sites, and purchase orders for creating a payment.
+     *
+     * @authenticated
+     *
+     * @bodyParam site_id integer optional Filter by site ID. Example: 1
+     * @bodyParam workspace_id integer optional Filter by workspace ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "data": {"suppliers": {...}, "invoices": {...}, "sites": [...], "purchase_orders": {...}, ...} }
+     * @response status=500 scenario="Error"
+     * { "success": false, "message": "Failed to load create data", "data": null }
+     */
     public function createData(Request $request)
     {
         try {
@@ -391,6 +419,20 @@ class PaymentsModuleApiController extends Controller
         }
     }
 
+    /**
+     * Get payment
+     *
+     * Returns a single payment by ID with supplier, invoice, site, and allocation details.
+     *
+     * @authenticated
+     *
+     * @urlParam id integer required Payment ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "message": "Payment retrieved successfully", "data": {...} }
+     * @response status=404 scenario="Not found"
+     * { "success": false, "message": "Payment not found", "data": null }
+     */
     public function show($id)
     {
         try {
@@ -463,6 +505,37 @@ class PaymentsModuleApiController extends Controller
         }
     }
 
+    /**
+     * Update payment
+     *
+     * Updates an existing payment record including file upload and reallocation.
+     *
+     * @authenticated
+     *
+     * @urlParam id integer required Payment ID. Example: 1
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam supplier_id integer required Supplier ID. Example: 1
+     * @bodyParam purchase_invoice_id integer optional Purchase Invoice ID. Example: 5
+     * @bodyParam purchase_order_id integer optional Purchase Order ID. Example: 3
+     * @bodyParam site_id integer required Site ID. Example: 5
+     * @bodyParam payment_date date required Payment date. Example: 2024-01-15
+     * @bodyParam amount number required Payment amount. Example: 50000.00
+     * @bodyParam payment_type string required Payment type (advance_against_po or against_po). Example: against_po
+     * @bodyParam mode string optional Payment mode. Example: bank_transfer
+     * @bodyParam reference_number string optional Reference number. Example: REF-12345
+     * @bodyParam notes string optional Notes. Example: Partial payment for invoice
+     * @bodyParam payment_proff_file file optional Payment proof document.
+     * @bodyParam ac_payment_status string optional Approval status (pending, approved, rejected). Example: pending
+     * @bodyParam rejection_reason string optional Rejection reason. Example: Invalid proof
+     *
+     * @response status=200 scenario="Updated"
+     * { "success": true, "message": "Payment updated successfully", "data": {...} }
+     * @response status=404 scenario="Not found"
+     * { "success": false, "message": "Payment not found", "data": null }
+     * @response status=422 scenario="Validation error"
+     * { "success": false, "message": "The amount field is required.", "data": null }
+     */
     public function update(Request $request, $id)
     {
         try {
@@ -599,6 +672,20 @@ class PaymentsModuleApiController extends Controller
         }
     }
 
+    /**
+     * Delete payment
+     *
+     * Deletes a payment, removes ledger entries and allocations, and updates invoice status.
+     *
+     * @authenticated
+     *
+     * @urlParam id integer required Payment ID. Example: 1
+     *
+     * @response status=200 scenario="Deleted"
+     * { "success": true, "message": "Payment deleted successfully", "data": null }
+     * @response status=404 scenario="Not found"
+     * { "success": false, "message": "Payment not found", "data": null }
+     */
     public function destroy($id)
     {
         try {
@@ -655,9 +742,19 @@ class PaymentsModuleApiController extends Controller
     }
 
     /**
-     * Get unpaid invoices for a supplier (AJAX).
-     * Input: supplier_id, site_id (optional)
-     * Output: id, invoice_number, invoice_date, total_amount, paid_amount, balance
+     * Get supplier unpaid invoices
+     *
+     * Returns unpaid invoices for a supplier with balance information.
+     *
+     * @authenticated
+     *
+     * @bodyParam supplier_id integer required Supplier ID. Example: 1
+     * @bodyParam site_id integer optional Filter by site ID. Example: 5
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "message": "Unpaid invoices retrieved successfully", "data": [{"id": 1, "invoice_number": "INV-001", "balance": 50000, ...}] }
+     * @response status=422 scenario="Validation error"
+     * { "success": false, "message": "The supplier id field is required.", "data": null }
      */
     public function getSupplierUnpaidInvoices(Request $request)
     {
@@ -708,10 +805,18 @@ class PaymentsModuleApiController extends Controller
     }
 
     /**
-     * Get advance_against_po payments that can be adjusted (AJAX).
-     * Input: supplier_id
-     * Output: id, payment_number, payment_date, amount, unallocated_amount
-     * Logic: payment_type = advance_against_po AND $payment->getUnallocatedAmount() > 0
+     * Get adjustable advances
+     *
+     * Returns advance payments that have unallocated amounts available for adjustment.
+     *
+     * @authenticated
+     *
+     * @bodyParam supplier_id integer required Supplier ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "message": "Adjustable advances retrieved successfully", "data": [{"id": 1, "payment_number": "PAY-001", "unallocated_amount": 25000, ...}] }
+     * @response status=422 scenario="Validation error"
+     * { "success": false, "message": "The supplier id field is required.", "data": null }
      */
     public function getAdjustableAdvances(Request $request)
     {
@@ -757,10 +862,18 @@ class PaymentsModuleApiController extends Controller
     }
 
     /**
-     * Prefill payment from Purchase Order
-     * 
-     * @param int $po_id
-     * @return \Illuminate\Http\JsonResponse
+     * Prefill payment from PO
+     *
+     * Returns pre-filled payment data based on a purchase order.
+     *
+     * @authenticated
+     *
+     * @urlParam po_id integer required Purchase Order ID. Example: 3
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "data": {"purchase_order_id": 3, "po_number": "PO-001", "supplier_name": "ABC Corp", "remaining_payment": 50000, ...} }
+     * @response status=404 scenario="Not found"
+     * { "success": false, "message": "Purchase Order not found", "data": null }
      */
     public function createFromPo($po_id)
     {
@@ -811,10 +924,18 @@ class PaymentsModuleApiController extends Controller
     }
 
     /**
-     * Prefill payment from Purchase Invoice
-     * 
-     * @param int $invoice_id
-     * @return \Illuminate\Http\JsonResponse
+     * Prefill payment from invoice
+     *
+     * Returns pre-filled payment data based on a purchase invoice.
+     *
+     * @authenticated
+     *
+     * @urlParam invoice_id integer required Purchase Invoice ID. Example: 5
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "data": {"purchase_invoice_id": 5, "invoice_number": "INV-001", "supplier_name": "ABC Corp", "balance": 50000, ...} }
+     * @response status=404 scenario="Not found"
+     * { "success": false, "message": "Invoice not found", "data": null }
      */
     public function createFromInvoice($invoice_id)
     {
@@ -875,8 +996,20 @@ class PaymentsModuleApiController extends Controller
     }
 
     /**
-     * Get remaining payment for a PO (AJAX).
-     * Uses SAME raw SQL aggregation as getPOSummary for consistency.
+     * Get remaining payment
+     *
+     * Returns the remaining payment amount for a supplier based on invoices and payments.
+     *
+     * @authenticated
+     *
+     * @bodyParam po_id integer optional Purchase Order ID. Example: 3
+     * @bodyParam invoice_id integer optional Invoice ID. Example: 5
+     * @bodyParam supplier_id integer required (if po_id/invoice_id not provided). Supplier ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "data": {"invoice_amount": 100000, "paid_amount": 50000, "remaining_payment": 50000} }
+     * @response status=422 scenario="Missing supplier"
+     * { "success": false, "message": "Supplier ID is required", "data": null }
      */
     public function getRemainingPayment(Request $request)
     {
@@ -933,8 +1066,18 @@ class PaymentsModuleApiController extends Controller
     }
 
     /**
-     * Get PO summary for payment (AJAX).
-     * Uses ONLY raw SQL aggregation from supplier_transactions table.
+     * Get PO summary
+     *
+     * Returns a financial summary for a purchase order from supplier transactions.
+     *
+     * @authenticated
+     *
+     * @bodyParam purchase_order_id integer required Purchase Order ID. Example: 3
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "data": {"po_total": 100000, "invoice_total": 80000, "invoice_paid": 40000, "payable": 40000, "advance_paid": 10000} }
+     * @response status=422 scenario="Missing PO"
+     * { "success": false, "message": "PO ID is required", "data": null }
      */
     public function getPOSummary(Request $request)
     {
@@ -977,9 +1120,19 @@ class PaymentsModuleApiController extends Controller
     }
 
     /**
-     * Get POs with pending payments for a supplier (AJAX).
-     * Input: supplier_id, site_id (optional)
-     * Output: Array of PO with remaining_balance
+     * Get POs with pending balance
+     *
+     * Returns purchase orders with remaining balance for a supplier.
+     *
+     * @authenticated
+     *
+     * @bodyParam supplier_id integer required Supplier ID. Example: 1
+     * @bodyParam site_id integer optional Filter by site ID. Example: 5
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "data": [{"id": 3, "po_number": "PO-001", "grand_total": 100000, "remaining_balance": 50000}] }
+     * @response status=422 scenario="Missing supplier"
+     * { "success": false, "message": "Supplier ID is required", "data": null }
      */
     public function getPOsWithPendingBalance(Request $request)
     {
@@ -1037,13 +1190,24 @@ class PaymentsModuleApiController extends Controller
     }
 
     /**
-     * Get supplier ledger entries.
-     * 
-     * Accepts either po_id or invoice_id (not both).
-     * Optional filters: start_date, end_date, type, page, per_page
-     * 
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * Get supplier ledger
+     *
+     * Returns supplier ledger entries with running balance. Accepts either po_id or invoice_id.
+     *
+     * @authenticated
+     *
+     * @bodyParam po_id integer optional Filter by PO ID. Example: 3
+     * @bodyParam invoice_id integer optional Filter by Invoice ID. Example: 5
+     * @bodyParam start_date string optional Start date (Y-m-d). Example: 2024-01-01
+     * @bodyParam end_date string optional End date (Y-m-d). Example: 2024-12-31
+     * @bodyParam type string optional Entry type filter. Example: payment
+     * @bodyParam page integer optional Page number for pagination. Example: 1
+     * @bodyParam per_page integer optional Items per page (max 100). Example: 20
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "data": [{"date": "2024-01-15", "details": "Payment", "debit": null, "credit": 50000, "balance": 50000, "type": "payment"}], "total": 10 }
+     * @response status=422 scenario="Invalid parameters"
+     * { "success": false, "message": "Cannot provide both po_id and invoice_id.", "data": null }
      */
     public function getSupplierLedger(Request $request)
     {

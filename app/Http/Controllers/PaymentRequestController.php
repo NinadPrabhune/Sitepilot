@@ -520,15 +520,17 @@ class PaymentRequestController extends Controller {
 
             $toAllocate = min($availableBalance, $invoiceBalance);
 
-            // Create utilization record
-            \App\Models\AdvanceUtilization::create([
-                'supplier_advance_id' => $advance->id,
-                'purchase_invoice_id' => $invoice->id,
-                'utilized_amount' => $toAllocate,
-                'status' => 'applied',
-                'applied_at' => now(),
-                'transaction_flow_id' => $invoice->transaction_flow_id,
-            ]);
+// Create utilization record
+             \App\Models\AdvanceUtilization::create([
+                 'supplier_advance_id' => $advance->id,
+                 'purchase_invoice_id' => $invoice->id,
+                 'utilized_amount' => $toAllocate,
+                 'status' => 'applied',
+                 'applied_at' => now(),
+                 'transaction_flow_id' => $invoice->transaction_flow_id,
+                 'workspace_id' => $invoice->workspace_id,
+                 'site_id' => $invoice->site_id,
+             ]);
 
             $totalAllocated += $toAllocate;
             $invoiceBalance -= $toAllocate;
@@ -577,15 +579,17 @@ class PaymentRequestController extends Controller {
 
                 $toAllocate = min($availableBalance, $invoiceBalance);
 
-                // Create utilization record linked to payments_module
-                \App\Models\AdvanceUtilization::create([
-                    'payments_module_id' => $legacyAdvance->id,
-                    'purchase_invoice_id' => $invoice->id,
-                    'utilized_amount' => $toAllocate,
-                    'status' => 'applied',
-                    'applied_at' => now(),
-                    'transaction_flow_id' => $invoice->transaction_flow_id,
-                ]);
+// Create utilization record linked to payments_module
+                 \App\Models\AdvanceUtilization::create([
+                     'payments_module_id' => $legacyAdvance->id,
+                     'purchase_invoice_id' => $invoice->id,
+                     'utilized_amount' => $toAllocate,
+                     'status' => 'applied',
+                     'applied_at' => now(),
+                     'transaction_flow_id' => $invoice->transaction_flow_id,
+                     'workspace_id' => $invoice->workspace_id,
+                     'site_id' => $invoice->site_id,
+                 ]);
             }
         }
 

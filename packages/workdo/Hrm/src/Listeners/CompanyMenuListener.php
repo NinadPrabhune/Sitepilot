@@ -297,34 +297,36 @@ class CompanyMenuListener
             'module' => $module,
             'permission' => 'announcement manage'
         ]);
-        $menu->add([
-            'category' => 'HR',
-            'title' => __('Holidays'),
-            'icon' => '',
-            'name' => 'holidays',
-            'parent' => 'hrm',
-            'order' => 55,
-            'ignore_if' => [],
-            'depend_on' => [],
-            'route' => 'holiday.index',
-            'module' => $module,
-            'permission' => 'holiday manage'
-        ]);
+//        $menu->add([
+//            'category' => 'HR',
+//            'title' => __('Holidays'),
+//            'icon' => '',
+//            'name' => 'holidays',
+//            'parent' => 'hrm',
+//            'order' => 55,
+//            'ignore_if' => [],
+//            'depend_on' => [],
+//            'route' => 'holiday.index',
+//            'module' => $module,
+//            'permission' => 'holiday manage'
+//        ]);
         
         
-        $menu->add([
-            'category' => 'HR',
-            'title' => __('Event'),
-            'icon' => '',
-            'name' => 'event',
-            'parent' => 'hrm',
-            'order' => 50,
-            'ignore_if' => [],
-            'depend_on' => [],
-            'route' => 'event.index',
-            'module' => $module,
-            'permission' => 'event manage'
-        ]);
+//        $menu->add([
+//            'category' => 'HR',
+//            'title' => __('Event'),
+//            'icon' => '',
+//            'name' => 'event',
+//            'parent' => 'hrm',
+//            'order' => 50,
+//            'ignore_if' => [],
+//            'depend_on' => [],
+//            'route' => 'event.index',
+//            'module' => $module,
+//            'permission' => 'event manage'
+//        ]);
+        
+        
 //        $menu->add([
 //            'category' => 'HR',
 //            'title' => __('Document'),

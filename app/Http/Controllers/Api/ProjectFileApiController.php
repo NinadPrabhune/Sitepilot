@@ -26,8 +26,20 @@ class ProjectFileApiController extends Controller
     }
 
     /**
-     * Get files in a folder
-     * GET /api/project-files?project_id=1&folder=/path
+     * List project files
+     *
+     * Returns files in a project folder.
+     *
+     * @authenticated
+     * @requiredPermission project-file manage
+     *
+     * @bodyParam project_id integer required Project ID. Example: 1
+     * @bodyParam folder string optional Folder path. Example: /Contracts
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "data": [...], "folder_path": "/" }
+     * @response status=403 scenario="Unauthorized"
+     * { "success": false, "message": "Unauthorized" }
      */
     public function index(Request $request)
     {
@@ -73,8 +85,21 @@ class ProjectFileApiController extends Controller
     }
 
     /**
-     * Get single file details
-     * GET /api/project-files/{id}
+     * Get file details
+     *
+     * Returns metadata for a single file.
+     *
+     * @authenticated
+     * @requiredPermission project-file show
+     *
+     * @urlParam id integer required File ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "data": {"id": 1, "name": "document.pdf", ...} }
+     * @response status=404 scenario="Not found"
+     * { "success": false, "message": "File not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function show($id)
     {
@@ -117,7 +142,23 @@ class ProjectFileApiController extends Controller
 
     /**
      * Upload file
-     * POST /api/project-files/upload
+     *
+     * Uploads a file to a project.
+     *
+     * @authenticated
+     * @requiredPermission project-file create
+     *
+     * @bodyParam file file required The file to upload.
+     * @bodyParam project_id integer required Project ID. Example: 1
+     * @bodyParam folder string optional Target folder path. Example: /Contracts
+     * @bodyParam description string optional File description. Example: Signed contract
+     *
+     * @response status=201 scenario="Uploaded"
+     * { "success": true, "message": "File uploaded successfully", "data": {...} }
+     * @response status=422 scenario="Validation error"
+     * { "success": false, "message": "..." }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function store(Request $request)
     {
@@ -175,7 +216,21 @@ class ProjectFileApiController extends Controller
 
     /**
      * Create folder
-     * POST /api/project-files/create-folder
+     *
+     * Creates a new folder in a project.
+     *
+     * @authenticated
+     *
+     * @bodyParam name string required Folder name. Example: Contracts
+     * @bodyParam project_id integer required Project ID. Example: 1
+     * @bodyParam folder string optional Parent folder path. Example: /
+     *
+     * @response status=201 scenario="Created"
+     * { "success": true, "message": "Folder created successfully", "data": {...} }
+     * @response status=422 scenario="Validation error"
+     * { "success": false, "message": "..." }
+     * @response status=403 scenario="Unauthorized"
+     * { "success": false, "message": "Unauthorized" }
      */
     public function createFolder(Request $request)
     {
@@ -228,7 +283,19 @@ class ProjectFileApiController extends Controller
 
     /**
      * Download file
-     * GET /api/project-files/{id}/download
+     *
+     * Downloads a file from a project.
+     *
+     * @authenticated
+     *
+     * @urlParam id integer required File ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * (file download)
+     * @response status=404 scenario="Not found"
+     * { "success": false, "message": "File not found" }
+     * @response status=403 scenario="Unauthorized"
+     * { "success": false, "message": "Unauthorized" }
      */
     public function download($id)
     {
@@ -269,8 +336,24 @@ class ProjectFileApiController extends Controller
     }
 
     /**
-     * Update file (rename/description)
-     * PUT /api/project-files/{id}
+     * Update file
+     *
+     * Renames or updates file metadata.
+     *
+     * @authenticated
+     * @requiredPermission project-file edit
+     *
+     * @urlParam id integer required File ID. Example: 1
+     * @bodyParam name string optional New file name. Example: revised-document.pdf
+     * @bodyParam description string optional New description. Example: Revised version
+     * @bodyParam is_public boolean optional Make file public. Example: true
+     *
+     * @response status=200 scenario="Updated"
+     * { "success": true, "message": "File updated successfully", "data": {...} }
+     * @response status=404 scenario="Not found"
+     * { "success": false, "message": "File not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function update(Request $request, $id)
     {
@@ -336,7 +419,20 @@ class ProjectFileApiController extends Controller
 
     /**
      * Delete file
-     * DELETE /api/project-files/{id}
+     *
+     * Deletes a file from a project.
+     *
+     * @authenticated
+     * @requiredPermission project-file delete
+     *
+     * @urlParam id integer required File ID. Example: 1
+     *
+     * @response status=200 scenario="Deleted"
+     * { "success": true, "message": "File deleted successfully" }
+     * @response status=404 scenario="Not found"
+     * { "success": false, "message": "File not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function destroy($id)
     {
@@ -380,8 +476,18 @@ class ProjectFileApiController extends Controller
     }
 
     /**
-     * Get folder structure (tree)
-     * GET /api/project-files/tree?project_id=1
+     * Get folder tree
+     *
+     * Returns the folder hierarchy for a project.
+     *
+     * @authenticated
+     *
+     * @bodyParam project_id integer required Project ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "data": {...} }
+     * @response status=403 scenario="Unauthorized"
+     * { "success": false, "message": "Unauthorized" }
      */
     public function getTree(Request $request)
     {
@@ -419,7 +525,17 @@ class ProjectFileApiController extends Controller
 
     /**
      * Get storage stats
-     * GET /api/project-files/stats?project_id=1
+     *
+     * Returns storage usage statistics for a project.
+     *
+     * @authenticated
+     *
+     * @bodyParam project_id integer required Project ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "data": {"total_size": 1048576, "file_count": 10, ...} }
+     * @response status=403 scenario="Unauthorized"
+     * { "success": false, "message": "Unauthorized" }
      */
     public function getStats(Request $request)
     {
@@ -457,7 +573,20 @@ class ProjectFileApiController extends Controller
 
     /**
      * Search files
-     * GET /api/project-files/search?project_id=1&query=test
+     *
+     * Searches files within a project by name.
+     *
+     * @authenticated
+     *
+     * @bodyParam project_id integer required Project ID. Example: 1
+     * @bodyParam query string required Search query (min 2 chars). Example: contract
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "data": [...] }
+     * @response status=422 scenario="Validation error"
+     * { "success": false, "message": "..." }
+     * @response status=403 scenario="Unauthorized"
+     * { "success": false, "message": "Unauthorized" }
      */
     public function search(Request $request)
     {

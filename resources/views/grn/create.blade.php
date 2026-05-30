@@ -144,11 +144,14 @@
         <div class="row">
             <div class="col-md-12">
                 <h5 class="mb-2">{{ __('Items') }}</h5>
-                <div class="table-responsive">
-                    <table class="table table-striped" id="direct-grn-items-table">
+                <button type="button" class="btn btn-sm btn-primary float-end" id="add-direct-item">
+                    <i class="ti ti-plus"></i> {{ __('Add Item') }}
+                </button>
+                    <table class="table table-bordered" id="direct-grn-items-table">
                         <thead>
                             <tr>
-                                <th>{{ __('Material') }}</th>
+                                <th style="width:15%">{{ __('Category') }}</th>
+                                <th style="width:30%">{{ __('Material') }}</th>
                                 <th>{{ __('Unit') }}</th>
                                 <th>{{ __('Quantity') }}</th>
                                 <th>{{ __('Price') }}</th>
@@ -160,14 +163,12 @@
                         </thead>
                         <tbody id="direct-grn-items-body">
                             <tr id="no-items-row">
-                                <td colspan="6" class="text-center">{{ __('Click "Add Item" to add materials') }}</td>
+                                <td colspan="7" class="text-center">{{ __('Click "Add Item" to add materials') }}</td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <button type="button" class="btn btn-sm btn-primary" id="add-direct-item">
-                    <i class="ti ti-plus"></i> {{ __('Add Item') }}
-                </button>
+               
+                
             </div>
         </div>
     </div>
@@ -285,8 +286,8 @@
 $(document).ready(function() {
 
     var directItemIndex = 0;
-    var materials = @json($materials);
     var gstMasters = @json($gstMasters);
+    var categories = @json($categories);
 
     // Initialize Choices.js for assign_to field
     var assignToChoices = null;
@@ -356,7 +357,7 @@ $(document).ready(function() {
             // Clear Direct items table
             $('#direct-grn-items-body').html(`
                 <tr id="no-items-row">
-                    <td colspan="6" class="text-center">{{ __('Click "Add Item" to add materials') }}</td>
+                    <td colspan="7" class="text-center">{{ __('Click "Add Item" to add materials') }}</td>
                 </tr>
             `);
             directItemIndex = 0;
@@ -371,36 +372,161 @@ $(document).ready(function() {
         }
     });
 
-    // Add Direct GRN Item
-    $('#add-direct-item').click(function() {
-        var materialOptions = '<option value="">{{ __("Select Material") }}</option>';
-        materials.forEach(function(material) {
-            materialOptions += '<option value="' + material.id + '" data-unit="' + (material.unit ? material.unit.name : 'PCS') + '">' + material.name + '</option>';
+    var gstOptions = '<option value="">{{ __("Select GST") }}</option>';
+    gstMasters.forEach(function(gst) {
+        gstOptions += '<option value="' + gst.id + '" data-cgst="' + gst.cgst + '" data-sgst="' + gst.sgst + '" data-igst="' + gst.igst + '">' + gst.name + ' (' + gst.cgst + '%/' + gst.sgst + '%/' + gst.igst + '%)</option>';
+    });
+
+    function initDirectRow(row) {
+        var categorySelect = row.find('.category-select')[0];
+        var materialSelect = row.find('.material-select')[0];
+        var materialsData = {};
+
+        // Populate category options
+        categorySelect.innerHTML = '<option value="">Select Category</option>';
+        categories.forEach(function(cat) {
+            var option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            categorySelect.appendChild(option);
         });
 
-        var gstOptions = '<option value="">{{ __("Select GST") }}</option>';
-        gstMasters.forEach(function(gst) {
-            gstOptions += '<option value="' + gst.id + '" data-cgst="' + gst.cgst + '" data-sgst="' + gst.sgst + '" data-igst="' + gst.igst + '">' + gst.name + ' (' + gst.cgst + '%/' + gst.sgst + '%/' + gst.igst + '%)</option>';
+        // Initialize Choices.js for category
+        var categoryChoices = new Choices(categorySelect, {
+            placeholder: true,
+            placeholderValue: 'Select Category',
+            searchEnabled: true,
+            removeItemButton: true,
+            shouldSort: false
         });
+
+        // Initialize Choices.js for material (disabled initially)
+        materialSelect.disabled = true;
+        materialSelect.innerHTML = '<option value="">Select Material</option>';
+
+        var materialChoices = new Choices(materialSelect, {
+            placeholder: true,
+            placeholderValue: 'Type to search materials...',
+            searchEnabled: true,
+            removeItemButton: true,
+            shouldSort: false,
+            itemSelectText: 'Press to select'
+        });
+
+        materialChoices.disable();
+
+        // Category change handler
+        categorySelect.addEventListener('change', function() {
+            var categoryId = this.value;
+
+            materialChoices.clearStore();
+            materialChoices.clearInput();
+            materialSelect.innerHTML = '<option value="">Select Material</option>';
+            materialChoices.setChoices([], 'value');
+
+            materialsData = {};
+
+            if (categoryId) {
+                materialChoices.enable();
+            } else {
+                materialChoices.disable();
+            }
+
+            row.find('.unit-input').val('');
+            row.find('.price-input').val('');
+            row.find('.gst-select').val('');
+
+            if (categoryId) {
+                $.ajax({
+                    url: '/materials/ajax',
+                    data: { category_id: categoryId },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data && data.data) {
+                            if (data.data.length === 0) {
+                                materialChoices.setChoices([{ value: '', label: 'No materials found in this category', disabled: true }], 'value');
+                            } else {
+                                data.data.forEach(function(item) {
+                                    materialsData[String(item.id)] = {
+                                        unit: item.unit ? item.unit.name : 'PCS',
+                                        price: item.price || 0,
+                                        gst: item.gst_master_id || ''
+                                    };
+                                });
+
+                                var choices = data.data.map(function(item) {
+                                    return { value: String(item.id), label: item.name };
+                                });
+                                materialChoices.setChoices(choices, 'value');
+                            }
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Failed to fetch materials:', xhr);
+                    }
+                });
+            }
+        });
+
+        // Material selection handler
+        materialChoices.passedElement.element.addEventListener('change', function() {
+            var selectedValue = materialSelect.value;
+
+            if (selectedValue && materialsData[selectedValue]) {
+                var data = materialsData[selectedValue];
+                row.find('.unit-input').val(data.unit || '');
+                row.find('.price-input').val(data.price || 0);
+                if (data.gst) {
+                    row.find('.gst-select').val(data.gst);
+                }
+            }
+        });
+    }
+
+    // Add Direct GRN Item
+    $('#add-direct-item').click(function() {
+        // Validate last row before adding new row
+        var lastRow = $('#direct-grn-items-body tr.direct-item-row').last();
+        if (lastRow.length > 0) {
+            var category = lastRow.find('.category-select').val();
+            var material = lastRow.find('.material-select').val();
+            var quantity = lastRow.find('.quantity-input').val();
+            var price = lastRow.find('.price-input').val();
+
+            if (!category || !material || !quantity || !price) {
+                toastrs('Error', '{{ __("Please complete the previous row before adding a new one.") }}', 'error');
+                if (!category) lastRow.find('.category-select').addClass('is-invalid');
+                if (!material) lastRow.find('.material-select').addClass('is-invalid');
+                if (!quantity) lastRow.find('.quantity-input').addClass('is-invalid');
+                if (!price) lastRow.find('.price-input').addClass('is-invalid');
+                return false;
+            }
+
+            lastRow.find('.is-invalid').removeClass('is-invalid');
+        }
 
         var html = `
             <tr class="direct-item-row" data-index="${directItemIndex}">
                 <td>
-                    <select name="items[${directItemIndex}][material_id]" class="form-control form-control-sm material-select" required>
-                        ${materialOptions}
+                    <select class="form-control category-select">
                     </select>
                 </td>
                 <td>
-                    <input type="text" name="items[${directItemIndex}][unit]" class="form-control form-control-sm unit-input" readonly>
+                    <select name="items[${directItemIndex}][material_id]" class="form-control material-select" disabled required>
+                        <option value="">Select Material</option>
+                    </select>
                 </td>
                 <td>
-                    <input type="number" name="items[${directItemIndex}][quantity]" class="form-control form-control-sm quantity-input" min="0.001" step="0.001" required>
+                    <input type="text" name="items[${directItemIndex}][unit]" class="form-control unit-input" readonly>
                 </td>
                 <td>
-                    <input type="number" name="items[${directItemIndex}][price]" class="form-control form-control-sm price-input" min="0" step="0.01" required>
+                    <input type="number" name="items[${directItemIndex}][quantity]" class="form-control quantity-input" min="0.001" step="0.001" required>
                 </td>
                 <td>
-                    <select name="items[${directItemIndex}][gst_master_id]" class="form-control form-control-sm gst-select" required>
+                    <input type="number" name="items[${directItemIndex}][price]" class="form-control price-input" min="0" step="0.01" required>
+                </td>
+                <td>
+                    <select name="items[${directItemIndex}][gst_master_id]" class="form-control gst-select" required>
                         ${gstOptions}
                     </select>
                 </td>
@@ -421,6 +547,7 @@ $(document).ready(function() {
 
         $('#no-items-row').remove();
         $('#direct-grn-items-body').append(html);
+        initDirectRow($('#direct-grn-items-body tr.direct-item-row').last());
         directItemIndex++;
     });
 
@@ -428,51 +555,7 @@ $(document).ready(function() {
     $(document).on('click', '.remove-direct-item', function() {
         $(this).closest('tr').remove();
         if ($('#direct-grn-items-body tr').length === 0) {
-            $('#direct-grn-items-body').html('<tr id="no-items-row"><td colspan="6" class="text-center">{{ __("Click Add Item to add materials") }}</td></tr>');
-        }
-    });
-
-    // Material Selection - Auto-fill unit and fetch price from master
-    $(document).on('change', '.material-select', function() {
-        var materialId = $(this).val();
-        var row = $(this).closest('tr');
-        
-        // Auto-fill unit from data attribute (immediate feedback)
-        var unit = $(this).find('option:selected').data('unit') || 'PCS';
-        row.find('.unit-input').val(unit);
-        
-        // Fetch material details including price from master
-        if (materialId) {
-            $.ajax({
-                url: '{{ route("material.details", ":id") }}'.replace(':id', materialId),
-                type: 'GET',
-                success: function(response) {
-                    if (response.status === 1 && response.data) {
-                        var material = response.data;
-                        
-                        // Update unit from master (more accurate)
-                        if (material.unit && material.unit.name) {
-                            row.find('.unit-input').val(material.unit.name);
-                        }
-                        
-                        // Set price from master
-                        if (material.price !== null && material.price !== undefined) {
-                            row.find('.price-input').val(material.price);
-                        }
-                        
-                        // Set GST if material has GST master
-                        if (material.gst_master_id) {
-                            row.find('.gst-select').val(material.gst_master_id);
-                        }
-                    }
-                },
-                error: function(xhr) {
-                    console.error('Failed to fetch material details:', xhr);
-                    // Fallback to data attribute for unit if AJAX fails
-                    var unit = $('.material-select option[value="' + materialId + '"]').data('unit') || 'PCS';
-                    row.find('.unit-input').val(unit);
-                }
-            });
+            $('#direct-grn-items-body').html('<tr id="no-items-row"><td colspan="7" class="text-center">{{ __("Click Add Item to add materials") }}</td></tr>');
         }
     });
 

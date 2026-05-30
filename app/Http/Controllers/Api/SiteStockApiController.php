@@ -27,10 +27,19 @@ class SiteStockApiController extends Controller
     }
 
     /**
-     * Get site-wise stock report.
+     * Get site-wise stock report
      *
-     * @param Request $request
-     * @return JsonResponse
+     * Returns stock report grouped by site/project with optional material filter.
+     *
+     * @authenticated
+     *
+     * @bodyParam project_id integer optional Filter by project ID. Example: 1
+     * @bodyParam material_id integer optional Filter by material ID. Example: 5
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "message": "Site stock report fetched successfully", "data": {"stock_report": [...], "filters": {...}} }
+     * @response status=422 scenario="Validation error"
+     * { "success": false, "message": "Validation error", "errors": {...} }
      */
     public function index(Request $request): JsonResponse
     {
@@ -76,10 +85,19 @@ class SiteStockApiController extends Controller
     }
 
     /**
-     * Export site stock report to Excel.
+     * Export site stock report to Excel
      *
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|JsonResponse
+     * Downloads stock report as an Excel file with optional filtering.
+     *
+     * @authenticated
+     *
+     * @bodyParam project_id integer optional Filter by project ID. Example: 1
+     * @bodyParam material_id integer optional Filter by material ID. Example: 5
+     *
+     * @response status=200 scenario="Success"
+     * (binary file download)
+     * @response status=422 scenario="Validation error"
+     * { "success": false, "message": "Validation error", "errors": {...} }
      */
     public function export(Request $request)
     {
@@ -122,10 +140,17 @@ class SiteStockApiController extends Controller
     }
 
     /**
-     * Get form data for site stock filters (projects and materials dropdowns).
+     * Get site stock form data
      *
-     * @param Request $request
-     * @return JsonResponse
+     * Returns projects and materials for filter dropdowns.
+     *
+     * @authenticated
+     * @requiredPermission site-stock manage
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "data": {"projects": {...}, "materials": {...}} }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied." }
      */
     public function createData(Request $request): JsonResponse
     {

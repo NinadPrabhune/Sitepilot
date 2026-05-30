@@ -100,11 +100,12 @@ class GrnController extends Controller
         $suppliers = Supplier::orderBy('name')->pluck('name', 'id')->prepend(__('Select Supplier'), '');
         $materials = Material::with('unit')->get();
         $gstMasters = \App\Models\GstMaster::where('is_active', true)->get();
+        $categories = \App\Models\MaterialCategory::select('id', 'name')->get();
 
         // Get users for assign_to field
         $users = getActiveProjectEmployees();
 
-        return view('grn.create', compact('purchaseOrders', 'selectedPoId', 'selectedSiteId', 'suppliers', 'materials', 'gstMasters', 'users'));
+        return view('grn.create', compact('purchaseOrders', 'selectedPoId', 'selectedSiteId', 'suppliers', 'materials', 'gstMasters', 'categories', 'users'));
     }
 
     /**

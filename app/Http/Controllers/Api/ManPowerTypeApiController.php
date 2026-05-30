@@ -15,6 +15,19 @@ use Exception;
  */
 class ManPowerTypeApiController extends Controller
 {
+    /**
+     * List Manpower Types
+     *
+     * Returns all active manpower types.
+     *
+     * @authenticated
+     * @requiredPermission man-power-type manage
+     *
+     * @response status=200 scenario="Success"
+     * [{"id": 1, "name": "Skilled", "site_id": 1, ...}]
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     public function index(): JsonResponse
     {
         if (!Auth::user()->isAbleTo('man-power-type manage')) {
@@ -28,6 +41,24 @@ class ManPowerTypeApiController extends Controller
         }
     }
 
+    /**
+     * Create Manpower Type
+     *
+     * @authenticated
+     * @requiredPermission man-power-type create
+     *
+     * @bodyParam name string required Manpower type name. Example: Skilled
+     * @bodyParam site_id integer required Site ID. Example: 1
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     *
+     * @response status=201 scenario="Created"
+     * {"id": 1, "name": "Skilled", ...}
+     * @response status=422 scenario="Validation error"
+     * { "error": "The name field is required.", "message": "..." }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     public function store(Request $request): JsonResponse
     {
         if (!Auth::user()->isAbleTo('man-power-type create')) {
@@ -48,6 +79,21 @@ class ManPowerTypeApiController extends Controller
         }
     }
 
+    /**
+     * Get Manpower Type
+     *
+     * @authenticated
+     * @requiredPermission man-power-type show
+     *
+     * @urlParam id integer required Manpower type ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * {"id": 1, "name": "Skilled", ...}
+     * @response status=404 scenario="Not found"
+     * { "error": "Record not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     public function show($id): JsonResponse
     {
         if (!Auth::user()->isAbleTo('man-power-type show')) {
@@ -63,6 +109,25 @@ class ManPowerTypeApiController extends Controller
         }
     }
 
+    /**
+     * Update Manpower Type
+     *
+     * @authenticated
+     * @requiredPermission man-power-type edit
+     *
+     * @urlParam id integer required Manpower type ID. Example: 1
+     * @bodyParam name string required Manpower type name. Example: Semi-Skilled
+     * @bodyParam site_id integer required Site ID. Example: 1
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     *
+     * @response status=200 scenario="Updated"
+     * {"id": 1, "name": "Semi-Skilled", ...}
+     * @response status=404 scenario="Not found"
+     * { "error": "Record not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     public function update(Request $request, $id): JsonResponse
     {
         if (!Auth::user()->isAbleTo('man-power-type edit')) {
@@ -79,6 +144,23 @@ class ManPowerTypeApiController extends Controller
         }
     }
 
+    /**
+     * Delete Manpower Type
+     *
+     * @authenticated
+     * @requiredPermission man-power-type delete
+     *
+     * @urlParam id integer required Manpower type ID. Example: 1
+     *
+     * @response status=204 scenario="Deleted"
+     * { "message": "Deleted successfully" }
+     * @response status=409 scenario="Has related records"
+     * { "error": "Cannot delete: related manpower details exist." }
+     * @response status=404 scenario="Not found"
+     * { "error": "Record not found" }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
+     */
     public function destroy($id): JsonResponse
     {
         if (!Auth::user()->isAbleTo('man-power-type delete')) {

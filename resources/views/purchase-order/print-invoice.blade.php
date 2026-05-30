@@ -869,7 +869,7 @@
                         @endif
 
                         <!-- Bank Details -->
-                        <table class="" style="margin-top: 8px;">
+<!--                        <table class="" style="margin-top: 8px;">
                             <tr>
                                 <td class="bold header-bar" style="border: 1px solid #000; text-align: left;">Bank Details</td>
                             </tr>
@@ -886,7 +886,7 @@
                                     @endif
                                 </td>
                             </tr>
-                        </table>
+                        </table>-->
                     </td>
                     <td width="38%" style="border: none; vertical-align: top;padding-right: 0px;">
                         <table class="tax-table">

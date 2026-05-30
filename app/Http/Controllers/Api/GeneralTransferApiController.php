@@ -18,7 +18,28 @@ use Illuminate\Support\Facades\Auth;
 class GeneralTransferApiController extends Controller {
 
     /**
-     * Display a listing of the general transfers.
+     * List General Transfers
+     *
+     * Returns a list of transfers filtered by workspace, site, type, and date range.
+     *
+     * @authenticated
+     * @requiredPermission general-transfer manage
+     *
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by source site ID. Example: 1
+     * @queryParam transfer_type string optional Filter by transfer type. Allowed: machinery, tools_and_equipment, employee. Example: machinery
+     * @queryParam start_date date optional Filter transfers from this date (YYYY-MM-DD). Example: 2025-01-01
+     * @queryParam end_date date optional Filter transfers up to this date (YYYY-MM-DD). Example: 2025-12-31
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": "success",
+     *   "data": [
+     *     {"id": 1, "transfer_type": "machinery", "machinery_id": 5, "transfer_date": "2025-06-01", "from_site_id": 1, "to_site_id": 2, ...}
+     *   ]
+     * }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function index(Request $request) {
         if (!Auth::user()->isAbleTo('general-transfer manage')) {
@@ -74,7 +95,31 @@ class GeneralTransferApiController extends Controller {
     }
 
     /**
-     * Show data needed for creating a new general transfer.
+     * Get Transfer Create Data
+     *
+     * Retrieve reference data (machineries, tools, employees, sites) needed to create a new transfer.
+     *
+     * @authenticated
+     *
+     * @bodyParam transfer_type string optional Type to filter reference data. Example: machinery
+     * @bodyParam employee_id integer optional Employee user ID. Example: 5
+     * @bodyParam machinery_id integer optional Machinery ID. Example: 3
+     * @bodyParam tools_and_equipment_id integer optional Tool/Equipment ID. Example: 2
+     * @bodyParam user_id integer optional User ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": "success",
+     *   "data": {
+     *     "transfer_type": "machinery",
+     *     "machineries": {"3": "Excavator"},
+     *     "tools": null,
+     *     "employees": null,
+     *     "sites": {"1": "Main Site", "2": "Branch Site"},
+     *     "users": null,
+     *     "machineryId": 3
+     *   }
+     * }
      */
     public function createData(Request $request) {
         try {
@@ -135,7 +180,39 @@ class GeneralTransferApiController extends Controller {
     }
 
     /**
-     * Store a newly created general transfer in storage.
+     * Create General Transfer
+     *
+     * Create a new transfer of machinery, tools/equipment, or employee between sites.
+     * Handles inventory adjustments and entity reassignments automatically.
+     *
+     * @authenticated
+     * @requiredPermission general-transfer create
+     *
+     * @bodyParam transfer_type string required Type. Allowed: machinery, tools_and_equipment, employee. Example: machinery
+     * @bodyParam machinery_id integer optional Machinery ID (required if transfer_type=machinery, must exist in machineries). Example: 3
+     * @bodyParam tools_and_equipment_id integer optional Tool/Equipment ID (required if transfer_type=tools_and_equipment). Example: 2
+     * @bodyParam employee_id integer optional Employee user ID (required if transfer_type=employee, must exist in employees). Example: 5
+     * @bodyParam transfer_date date required Transfer date (YYYY-MM-DD). Example: 2025-06-01
+     * @bodyParam transfer_qty integer optional Transfer quantity (required if transfer_type=tools_and_equipment, minimum 1). Example: 5
+     * @bodyParam transfer_date_end date optional End date for temporary transfers (must be after or equal to transfer_date). Example: 2025-12-31
+     * @bodyParam from_site_id integer required Source site/project ID. Example: 1
+     * @bodyParam to_site_id integer required Destination site/project ID. Example: 2
+     * @bodyParam operational_status string optional Status. Allowed: pending, active, completed, cancelled. Example: active
+     * @bodyParam status boolean optional Active status. Example: 1
+     *
+     * @response status=201 scenario="Created successfully"
+     * {
+     *   "status": "success",
+     *   "message": "Transfer created successfully.",
+     *   "data": {
+     *     "transfer": {"id": 1, "transfer_type": "machinery", ...},
+     *     "updated": {"id": 3, "name": "Excavator", ...}
+     *   }
+     * }
+     * @response status=422 scenario="Validation error or insufficient quantity"
+     * { "status": "error", "message": "Insufficient quantity available." }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function store(Request $request)
     {
@@ -258,7 +335,29 @@ class GeneralTransferApiController extends Controller {
 
 
     /**
-     * Display the specified resource.
+     * Show General Transfer
+     *
+     * Retrieve details of a specific transfer including related machinery, employee, and equipment.
+     *
+     * @authenticated
+     * @requiredPermission general-transfer show
+     *
+     * @urlParam id string required Transfer ID. Example: 1
+     *
+     * @response status=200 scenario="Success"
+     * {
+     *   "status": "success",
+     *   "data": {
+     *     "transfer": {"id": 1, "transfer_type": "machinery", ...},
+     *     "tools_and_equipment": null,
+     *     "employee": null,
+     *     "machinery": {"id": 3, "name": "Excavator"}
+     *   }
+     * }
+     * @response status=404 scenario="Not found"
+     * { "status": "error", "message": "Transfer not found." }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function show(string $id) {
         if (!Auth::user()->isAbleTo('general-transfer show')) {
@@ -295,7 +394,37 @@ class GeneralTransferApiController extends Controller {
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update General Transfer
+     *
+     * Update an existing transfer. Also updates related entity (machinery/tool/employee) site assignments.
+     *
+     * @authenticated
+     * @requiredPermission general-transfer edit
+     *
+     * @urlParam id string required Transfer ID. Example: 1
+     *
+     * @bodyParam created_by integer required Creator user ID. Example: 1
+     * @bodyParam transfer_type string required Type. Allowed: machinery, tools_and_equipment, employee. Example: machinery
+     * @bodyParam machinery_id integer optional Machinery ID (must exist in machineries). Example: 3
+     * @bodyParam tools_and_equipment_id integer optional Tool/Equipment ID. Example: 2
+     * @bodyParam employee_id integer optional Employee user ID (must exist in employees). Example: 5
+     * @bodyParam transfer_date date required Transfer date (YYYY-MM-DD). Example: 2025-06-01
+     * @bodyParam transfer_date_end date optional End date (must be after or equal to transfer_date). Example: 2025-12-31
+     * @bodyParam from_site_id integer required Source site/project ID. Example: 1
+     * @bodyParam to_site_id integer required Destination site/project ID. Example: 2
+     * @bodyParam operational_status string optional Status. Allowed: pending, active, completed, cancelled. Example: active
+     * @bodyParam status boolean optional Active status. Example: 1
+     *
+     * @response status=200 scenario="Updated successfully"
+     * {
+     *   "status": "success",
+     *   "message": "Transfer updated successfully.",
+     *   "data": {"id": 1, "transfer_type": "machinery", ...}
+     * }
+     * @response status=404 scenario="Not found"
+     * { "status": "error", "message": "Transfer not found." }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function update(Request $request, string $id) {
         if (!Auth::user()->isAbleTo('general-transfer edit')) {
@@ -397,7 +526,21 @@ class GeneralTransferApiController extends Controller {
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete General Transfer
+     *
+     * Permanently delete a general transfer record.
+     *
+     * @authenticated
+     * @requiredPermission general-transfer delete
+     *
+     * @urlParam id string required Transfer ID. Example: 1
+     *
+     * @response status=200 scenario="Deleted successfully"
+     * { "status": "success", "message": "Transfer deleted successfully." }
+     * @response status=404 scenario="Not found"
+     * { "status": "error", "message": "Transfer not found." }
+     * @response status=403 scenario="Permission denied"
+     * { "status": 0, "message": "Permission denied" }
      */
     public function destroy(string $id) {
         if (!Auth::user()->isAbleTo('general-transfer delete')) {

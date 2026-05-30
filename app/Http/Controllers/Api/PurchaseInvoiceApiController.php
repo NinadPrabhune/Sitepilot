@@ -123,6 +123,40 @@ class PurchaseInvoiceApiController extends Controller {
         return $filePath;
     }
 
+    /**
+     * List Purchase Invoices
+     *
+     * Retrieve all purchase invoices with their items, supplier, and site details.
+     * Optionally filter by workspace or site.
+     *
+     * @authenticated
+     * @requiredPermission purchase-invoice manage
+     *
+     * @queryParam workspace_id integer optional Filter by workspace ID. Example: 1
+     * @queryParam site_id integer optional Filter by site/project ID. Example: 5
+     *
+     * @response status=200 scenario="Invoices fetched"
+     * {
+     *   "success": true,
+     *   "message": "Purchase invoices fetched successfully",
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "invoice_number": "INV-0001",
+     *       "invoice_date": "2024-01-15",
+     *       "invoice_type": "general_po",
+     *       "payment_status": "unpaid",
+     *       "total_amount": 50000.00,
+     *       "creator_name": "John Doe",
+     *       "items": [...],
+     *       "supplier": {...},
+     *       "site": {...}
+     *     }
+     *   ]
+     * }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied" }
+     */
     public function index(Request $request) {
         $user = Auth::user();
         if (!$user || !$user->isAbleTo('purchase-invoice manage')) {
@@ -193,6 +227,34 @@ class PurchaseInvoiceApiController extends Controller {
         }
     }
 
+    /**
+     * Get Create Invoice Form Data
+     *
+     * Returns suppliers, materials with units, sites, current stock data, next invoice number,
+     * and active project employees for the purchase invoice creation form.
+     *
+     * @authenticated
+     * @requiredPermission purchase-invoice create
+     *
+     * @queryParam site_id integer optional Filter data by site ID. Example: 5
+     * @queryParam workspace_id integer optional Filter data by workspace ID. Example: 1
+     *
+     * @response status=200 scenario="Data fetched"
+     * {
+     *   "success": true,
+     *   "message": "Data fetched successfully",
+     *   "data": {
+     *     "suppliers": [{ "id": 1, "name": "ABC Corp" }],
+     *     "materials": { "1": { "name": "Cement", "price": 500, "unit": { "id": 1, "name": "kg" } } },
+     *     "sites": [{ "id": 5, "name": "Site A" }],
+     *     "stockData": {...},
+     *     "next_invoice_number": "INV-0025",
+     *     "users": [...]
+     *   }
+     * }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied" }
+     */
     public function createData(Request $request) {
         $user = Auth::user();
         if (!$user || !$user->isAbleTo('purchase-invoice create')) {
@@ -257,22 +319,42 @@ class PurchaseInvoiceApiController extends Controller {
     }
 
     /**
-     * Store a newly created purchase invoice.
+     * Create Purchase Invoice
      *
-     * @bodyParam supplier_invoice_number string optional Supplier invoice number. Example: INV-12345
+     * Create a new purchase invoice. For `general_po` type, include line items with
+     * material, quantity, and price. For `minor_misc_service` type, provide a total
+     * amount instead. Optionally upload an invoice file. Uses idempotency_key to
+     * prevent duplicate submissions. Must be sent as multipart/form-data.
+     *
+     * @authenticated
+     * @requiredPermission purchase-invoice create
+     *
+     * @bodyParam supplier_invoice_number string optional Supplier's invoice reference number. Example: SUP-INV-001
      * @bodyParam supplier_id integer required Supplier ID. Example: 1
      * @bodyParam workspace_id integer required Workspace ID. Example: 1
-     * @bodyParam site_id integer required Site ID. Example: 5
-     * @bodyParam invoice_date date required Invoice date. Example: 2024-01-15
-     * @bodyParam invoice_file file optional Invoice document (PDF, JPG, JPEG, PNG, max 2MB).
-     * @bodyParam invoice_type string required Invoice type (general_po or minor_misc_service). Example: general_po
-     * @bodyParam total_amount number optional Total amount (required for minor_misc_service). Example: 50000.00
-     * @bodyParam items array required if invoice_type=general_po Array of invoice items.
-     * @bodyParam items.*.material_id integer required if invoice_type=general_po Material ID. Example: 10
-     * @bodyParam items.*.quantity number required if invoice_type=general_po Quantity. Example: 100
-     * @bodyParam items.*.unit string optional Unit. Example: kg
-     * @bodyParam items.*.price number required if invoice_type=general_po Unit price. Example: 500.00
-     * @response {"success": true, "message": "Purchase invoice created successfully", "data": {...}}
+     * @bodyParam site_id integer required Site/Project ID. Example: 5
+     * @bodyParam invoice_date string required Invoice date (Y-m-d). Example: 2024-01-15
+     * @bodyParam invoice_file file optional Invoice document (PDF, JPG, JPEG, PNG, max 2MB). No-example
+     * @bodyParam invoice_type string required Invoice type: "general_po" or "minor_misc_service". Example: general_po
+     * @bodyParam total_amount number optional Total amount (required when invoice_type=minor_misc_service). Example: 50000.00
+     * @bodyParam items[0][material_id] integer required if invoice_type=general_po Material ID. Example: 10
+     * @bodyParam items[0][quantity] number required if invoice_type=general_po Quantity. Example: 100
+     * @bodyParam items[0][unit] string optional Unit of measure. Example: kg
+     * @bodyParam items[0][price] number required if invoice_type=general_po Unit price. Example: 500.00
+     * @bodyParam assign_to[0] integer optional User ID assigned to this invoice. Example: 1
+     * @bodyParam assign_to[1] integer optional Another assigned user ID. Example: 2
+     * @bodyParam idempotency_key string optional Unique key to prevent duplicate invoice creation (max 64 chars). Example: inv_abc123_20240115
+     *
+     * @response status=201 scenario="Invoice created"
+     * {
+     *   "success": true,
+     *   "message": "Purchase invoice created successfully",
+     *   "data": { "id": 1, "invoice_number": "INV-0001", "creator_name": "John Doe", ... }
+     * }
+     * @response status=422 scenario="Validation error"
+     * { "success": false, "message": "The supplier id field is required.", "errors": {...} }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied" }
      */
     public function store(Request $request) {
         $user = Auth::user();
@@ -302,6 +384,14 @@ class PurchaseInvoiceApiController extends Controller {
                 'idempotency_key' => 'nullable|string|max:64',
             ]);
 
+            // Debug: assign_to tracing
+            Log::debug('[PurchaseInvoice] store - assign_to debug', [
+                'request_assign_to_raw' => $request->input('assign_to'),
+                'request_has_assign_to' => $request->has('assign_to'),
+                'request_all_keys' => array_keys($request->all()),
+                'validated_assign_to' => $validated['assign_to'] ?? null,
+            ]);
+
             // Idempotency check before invoice creation
             if (!empty($request->idempotency_key)) {
                 $existingInvoice = PurchaseInvoice::where('idempotency_key', $request->idempotency_key)
@@ -319,9 +409,16 @@ class PurchaseInvoiceApiController extends Controller {
 
             // FIX #6: Database Transaction - Wrap in DB transaction
             $purchaseInvoice = DB::transaction(function () use ($validated, $request) {
+                // Debug: assign_to before create
+                $assignToRaw = $request->input('assign_to');
+                Log::debug('[PurchaseInvoice] store - transaction assign_to', [
+                    'assign_to_from_request' => $assignToRaw,
+                    'assign_to_type' => gettype($assignToRaw),
+                ]);
+
                 // FIX #3: Generate invoice number AFTER record creation using auto-increment ID
                 // Explicitly set payment_status to 'unpaid' to ensure clean string without quotes
-                $purchaseInvoice = PurchaseInvoice::create([
+                $invoiceData = [
                     'invoice_date' => $validated['invoice_date'],
                     'supplier_invoice_number' => $validated['supplier_invoice_number'] ?? null,
                     'supplier_id' => $validated['supplier_id'],
@@ -330,9 +427,14 @@ class PurchaseInvoiceApiController extends Controller {
                     'workspace_id' => $validated['workspace_id'],
                     'invoice_type' => $validated['invoice_type'],
                     'payment_status' => 'unpaid', // Ensure proper value formatting without quotes
-                    'assign_to' => $request->assign_to, // Trait mutator handles array to string conversion
+                    'assign_to' => $assignToRaw, // Trait mutator handles array to string conversion
                     'idempotency_key' => $request->idempotency_key,
+                ];
+                Log::debug('[PurchaseInvoice] store - invoice data for create', [
+                    'assign_to_in_data' => $invoiceData['assign_to'],
+                    'full_data_keys' => array_keys($invoiceData),
                 ]);
+                $purchaseInvoice = PurchaseInvoice::create($invoiceData);
 
                 // Generate invoice number using model method
                 $invoiceNumber = PurchaseInvoice::generateInvoiceNumber($purchaseInvoice->site_id);
@@ -394,11 +496,24 @@ class PurchaseInvoiceApiController extends Controller {
                 return $purchaseInvoice->fresh(['items.material']);
             });
 
+            // Debug: assign_to after creation
+            Log::debug('[PurchaseInvoice] store - assign_to after create', [
+                'invoice_id' => $purchaseInvoice->id,
+                'assign_to_raw_db' => $purchaseInvoice->getRawOriginal('assign_to'),
+                'assign_to_accessor' => $purchaseInvoice->assign_to,
+                'assign_to_exploded' => $purchaseInvoice->assign_to ? explode(',', $purchaseInvoice->assign_to) : null,
+            ]);
+
             // PDF generation is now handled by PurchaseInvoiceObserver
             // No need to generate PDF here as it will be automatically generated via observer
 
             $invoiceArray = $this->addCreatorNameToInvoice($purchaseInvoice);
             $invoiceArray['pi_pdf'] = $purchaseInvoice->pi_pdf ?? null;
+            $invoiceArray['assign_to'] = $purchaseInvoice->assign_to
+                ? User::whereIn('id', explode(',', $purchaseInvoice->assign_to))
+                    ->select('id', 'name')
+                    ->get()
+                : [];
 
             return $this->apiResponse(true, 'Purchase invoice created successfully', $invoiceArray, 201);
         } catch (\Exception $e) {
@@ -407,6 +522,35 @@ class PurchaseInvoiceApiController extends Controller {
         }
     }
 
+    /**
+     * Show Purchase Invoice
+     *
+     * Retrieve a single purchase invoice by ID with items, supplier, site, purchase order,
+     * creator, and payment request status details.
+     *
+     * @authenticated
+     * @requiredPermission purchase-invoice show
+     *
+     * @urlParam purchase_invoice integer required Invoice ID. Example: 1
+     *
+     * @response status=200 scenario="Invoice fetched"
+     * {
+     *   "success": true,
+     *   "message": "Purchase invoice fetched successfully",
+     *   "data": {
+     *     "id": 1,
+     *     "invoice_number": "INV-0001",
+     *     "creator_name": "John Doe",
+     *     "items": [...],
+     *     "supplier": {...},
+     *     "site": {...},
+     *     "payment_request_status": "can_request",
+     *     "can_create_payment_request": true
+     *   }
+     * }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied" }
+     */
     public function show(PurchaseInvoice $purchase_invoice) {
         $user = Auth::user();
         if (!$user || !$user->isAbleTo('purchase-invoice show')) {
@@ -452,6 +596,45 @@ class PurchaseInvoiceApiController extends Controller {
         return $this->apiResponse(true, 'Purchase invoice fetched successfully', $invoiceWithCreator);
     }
 
+    /**
+     * Update Purchase Invoice
+     *
+     * Update an existing purchase invoice. Replaces all line items when invoice_type is
+     * `general_po`. For `minor_misc_service`, updates the total amount instead.
+     * Optionally upload a new invoice file (replaces the old one). Must be sent as
+     * multipart/form-data.
+     *
+     * @authenticated
+     * @requiredPermission purchase-invoice edit
+     *
+     * @urlParam purchase_invoice integer required Invoice ID. Example: 1
+     *
+     * @bodyParam supplier_invoice_number string optional Supplier's invoice reference number. Example: SUP-INV-001
+     * @bodyParam supplier_id integer required Supplier ID. Example: 1
+     * @bodyParam workspace_id integer required Workspace ID. Example: 1
+     * @bodyParam site_id integer required Site/Project ID. Example: 5
+     * @bodyParam invoice_date string required Invoice date (Y-m-d). Example: 2024-01-15
+     * @bodyParam invoice_file file optional Invoice document (PDF, JPG, JPEG, PNG, max 2MB). Replaces existing file. No-example
+     * @bodyParam invoice_type string required Invoice type: "general_po" or "minor_misc_service". Example: general_po
+     * @bodyParam total_amount number optional Total amount (required when invoice_type=minor_misc_service). Example: 50000.00
+     * @bodyParam items[0][material_id] integer required if invoice_type=general_po Material ID. Example: 10
+     * @bodyParam items[0][quantity] number required if invoice_type=general_po Quantity. Example: 100
+     * @bodyParam items[0][unit] string optional Unit of measure. Example: kg
+     * @bodyParam items[0][price] number required if invoice_type=general_po Unit price. Example: 500.00
+     * @bodyParam assign_to[0] integer optional User ID assigned to this invoice. Example: 1
+     * @bodyParam assign_to[1] integer optional Another assigned user ID. Example: 2
+     *
+     * @response status=200 scenario="Updated"
+     * {
+     *   "success": true,
+     *   "message": "Purchase invoice updated successfully",
+     *   "data": { "id": 1, "invoice_number": "INV-0001", "creator_name": "John Doe", ... }
+     * }
+     * @response status=422 scenario="Validation error"
+     * { "success": false, "message": "The supplier id field is required." }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied" }
+     */
     public function update(Request $request, PurchaseInvoice $purchase_invoice) {
         $user = Auth::user();
         if (!$user || !$user->isAbleTo('purchase-invoice edit')) {
@@ -583,6 +766,25 @@ class PurchaseInvoiceApiController extends Controller {
         }
     }
 
+    /**
+     * Delete Purchase Invoice
+     *
+     * Permanently delete a purchase invoice and its items.
+     * Also deletes the associated supplier ledger entry.
+     * Prevents deletion if the invoice is referenced in the Payments Module.
+     *
+     * @authenticated
+     * @requiredPermission purchase-invoice delete
+     *
+     * @urlParam purchase_invoice integer required Invoice ID. Example: 1
+     *
+     * @response status=200 scenario="Invoice deleted"
+     * { "success": true, "message": "Invoice deleted successfully." }
+     * @response status=400 scenario="Invoice used in payments"
+     * { "success": false, "message": "Purchase Invoice cannot be deleted because it is used in Payments Module." }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied" }
+     */
     public function destroy(PurchaseInvoice $purchase_invoice) {
         $user = Auth::user();
         if (!$user || !$user->isAbleTo('purchase-invoice delete')) {
@@ -625,6 +827,28 @@ class PurchaseInvoiceApiController extends Controller {
         }
     }
 
+    /**
+     * Get Invoices by Supplier (for payments)
+     *
+     * Retrieve unpaid purchase invoices for a given supplier, mapped as id => invoice_number.
+     * Used to populate the invoice selector on the payment creation form.
+     *
+     * @authenticated
+     * @requiredPermission purchase-invoice manage
+     *
+     * @queryParam supplier_id integer required Supplier ID. Example: 1
+     *
+     * @response status=200 scenario="Invoices found"
+     * {
+     *   "success": true,
+     *   "message": "Purchase invoices fetched successfully",
+     *   "data": { "1": "INV-0001", "2": "INV-0002" }
+     * }
+     * @response status=404 scenario="No invoices found"
+     * { "success": false, "message": "No purchase invoices found for this supplier." }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied" }
+     */
     public function getPurchaseInvoiceBySupplierId(Request $request) {
         $user = Auth::user();
         if (!$user || !$user->isAbleTo('purchase-invoice manage')) {
@@ -646,6 +870,30 @@ class PurchaseInvoiceApiController extends Controller {
         }
     }
 
+    /**
+     * Get Invoices by Supplier (for payment edit)
+     *
+     * Retrieve unpaid purchase invoices for a given supplier, including the currently
+     * selected invoice even if it is paid. Used to populate the invoice selector on
+     * the payment edit form.
+     *
+     * @authenticated
+     * @requiredPermission purchase-invoice edit
+     *
+     * @queryParam supplier_id integer required Supplier ID. Example: 1
+     * @queryParam payments_module_id integer optional Current payment record ID to include its invoice. Example: 5
+     *
+     * @response status=200 scenario="Invoices found"
+     * {
+     *   "success": true,
+     *   "message": "Purchase invoices fetched successfully",
+     *   "data": { "1": "INV-0001", "3": "INV-0003" }
+     * }
+     * @response status=404 scenario="No invoices found"
+     * { "success": false, "message": "No purchase invoices found for this supplier." }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied" }
+     */
     public function getPurchaseInvoiceBySupplierIdEdit(Request $request) {
         $user = Auth::user();
         if (!$user || !$user->isAbleTo('purchase-invoice edit')) {
@@ -670,6 +918,26 @@ class PurchaseInvoiceApiController extends Controller {
         }
     }
 
+    /**
+     * Get Remaining Amount on Invoice
+     *
+     * Calculate the remaining unpaid amount on a purchase invoice by subtracting total
+     * payments from the invoice total. Excludes the current payment record when editing.
+     *
+     * @authenticated
+     *
+     * @queryParam purchase_invoice_id integer required Invoice ID. Example: 1
+     * @queryParam payments_module_id integer optional Current payment record ID to exclude from calculation. Example: 5
+     *
+     * @response status=200 scenario="Amount fetched"
+     * {
+     *   "success": true,
+     *   "message": "Remaining amount fetched successfully",
+     *   "data": { "remaining_amount": 25000.00 }
+     * }
+     * @response status=404 scenario="Invoice not found"
+     * { "success": false, "message": "No query results for model" }
+     */
     public function getPurchaseInvoiceRemainingAmountByPurchaseInvoiceId(Request $request) {
         try {
             $invoice = PurchaseInvoice::findOrFail($request->purchase_invoice_id);
@@ -693,7 +961,33 @@ class PurchaseInvoiceApiController extends Controller {
     }
 
     /**
-     * Get GRN details for invoice creation preview
+     * Get GRN Details for Invoice Preview
+     *
+     * Retrieve GRN details including calculated item-level values (taxable value,
+     * discount, CGST, SGST, IGST, subtotal) and invoice-level totals for preview
+     * before creating an invoice from a GRN.
+     *
+     * @authenticated
+     * @requiredPermission purchase-invoice create
+     *
+     * @urlParam grn_id integer required GRN ID. Example: 1
+     *
+     * @response status=200 scenario="GRN details fetched"
+     * {
+     *   "success": true,
+     *   "message": "GRN details fetched successfully",
+     *   "data": {
+     *     "grn_id": 1,
+     *     "grn_number": "GRN-0001",
+     *     "supplier": { "id": 1, "name": "ABC Corp" },
+     *     "items": [{ "material_id": 10, "accepted_qty": 100, "price": 500, "taxable_value": 50000, ... }],
+     *     "totals": { "total_taxable_value": 50000, "grand_total": 55000 }
+     *   }
+     * }
+     * @response status=400 scenario="Invoice already exists"
+     * { "success": false, "message": "Invoice already exists for this GRN" }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied" }
      */
     public function getGrnDetailsForInvoice(Request $request, $grn_id)
     {
@@ -867,7 +1161,33 @@ class PurchaseInvoiceApiController extends Controller {
 }
 
     /**
-     * Create Purchase Invoice from GRN (Full quantity invoicing only)
+     * Create Purchase Invoice from GRN
+     *
+     * Create a new purchase invoice from a GRN. Copies GRN items with full quantity,
+     * calculates totals with GST, and optionally uploads an invoice file.
+     * Uses a database transaction with row-level locking to prevent duplicate invoices.
+     *
+     * @authenticated
+     * @requiredPermission purchase-invoice create
+     *
+     * @bodyParam grn_id integer required GRN ID to create invoice from. Example: 1
+     * @bodyParam invoice_date string required Invoice date (Y-m-d). Example: 2024-01-15
+     * @bodyParam supplier_invoice_number string optional Supplier's invoice number. Example: SUP-INV-001
+     * @bodyParam invoice_file file optional Invoice document (PDF, JPG, JPEG, PNG, max 2MB). No-example
+     * @bodyParam workspace_id integer optional Workspace ID. Example: 1
+     * @bodyParam assign_to[0] integer optional User ID assigned to this invoice. Example: 1
+     * @bodyParam assign_to[1] integer optional Another assigned user ID. Example: 2
+     *
+     * @response status=201 scenario="Invoice created"
+     * {
+     *   "success": true,
+     *   "message": "Invoice created successfully",
+     *   "data": { "invoice_id": 1, "invoice_number": "INV-0001", "creator_name": "John Doe" }
+     * }
+     * @response status=400 scenario="Invoice already exists"
+     * { "success": false, "message": "Invoice already exists for this GRN" }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied" }
      */
     public function createInvoiceFromGrn(Request $request)
     {
@@ -877,12 +1197,26 @@ class PurchaseInvoiceApiController extends Controller {
         }
 
         try {
+        // Debug: assign_to before validation
+        Log::debug('[PurchaseInvoice] createInvoiceFromGrn - assign_to debug', [
+            'request_assign_to_raw' => $request->input('assign_to'),
+            'request_has_assign_to' => $request->has('assign_to'),
+            'request_all_keys' => array_keys($request->all()),
+        ]);
+
         $validated = $request->validate([
             'grn_id' => 'required|exists:grns,id',
             'invoice_date' => 'required|date',
             'supplier_invoice_number' => 'nullable|string',
             'invoice_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'workspace_id' => 'nullable|integer',
+            'assign_to' => 'nullable|array',
+            'assign_to.*' => 'integer|exists:users,id',
+        ]);
+
+        Log::debug('[PurchaseInvoice] createInvoiceFromGrn - assign_to after validation', [
+            'validated_keys' => array_keys($validated),
+            'validated_assign_to' => $validated['assign_to'] ?? null,
         ]);
 
         $invoice = DB::transaction(function () use ($validated, $request) {
@@ -906,6 +1240,11 @@ class PurchaseInvoiceApiController extends Controller {
 
             $workspaceId = $validated['workspace_id'] ?? $grn->workspace_id;
 
+            Log::debug('[PI] createInvoiceFromGrn - assign_to before create', [
+                'validated_assign_to' => $validated['assign_to'] ?? null,
+                'note' => 'assign_to now included in create',
+            ]);
+
             // ✅ Create Invoice - explicitly set payment_status to ensure proper formatting
             $invoice = PurchaseInvoice::create([
                 'invoice_type' => 'general_po',
@@ -920,6 +1259,13 @@ class PurchaseInvoiceApiController extends Controller {
                 'created_by' => Auth::id(),
                 'workspace_id' => $workspaceId,
                 'payment_status' => 'unpaid', // Ensure proper value formatting without quotes
+                'assign_to' => $validated['assign_to'] ?? null,
+            ]);
+
+            Log::debug('[PI] createInvoiceFromGrn - assign_to after create', [
+                'invoice_id' => $invoice->id,
+                'assign_to_raw' => $invoice->getRawOriginal('assign_to'),
+                'assign_to_acc' => $invoice->assign_to,
             ]);
 
             // Generate Invoice Number
@@ -1043,8 +1389,27 @@ class PurchaseInvoiceApiController extends Controller {
 }
 
     /**
-     * Request payment for a purchase invoice
-     * Sets payment_request_flag to 1 for unpaid invoices with no prior request
+     * Request Payment for Invoice
+     *
+     * Submit a payment request for an unpaid purchase invoice.
+     * Sets the `payment_request_flag` to 1. Only allowed for unpaid invoices
+     * without a prior payment request.
+     *
+     * @authenticated
+     * @requiredPermission purchase-invoice manage
+     *
+     * @bodyParam purchase_invoice_id integer required Invoice ID to request payment for. Example: 1
+     *
+     * @response status=200 scenario="Request submitted"
+     * {
+     *   "success": true,
+     *   "message": "Payment request submitted successfully",
+     *   "data": { "purchase_invoice_id": 1, "invoice_number": "INV-0001", "payment_request_flag": 1 }
+     * }
+     * @response status=400 scenario="Already submitted or not unpaid"
+     * { "success": false, "message": "Payment request already submitted for this invoice." }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied" }
      */
     public function requestPayment(Request $request)
     {

@@ -111,7 +111,7 @@
                                 </div>
                                 <a href="{{ route('assets_tools_and_equipment.index') }}"><h3 class="mt-3 mb-0">{{ __('Total Tools & Equipment') }}</h3></a>
                             </div>
-                            <h3 class="mb-0">{{ $totalActive = \App\Models\AssetsToolsAndEquipment::where('site_id', getActiveProject())->count();  }}</h3>
+                            <h3 class="mb-0">{{ $totalActive = \App\Models\AssetsToolsAndEquipment::where('site_id', getActiveProject())->count()  }}</h3>
                         </div>
                     </div>
                 </div>

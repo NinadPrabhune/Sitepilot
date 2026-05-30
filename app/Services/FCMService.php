@@ -22,12 +22,19 @@ class FCMService
     /**
      * Get OAuth2 access token from service account JSON
      */
-    protected function getAccessToken(): string
+    protected function getAccessToken(): ?string
     {
-        $scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
-        $creds = new ServiceAccountCredentials($scopes, $this->jsonPath);
-        $token = $creds->fetchAuthToken();
-        return $token['access_token'];
+        try {
+            $scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
+            $creds = new ServiceAccountCredentials($scopes, $this->jsonPath);
+            $token = $creds->fetchAuthToken();
+            return $token['access_token'] ?? null;
+        } catch (\Exception $e) {
+            \Log::error('FCM getAccessToken failed', [
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
     }
 
     /**
@@ -41,8 +48,14 @@ class FCMService
             return ['skipped' => true, 'reason' => 'notifications_disabled'];
         }
 
+        $token = $this->getAccessToken();
+        if (!$token) {
+            \Log::warning('FCM skipped - no access token (check credentials)');
+            return ['skipped' => true, 'reason' => 'no_access_token'];
+        }
+
         try {
-            $response = Http::withToken($this->getAccessToken())
+            $response = Http::withToken($token)
                 ->post($this->endpoint, $payload)
                 ->json();
 

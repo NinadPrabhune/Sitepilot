@@ -64,7 +64,8 @@
             <table class="table table-bordered mt-2" id="consumption-items-table">
                 <thead>
                     <tr>
-                        <th style="width: 40%;">{{ __('Material') }}</th>
+                        <th style="width: 15%;">{{ __('Category') }}</th>
+                        <th style="width: 30%;">{{ __('Material') }}</th>
                         <th>Current Stock<br>Quantity | Unit</th>
                         <th>{{ __('Quantity | Unit') }}</th>
                         <th>{{ __('Remarks') }}</th>
@@ -78,15 +79,17 @@
                     @php
                     $uniqueId = 'material_' . uniqid();
                     $materialSource = $daily_consumption->consumption_type === 'fuel' ? $materials_fules : $materials_all;
-                    
-                    // Debug: Show material data structure
-                    if ($index === 0) {
-                        echo '<script>console.log("Material Source:", ' . json_encode($materialSource) . ');</script>';
-                        echo '<script>console.log("Current Detail:", ' . json_encode($detail) . ');</script>';
-                        echo '<script>console.log("Expected Selected ID:", ' . $detail->material_id . ');</script>';
-                    }
+                    $selectedCategoryId = isset($materialSource[$detail->material_id]['category_id']) ? $materialSource[$detail->material_id]['category_id'] : '';
                     @endphp
                     <tr>
+                        <td>
+                            <select class="form-control item-category">
+                                <option value="">{{ __('Select Category') }}</option>
+                                @foreach($categories as $cat)
+                                <option value="{{ $cat->id }}" {{ $cat->id == $selectedCategoryId ? 'selected' : '' }}>{{ $cat->name }}</option>
+                                @endforeach
+                            </select>
+                        </td>
                         <td>
                             <select id="{{ $uniqueId }}" name="items[{{ $index }}][material_id]" class="form-control item-material " required>
                                 <option value="">{{ __('Select Material') }}</option>
@@ -136,18 +139,38 @@
     $(document).ready(function () {
         let materialsFuel = @json($materials_fules);
         let materialsAll = @json($materials_all);
+        let categories = @json($categories);
         let daily_consumption_masters_id = "{{ $daily_consumption_masters_id }}";
         
-        function getMaterialOptions(materials) {
+        function getMaterialOptions(materials, categoryId) {
             let options = '<option value="">{{ __("Select Material") }}</option>';
             $.each(materials, function (id, material) {
-                options += `<option value="${id}">${material.name}</option>`;
+                if (!categoryId || String(material.category_id) === String(categoryId)) {
+                    options += `<option value="${id}" data-category="${material.category_id}">${material.name}</option>`;
+                }
             });
             return options;
         }
 
-    function addItemRow(item = {}, materials = materialsAll) {
-        const materialOptions = getMaterialOptions(materials);
+        function getCategoryOptions(selectedCategoryId) {
+            let options = '<option value="">{{ __("Select Category") }}</option>';
+            categories.forEach(function(cat) {
+                const selected = String(cat.id) === String(selectedCategoryId) ? 'selected' : '';
+                options += `<option value="${cat.id}" ${selected}>${cat.name}</option>`;
+            });
+            return options;
+        }
+
+        function getMaterialsByType() {
+            const type = $('#consumption_type').val();
+            return type === 'fuel' ? materialsFuel : materialsAll;
+        }
+
+    function addItemRow(item = {}, materials) {
+        if (!materials) materials = getMaterialsByType();
+        const selectedCategoryId = item.category_id || '';
+        const categoryOptions = getCategoryOptions(selectedCategoryId);
+        const materialOptions = getMaterialOptions(materials, selectedCategoryId || null);
         const uniqueId = 'material_' + Date.now();
         const index = $('#consumption-items-table tbody tr').length; // current row index
         const qty = item.quantity || 1;
@@ -155,6 +178,9 @@
         const remarks = item.remarks || '';
         const selectedMaterialId = item.material_id || '';
         const row = $('<tr>');
+        row.append(`<td><select class="form-control item-category">
+            ${categoryOptions}
+        </select></td>`);
         row.append(`<td><select id="${uniqueId}" name="items[${index}][material_id]" class="form-control item-material " searchenabled="true" required>
             ${materialOptions.replace(`value="${selectedMaterialId}"`, `value="${selectedMaterialId}" selected`)}
         </select></td>`);
@@ -180,9 +206,17 @@
         const $lastRow = $('#consumption-items-table tbody tr').last();
         let canAdd = true;
         // Validate last row fields
+        const category = $lastRow.find('.item-category').val();
         const material = $lastRow.find('.item-material').val();
         const quantity = $lastRow.find('.item-quantity').val();
-        
+
+        if (!category) {
+            $lastRow.find('.item-category').addClass('is-invalid');
+            canAdd = false;
+        } else {
+            $lastRow.find('.item-category').removeClass('is-invalid');
+        }
+
         if (!material) {
             $lastRow.find('.item-material').addClass('is-invalid');
             canAdd = false;
@@ -199,9 +233,10 @@
 
         // Validate all rows to prevent incomplete entries
         $('#consumption-items-table tbody tr').each(function () {
+            const category = $(this).find('.item-category').val();
             const material = $(this).find('.item-material').val();
             const quantity = $(this).find('.item-quantity').val();
-            if (!material || !quantity) {
+            if (!category || !material || !quantity) {
                 canAdd = false;
                 $(this).addClass('table-danger');
             } else {
@@ -211,8 +246,7 @@
         
         // Only add a new row if all validations pass
         if (canAdd) {
-            const type = $('#consumption_type').val();
-            const materials = type === 'fuel' ? materialsFuel : materialsAll;
+            const materials = getMaterialsByType();
             addItemRow({}, materials);
             refreshMaterialDropdowns();
         }
@@ -232,6 +266,31 @@
             }
         });
         
+        // Category change - filter materials
+        $('#consumption-items-table').on('change', '.item-category', function () {
+            const row = $(this).closest('tr');
+            const categoryId = $(this).val();
+            const materialSelect = row.find('.item-material');
+            const materials = getMaterialsByType();
+
+            materialSelect.empty();
+            let materialOptions = '<option value="">{{ __("Select Material") }}</option>';
+            $.each(materials, function (id, material) {
+                if (!categoryId || String(material.category_id) === String(categoryId)) {
+                    materialOptions += `<option value="${id}" data-category="${material.category_id}">${material.name}</option>`;
+                }
+            });
+            materialSelect.append(materialOptions);
+
+            // Clear unit and stock
+            row.find('.item-unit').val('');
+            row.find('.item-unit-label').text('unit');
+            row.find('.item-stock').val(0);
+            row.find('.item-stock-unit').text('unit');
+
+            refreshMaterialDropdowns();
+        });
+
         $('#consumption-items-table').on('change', '.item-material', function () {
             const materialId = $(this).val();
             const row = $(this).closest('tr');
@@ -255,9 +314,6 @@
                 
                 itemStockUnit.text(unitName);
                 refreshRemainingStockDisplay();
-                
-                // (Optional) If you want to auto-fill price or other fields, you can add here
-                // row.find('.item-price').val(material.price);
 
                 $(this).closest('tr').removeClass('table-danger');
             } else {
@@ -295,8 +351,7 @@
 
         $('#consumption_type').on('change', function () {
             $('#consumption-items-table tbody').empty();
-            const type = $(this).val();
-            const materials = type === 'fuel' ? materialsFuel : materialsAll;
+            const materials = getMaterialsByType();
             addItemRow({}, materials);
         });
         
@@ -339,14 +394,9 @@
                         }
                     });
                     
-                    // Remove all existing item rows
                     $('#consumption-items-table tbody').empty();
-                    
-                    // Add one fresh empty row (optional)
-                    // addItemRow();
 
-                    const type = $('#consumption_type').val();
-                    const materials = type === 'fuel' ? materialsFuel : materialsAll;
+                    const materials = getMaterialsByType();
                     addItemRow({}, materials);
                     refreshRemainingStockDisplay();
                 },
@@ -416,19 +466,22 @@
                 const val = $(this).val();
                 if (val) selectedIds.push(val);
             });
-            
-            // Merge both collections (fuel + all)
-            // const allMaterials = { ...materialsFuel, ...materialsAll };
 
-            const type = $('#consumption_type').val();
-            const materials = type === 'fuel' ? materialsFuel : materialsAll;
+            const materials = getMaterialsByType();
             
             // Rebuild each dropdown
             $('.item-material').each(function () {
                 const $select = $(this);
+                const row = $(this).closest('tr');
                 const currentVal = $select.val();
+                const categoryId = row.find('.item-category').val();
+
                 $select.empty().append('<option value="">Select Material</option>');
                 Object.entries(materials).forEach(([id, material]) => {
+                    // Apply category filter
+                    if (categoryId && String(material.category_id) !== String(categoryId)) {
+                        return;
+                    }
                     const isSelectedElsewhere = selectedIds.includes(id) && id !== currentVal;
                     const disabled = isSelectedElsewhere ? 'disabled' : '';
                     $select.append(`<option value="${id}" ${disabled}>${material.name}</option>`);
@@ -446,9 +499,10 @@
         $('form').on('submit', function (e) {
             let valid = true;
             $('#consumption-items-table tbody tr').each(function () {
+                const category = $(this).find('.item-category').val();
                 const material = $(this).find('.item-material').val();
                 const quantity = $(this).find('.item-quantity').val();
-                if (!material || !quantity) {
+                if (!category || !material || !quantity) {
                     $(this).addClass('table-danger');
                     valid = false;
                 } else {

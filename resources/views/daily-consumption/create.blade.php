@@ -64,7 +64,8 @@ $consumption_type_arr_old = [
             <table class="table table-bordered mt-2" id="consumption-items-table">
                 <thead>
                     <tr>
-                        <th style="width: 40%;">{{ __('Material') }}</th>
+                        <th style="width: 15%;">{{ __('Category') }}</th>
+                        <th style="width: 30%;">{{ __('Material') }}</th>
                         <th>Current Stock<br>Quantity | Unit</th>
                         <th>{{ __('Quantity | Unit') }}</th>
                         <th>{{ __('Remarks') }}</th>
@@ -88,18 +89,38 @@ $consumption_type_arr_old = [
 $(document).ready(function () {
     let materialsFuel = @json($materials_fules);
     let materialsAll = @json($materials_all);
+    let categories = @json($categories);
     let rowIndex = 0;
 
-    function getMaterialOptions(materials) {
+    function getMaterialOptions(materials, categoryId) {
         let options = '<option value="">{{ __("Select Material") }}</option>';
         $.each(materials, function (id, material) {
-            options += `<option value="${id}">${material.name}</option>`;
+            if (!categoryId || String(material.category_id) === String(categoryId)) {
+                options += `<option value="${id}" data-category="${material.category_id}">${material.name}</option>`;
+            }
         });
         return options;
     }
 
-    function addItemRow(item = {}, materials = materialsAll) {
-        const materialOptions = getMaterialOptions(materials);
+    function getCategoryOptions(selectedCategoryId) {
+        let options = '<option value="">{{ __("Select Category") }}</option>';
+        categories.forEach(function(cat) {
+            const selected = String(cat.id) === String(selectedCategoryId) ? 'selected' : '';
+            options += `<option value="${cat.id}" ${selected}>${cat.name}</option>`;
+        });
+        return options;
+    }
+
+    function getMaterialsByType() {
+        const type = $('#consumption_type').val();
+        return type === 'fuel' ? materialsFuel : materialsAll;
+    }
+
+    function addItemRow(item = {}, materials) {
+        if (!materials) materials = getMaterialsByType();
+        const selectedCategoryId = item.category_id || '';
+        const categoryOptions = getCategoryOptions(selectedCategoryId);
+        const materialOptions = getMaterialOptions(materials, selectedCategoryId || null);
         const uniqueId = 'material_' + Date.now();
         const qty = item.quantity || 1;
         const unit = item.unit || 'unit';
@@ -107,6 +128,9 @@ $(document).ready(function () {
         const selectedMaterialId = item.material_id || '';
 
         const row = $('<tr>');
+        row.append(`<td><select class="form-control item-category">
+            ${categoryOptions}
+        </select></td>`);
         row.append(`<td><select id="${uniqueId}" name="items[${rowIndex}][material_id]" class="form-control item-material" required>
             ${materialOptions.replace(`value="${selectedMaterialId}"`, `value="${selectedMaterialId}" selected`)}
         </select></td>`);
@@ -137,9 +161,16 @@ $(document).ready(function () {
         let canAdd = true;
 
         // Validate last row fields
+        const category = $lastRow.find('.item-category').val();
         const material = $lastRow.find('.item-material').val();
         const quantity = $lastRow.find('.item-quantity').val();
-//        const price = $lastRow.find('.item-price').val();
+
+        if (!category) {
+            $lastRow.find('.item-category').addClass('is-invalid');
+            canAdd = false;
+        } else {
+            $lastRow.find('.item-category').removeClass('is-invalid');
+        }
 
         if (!material) {
             $lastRow.find('.item-material').addClass('is-invalid');
@@ -155,20 +186,13 @@ $(document).ready(function () {
             $lastRow.find('.item-quantity').removeClass('is-invalid');
         }
 
-//        if (!price) {
-//            $lastRow.find('.item-price').addClass('is-invalid');
-//            canAdd = false;
-//        } else {
-//            $lastRow.find('.item-price').removeClass('is-invalid');
-//        }
-
         // Validate all rows to prevent incomplete entries
         $('#consumption-items-table tbody tr').each(function () {
+            const category = $(this).find('.item-category').val();
             const material = $(this).find('.item-material').val();
             const quantity = $(this).find('.item-quantity').val();
-           
 
-            if (!material || !quantity ) {
+            if (!category || !material || !quantity) {
                 canAdd = false;
                 $(this).addClass('table-danger');
             } else {
@@ -178,8 +202,7 @@ $(document).ready(function () {
 
         // Only add a new row if all validations pass
         if (canAdd) {
-            const type = $('#consumption_type').val();
-            const materials = type === 'fuel' ? materialsFuel : materialsAll;
+            const materials = getMaterialsByType();
             addItemRow({}, materials);
             refreshMaterialDropdowns();
         }
@@ -201,6 +224,31 @@ $(document).ready(function () {
         }
     });
 
+    // Category change - filter materials
+    $('#consumption-items-table').on('change', '.item-category', function () {
+        const row = $(this).closest('tr');
+        const categoryId = $(this).val();
+        const materialSelect = row.find('.item-material');
+        const materials = getMaterialsByType();
+
+        materialSelect.empty();
+        let materialOptions = '<option value="">{{ __("Select Material") }}</option>';
+        $.each(materials, function (id, material) {
+            if (!categoryId || String(material.category_id) === String(categoryId)) {
+                materialOptions += `<option value="${id}" data-category="${material.category_id}">${material.name}</option>`;
+            }
+        });
+        materialSelect.append(materialOptions);
+
+        // Clear unit and stock
+        row.find('.item-unit').val('');
+        row.find('.item-unit-label').text('unit');
+        row.find('.item-stock').val(0);
+        row.find('.item-stock-unit').text('unit');
+
+        refreshMaterialDropdowns();
+    });
+
     $('#consumption-items-table').on('change', '.item-material', function () {
         const materialId = $(this).val();
         const row = $(this).closest('tr');
@@ -209,13 +257,6 @@ $(document).ready(function () {
         const itemStock = row.find('.item-stock');
         const itemStockUnit = row.find('.item-stock-unit');
 
-        // Debug logging
-        console.log('Material changed:', {
-            materialId: materialId,
-            materialsFuelCount: Object.keys(materialsFuel).length,
-            materialsAllCount: Object.keys(materialsAll).length
-        });
-
         // Merge both collections - ensure keys are strings for consistent lookup
         const allMaterials = { ...materialsFuel, ...materialsAll };
         
@@ -223,39 +264,23 @@ $(document).ready(function () {
         const materialKey = String(materialId);
         const material = allMaterials[materialKey];
 
-        console.log('Material lookup result:', {
-            materialKey: materialKey,
-            materialFound: !!material,
-            material: material
-        });
-
         if (materialId && material) {
             // Update unit
             const unitName = material.unit || 'unit';
             unitInput.val(unitName);
             unitLabel.text(unitName);
 
-            // Update current stock display - handle both total_qty and qty fields
+            // Update current stock display
             itemStockUnit.text(unitName);
             row.find('.item-quantity').val(row.find('.item-quantity').val() || 0);
             refreshRemainingStockDisplay();
 
-            console.log('Stock updated:', {
-                stockValue: stockValue,
-                unit: unitName
-            });
-
-            // (Optional) If you want to auto-fill price or other fields, you can add here
-            // row.find('.item-price').val(material.price);
-            
             $(this).closest('tr').removeClass('table-danger');
         } else {
             unitInput.val('');
             unitLabel.text('unit');
             itemStock.val(0);
             itemStockUnit.text('unit');
-            
-            console.log('No material found, cleared fields');
         }       
         
         refreshMaterialDropdowns();
@@ -264,10 +289,9 @@ $(document).ready(function () {
 
     $('#consumption_type').on('change', function () {
         $('#consumption-items-table tbody').empty();
-        const type = $(this).val();
-        const materials = type === 'fuel' ? materialsFuel : materialsAll;
+        const materials = getMaterialsByType();
         addItemRow({}, materials);
-    });  
+    });
     
     function loadStockBySite(siteId) {
     console.log('Loading stock for site:', siteId);
@@ -309,8 +333,7 @@ $(document).ready(function () {
 
             $('#consumption-items-table tbody').empty();
 
-            const type = $('#consumption_type').val();
-            const materials = type === 'fuel' ? materialsFuel : materialsAll;
+            const materials = getMaterialsByType();
 
             addItemRow({}, materials);
             refreshRemainingStockDisplay();
@@ -321,8 +344,7 @@ $(document).ready(function () {
             materialsAll = {};
             
             // Still add an empty row even if stock fetch fails
-            const type = $('#consumption_type').val();
-            const materials = type === 'fuel' ? materialsFuel : materialsAll;
+            const materials = getMaterialsByType();
             addItemRow({}, materials);
         }
     });
@@ -397,20 +419,23 @@ function refreshMaterialDropdowns() {
         if (val) selectedIds.push(val);
     });
 
-//    // Merge both collections (fuel + all)
-//    const allMaterials = { ...materialsFuel, ...materialsAll };
-    
     const type = $('#consumption_type').val();
-    const materials = type === 'fuel' ? materialsFuel : materialsAll;       
+    const materials = type === 'fuel' ? materialsFuel : materialsAll;
 
     // Rebuild each dropdown
     $('.item-material').each(function () {
         const $select = $(this);
+        const row = $(this).closest('tr');
         const currentVal = $select.val();
+        const categoryId = row.find('.item-category').val();
 
         $select.empty().append('<option value="">Select Material</option>');
 
         Object.entries(materials).forEach(([id, material]) => {
+            // Apply category filter
+            if (categoryId && String(material.category_id) !== String(categoryId)) {
+                return;
+            }
             const isSelectedElsewhere = selectedIds.includes(id) && id !== currentVal;
             const disabled = isSelectedElsewhere ? 'disabled' : '';
             $select.append(`<option value="${id}" ${disabled}>${material.name}</option>`);
@@ -473,6 +498,25 @@ $(document).ready(function () {
             swalWithBootstrapButtons.fire(
                 'Error!',
                 'Please add at least one item row before submitting.',
+                'error'
+            );
+            $('.btn-primary').prop('disabled', false);
+            return false;
+        }
+        
+        // Validate category and material are selected
+        let hasIncompleteRow = false;
+        $('.item-category, .item-material').each(function() {
+            if (!$(this).val()) {
+                hasIncompleteRow = true;
+                $(this).addClass('is-invalid');
+            }
+        });
+        if (hasIncompleteRow) {
+            e.preventDefault();
+            swalWithBootstrapButtons.fire(
+                'Error!',
+                'Please select Category and Material for all rows.',
                 'error'
             );
             $('.btn-primary').prop('disabled', false);

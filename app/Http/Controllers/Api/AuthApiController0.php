@@ -8,8 +8,32 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Customer;
 
+/**
+ * @group Authentication
+ * Endpoints for customer login and token-based authentication
+ */
 class AuthController extends Controller
 {
+    /**
+     * Customer Login
+     *
+     * Authenticate a customer using email and password. Returns a Sanctum token on success.
+     *
+     * @bodyParam email string required Customer email address. Example: customer@example.com
+     * @bodyParam password string required Customer password. Example: secret123
+     *
+     * @response status=200 scenario="Login successful"
+     * {
+     *   "status": true,
+     *   "message": "Login successful",
+     *   "token": "1|abc123def456...",
+     *   "user": {"id": 1, "email": "customer@example.com", ...}
+     * }
+     * @response status=401 scenario="Invalid credentials"
+     * { "status": false, "message": "Invalid email or password" }
+     * @response status=422 scenario="Validation error"
+     * { "status": false, "message": "Validation error", "errors": {...} }
+     */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [

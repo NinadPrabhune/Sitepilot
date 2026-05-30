@@ -1,0 +1,130 @@
+-- Disable foreign key checks
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- Stock & Inventory Transactions
+TRUNCATE TABLE stock_transactions;
+TRUNCATE TABLE material_project_stock;
+
+-- Procurement Transactions
+TRUNCATE TABLE indents;
+TRUNCATE TABLE indent_items;
+TRUNCATE TABLE purchase_orders;
+TRUNCATE TABLE purchase_order_items;
+TRUNCATE TABLE grns;
+TRUNCATE TABLE grn_items;
+TRUNCATE TABLE purchase_invoices;
+TRUNCATE TABLE purchase_invoice_items;
+
+-- Legacy Purchase Module (if still present)
+TRUNCATE TABLE purchases;
+TRUNCATE TABLE purchase_products;
+TRUNCATE TABLE purchase_payments;
+TRUNCATE TABLE purchase_debit_notes;
+TRUNCATE TABLE purchase_attachments;
+
+-- Material Movement
+TRUNCATE TABLE material_transfers;
+TRUNCATE TABLE material_transfer_items;
+TRUNCATE TABLE material_issues;
+TRUNCATE TABLE material_issue_items;
+TRUNCATE TABLE material_returns;
+TRUNCATE TABLE material_return_items;
+
+-- Sales & Invoicing
+TRUNCATE TABLE invoices;
+TRUNCATE TABLE invoice_products;
+TRUNCATE TABLE invoice_payments;
+TRUNCATE TABLE invoice_attechments;
+TRUNCATE TABLE receipts;
+TRUNCATE TABLE credit_notes;
+TRUNCATE TABLE proposals;
+TRUNCATE TABLE proposal_products;
+TRUNCATE TABLE proposal_attechments;
+
+-- Payments & Financial
+TRUNCATE TABLE payments_module;
+TRUNCATE TABLE bank_transfer_payments;
+TRUNCATE TABLE payment_requests;
+TRUNCATE TABLE advance_adjustments;
+TRUNCATE TABLE advance_utilizations;
+TRUNCATE TABLE supplier_advances;
+TRUNCATE TABLE supplier_transactions;
+TRUNCATE TABLE transactions;
+TRUNCATE TABLE transaction_lines;
+TRUNCATE TABLE debit_notes;
+TRUNCATE TABLE customer_credit_notes;
+TRUNCATE TABLE customer_debit_notes;
+
+-- Supplier & PO Tracking
+TRUNCATE TABLE po_status_logs;
+TRUNCATE TABLE supplier_ledger;
+TRUNCATE TABLE supplier_ledger_snapshots;
+TRUNCATE TABLE supplier_advance_audit_logs;
+
+-- Project & Activity
+TRUNCATE TABLE activities;
+TRUNCATE TABLE activities_completed;
+TRUNCATE TABLE daily_progress_reports;
+TRUNCATE TABLE daily_consumption_masters;
+TRUNCATE TABLE daily_consumption_details;
+TRUNCATE TABLE man_power_masters;
+TRUNCATE TABLE man_power_details;
+TRUNCATE TABLE client_projects;
+TRUNCATE TABLE vender_projects;
+
+-- HR & Attendance
+TRUNCATE TABLE attendances;
+TRUNCATE TABLE time_sheets;
+TRUNCATE TABLE leaves;
+TRUNCATE TABLE general_transfer;
+
+-- Tasks & Collaboration
+TRUNCATE TABLE tasks;
+TRUNCATE TABLE sub_tasks;
+TRUNCATE TABLE task_files;
+TRUNCATE TABLE comments;
+TRUNCATE TABLE bug_comments;
+TRUNCATE TABLE lead_tasks;
+TRUNCATE TABLE deal_tasks;
+
+-- CRM/Leads
+TRUNCATE TABLE bug_stages;
+TRUNCATE TABLE milestones;
+TRUNCATE TABLE lead_stages;
+TRUNCATE TABLE deal_stages;
+
+-- Notifications & Chat
+TRUNCATE TABLE ch_notifications;
+TRUNCATE TABLE ch_notification_users;
+TRUNCATE TABLE ch_messages;
+TRUNCATE TABLE ch_favorites;
+TRUNCATE TABLE events;
+TRUNCATE TABLE event_employees;
+TRUNCATE TABLE announcements;
+TRUNCATE TABLE announcement_employees;
+
+-- Machinery & Equipment
+TRUNCATE TABLE machinery_ledger;
+TRUNCATE TABLE machinery_payment_requests;
+TRUNCATE TABLE machinery_payment_periods;
+TRUNCATE TABLE machinery_rate_history;
+TRUNCATE TABLE machinery_bills;
+TRUNCATE TABLE machinery_billing_items;
+TRUNCATE TABLE maintenance_logs;
+
+-- System & Audit
+TRUNCATE TABLE system_locks;
+TRUNCATE TABLE system_migration_state;
+TRUNCATE TABLE spent_ledgers;
+TRUNCATE TABLE spents;
+TRUNCATE TABLE activity_logs;
+TRUNCATE TABLE payment_migration_map;
+TRUNCATE TABLE monthly_locks;
+
+-- Project Files/Documents
+TRUNCATE TABLE project_documents;
+TRUNCATE TABLE project_files_new;
+TRUNCATE TABLE project_files;
+
+-- Re-enable foreign key checks
+SET FOREIGN_KEY_CHECKS = 1;

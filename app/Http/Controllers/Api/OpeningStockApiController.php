@@ -42,10 +42,22 @@ class OpeningStockApiController extends Controller
     }
 
     /**
-     * List opening stock transactions.
+     * List opening stock transactions
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * Returns paginated list of opening stock entries with optional filters.
+     *
+     * @authenticated
+     * @requiredPermission opening-stock manage
+     *
+     * @bodyParam project_id integer optional Filter by project ID. Example: 1
+     * @bodyParam material_id integer optional Filter by material ID. Example: 5
+     * @bodyParam start_date string optional Start date (Y-m-d). Example: 2024-01-01
+     * @bodyParam end_date string optional End date (Y-m-d). Example: 2024-12-31
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "message": "Opening stock transactions fetched successfully.", "data": [...] }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied.", "data": null }
      */
     public function index(Request $request)
     {
@@ -91,10 +103,27 @@ class OpeningStockApiController extends Controller
     }
 
     /**
-     * Add opening stock.
+     * Add opening stock
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * Creates a new opening stock transaction for a material at a project.
+     *
+     * @authenticated
+     * @requiredPermission opening-stock create
+     *
+     * @bodyParam project_id integer required Project ID. Example: 1
+     * @bodyParam material_id integer required Material ID. Example: 5
+     * @bodyParam quantity numeric required Opening quantity. Example: 100.50
+     * @bodyParam rate numeric optional Rate per unit. Example: 250.00
+     * @bodyParam remarks string optional Remarks. Example: Initial stock
+     *
+     * @response status=201 scenario="Created"
+     * { "success": true, "message": "Opening stock added successfully.", "data": {...} }
+     * @response status=400 scenario="Already exists"
+     * { "success": false, "message": "Opening stock already exists for this material in selected project.", "data": null }
+     * @response status=422 scenario="Validation error"
+     * { "success": false, "message": "Validation failed.", "data": {...} }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied.", "data": null }
      */
     public function store(Request $request)
     {
@@ -155,10 +184,22 @@ class OpeningStockApiController extends Controller
     }
 
     /**
-     * Get current stock by project_id and material_id.
+     * Get current stock
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * Returns the current stock quantity for a specific project and material.
+     *
+     * @authenticated
+     * @requiredPermission opening-stock manage
+     *
+     * @bodyParam project_id integer required Project ID. Example: 1
+     * @bodyParam material_id integer required Material ID. Example: 5
+     *
+     * @response status=200 scenario="Success"
+     * { "success": true, "message": "Current stock fetched successfully.", "data": {"project_id": 1, "material_id": 5, "current_stock": 100.50} }
+     * @response status=422 scenario="Validation error"
+     * { "success": false, "message": "Validation failed.", "data": {...} }
+     * @response status=403 scenario="Permission denied"
+     * { "success": false, "message": "Permission denied.", "data": null }
      */
     public function getStock(Request $request)
     {

@@ -102,19 +102,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-3 col-12">
-                    <div class="dashboard-project-card">
-                        <div class="card-inner d-flex justify-content-between">
-                            <div class="card-content">
-                                <div class="theme-avtar bg-white">
-                                    <i class="ti ti-tool"></i>
-                                </div>
-                                <a href="{{ route('assets_tools_and_equipment.index') }}"><h3 class="mt-3 mb-0">{{ __('Total Tools & Equipment') }}</h3></a>
-                            </div>
-                            <h3 class="mb-0">{{ $totalActive = \App\Models\AssetsToolsAndEquipment::where('site_id', getActiveProject())->count();  }}</h3>
-                        </div>
-                    </div>
-                </div>
+<div class="col-sm-3 col-12">
+                     <div class="dashboard-project-card">
+                         <div class="card-inner d-flex justify-content-between">
+                             <div class="card-content">
+                                 <div class="theme-avtar bg-white">
+                                     <i class="ti ti-tool"></i>
+                                 </div>
+                                 <a href="{{ route('assets_tools_and_equipment.index') }}"><h3 class="mt-3 mb-0">{{ __('Total Tools & Equipment') }}</h3></a>
+                             </div>
+                             <h3 class="mb-0">{{ \App\Models\AssetsToolsAndEquipment::where('site_id', getActiveProject())->count() }}</h3>
+                         </div>
+                     </div>
+                 </div>
                 
                
                 
@@ -132,19 +132,19 @@
                             </div>
                         </div>
                     </div>
-                 <div class="col-sm-3 col-12">
-                    <div class="dashboard-project-card">
-                        <div class="card-inner  d-flex justify-content-between">
-                            <div class="card-content">
-                                <div class="theme-avtar bg-white">
-                                    <i class="ti ti-package"></i>
-                                </div>
-                            <a href="{{ route('machineries.index') }}"><h3 class="mt-3 mb-0">{{ __('Total Machinery') }}</h3></a>
-                            </div>
-                            <h3 class="mb-0">{{ $totalActive = \App\Models\Machinery::where('site_id', getActiveProject())->count();  }}</h3>
-                        </div>
-                    </div>
-                </div>
+<div class="col-sm-3 col-12">
+                     <div class="dashboard-project-card">
+                         <div class="card-inner  d-flex justify-content-between">
+                             <div class="card-content">
+                                 <div class="theme-avtar bg-white">
+                                     <i class="ti ti-package"></i>
+                                 </div>
+                             <a href="{{ route('machineries.index') }}"><h3 class="mt-3 mb-0">{{ __('Total Machinery') }}</h3></a>
+                             </div>
+                             <h3 class="mb-0">{{ \App\Models\Machinery::where('site_id', getActiveProject())->count() }}</h3>
+                         </div>
+                     </div>
+                 </div>
             </div>
         </div>
         
